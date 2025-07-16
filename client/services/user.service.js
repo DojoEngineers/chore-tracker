@@ -33,13 +33,13 @@ export const getProfile = async () => {
     } catch( error ){ throw error }
 }
 
-export const updateUser = async (req, res) => {
+export const updateUser = async data => {
     const options = {
         new: true,
         runValidators: true,
     }
     try {
-        const RES = await USER_INSTANCE.put( '/', req )
+        const RES = await USER_INSTANCE.put( '/', data )
         return RES.data
     } 
     catch( error ){ throw error.response.data.errors }
@@ -54,4 +54,18 @@ export const checkUserName = async (userName) => {
         return RES.data.exists
     }
     catch( error ){ throw error }
+}
+
+export const getFamily = async () => {
+    try {
+        const RES = await USER_INSTANCE.get( '/' )
+        return RES.data
+    } catch( error ){ throw error }
+}
+
+export const deactivateUser = async () => {
+    try {
+        const RES = await USER_INSTANCE.put('/deactivate', { active: false })
+        return RES.data
+    } catch (error) {throw error}
 }
