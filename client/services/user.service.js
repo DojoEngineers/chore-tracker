@@ -1,9 +1,30 @@
 import axios from 'axios'
+import Constants from 'expo-constants'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const USER_INSTANCE = axios.create({
-    baseURL: import.meta.env.BACKEND_API_URL + "/user",
-    withCredentials: true
+    baseURL: `${Constants.expoConfig.extra.BACKEND_API_URL}/user`
 })
+
+USER_INSTANCE.interceptors.request.use(
+    async (config) => {
+        console.log("intercepting...")
+        const user = await AsyncStorage.getItem('user')
+        const data = JSON.parse(user)
+        if (data) {
+            console.log("data", data)
+            const token = data.token
+            console.log("token", token)
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`
+            }
+        }
+        return config
+    },
+    (error) => {
+        return Promise.reject(error)
+    }
+)
 
 export const register = async data => {
     try {
@@ -26,9 +47,9 @@ export const logout = async () => {
     } catch( error ){ throw error }
 }
 
-export const getProfile = async () => {
+export const getCurrentUser = async () => {
     try {
-        const RES = await USER_INSTANCE.get( '/profile' )
+        const RES = await USER_INSTANCE.get( '/currentUser' )
         return RES.data
     } catch( error ){ throw error }
 }
@@ -68,4 +89,18 @@ export const deactivateUser = async () => {
         const RES = await USER_INSTANCE.put('/deactivate', { active: false })
         return RES.data
     } catch (error) {throw error}
+}
+
+export const verify = async (data) => {
+    try {
+        const RES = await USER_INSTANCE.post('/verify', data)
+        return RES
+    } catch (error) {throw error.response.data.errors}
+}
+
+export const resendCode = async (userName) => {
+    try {
+        const RES = await USER_INSTANCE.post('/resend', { userName })
+        return RES.data
+    } catch (error) {throw error.response.data.errors}
 }

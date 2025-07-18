@@ -2,7 +2,6 @@ import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 import { Pressable, Text, TextInput, View } from "react-native"
 import Toast from 'react-native-toast-message'
-import { useLogin } from "../../context/UserContext"
 
 const DEFAULT_FORM_VALUES = {
     name: "",
@@ -21,7 +20,6 @@ export const ParentRegistration = () => {
     const [formErrors, setFormErrors] = useState({})
 
     const navigation = useNavigation()
-    const { login } = useLogin()
 
     // Dynamically set form data
     const handleChange = (name, value) => {
@@ -38,8 +36,9 @@ export const ParentRegistration = () => {
                 : false
             ),
             userName: value => (
-                !EMAIL_REGEX.test(value) || value.replace(/\D/g, "").length !== 10
+                !EMAIL_REGEX.test(value) && value.replace(/\D/g, "").length !== 10
                 ? "Username must be a valid email or 10 digit phone number."
+                : !NO_EMOJI_REGEX.test(value) ? "Username must not contain emojis."
                 : false
             ),
             password: value => {
@@ -67,7 +66,7 @@ export const ParentRegistration = () => {
     // Check for errors before submitting form
     const isReadyToSubmit = () => {
         for (let key in formErrors){
-            if (formErrors[key] != false) {
+            if (formErrors[key] != false || formData[key] == "") {
                 return false
             }
         }
@@ -91,7 +90,6 @@ export const ParentRegistration = () => {
 
     // Submit form
     const handleSubmit = async () => {
-        e.preventDefault()
         if (!isReadyToSubmit()){
             return Toast.show({
                 type: 'error',
@@ -109,13 +107,12 @@ export const ParentRegistration = () => {
         }
         else {
             register({name, userName, password, confirmPassword, isParent})
-                .then( ()=>{ 
-                    login()
+                .then( () => { 
                     Toast.show({
                         type: 'success',
                         text1: "Account created successfully!"
                     })
-                    navigation.navigate('Tutorial') 
+                    navigation.navigate('PasscodeVerification', {userName}) 
                 })
                 .catch( error => {
                     console.log("register error:", error)
@@ -124,8 +121,7 @@ export const ParentRegistration = () => {
                         type: 'error',
                         text1: "Unable to create account."
                     })
-                }
-            )
+                })
         }
     }
 
@@ -157,7 +153,7 @@ export const ParentRegistration = () => {
                     )}
                     <Text>Username:</Text>
                     <TextInput
-                        placeholder="Username"
+                        placeholder="Please enter your email or phone number."
                         value={formData.userName}
                         onChangeText={(text) => handleChange('userName', text)}
                     />
@@ -212,7 +208,7 @@ export const ParentRegistration = () => {
 
             <View>
                 <Text>Already have an account?</Text>
-                <Pressable onPress={() => navigation.navigate('ChooseAccountType')}> 
+                <Pressable onPress={() => navigation.navigate('Login')}> 
                     <Text>Login Now</Text>
                 </Pressable>
             </View>
