@@ -40,11 +40,11 @@ const userSchema = new mongoose.Schema({
         required: [false],
     },
     isVerified: {
-        type: boolean,
+        type: Boolean,
         required: [true, "Please specify if account is verified"]
     },
     isActive: {
-        type: boolean,
+        type: Boolean,
         required: [true, "Please specify if account is active."]
     }
 
