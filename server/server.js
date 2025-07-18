@@ -5,7 +5,6 @@ import { dbConnect } from "./config/mongoose.config.js";
 import userRouter from "./routes/user.route.js"
 import choreRouter from "./routes/chore.route.js"
 import uploadRouter from "./routes/upload.js";
-import cookieParser from "cookie-parser";
 import path from 'path'
 import { fileURLToPath } from 'url';
 
@@ -16,10 +15,9 @@ const app = express();
 
 app.use(express.json()); 
 // allows front-end requests coming from the origin (no dubious sources).
-cors({ origin: 'http://192.168.1.217:19000', credentials:true })
+cors({ origin: process.env.FRONTEND_API_URL, credentials:true })
 // 'http://localhost:5173', credentials: true
 app.use(express.json())
-app.use(cookieParser())
 app.use("/v1/user", userRouter);
 app.use("/v1/chore", choreRouter);
 app.use("/v1/upload", uploadRouter);
