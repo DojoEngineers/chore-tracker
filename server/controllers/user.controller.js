@@ -85,7 +85,7 @@ export const getCurrentUser = async (req, res) => {
 }
 
 // for getting family by user family array. Make it into a post request if you want to send data like arrays or objects.
-export const getAllUsers = async (req, res) => {
+export const getFamily = async (req, res) => {
     try {
 
         const ids = req.body; // req.body is an array here
