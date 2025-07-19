@@ -34,9 +34,11 @@ export const checkUserName = async (req, res) => {
         console.log("req", req.query)
         const USER = await User.findOne({ username: req.query });
         if (!USER) {
-            return res.status(404).json({ message: 'User not found.' })
+            // return res.status(404).json({ message: 'User not found.' })
+            return (false)
         }
-        res.status(200).json(USER)
+        // res.status(200).json(USER)
+        return (true)
     } catch (error) {
         res.status(400).json({ message: error.message || 'An error occurred while fetching the profile.' })
     }
@@ -45,7 +47,7 @@ export const checkUserName = async (req, res) => {
 export const registerUser = async (req, res) => {
     console.log("entered register controller. req.body:", req.body)
     try {
-        const user = await User.create({...req.body, children: [], parents: [], choresCompleted:[], isVerified: false, isActive: true })
+        const user = await User.create({ ...req.body, children: [], parents: [], choresCompleted: [], isVerified: false, isActive: true })
         delete user.password //removes password from the object
         const token = generateToken(user._id);
         const data = {
@@ -82,10 +84,14 @@ export const getCurrentUser = async (req, res) => {
     }
 }
 
-// for getting family. front-end will filter out.
+// for getting family by user family array. Make it into a post request if you want to send data like arrays or objects.
 export const getAllUsers = async (req, res) => {
     try {
-        const USERS = await User.find().select(`-password`)
+
+        const ids = req.body; // req.body is an array here
+        const objectIds = ids.map(id => new mongoose.Types.ObjectId(id));
+        const USERS = await User.find({_id: { $in: objectIds }}).select(`-password`)
+        res.json(USERS);
         res.status(200).json(USERS)
     } catch (error) { res.status(400).json(error) }
 }
