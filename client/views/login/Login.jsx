@@ -2,8 +2,8 @@ import { Text, TextInput, View, Pressable } from "react-native"
 import { useLogin } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
 import { useNavigation } from '@react-navigation/native'
-import { login } from "../../services/user.service"
-import { useState } from "react"
+import { getCurrentUser, login } from "../../services/user.service"
+import { useEffect, useState } from "react"
 
 export const Login = () => {
 
@@ -14,7 +14,32 @@ export const Login = () => {
         })
 
     const navigation = useNavigation()
-    const { login: loginUser } = useLogin()
+    const { login: loginUser, user, isLoggingOut, isLoggedIn } = useLogin()
+
+    const checkUser = async () => {
+        console.log("user already logged in:", user)
+        try {
+            const data = await getCurrentUser()
+            setLoggedInData(data)
+            navigation.replace('Home')
+        } catch (error) {
+            console.log('Failed to fetch user data', error)
+        }
+    }
+
+    useEffect(() => {
+        console.log("login useEffect")
+        // if user is currently logging out or in, we dont want to checkUser() and accidentally log back in.
+        if (!user || !user.user || !user.user._id) {
+            console.log("No valid user, staying on login page")
+            return;
+        }
+        const timer = setTimeout(() => {
+            checkUser()
+        }, 200); // Give login flow time to navigate first
+        return () => clearTimeout(timer)
+
+    }, [user, isLoggingOut, isLoggedIn])
 
     const handleChange = (name, value) => {
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -23,13 +48,8 @@ export const Login = () => {
     const handleLogin = () => {
         login(formData)
             .then(async res => {
-                loginUser(res)
-                setLoggedInData(await getCurrentUser())
-                Toast.show({
-                    type: 'success',
-                    text1: "Login successfully!"
-                })
-                navigation.replace('Home')
+                await loginUser(res)
+                checkUser()
             })
             .catch(error => {
                 console.log("login error:", error)

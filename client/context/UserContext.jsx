@@ -17,16 +17,16 @@ export const UserContextProvider = ({ children }) => {
         const loadUser = async () => {
             try {
                 console.log("getting token from storage...")
-                const storedUser = await AsyncStorage.getItem('user');
+                const storedUser = await AsyncStorage.getItem('user')
                 if (storedUser) {
-                    setUser(JSON.parse(storedUser));
+                    setUser(JSON.parse(storedUser))
                 }
-            } catch (e) {
-                console.log('Failed to load user', e);
+            } catch (error) {
+                console.log('Failed to load user', error)
             }
-        };
-        loadUser();
-    }, []);
+        }
+        loadUser()
+    }, [])
 
     const login = async (userData) => {
         console.log("in context's login.")
@@ -43,12 +43,12 @@ export const UserContextProvider = ({ children }) => {
 
     const logout = async () => {
         try{
-        await AsyncStorage.removeItem('user');
+            await AsyncStorage.removeItem('user');
         }
         catch (error) {
             console.log("failed to remove from storage")
         }
-        setUser(null);
+        setUser(null)
         setIsLoggedIn(false)
         setLoggedInData(null)
         setFamilyData([])
