@@ -1,20 +1,25 @@
 import { Router } from "express"
 import { protect } from "../middleware/authMiddleware.js"
-import { getCurrentUser, getAllUsers, loginUser, registerUser, updateUser } from "../controllers/user.controller.js"
+import { getCurrentUser, getAllUsers, loginUser, registerUser, updateUser, checkUserName } from "../controllers/user.controller.js"
 
 const userRouter = Router()
 
 userRouter.route('/all')
-    .get(protect, getAllUsers)
-    .put(protect, updateUser)
+    .get( getAllUsers)
 
 userRouter.route('/')
-    .get(protect, getCurrentUser)
-    .post(protect, registerUser)
+    // .get( getCurrentUser)
+    .post( registerUser)
     .put(protect, updateUser)
 
 userRouter.route('/login')
-    .post(protect, loginUser)
+    .post(loginUser)
+
+userRouter.route('/currentUser')
+    .get(getCurrentUser)
+
+userRouter.route('/checkUserName')
+    .get(checkUserName)
 
 
 export default userRouter
