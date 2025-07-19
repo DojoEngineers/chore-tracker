@@ -16,7 +16,7 @@ export const Login = () => {
     const navigation = useNavigation()
     const { login: loginUser, user, isLoggingOut, isLoggedIn } = useLogin()
 
-    const checkUser = async () => {
+    const checkUserToken = async () => {
         console.log("user already logged in:", user)
         try {
             const data = await getCurrentUser()
@@ -35,7 +35,7 @@ export const Login = () => {
             return;
         }
         const timer = setTimeout(() => {
-            checkUser()
+            checkUserToken()
         }, 200); // Give login flow time to navigate first
         return () => clearTimeout(timer)
 
@@ -49,7 +49,7 @@ export const Login = () => {
         login(formData)
             .then(async res => {
                 await loginUser(res)
-                checkUser()
+                checkUserToken()
             })
             .catch(error => {
                 console.log("login error:", error)
