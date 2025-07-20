@@ -39,7 +39,7 @@ export const PasscodeVerification = ({route}) => {
     }
 
     const handleVerify = value => {
-        const data = {userName, code: value}
+        const data = {username, code: value}
         verify(data)
             .then(async (res) => {
                 login(res)
@@ -56,7 +56,7 @@ export const PasscodeVerification = ({route}) => {
     }
 
     const resend = () => {
-        resendCode(userName)
+        resendCode(username)
             .then(() => {
                 Toast.show({
                     type: 'success',
@@ -76,7 +76,7 @@ export const PasscodeVerification = ({route}) => {
     return (
         <View>
             <Text>One Time Passcode Verification</Text>
-            <Text>Enter the verification code that was just sent to {userName}.</Text>
+            <Text>Enter the verification code that was just sent to {username}.</Text>
             <View style={{ padding: 20 }}>
                 <CodeField
                     ref={ref}

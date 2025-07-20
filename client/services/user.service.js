@@ -67,11 +67,11 @@ export const updateUser = async data => {
     catch( error ){ throw error.response.data.errors }
 }
 
-export const checkUserName = async (userName) => {
+export const checkUsername = async (username) => {
     try {
         const RES = await USER_INSTANCE.get(
-            '/checkUserName',
-            { params: { userName } }
+            '/checkUsername',
+            { params: { username } }
         )
         return RES.data.exists
     }
@@ -93,7 +93,7 @@ export const deactivateUser = async () => {
     } catch (error) {throw error}
 }
 
-// Data is {userName, code}. Set isVerified to true in backend if the usernames and codes match
+// Data is {username, code}. Set isVerified to true in backend if the usernames and codes match
 export const verify = async (data) => {
     try {
         const RES = await USER_INSTANCE.post('/verify', data)
@@ -102,9 +102,9 @@ export const verify = async (data) => {
 }
 
 // Generate code, save it in the user object, send to person via text or email
-export const resendCode = async (userName) => {
+export const resendCode = async (username) => {
     try {
-        const RES = await USER_INSTANCE.post('/resend', { userName })
+        const RES = await USER_INSTANCE.post('/resend', { username })
         return RES.data
     } catch (error) {throw error.response.data.errors}
 }

@@ -4,20 +4,20 @@ import { Pressable, Text, TextInput, View } from "react-native"
 import Toast from 'react-native-toast-message'
 
 
-export const ChildUserNameVerification = () => {
+export const ChildUsernameVerification = () => {
 
-    const [userName, setUserName] = useState('')
+    const [username, setUsername] = useState('')
     const [ apiErrors, setApiErrors ] = useState({})
 
     const navigation = useNavigation()
 
-    // Check if userName exists
-    const userNameExists = async (userName) => {
+    // Check if username exists
+    const usernameExists = async (username) => {
         try {
-            return await checkUserName(userName)
+            return await checkUsername(username)
         } catch (error) {
-            console.log("checkUserName error:", error)
-            setApiErrors(prev => ({...prev, checkUserName: "Unable to validate username."}))
+            console.log("checkUsername error:", error)
+            setApiErrors(prev => ({...prev, checkUsername: "Unable to validate username."}))
             Toast.show({
                 type: 'error',
                 text1: "Unable to validate username."
@@ -27,7 +27,7 @@ export const ChildUserNameVerification = () => {
     }
 
     const handleSubmit = async () => {
-        const exists = await userNameExists(userName)
+        const exists = await usernameExists(username)
         if (!exists) {
             return Toast.show({
                 type: 'error',
@@ -40,24 +40,24 @@ export const ChildUserNameVerification = () => {
                 type: 'success',
                 text1: "Username validated successfully!"
             })
-            navigation.navigate('PasscodeVerification', {userName}) 
+            navigation.navigate('PasscodeVerification', {username}) 
         }
     }
 
     return (
         <View>
             <View>
-                {apiErrors.checkUserName && (
+                {apiErrors.checkUsername && (
                     <Text style={{ color: 'red', textAlign: 'center' }}>
-                        {apiErrors.checkUserName}
+                        {apiErrors.checkUsername}
                     </Text>
                 )}
                 <Text>To create an account, please ask your parent to add you through the Settings tab in their account.</Text>
                 <Text>After your account is created, enter the email or phone number used to sign up below.</Text>
                 <TextInput
                     placeholder="Please enter your email or phone number."
-                    value={userName}
-                    onChangeText={setUserName}
+                    value={username}
+                    onChangeText={setUsername}
                 />
                 <Pressable onPress={handleSubmit}> 
                     <Text>Submit</Text>

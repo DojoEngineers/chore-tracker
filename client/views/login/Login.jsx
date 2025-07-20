@@ -9,7 +9,7 @@ export const Login = () => {
 
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState({
-        userName: '',
+        username: '',
         password: ''
         })
 
@@ -81,8 +81,8 @@ export const Login = () => {
                 <Text>Username:</Text>
                 <TextInput
                     placeholder="Email or Phone"
-                    value={formData.userName}
-                    onChangeText={(text) => handleChange('userName', text)}
+                    value={formData.username}
+                    onChangeText={(text) => handleChange('username', text)}
                 />
             </View>
 
