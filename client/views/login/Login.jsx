@@ -21,6 +21,10 @@ export const Login = () => {
         try {
             const data = await getCurrentUser()
             setLoggedInData(data)
+            Toast.show({
+                type: 'success',
+                text1: "Login Successful!"
+            })
             navigation.replace('Home')
         } catch (error) {
             console.log('Failed to fetch user data', error)
