@@ -9,7 +9,7 @@ export const ChooseAccountType = () => {
         <View>
             <Text>Chore Tracking App</Text>
             <Pressable onPress={() => navigation.navigate('ParentRegistration')}><Text>I'm a parent.</Text></Pressable>
-            <Pressable onPress={() => navigation.navigate('ChildUserNameVerification')}><Text>I'm a kid.</Text></Pressable>
+            <Pressable onPress={() => navigation.navigate('ChildUsernameVerification')}><Text>I'm a kid.</Text></Pressable>
         </View>
     )
 

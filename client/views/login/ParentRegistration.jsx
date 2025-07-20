@@ -2,10 +2,11 @@ import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 import { Pressable, Text, TextInput, View } from "react-native"
 import Toast from 'react-native-toast-message'
+import { checkUsername, register } from "../../services/user.service"
 
 const DEFAULT_FORM_VALUES = {
     name: "",
-    userName: "",
+    username: "",
     password: "",
     confirmPassword: ""
 }
@@ -35,7 +36,7 @@ export const ParentRegistration = () => {
                 : !NO_EMOJI_REGEX.test(value) ? "Name must not contain emojis."
                 : false
             ),
-            userName: value => (
+            username: value => (
                 !EMAIL_REGEX.test(value) && value.replace(/\D/g, "").length !== 10
                 ? "Username must be a valid email or 10 digit phone number."
                 : !NO_EMOJI_REGEX.test(value) ? "Username must not contain emojis."
@@ -73,13 +74,13 @@ export const ParentRegistration = () => {
         return true
     }
 
-    // Check if userName already exists
-    const userNameExists = async (userName) => {
+    // Check if username already exists
+    const usernameExists = async (username) => {
         try {
-            return await checkUserName(userName)
+            return await checkUsername(username)
         } catch (error) {
-            console.log("checkUserName error:", error)
-            setApiErrors(prev => ({...prev, checkUserName: "Unable to validate user name."}))
+            console.log("checkUsername error:", error)
+            setApiErrors(prev => ({...prev, checkUsername: "Unable to validate user name."}))
             Toast.show({
                 type: 'error',
                 text1: "Unable to validate user name."
@@ -96,9 +97,9 @@ export const ParentRegistration = () => {
                 text1: "Please make corrections to the form."
             })
         }
-        let { name, userName, password, confirmPassword } = formData
+        let { name, username, password, confirmPassword } = formData
         const isParent = true
-        const exists = await userNameExists(userName)
+        const exists = await usernameExists(username)
         if (exists) {
             return Toast.show({
                 type: 'error',
@@ -106,13 +107,13 @@ export const ParentRegistration = () => {
             })
         }
         else {
-            register({name, userName, password, confirmPassword, isParent})
+            register({name, username, password, confirmPassword, isParent})
                 .then( () => { 
                     Toast.show({
                         type: 'success',
                         text1: "Account created successfully!"
                     })
-                    navigation.navigate('PasscodeVerification', {userName}) 
+                    navigation.navigate('PasscodeVerification', {username}) 
                 })
                 .catch( error => {
                     console.log("register error:", error)
@@ -146,16 +147,16 @@ export const ParentRegistration = () => {
                 </View>
 
                 <View>
-                    {formErrors.userName && (
+                    {formErrors.username && (
                         <Text style={{ color: 'red', textAlign: 'center' }}>
-                            {formErrors.userName}
+                            {formErrors.username}
                         </Text>
                     )}
                     <Text>Username:</Text>
                     <TextInput
                         placeholder="Please enter your email or phone number."
-                        value={formData.userName}
-                        onChangeText={(text) => handleChange('userName', text)}
+                        value={formData.username}
+                        onChangeText={(text) => handleChange('username', text)}
                     />
                 </View>
 
@@ -194,9 +195,9 @@ export const ParentRegistration = () => {
                         {apiErrors.register}
                     </Text>
                 )}
-                {apiErrors.checkUserName && (
+                {apiErrors.checkUsername && (
                     <Text style={{ color: 'red', textAlign: 'center' }}>
-                        {apiErrors.checkUserName}
+                        {apiErrors.checkUsername}
                     </Text>
                 )}
 
