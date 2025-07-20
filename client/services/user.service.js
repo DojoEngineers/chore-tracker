@@ -78,9 +78,9 @@ export const checkUserName = async (userName) => {
     catch( error ){ throw error }
 }
 
-export const getFamily = async () => {
+export const getFamily = async (data) => {
     try {
-        const RES = await USER_INSTANCE.get( '/' )
+        const RES = await USER_INSTANCE.post( '/', data )
         return RES.data
     } catch( error ){ throw error }
 }

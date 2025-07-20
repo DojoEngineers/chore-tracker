@@ -23,17 +23,27 @@ export const PasscodeVerification = ({route}) => {
         setValue,
     })
 
+    const checkUserToken = async () => {
+        console.log("user already logged in:", user)
+        try {
+            const data = await getCurrentUser()
+            setLoggedInData(data)
+            Toast.show({
+                type: 'success',
+                text1: "Login Successful!"
+            })
+            navigation.replace('TutorialAssign')
+        } catch (error) {
+            console.log('Failed to fetch user data', error)
+        }
+    }
+
     const handleVerify = value => {
         const data = {userName, code: value}
         verify(data)
             .then(async (res) => {
                 login(res)
-                setLoggedInData(await getCurrentUser())
-                Toast.show({
-                    type: 'success',
-                    text1: "Account verified successfully!"
-                })
-                navigation.replace('TutorialAssign')
+                checkUserToken()
             })
             .catch(error => {
                 console.log("verify error:", error)
