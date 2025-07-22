@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
     choresCompleted:
     {
         type: Number,
-        required: [false],
+        default: 0
     },
     isVerified: {
         type: Boolean,

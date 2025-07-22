@@ -29,16 +29,22 @@ export const loginUser = async (req, res) => {
 }
 
 // checks if username exists in db
-export const checkUserName = async (req, res) => {
+export const checkUsername = async (req, res) => {
+    console.log("backend checking username")
     try {
+        const { username } = req.query;
+        console.log("username", username)
         console.log("req", req.query)
-        const USER = await User.findOne({ username: req.query });
+        const USER = await User.findOne({ username: username });
         if (!USER) {
-            // return res.status(404).json({ message: 'User not found.' })
-            return (false)
+            console.log("no user!")
+            return res.json({exists: false})
         }
-        // res.status(200).json(USER)
-        return (true)
+        else {
+            console.log("user found!")
+            return res.json({exists:true})
+        }
+        
     } catch (error) {
         res.status(400).json({ message: error.message || 'An error occurred while fetching the profile.' })
     }
@@ -47,7 +53,7 @@ export const checkUserName = async (req, res) => {
 export const registerUser = async (req, res) => {
     console.log("entered register controller. req.body:", req.body)
     try {
-        const user = await User.create({ ...req.body, children: [], parents: [], choresCompleted: [], isVerified: false, isActive: true })
+        const user = await User.create({ ...req.body, children: [], parents: [], isVerified: false, isActive: true })
         delete user.password //removes password from the object
         const token = generateToken(user._id);
         const data = {
