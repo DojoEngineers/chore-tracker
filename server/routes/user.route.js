@@ -1,11 +1,11 @@
 import { Router } from "express"
 import { protect } from "../middleware/authMiddleware.js"
-import { getCurrentUser, getAllUsers, loginUser, registerUser, updateUser, checkUserName } from "../controllers/user.controller.js"
+import { getCurrentUser, getFamily, loginUser, registerUser, updateUser, checkUsername } from "../controllers/user.controller.js"
 
 const userRouter = Router()
 
 userRouter.route('/all')
-    .get( getAllUsers)
+    .get( getFamily)
 
 userRouter.route('/')
     // .get( getCurrentUser)
@@ -19,7 +19,7 @@ userRouter.route('/currentUser')
     .get(getCurrentUser)
 
 userRouter.route('/checkUserName')
-    .get(checkUserName)
+    .get(checkUsername)
 
 
 export default userRouter

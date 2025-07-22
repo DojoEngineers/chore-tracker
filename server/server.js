@@ -18,9 +18,9 @@ app.use(express.json());
 cors({ origin: process.env.FRONTEND_API_URL, credentials:true })
 // 'http://localhost:5173', credentials: true
 app.use(express.json())
-app.use("/v1/user", userRouter);
-app.use("/v1/chore", choreRouter);
-app.use("/v1/upload", uploadRouter);
+app.use("/user", userRouter);
+app.use("/chore", choreRouter);
+app.use("/upload", uploadRouter);
 
 // This line serves files from /uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
