@@ -10,8 +10,9 @@ import { TutorialTrack } from "./views/login/TutorialTrack";
 import { TutorialResults } from "./views/login/TutorialResults";
 import { Home } from "./views/home/Home";
 import { Login } from "./views/login/Login";
-import { ChildUsernameVerification } from "./views/login/ChildUsernameVerification";
-
+import { UsernameVerification } from "./views/login/UsernameVerification";
+import { StartingPage } from "./views/login/StartingPage";
+import { ForgotPassword } from "./views/login/ForgotPassword";
 
 export default function App() {
 
@@ -20,16 +21,18 @@ export default function App() {
   return (
     <UserContextProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="ChooseAccountType">
+        <Stack.Navigator initialRouteName="StartingPage">
+          <Stack.Screen name="StartingPage" component={StartingPage}></Stack.Screen>
           <Stack.Screen name="ChooseAccountType" component={ChooseAccountType}></Stack.Screen>
           <Stack.Screen name="ParentRegistration" component={ParentRegistration}></Stack.Screen>
           <Stack.Screen name="PasscodeVerification" component={PasscodeVerification}></Stack.Screen>
-          <Stack.Screen name="ChildUsernameVerification" component={ChildUsernameVerification}></Stack.Screen>
+          <Stack.Screen name="UsernameVerification" component={UsernameVerification}></Stack.Screen>
           <Stack.Screen name="TutorialAssign" component={TutorialAssign}></Stack.Screen>
           <Stack.Screen name="TutorialTrack" component={TutorialTrack}></Stack.Screen>
           <Stack.Screen name="TutorialResults" component={TutorialResults}></Stack.Screen>
           <Stack.Screen name="Home" component={Home}></Stack.Screen>
           <Stack.Screen name="Login" component={Login}></Stack.Screen>
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
       <Toast />

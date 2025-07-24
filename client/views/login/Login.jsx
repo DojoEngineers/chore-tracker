@@ -100,6 +100,12 @@ export const Login = () => {
             </Pressable>
 
             <View>
+                <Pressable onPress={() => navigation.navigate('ForgotPassword')}> 
+                    <Text>Forgot your password?</Text>
+                </Pressable>
+            </View>
+
+            <View>
                 <Text>Don't have an account?</Text>
                 <Pressable onPress={() => navigation.navigate('ChooseAccountType')}> 
                     <Text>Register Now</Text>
