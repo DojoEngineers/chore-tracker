@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Pressable, Text, View, StyleSheet } from 'react-native'
 import { CodeField, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field'
-import { getCurrentUser, resendCode, verify } from '../../services/user.service'
+import { getCurrentUser, getUserByUsername, resendCode, verify } from '../../services/user.service'
 import Toast from 'react-native-toast-message'
 import { useLogin } from "../../context/UserContext"
 
@@ -12,6 +12,7 @@ export const PasscodeVerification = ({route}) => {
 
     const [value, setValue] = useState('')
     const [ apiErrors, setApiErrors ] = useState({})
+    const [user, setUser] = useState({})
 
     const navigation = useNavigation()
     const { username } = route.params
@@ -23,6 +24,31 @@ export const PasscodeVerification = ({route}) => {
         setValue,
     })
 
+    useEffect ((username) => {
+        getUserByUsername(username)
+            .then ( res => {
+                if (res.isVerified === true ) {
+                    Toast.show({
+                        type: 'success',
+                        text1: "Account already verified.",
+                        text2: "Please login."
+                    })
+                    navigation.replace("Login")
+                } else {
+                    setUser(res)
+                }
+            })
+            .catch ( error => {
+                console.log("getUserByUsername error:", error)
+                Toast.show({
+                    type: 'error',
+                    text1: "Username not found.",
+                    text2: "Please register before verifying your account."
+                })
+                navigation.replace("ChooseAccountType")
+            })
+    }, [username])
+
     const checkUserToken = async () => {
         console.log("user already logged in:", user)
         try {
@@ -32,18 +58,18 @@ export const PasscodeVerification = ({route}) => {
                 type: 'success',
                 text1: "Login Successful!"
             })
-            navigation.replace('TutorialAssign')
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }
     }
 
     const handleVerify = value => {
-        const data = {username, verificationCode: value}
+        const data = {user, inputtedVerificationCode: value}
         verify(data)
             .then(async (res) => {
                 login(res)
                 checkUserToken()
+                navigation.replace('TutorialAssign')
             })
             .catch(error => {
                 console.log("verify error:", error)
@@ -56,7 +82,7 @@ export const PasscodeVerification = ({route}) => {
     }
 
     const resend = () => {
-        resendCode(username)
+        resendCode(user)
             .then(() => {
                 Toast.show({
                     type: 'success',
