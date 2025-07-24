@@ -18,7 +18,7 @@ userRouter.route('/login')
 userRouter.route('/currentUser')
     .get(getCurrentUser)
 
-userRouter.route('/checkUserName')
+userRouter.route('/checkUsername')
     .get(checkUsername)
 
 

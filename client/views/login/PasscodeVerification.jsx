@@ -14,7 +14,7 @@ export const PasscodeVerification = ({route}) => {
     const [ apiErrors, setApiErrors ] = useState({})
 
     const navigation = useNavigation()
-    const { userName } = route.params
+    const { username } = route.params
     const { login, setLoggedInData } = useLogin()
 
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT })
@@ -39,7 +39,7 @@ export const PasscodeVerification = ({route}) => {
     }
 
     const handleVerify = value => {
-        const data = {username, code: value}
+        const data = {username, verificationCode: value}
         verify(data)
             .then(async (res) => {
                 login(res)

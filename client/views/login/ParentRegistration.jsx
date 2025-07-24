@@ -103,7 +103,7 @@ export const ParentRegistration = () => {
         if (exists) {
             return Toast.show({
                 type: 'error',
-                text1: "User name already exists or could not be validated."
+                text1: "Username already exists or could not be validated."
             })
         }
         else {
@@ -205,6 +205,13 @@ export const ParentRegistration = () => {
                     <Text>Register</Text>
                 </Pressable>
 
+            </View>
+
+            <View>
+                <Text>Already registered?</Text>
+                <Pressable onPress={() => navigation.navigate('UsernameVerification', { isParent: true })}> 
+                    <Text>Verify Your Account</Text>
+                </Pressable>
             </View>
 
             <View>

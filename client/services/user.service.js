@@ -26,7 +26,7 @@ USER_INSTANCE.interceptors.request.use(
     }
 )
 
-// generate code and send to the person via email or phone
+// generate code, expiration date and send to the person via email or phone
 export const register = async data => {
     try {
         const RES = await USER_INSTANCE.post('/', data )
@@ -80,7 +80,7 @@ export const checkUsername = async (username) => {
 
 export const getFamily = async (data) => {
     try {
-        const RES = await USER_INSTANCE.post( '/', data )
+        const RES = await USER_INSTANCE.post('/all', data )
         return RES.data
     } catch( error ){ throw error }
 }
@@ -93,7 +93,7 @@ export const deactivateUser = async () => {
     } catch (error) {throw error}
 }
 
-// Data is {username, code}. Set isVerified to true in backend if the usernames and codes match
+// Data is {username, verificationCode}. Set isVerified to true in backend if the usernames and codes match
 export const verify = async (data) => {
     try {
         const RES = await USER_INSTANCE.post('/verify', data)

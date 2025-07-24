@@ -2,13 +2,15 @@ import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 import { Pressable, Text, TextInput, View } from "react-native"
 import Toast from 'react-native-toast-message'
+import { checkUsername } from "../../services/user.service"
 
 
-export const ChildUsernameVerification = () => {
+export const UsernameVerification = ({route}) => {
 
     const [username, setUsername] = useState('')
     const [ apiErrors, setApiErrors ] = useState({})
 
+    const { isParent } = route.params
     const navigation = useNavigation()
 
     // Check if username exists
@@ -38,7 +40,7 @@ export const ChildUsernameVerification = () => {
         else {
             Toast.show({
                 type: 'success',
-                text1: "Username validated successfully!"
+                text1: "Username found!"
             })
             navigation.navigate('PasscodeVerification', {username}) 
         }
@@ -52,8 +54,19 @@ export const ChildUsernameVerification = () => {
                         {apiErrors.checkUsername}
                     </Text>
                 )}
-                <Text>To create an account, please ask your parent to add you through the Settings tab in their account.</Text>
-                <Text>After your account is created, enter the email or phone number used to sign up below.</Text>
+
+                {isParent
+                    ?
+                        <View>
+                            <Text>Please enter the email or phone number linked to your parent account to continue.</Text>
+                        </View>
+                    :
+                        <View>
+                            <Text>To create an account, please ask your parent to add you through the Settings tab in their account.</Text>
+                            <Text>After your account is created, enter the email or phone number used to sign up below.</Text>
+                        </View>
+                }
+
                 <TextInput
                     placeholder="Please enter your email or phone number."
                     value={username}
