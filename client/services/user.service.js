@@ -69,7 +69,9 @@ export const updateUser = async data => {
 
 export const checkUsername = async (username) => {
     try {
-        const RES = await USER_INSTANCE.get('/checkUsername', username)
+        const RES = await USER_INSTANCE.get('/checkUsername', {
+            params: { username }
+        })
         return RES.data.exists
     }
     catch( error ){ throw error }
@@ -77,7 +79,9 @@ export const checkUsername = async (username) => {
 
 export const getFamily = async (data) => {
     try {
-        const RES = await USER_INSTANCE.get('/all', data )
+        const RES = await USER_INSTANCE.get('/all', {
+            params: { data }
+        })
         return RES.data
     } catch( error ){ throw error }
 }
@@ -99,16 +103,25 @@ export const verify = async (data) => {
 }
 
 // Generate code, save it in the user object, send to person via text or email
-export const resendCode = async (user) => {
+export const resendCode = async (username) => {
     try {
-        const RES = await USER_INSTANCE.post('/resend', user)
+        const RES = await USER_INSTANCE.post('/resendCode', username)
         return RES.data
     } catch (error) {throw error.response.data.errors}
 }
 
-export const sendPassword = async (user) => {
+export const sendPassword = async (username) => {
     try {
-        const RES = await USER_INSTANCE.get('/sendPassword', user)
+        const RES = await USER_INSTANCE.post('/sendPassword', username)
+        return RES.data
+    } catch (error) {throw error}
+}
+
+export const getUserByUsername = async (username) => {
+    try {
+        const RES = await USER_INSTANCE.get('/getUserByUsername', {
+            params: { username }
+        })
         return RES.data
     } catch (error) {throw error}
 }

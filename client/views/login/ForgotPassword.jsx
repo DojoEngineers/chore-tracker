@@ -13,8 +13,8 @@ export const ForgotPassword = () => {
         checkUsername(username)
             .then(res => {
                 if (res) {
-                    sendPassword(res)
-                        .then(res => {
+                    sendPassword(username)
+                        .then(() => {
                             Toast.show({
                                 type: 'success',
                                 text1: "Message sent!",

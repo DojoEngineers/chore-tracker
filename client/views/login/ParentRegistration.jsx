@@ -37,8 +37,8 @@ export const ParentRegistration = () => {
                 : false
             ),
             username: value => (
-                !EMAIL_REGEX.test(value) && value.replace(/\D/g, "").length !== 10
-                ? "Username must be a valid email or 10 digit phone number."
+                !EMAIL_REGEX.test(value)
+                ? "Username must be a valid email."
                 : !NO_EMOJI_REGEX.test(value) ? "Username must not contain emojis."
                 : false
             ),
@@ -74,65 +74,51 @@ export const ParentRegistration = () => {
         return true
     }
 
-    // Check if username already exists
-    const usernameExists = async (username) => {
-        try {
-            return await checkUsername(username)
-        } catch (error) {
-            console.log("checkUsername error:", error)
-            setApiErrors(prev => ({...prev, checkUsername: "Unable to validate user name."}))
-            Toast.show({
-                type: 'error',
-                text1: "Unable to validate user name."
-            })
-            return "error"
-        }
-    }
-
     // Submit form
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         if (!isReadyToSubmit()){
             return Toast.show({
                 type: 'error',
                 text1: "Please make corrections to the form."
             })
         }
-        let { name, username, password, confirmPassword } = formData
+        const { name, password, confirmPassword } = formData
         const isParent = true
-        username = username.toLowerCase()
-        const user = await usernameExists(username)
-        console.log("this is the user in registering", user)
-        if (user == "error") {
-            return Toast.show({
-                type: 'error',
-                text1: "Username could not be validated."
-            })
-        }
-        else if (user) {
-            return Toast.show({
-                type: 'error',
-                text1: "Username already exists."
-            })
-        }
-        else {
-            register({name, username, password, confirmPassword, isParent})
-                .then( (res) => { 
-                    Toast.show({
-                        type: 'success',
-                        text1: "Account created successfully!"
-                    })
-                    const user = res.user
-                    navigation.navigate('PasscodeVerification', {user}) 
-                })
-                .catch( error => {
-                    console.log("register error:", error)
-                    setApiErrors(prev => ({...prev, register: "Unable to create account."}))
-                    Toast.show({
+        const username = formData.username.toLowerCase()
+        checkUsername(username)
+            .then((res) => {
+                if (res) {
+                    return Toast.show({
                         type: 'error',
-                        text1: "Unable to create account."
+                        text1: "Username already exists."
                     })
+                } else {
+                    register({name, username, password, confirmPassword, isParent})
+                        .then( () => { 
+                            Toast.show({
+                                type: 'success',
+                                text1: "Account created successfully!"
+                            })
+                            navigation.navigate('PasscodeVerification', {username}) 
+                        })
+                        .catch( error => {
+                            console.log("register error:", error)
+                            setApiErrors(prev => ({...prev, register: "Unable to create account."}))
+                            Toast.show({
+                                type: 'error',
+                                text1: "Unable to create account."
+                            })
+                        })
+                }
+            })
+            .catch(error => {
+                console.log("checkUsername error:", error)
+                setApiErrors(prev => ({...prev, checkUsername: "Unable to validate user name."}))
+                Toast.show({
+                    type: 'error',
+                    text1: "Unable to validate username."
                 })
-        }
+            })
     }
 
     return (
@@ -161,9 +147,9 @@ export const ParentRegistration = () => {
                             {formErrors.username}
                         </Text>
                     )}
-                    <Text>Username:</Text>
+                    <Text>Email:</Text>
                     <TextInput
-                        placeholder="Please enter your email or phone number."
+                        placeholder="Email"
                         value={formData.username}
                         onChangeText={(text) => handleChange('username', text)}
                     />

@@ -78,9 +78,9 @@ export const Login = () => {
             <Text>Sign into your account</Text>
 
             <View>
-                <Text>Username:</Text>
+                <Text>Email:</Text>
                 <TextInput
-                    placeholder="Email or Phone"
+                    placeholder="Email"
                     value={formData.username}
                     onChangeText={(text) => handleChange('username', text)}
                 />
