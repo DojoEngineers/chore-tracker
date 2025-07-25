@@ -46,8 +46,19 @@ const userSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         required: [true, "Please specify if account is active."]
+    },
+    passwordReset: {
+        type: Boolean,
+        default: false
+    },
+    verificationCode: {
+        type: Number,
+        required: [true, "No verification code given."]
+    },
+    codeExpirationDate: {
+        type: Date,
+        required: [true, "No code expiration date."]
     }
-
 }, { timestamps: true });
 
 // ------------------------------
