@@ -2,7 +2,7 @@ import { Text, TextInput, View, Pressable } from "react-native"
 import { useLogin } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
 import { useNavigation } from '@react-navigation/native'
-import { getCurrentUser, login } from "../../services/user.service"
+import { getCurrentUser, getUserByUsername, login } from "../../services/user.service"
 import { useEffect, useState } from "react"
 
 export const Login = () => {
@@ -14,7 +14,7 @@ export const Login = () => {
         })
 
     const navigation = useNavigation()
-    const { login: loginUser, user, isLoggingOut, isLoggedIn } = useLogin()
+    const { login: loginUser, user, isLoggingOut, isLoggedIn, setLoggedInData } = useLogin()
 
     const checkUserToken = async () => {
         console.log("user already logged in:", user)
@@ -50,18 +50,50 @@ export const Login = () => {
     }
 
     const handleLogin = () => {
-        login(formData)
-            .then(async res => {
-                await loginUser(res)
-                checkUserToken()
+        getUserByUsername(formData.username)
+            .then(res => {
+                if (res && res.isVerified && res.passwordReset) {
+                    navigation.replace("NewPassword")
+                }
+                else if (res && res.isVerified) {
+                    login(formData)
+                        .then(res => {
+                            return loginUser(res)
+                        })
+                        .then(saved => {
+                            if (saved) {
+                                checkUserToken()
+                            }
+                        })
+                        .catch(error => {
+                            console.log("login error:", error)
+                            setApiErrors(prev => ({...prev, login: "Unable to login."}))
+                            Toast.show({
+                                type: 'error',
+                                text1: "Unable to login."
+                            })
+                        })
+                }
+                else if (res){
+                    Toast.show({
+                        type: 'error',
+                        text1: "Account is not verified.",
+                        text2: "Verify your account in the registration section."
+                    })
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        text1: "Username not found."
+                    })
+                }
             })
             .catch(error => {
-                console.log("login error:", error)
-                setApiErrors(prev => ({...prev, login: "Unable to login."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to login."
-                })
+                console.log("getUserByUsername error:", error)
+                    setApiErrors(prev => ({...prev, getUserByUsername: "Unable to validate username."}))
+                    Toast.show({
+                        type: 'error',
+                        text1: "Unable to validate username.",
+                    })
             })
     }
 

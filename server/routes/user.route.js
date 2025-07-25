@@ -22,7 +22,7 @@ userRouter.route('/login')
     .post(loginUser)
 
 userRouter.route('/currentUser')
-    .get(getCurrentUser)
+    .get(protect, getCurrentUser)
 
 userRouter.route('/checkUsername')
     .get(checkUsername)

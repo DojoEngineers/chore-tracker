@@ -30,10 +30,10 @@ export const UserContextProvider = ({ children }) => {
 
     const login = async (userData) => {
         console.log("in context's login.")
-        setIsLoggedIn(true)
         try {
             await AsyncStorage.setItem('user', JSON.stringify(userData));
-            setUser(userData);
+            setUser(userData)
+            setIsLoggedIn(true)
             console.log("set user", userData)
             return userData
         } catch (e) {

@@ -13,6 +13,7 @@ import { Login } from "./views/login/Login";
 import { UsernameVerification } from "./views/login/UsernameVerification";
 import { StartingPage } from "./views/login/StartingPage";
 import { ForgotPassword } from "./views/login/ForgotPassword";
+import { NewPassword } from "./views/login/NewPassword";
 
 export default function App() {
 
@@ -33,6 +34,7 @@ export default function App() {
           <Stack.Screen name="Home" component={Home}></Stack.Screen>
           <Stack.Screen name="Login" component={Login}></Stack.Screen>
           <Stack.Screen name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
+          <Stack.Screen name="NewPassword" component={NewPassword}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
       <Toast />
