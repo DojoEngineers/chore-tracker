@@ -32,18 +32,22 @@ export const PasscodeVerification = ({route}) => {
                 type: 'success',
                 text1: "Login Successful!"
             })
+            navigation.replace('TutorialAssign')
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }
     }
 
     const handleVerify = value => {
-        const data = {username, inputtedVerificationCode: value}
+        const data = {username, verificationCode: value}
         verify(data)
-            .then(async (res) => {
-                login(res)
-                checkUserToken()
-                navigation.replace('TutorialAssign')
+            .then(res => {
+                return login(res)
+            })
+            .then(saved => {
+                if (saved) {
+                    checkUserToken()
+                }
             })
             .catch(error => {
                 console.log("verify error:", error)
@@ -76,7 +80,7 @@ export const PasscodeVerification = ({route}) => {
     return (
         <View>
             <Text>One Time Passcode Verification</Text>
-            <Text>Enter the verification code that was just sent to {username}.</Text>
+            <Text>Enter the verification code that was sent to {username}.</Text>
             <View style={{ padding: 20 }}>
                 <CodeField
                     ref={ref}

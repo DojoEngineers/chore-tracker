@@ -37,7 +37,7 @@ export const register = async data => {
 export const login = async data => {
     try {
         const RES = await USER_INSTANCE.post( '/login', data )
-        return RES
+        return RES.data
     } catch( error ){ throw error.response.data }
 }
 
@@ -72,7 +72,7 @@ export const checkUsername = async (username) => {
         const RES = await USER_INSTANCE.get('/checkUsername', {
             params: { username }
         })
-        return RES.data.exists
+        return RES.data
     }
     catch( error ){ throw error }
 }
@@ -94,25 +94,25 @@ export const deactivateUser = async () => {
     } catch (error) {throw error}
 }
 
-// Data is {user, verificationCode}. Set isVerified to true in backend if the usernames and codes match
-export const verify = async (data) => {
+// Data is {username, verificationCode}. Set isVerified to true in backend if the usernames and codes match
+export const verify = async ({username, verificationCode}) => {
     try {
-        const RES = await USER_INSTANCE.post('/verify', data)
+        const RES = await USER_INSTANCE.post('/verify', {username, verificationCode})
         return RES.data
     } catch (error) {throw error.response.data.errors}
 }
 
-// Generate code, save it in the user object, send to person via text or email
+// Generate code, save it in the user object, send to person via email
 export const resendCode = async (username) => {
     try {
-        const RES = await USER_INSTANCE.post('/resendCode', username)
+        const RES = await USER_INSTANCE.post('/resendCode', {username})
         return RES.data
     } catch (error) {throw error.response.data.errors}
 }
 
 export const sendPassword = async (username) => {
     try {
-        const RES = await USER_INSTANCE.post('/sendPassword', username)
+        const RES = await USER_INSTANCE.post('/sendPassword', {username})
         return RES.data
     } catch (error) {throw error}
 }

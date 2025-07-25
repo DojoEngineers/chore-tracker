@@ -113,7 +113,7 @@ export const ParentRegistration = () => {
             })
             .catch(error => {
                 console.log("checkUsername error:", error)
-                setApiErrors(prev => ({...prev, checkUsername: "Unable to validate user name."}))
+                setApiErrors(prev => ({...prev, checkUsername: "Unable to validate username."}))
                 Toast.show({
                     type: 'error',
                     text1: "Unable to validate username."
@@ -166,7 +166,6 @@ export const ParentRegistration = () => {
                         placeholder="Password"
                         value={formData.password}
                         onChangeText={(text) => handleChange('password', text)}
-                        secureTextEntry={true}
                     />
                 </View>
 
@@ -181,7 +180,6 @@ export const ParentRegistration = () => {
                         placeholder="Confirm Password"
                         value={formData.confirmPassword}
                         onChangeText={(text) => handleChange('confirmPassword', text)}
-                        secureTextEntry={true}
                     />
                 </View>
 

@@ -35,8 +35,8 @@ export const UsernameVerification = ({route}) => {
                 }
             })
             .catch ( error => {
-                console.log("checkUsername error:", error)
-                setApiErrors("Unable to validate username.")
+                console.log("getUserByUsername error:", error)
+                setApiErrors(prev => ({...prev, getUserByUsername: "Unable to validate username."}))
                 Toast.show({
                     type: 'error',
                     text1: "Unable to validate username.",
@@ -47,9 +47,9 @@ export const UsernameVerification = ({route}) => {
     return (
         <View>
             <View>
-                {apiErrors.checkUsername && (
+                {apiErrors.getUserByUsername && (
                     <Text style={{ color: 'red', textAlign: 'center' }}>
-                        {apiErrors.checkUsername}
+                        {apiErrors.getUserByUsername}
                     </Text>
                 )}
 

@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Text, TextInput, View, Pressable } from "react-native"
 import { sendPassword, checkUsername } from "../../services/user.service"
 import { useNavigation } from "@react-navigation/native"
+import Toast from "react-native-toast-message"
 
 export const ForgotPassword = () => {
 
