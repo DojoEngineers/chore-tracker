@@ -65,7 +65,7 @@ export const checkUsername = async (req, res) => {
         }
         else {
             console.log("dupe user found!")
-            return res.json(true)
+            return res.json(USER)
         }
 
     } catch (error) {
