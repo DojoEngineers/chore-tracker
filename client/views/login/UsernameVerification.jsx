@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 import { Pressable, Text, TextInput, View } from "react-native"
 import Toast from 'react-native-toast-message'
-import { checkUsername } from "../../services/user.service"
+import { getUserByUsername } from "../../services/user.service"
 
 
 export const UsernameVerification = ({route}) => {
@@ -14,17 +14,17 @@ export const UsernameVerification = ({route}) => {
     const navigation = useNavigation()
 
     const handleSubmit = async () => {
-        checkUsername(username)
-            .then ( user => {
-                if (user && user.isVerified === true ) {
+        getUserByUsername(username)
+            .then ( res => {
+                if (res && res.isVerified) {
                     Toast.show({
                         type: 'success',
                         text1: "Account already verified.",
                         text2: "Please login."
                     })
                     navigation.replace("Login")
-                } else if (user) {
-                    navigation.navigate('PasscodeVerification', {user})
+                } else if (res) {
+                    navigation.navigate('PasscodeVerification', {username})
                 } else {
                     Toast.show({
                         type: 'error',
@@ -56,17 +56,17 @@ export const UsernameVerification = ({route}) => {
                 {isParent
                     ?
                         <View>
-                            <Text>Please enter the email or phone number linked to your parent account to continue.</Text>
+                            <Text>Please enter the email linked to your parent account to continue.</Text>
                         </View>
                     :
                         <View>
                             <Text>To create an account, please ask your parent to add you through the Settings tab in their account.</Text>
-                            <Text>After your account is created, enter the email or phone number used to sign up below.</Text>
+                            <Text>After your account is created, enter the email used to sign up below.</Text>
                         </View>
                 }
 
                 <TextInput
-                    placeholder="Please enter your email or phone number."
+                    placeholder="Email"
                     value={username}
                     onChangeText={setUsername}
                 />

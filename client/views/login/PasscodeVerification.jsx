@@ -14,8 +14,8 @@ export const PasscodeVerification = ({route}) => {
     const [ apiErrors, setApiErrors ] = useState({})
 
     const navigation = useNavigation()
-    const { user } = route.params
-    const { login, setLoggedInData } = useLogin()
+    const { username } = route.params
+    const { login, user, setLoggedInData } = useLogin()
 
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT })
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -38,7 +38,7 @@ export const PasscodeVerification = ({route}) => {
     }
 
     const handleVerify = value => {
-        const data = {user, inputtedVerificationCode: value}
+        const data = {username, inputtedVerificationCode: value}
         verify(data)
             .then(async (res) => {
                 login(res)
@@ -56,7 +56,7 @@ export const PasscodeVerification = ({route}) => {
     }
 
     const resend = () => {
-        resendCode(user)
+        resendCode(username)
             .then(() => {
                 Toast.show({
                     type: 'success',
@@ -76,7 +76,7 @@ export const PasscodeVerification = ({route}) => {
     return (
         <View>
             <Text>One Time Passcode Verification</Text>
-            <Text>Enter the verification code that was just sent to {user.username}.</Text>
+            <Text>Enter the verification code that was just sent to {username}.</Text>
             <View style={{ padding: 20 }}>
                 <CodeField
                     ref={ref}
