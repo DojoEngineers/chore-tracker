@@ -4,10 +4,12 @@ import { generateToken } from "../utils/generateToken.js"
 import { Resend } from 'resend';
 import crypto from "crypto"
 
+// for deleting, req.params is best practice but can also use req.body
 export const deleteUser = async (req, res) => {
+    console.log("id", req.body._id)
     try {
-        const deletedUser = User.findByIdAndDelete(req.body)
-        res.status(400).json(deletedUser)
+        const deletedUser = await User.findByIdAndDelete(req.body._id)
+        res.status(200).json(deletedUser)
     }
     catch (error) {
         console.log("error", error)
