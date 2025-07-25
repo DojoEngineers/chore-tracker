@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Text, TextInput, View } from "react-native"
+import { Text, TextInput, View, Pressable } from "react-native"
 import { sendPassword, checkUsername } from "../../services/user.service"
 import { useNavigation } from "@react-navigation/native"
 

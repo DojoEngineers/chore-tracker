@@ -101,6 +101,7 @@ export const ParentRegistration = () => {
         const isParent = true
         username = username.toLowerCase()
         const user = await usernameExists(username)
+        console.log("this is the user in registering", user)
         if (user == "error") {
             return Toast.show({
                 type: 'error',
@@ -115,12 +116,13 @@ export const ParentRegistration = () => {
         }
         else {
             register({name, username, password, confirmPassword, isParent})
-                .then( () => { 
+                .then( (res) => { 
                     Toast.show({
                         type: 'success',
                         text1: "Account created successfully!"
                     })
-                    navigation.navigate('PasscodeVerification', {username}) 
+                    const user = res.user
+                    navigation.navigate('PasscodeVerification', {user}) 
                 })
                 .catch( error => {
                     console.log("register error:", error)
