@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Pressable, Text, View, StyleSheet } from 'react-native'
 import { CodeField, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field'
-import { getCurrentUser, getUserByUsername, resendCode, verify } from '../../services/user.service'
+import { getCurrentUser, resendCode, verify } from '../../services/user.service'
 import Toast from 'react-native-toast-message'
 import { useLogin } from "../../context/UserContext"
 
@@ -12,10 +12,9 @@ export const PasscodeVerification = ({route}) => {
 
     const [value, setValue] = useState('')
     const [ apiErrors, setApiErrors ] = useState({})
-    const [user, setUser] = useState({})
 
     const navigation = useNavigation()
-    const { username } = route.params
+    const { user } = route.params
     const { login, setLoggedInData } = useLogin()
 
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT })
@@ -23,31 +22,6 @@ export const PasscodeVerification = ({route}) => {
         value,
         setValue,
     })
-
-    useEffect ((username) => {
-        getUserByUsername(username)
-            .then ( res => {
-                if (res.isVerified === true ) {
-                    Toast.show({
-                        type: 'success',
-                        text1: "Account already verified.",
-                        text2: "Please login."
-                    })
-                    navigation.replace("Login")
-                } else {
-                    setUser(res)
-                }
-            })
-            .catch ( error => {
-                console.log("getUserByUsername error:", error)
-                Toast.show({
-                    type: 'error',
-                    text1: "Username not found.",
-                    text2: "Please register before verifying your account."
-                })
-                navigation.replace("ChooseAccountType")
-            })
-    }, [username])
 
     const checkUserToken = async () => {
         console.log("user already logged in:", user)

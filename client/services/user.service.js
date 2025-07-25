@@ -69,10 +69,7 @@ export const updateUser = async data => {
 
 export const checkUsername = async (username) => {
     try {
-        const RES = await USER_INSTANCE.get(
-            '/checkUsername',
-            { params: { username } }
-        )
+        const RES = await USER_INSTANCE.get('/checkUsername', username)
         return RES.data.exists
     }
     catch( error ){ throw error }
@@ -97,7 +94,7 @@ export const deactivateUser = async () => {
 export const verify = async (data) => {
     try {
         const RES = await USER_INSTANCE.post('/verify', data)
-        return RES
+        return RES.data
     } catch (error) {throw error.response.data.errors}
 }
 
@@ -109,9 +106,9 @@ export const resendCode = async (user) => {
     } catch (error) {throw error.response.data.errors}
 }
 
-export const getUserByUsername = async (username) => {
+export const sendPassword = async (user) => {
     try {
-        const RES = await USER_INSTANCE.get('/getUserByUsername', username)
+        const RES = await USER_INSTANCE.get('/sendPassword', user)
         return RES.data
     } catch (error) {throw error}
 }

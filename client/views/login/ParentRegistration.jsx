@@ -85,7 +85,7 @@ export const ParentRegistration = () => {
                 type: 'error',
                 text1: "Unable to validate user name."
             })
-            return true
+            return "error"
         }
     }
 
@@ -99,11 +99,18 @@ export const ParentRegistration = () => {
         }
         let { name, username, password, confirmPassword } = formData
         const isParent = true
-        const exists = await usernameExists(username)
-        if (exists) {
+        username = username.toLowerCase()
+        const user = await usernameExists(username)
+        if (user == "error") {
             return Toast.show({
                 type: 'error',
-                text1: "Username already exists or could not be validated."
+                text1: "Username could not be validated."
+            })
+        }
+        else if (user) {
+            return Toast.show({
+                type: 'error',
+                text1: "Username already exists."
             })
         }
         else {

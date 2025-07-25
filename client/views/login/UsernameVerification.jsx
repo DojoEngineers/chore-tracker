@@ -13,37 +13,35 @@ export const UsernameVerification = ({route}) => {
     const { isParent } = route.params
     const navigation = useNavigation()
 
-    // Check if username exists
-    const usernameExists = async (username) => {
-        try {
-            return await checkUsername(username)
-        } catch (error) {
-            console.log("checkUsername error:", error)
-            setApiErrors(prev => ({...prev, checkUsername: "Unable to validate username."}))
-            Toast.show({
-                type: 'error',
-                text1: "Unable to validate username."
-            })
-            return false
-        }
-    }
-
     const handleSubmit = async () => {
-        const exists = await usernameExists(username)
-        if (!exists) {
-            return Toast.show({
-                type: 'error',
-                text1: "Username does not exist",
-                text2: "or could not be validated."
+        checkUsername(username)
+            .then ( user => {
+                if (user && user.isVerified === true ) {
+                    Toast.show({
+                        type: 'success',
+                        text1: "Account already verified.",
+                        text2: "Please login."
+                    })
+                    navigation.replace("Login")
+                } else if (user) {
+                    navigation.navigate('PasscodeVerification', {user})
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        text1: "Username not found.",
+                        text2: "Please register before verifying your account."
+                    })
+                    navigation.replace("ChooseAccountType")
+                }
             })
-        }
-        else {
-            Toast.show({
-                type: 'success',
-                text1: "Username found!"
+            .catch ( error => {
+                console.log("checkUsername error:", error)
+                setApiErrors("Unable to validate username.")
+                Toast.show({
+                    type: 'error',
+                    text1: "Unable to validate username.",
+                })
             })
-            navigation.navigate('PasscodeVerification', {username}) 
-        }
     }
 
     return (
