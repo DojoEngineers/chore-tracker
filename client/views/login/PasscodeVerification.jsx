@@ -76,7 +76,7 @@ export const PasscodeVerification = ({route}) => {
     return (
         <View>
             <Text>One Time Passcode Verification</Text>
-            <Text>Enter the verification code that was just sent to {username}.</Text>
+            <Text>Enter the verification code that was just sent to {user.username}.</Text>
             <View style={{ padding: 20 }}>
                 <CodeField
                     ref={ref}
