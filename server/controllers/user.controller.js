@@ -58,16 +58,33 @@ export const checkUsername = async (req, res) => {
     console.log("backend checking username")
     try {
         console.log("username", req.query)
-        const USER = await User.findOne({ username: req.query.username }).select("-password")
+        const USER = await User.findOne({ username: req.query }).select("-password")
         if (!USER) {
             console.log("no user!")
             return res.json(false)
         }
         else {
             console.log("dupe user found!")
+            return res.json({isVerified: USER.isVerified})
+        }
+    } catch (error) {
+        res.status(400).json({ message: error.message || 'An error occurred while fetching the profile.' })
+    }
+}
+
+export const getUserByUsername = async (req, res) => {
+    console.log("backend getting user by username")
+    try {
+        console.log("username", req.query)
+        const USER = await User.findOne({ username: req.query }).select("-password")
+        if (!USER) {
+            console.log("no user!")
+            return res.json(false)
+        }
+        else {
+            console.log("user found!")
             return res.json(USER)
         }
-
     } catch (error) {
         res.status(400).json({ message: error.message || 'An error occurred while fetching the profile.' })
     }
@@ -140,7 +157,7 @@ export const resendCode = async (req, res) => {
     const code = generateCode()
 
     const USER = User.findOneAndUpdate(
-        { username: username }, { verificationCode: code }
+        { username: req.body.username }, { verificationCode: code }
     )
     if (!USER) {
         return false
