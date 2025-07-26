@@ -20,7 +20,7 @@ const choreSchema = new mongoose.Schema({
         maxLength: [150, `Creator cannot exceed 150 characters.`]
     },
     worker: {
-        type: Array,
+        type: String,
         required: [true, "Please assign chore to a worker."]
     },
     dueDate: {
