@@ -42,13 +42,10 @@ export const loginUser = async (req, res) => {
         console.log("user data", data)
         console.log("token", token)
         res.status(200).json({
-            token,
-            user: {
+                token: token,
                 _id: data._id,
                 name: data.name,
-                username: data.username,
-            },
-        });
+                username: data.username});
     }
     else { res.status(401).json("User password or email is not valid.") }
 }
@@ -85,14 +82,14 @@ export const getUserByUsername = async (req, res) => {
         }
         else {
             console.log("user found!")
-            return res.json({isVerified: USER.isVerified})
+            return res.json({isVerified: USER.isVerified, isActive: USER.isActive, passwordReset: USER.passwordReset})
         }
     } catch (error) {
         res.status(400).json({ message: error.message || 'An error occurred while fetching the profile.' })
     }
 }
 
-// adds unverified user to db
+// adds unverified user to db and sends email with generated code.
 export const registerUser = async (req, res) => {
     console.log("entered register controller. req.body:", req.body)
 
@@ -111,13 +108,6 @@ export const registerUser = async (req, res) => {
             isVerified: false, isActive: true, verificationCode: code, codeExpirationDate: expiration
         })
         delete user.password //removes password from the object
-        const token = generateToken(user._id);
-        const data = {
-            _id: user._id.toString(),
-            username: user.username,
-        }
-        console.log("user data", data)
-        console.log("token", token)
         console.log("api key", process.env.RESEND_API)
         const resend = new Resend(`${process.env.RESEND_API}`);
 
@@ -133,14 +123,7 @@ export const registerUser = async (req, res) => {
             }
         }
         sendEmail(code, expiration)
-        res.status(200).json({
-            token,
-            user: {
-                _id: data._id,
-                name: data.name,
-                username: data.username,
-            },
-        });
+        res.status(200).json(user);
 
     } catch (error) {
         console.log("register controller error", error)
@@ -173,14 +156,23 @@ export const resendCode = async (req, res) => {
 export const verifyUser = async (req, res) => {
     try {
         console.log("verify user. req.body:", req.body)
-        const USER = await User.findOne({ username: req.body.username, verificationCode: req.body.verificationCode }).select(`-password`)
+        // find by username/code that matches. update isVerified boolean.
+        const USER = await User.findOneAndUpdate({ username: req.body.username, verificationCode: req.body.verificationCode },
+        { isVerified: true }, { new: true }).select(`-password`)
         if (!USER) {
-            console.log("wrong code")
-            return res.status(404).json({ message: 'Wrong code' })
+            console.log("wrong code/email")
+            return res.status(404).json({ message: 'Wrong code/email' })
         }
         // find by username. update boolean.
-        const VerifiedUser = await User.findOneAndUpdate({ username: req.body.username }, { isVerified: true })
-        res.status(200).json(VerifiedUser)
+        console.log("making token for user:", USER)
+        const token = generateToken(USER._id);
+        const data = {
+            token: token,
+            _id: USER._id.toString(),
+            username: USER.username,
+        }
+        console.log("user data", data)
+        res.status(200).json(data)
     }
     catch (error) {
         console.log("error", error)
