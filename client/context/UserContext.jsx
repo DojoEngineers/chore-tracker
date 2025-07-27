@@ -14,18 +14,20 @@ export const UserContextProvider = ({ children }) => {
     const [familyData, setFamilyData] = useState([])
 
     useEffect(() => {
-        const loadUser = async () => {
+        const loadUserFromStorage = async () => {
             try {
                 console.log("getting token from storage...")
                 const storedUser = await AsyncStorage.getItem('user')
                 if (storedUser) {
-                    setUser(JSON.parse(storedUser))
+                    const parsedUser = JSON.parse(storedUser)
+                    setUser(parsedUser)
+                    setIsLoggedIn(true)
                 }
             } catch (error) {
                 console.log('Failed to load user', error)
             }
         }
-        loadUser()
+        loadUserFromStorage()
     }, [])
 
     const login = async (userData) => {

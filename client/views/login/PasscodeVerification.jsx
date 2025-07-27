@@ -44,8 +44,8 @@ export const PasscodeVerification = ({route}) => {
             .then(res => {
                 return login(res)
             })
-            .then(saved => {
-                if (saved) {
+            .then(savedToken => {
+                if (savedToken) {
                     checkUserToken()
                 }
             })

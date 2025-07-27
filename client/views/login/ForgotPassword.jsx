@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Text, TextInput, View, Pressable } from "react-native"
-import { sendPassword, checkUsername } from "../../services/user.service"
+import { sendPassword, getUserByUsername } from "../../services/user.service"
 import { useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
 
@@ -11,14 +11,27 @@ export const ForgotPassword = () => {
     const navigation = useNavigation()
 
     const resetPassword = () => {
-        checkUsername(username)
+        getUserByUsername(username)
             .then(res => {
-                if (res) {
+                if (res && !res.isActive) {
+                    Toast.show({
+                        type: 'error',
+                        text1: "Account Deleted."
+                    })
+                }
+                else if (res && !res.isVerified){
+                    Toast.show({
+                        type: 'error',
+                        text1: "Account is not verified.",
+                        text2: "Verify your account in the registration section."
+                    })
+                }
+                else if (res) {
                     sendPassword(username)
                         .then(() => {
                             Toast.show({
                                 type: 'success',
-                                text1: "Message sent!",
+                                text1: "Email sent!",
                             })
                             navigation.replace("Login")
                         })
@@ -37,7 +50,7 @@ export const ForgotPassword = () => {
                 }
             })
             .catch(error => {
-                console.log("checkUsername error:", error)
+                console.log("getUserByUsername error:", error)
                 Toast.show({
                     type: 'error',
                     text1: "Unable to validate username.",

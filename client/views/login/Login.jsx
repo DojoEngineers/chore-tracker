@@ -33,16 +33,14 @@ export const Login = () => {
 
     useEffect(() => {
         console.log("login useEffect")
-        // if user is currently logging out or in, we dont want to checkUser() and accidentally log back in.
-        if (!user || !user.user || !user.user._id) {
+        if (!user || !user._id) {
             console.log("No valid user, staying on login page")
             return;
         }
         const timer = setTimeout(() => {
             checkUserToken()
-        }, 200); // Give login flow time to navigate first
+        }, 200)
         return () => clearTimeout(timer)
-
     }, [user, isLoggingOut, isLoggedIn])
 
     const handleChange = (name, value) => {
@@ -52,16 +50,22 @@ export const Login = () => {
     const handleLogin = () => {
         getUserByUsername(formData.username)
             .then(res => {
-                if (res && res.isVerified && res.passwordReset) {
-                    navigation.replace("NewPassword")
+                if (res && !res.isActive) {
+                    Toast.show({
+                        type: 'error',
+                        text1: "Account Deleted."
+                    })
+                }
+                else if (res && res.isVerified && res.passwordReset) {
+                    navigation.replace("NewPassword", {username: formData.username})
                 }
                 else if (res && res.isVerified) {
                     login(formData)
                         .then(res => {
                             return loginUser(res)
                         })
-                        .then(saved => {
-                            if (saved) {
+                        .then(savedToken => {
+                            if (savedToken) {
                                 checkUserToken()
                             }
                         })
@@ -124,6 +128,7 @@ export const Login = () => {
                     placeholder="Password"
                     value={formData.password}
                     onChangeText={(text) => handleChange('password', text)}
+                    secureTextEntry={true}
                 />
             </View>
 
