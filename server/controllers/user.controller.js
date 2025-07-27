@@ -144,44 +144,30 @@ export const registerUser = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 
-    // async function sendEmail(yourCode, expires) {
-    // const { emailData, emailError } = await resend.emails.send({
-    //     from: 'onboarding@resend.dev',
-    //     to: [`ariella.rollins@dev.com`],
-    //     subject: 'Testing code',
-    //     html: `<strong>Hello! Your code is ${yourCode}. It expires: ${expires}.</strong>`,
-    // });
-    // if (emailError) {
-    //     console.log("email err", emailError)
-    // }
-    //     }
-    //     sendEmail(code, expiration)
-    //     res.status(200).json(user);
-
-    // } catch (error) {
-    //     console.log("register controller error", error)
-    //     res.status(400).json(error)
 }
 
 // If requested, resets code in db and resends code to user email.
 export const resendCode = async (req, res) => {
     async function generateCode() {
-        const bytes = await Random.getRandomBytesAsync(4);
-        const number = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
-        const code = Math.abs(number % 900000) + 100000; // Ensures a 6-digit number
-        return code.toString();
-    };
-    const code = generateCode()
+        // Generate secure random 6-digit code
+        return crypto.randomInt(100000, 999999).toString();
+    }
+    const code = await generateCode()
 
-    const USER = User.findOneAndUpdate(
+    const user = await User.findOneAndUpdate(
         { username: req.body.username }, { verificationCode: code }
     )
-    if (!USER) {
+    if (!user) {
+        console.log("resend code failed")
         return false
     }
-    // send email here
+    else {
+        console.log("resending. emailjs api key", process.env.EMAILJS_SERVICE_ID)
+        console.log("sending to user", user)
+        sendTestEmail(user.name, user.username, code, user.codeExpirationDate)
+        res.status(200).json(user)
+    }
 
-    res.status(200).json(USER)
 }
 
 // checks if user's inputed code is correct. If it is, we set isVerified to true.
@@ -213,27 +199,33 @@ export const verifyUser = async (req, res) => {
 }
 
 // generates a string and resets user's password to the string. 
-// Sets passwordRequest to true. Emails new password to user.
+// Sets passwordReset to true. Emails new password to user.
 export const sendPassword = async (req, res) => {
     try {
-        const USER = findOne({ username: req.body.username })
+        const USER = await User.findOne({ username: req.body.username })
         if (!USER) {
+            console.log("no user found")
             return false
         }
         async function generatePassword(length = 12) {
-            const randomBytes = await Random.getRandomBytesAsync(length);
-            const CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+~';
+            const randomBytes = crypto.randomBytes(length);
+            const CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*_+~';
             let password = '';
-
             for (let i = 0; i < length; i++) {
                 const index = randomBytes[i] % CHARSET.length;
                 password += CHARSET[index];
             }
             return password;
         }
-        const newPw = generatePassword()
+
+        const newPw = await generatePassword()
         console.log("newPw", newPw)
-        const UPDATED_USER = User.findOneAndUpdate({ username: USER.username }, { password: newPw })
+
+        const UPDATED_USER = await User.findOneAndUpdate({ username: USER.username },
+            { password: newPw, passwordReset: true }, { new: true }).select("-password")
+        // sends email
+        console.log("updated user", UPDATED_USER)
+        sendTestEmail(UPDATED_USER.name, UPDATED_USER.username, newPw, "never")
         res.status(200).json(UPDATED_USER)
     }
     catch (err) {
@@ -242,6 +234,7 @@ export const sendPassword = async (req, res) => {
     }
 }
 
+// user changes password after logging in with generated password.
 export const changePassword = async (req, res) => {
     try {
         console.log("changing pw. req.body:", req.body)
