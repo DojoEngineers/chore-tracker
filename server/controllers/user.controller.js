@@ -1,8 +1,9 @@
-
 import User from "../models/user.model.js"
 import { generateToken } from "../utils/generateToken.js"
-import { Resend } from 'resend';
+// import { Resend } from 'resend';
+import emailjs from "@emailjs/nodejs"
 import crypto from "crypto"
+
 
 // for deleting, req.params is best practice but can also use req.body
 export const deleteUser = async (req, res) => {
@@ -17,16 +18,16 @@ export const deleteUser = async (req, res) => {
     }
 }
 
-export const getAllUsers = async(req, res) => {
+export const getAllUsers = async (req, res) => {
     console.log("getting all users")
     try {
         const USERS = await User.find()
         res.status(200).json(USERS)
-    } catch (error) { 
+    } catch (error) {
         console.log("error", error)
-        res.status(400).json(error) }
+        res.status(400).json(error)
+    }
 }
-
 
 // when logging in, creates token and saves it (along with id) in async storage. 
 export const loginUser = async (req, res) => {
@@ -42,10 +43,11 @@ export const loginUser = async (req, res) => {
         console.log("user data", data)
         console.log("token", token)
         res.status(200).json({
-                token: token,
-                _id: data._id,
-                name: data.name,
-                username: data.username});
+            token: token,
+            _id: data._id,
+            name: data.name,
+            username: data.username
+        });
     }
     else { res.status(401).json("User password or email is not valid.") }
 }
@@ -55,7 +57,7 @@ export const checkUsername = async (req, res) => {
     console.log("backend checking username")
     try {
         console.log("username", req.query)
-        const {username} = req.query
+        const { username } = req.query
         const USER = await User.findOne({ username }).select("-password")
         if (!USER) {
             console.log("no user!")
@@ -74,7 +76,7 @@ export const getUserByUsername = async (req, res) => {
     console.log("backend getting user by username")
     try {
         console.log("username", req.query)
-        const {username} = req.query
+        const { username } = req.query
         const USER = await User.findOne({ username }).select("-password")
         if (!USER) {
             console.log("no user!")
@@ -82,12 +84,31 @@ export const getUserByUsername = async (req, res) => {
         }
         else {
             console.log("user found!")
-            return res.json({isVerified: USER.isVerified, isActive: USER.isActive, passwordReset: USER.passwordReset})
+            return res.json({ isVerified: USER.isVerified, isActive: USER.isActive, passwordReset: USER.passwordReset })
         }
     } catch (error) {
         res.status(400).json({ message: error.message || 'An error occurred while fetching the profile.' })
     }
 }
+
+// sends code. can be called from register or resend
+export const sendTestEmail = async (name, username, code, expiration) => {
+    try {
+        await emailjs.send(
+            process.env.EMAILJS_SERVICE_ID,
+            process.env.EMAILJS_TEMPLATE_ID,
+            {
+                to_email: username,
+                subject: "Your code to login",
+                message: `Hello ${name}. Your code is ${code}. It expires ${expiration}.`
+            }
+        );
+    }
+    catch (error) {
+        console.log("failed to send email:", error)
+    }
+
+};
 
 // adds unverified user to db and sends email with generated code.
 export const registerUser = async (req, res) => {
@@ -107,28 +128,39 @@ export const registerUser = async (req, res) => {
             ...req.body, children: [], parents: [],
             isVerified: false, isActive: true, verificationCode: code, codeExpirationDate: expiration
         })
-        delete user.password //removes password from the object
-        console.log("api key", process.env.RESEND_API)
-        const resend = new Resend(`${process.env.RESEND_API}`);
 
-        async function sendEmail(yourCode, expires) {
-            const { emailData, emailError } = await resend.emails.send({
-                from: 'onboarding@resend.dev',
-                to: [`${user.username}`],
-                subject: 'Testing code',
-                html: `<strong>Hello! Your code is ${yourCode}. It expires: ${expires}.</strong>`,
-            });
-            if (emailError) {
-                console.log("email err", emailError)
-            }
+        if (user) {
+            delete user.password //removes password from the object
+            console.log("api key", process.env.EMAILJS_SERVICE_ID)
+            sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
+            res.json({ success: true, message: 'Email sent!' });
         }
-        sendEmail(code, expiration)
-        res.status(200).json(user);
-
-    } catch (error) {
-        console.log("register controller error", error)
-        res.status(400).json(error)
+        else {
+            console.log("user creation failed")
+        }
     }
+    catch (error) {
+        console.log("register error", error)
+        res.status(500).json({ error: error.message });
+    }
+
+    // async function sendEmail(yourCode, expires) {
+    // const { emailData, emailError } = await resend.emails.send({
+    //     from: 'onboarding@resend.dev',
+    //     to: [`ariella.rollins@dev.com`],
+    //     subject: 'Testing code',
+    //     html: `<strong>Hello! Your code is ${yourCode}. It expires: ${expires}.</strong>`,
+    // });
+    // if (emailError) {
+    //     console.log("email err", emailError)
+    // }
+    //     }
+    //     sendEmail(code, expiration)
+    //     res.status(200).json(user);
+
+    // } catch (error) {
+    //     console.log("register controller error", error)
+    //     res.status(400).json(error)
 }
 
 // If requested, resets code in db and resends code to user email.
@@ -158,7 +190,7 @@ export const verifyUser = async (req, res) => {
         console.log("verify user. req.body:", req.body)
         // find by username/code that matches. update isVerified boolean.
         const USER = await User.findOneAndUpdate({ username: req.body.username, verificationCode: req.body.verificationCode },
-        { isVerified: true }, { new: true }).select(`-password`)
+            { isVerified: true }, { new: true }).select(`-password`)
         if (!USER) {
             console.log("wrong code/email")
             return res.status(404).json({ message: 'Wrong code/email' })
