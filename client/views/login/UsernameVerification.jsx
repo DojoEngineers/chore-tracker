@@ -16,6 +16,12 @@ export const UsernameVerification = ({route}) => {
     const handleSubmit = async () => {
         getUserByUsername(username)
             .then ( res => {
+                if (res && !res.isActive) {
+                    Toast.show({
+                        type: 'error',
+                        text1: "Account Deleted."
+                    })
+                }
                 if (res && res.isVerified) {
                     Toast.show({
                         type: 'success',

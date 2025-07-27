@@ -77,7 +77,7 @@ export const ParentRegistration = () => {
     // Submit form
     const handleSubmit = () => {
         if (!isReadyToSubmit()){
-            return Toast.show({
+            Toast.show({
                 type: 'error',
                 text1: "Please make corrections to the form."
             })
@@ -88,7 +88,7 @@ export const ParentRegistration = () => {
         checkUsername(username)
             .then((res) => {
                 if (res) {
-                    return Toast.show({
+                    Toast.show({
                         type: 'error',
                         text1: "Username already exists."
                     })
@@ -166,6 +166,7 @@ export const ParentRegistration = () => {
                         placeholder="Password"
                         value={formData.password}
                         onChangeText={(text) => handleChange('password', text)}
+                        secureTextEntry={true}
                     />
                 </View>
 
@@ -180,6 +181,7 @@ export const ParentRegistration = () => {
                         placeholder="Confirm Password"
                         value={formData.confirmPassword}
                         onChangeText={(text) => handleChange('confirmPassword', text)}
+                        secureTextEntry={true}
                     />
                 </View>
 

@@ -125,3 +125,10 @@ export const getUserByUsername = async (username) => {
         return RES.data
     } catch (error) {throw error}
 }
+
+export const changePassword = async ({username, password}) => {
+    try {
+        const RES = await USER_INSTANCE.put('/changePassword', {username, password})
+        return RES.data
+    } catch (error) {throw error}
+}
