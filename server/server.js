@@ -7,9 +7,16 @@ import choreRouter from "./routes/chore.route.js"
 import uploadRouter from "./routes/upload.js";
 import path from 'path'
 import { fileURLToPath } from 'url';
+import emailjs from "@emailjs/nodejs"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+
+emailjs.init({
+    publicKey: process.env.EMAILJS_PUBLIC_KEY,
+    privateKey: process.env.EMAILJS_PRIVATE_KEY
+});
 
 const app = express();
 
@@ -21,6 +28,8 @@ app.use(express.json())
 app.use("/user", userRouter);
 app.use("/chore", choreRouter);
 app.use("/upload", uploadRouter);
+
+
 
 // This line serves files from /uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
