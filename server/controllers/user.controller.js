@@ -97,8 +97,7 @@ export const sendTestEmail = async (name, username, code, expiration) => {
         await emailjs.send(
             process.env.EMAILJS_SERVICE_ID,
             process.env.EMAILJS_TEMPLATE_ID,
-            {
-                to_email: username,
+            {   userEmail: username,
                 subject: "Your code to login",
                 message: `Hello ${name}. Your code is ${code}. It expires ${expiration}.`
             }
@@ -238,13 +237,23 @@ export const sendPassword = async (req, res) => {
 export const changePassword = async (req, res) => {
     try {
         console.log("changing pw. req.body:", req.body)
-        const USER = await User.findByIdAndUpdate({ _id: req.body._id, password: req.body.password }).select(`-password`)
+        const USER = await User.findOneAndUpdate({username: req.body.username}, {password: req.body.password, passwordReset: false }, { new: true }).select(`-password`)
         if (!USER) {
+            console.log("no user!")
             return res.status(404).json({ message: 'User not found.' })
         }
-        res.status(200).json(USER)
+        console.log("controller pw change success!")
+        const token = generateToken(USER._id);
+        console.log("token", token)
+        res.status(200).json({
+            token: token,
+            _id: USER._id,
+            name: USER.name,
+            username: USER.username
+        });
     }
     catch (error) {
+        console.log("pw change error", error)
         res.status(400).json({ message: error.message || 'An error occurred while changing password' })
     }
 }
