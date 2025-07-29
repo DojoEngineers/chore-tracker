@@ -119,6 +119,24 @@ userSchema.pre('save', async function (next) {
     return next();
 });
 
+// For update operations (query context) 
+userSchema.pre(['findOneAndUpdate', 'findByIdAndUpdate'], async function (next) {
+    const update = this.getUpdate();
+    
+    // Only hash if password is being updated
+    if (!update.password) {
+        return next();
+    }
+    
+    try {
+        const salt = await bcrypt.genSalt(10);
+        update.password = await bcrypt.hash(update.password, salt);
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
 // -----------------------------
 // METHOD: Compare Entered Password with Stored Hash
 // -----------------------------

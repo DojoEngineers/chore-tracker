@@ -34,7 +34,11 @@ export const loginUser = async (req, res) => {
     console.log("in login server controller")
     const { username, password } = req.body
     const user = await User.findOne({ username })
+    if (!user) {
+        console.log("no user")
+    }
     if (user && (await user.matchPassword(password))) {
+        console.log("loggin in")
         const data = {
             _id: user._id.toString(),
             username: user.username,
@@ -152,9 +156,10 @@ export const resendCode = async (req, res) => {
         return crypto.randomInt(100000, 999999).toString();
     }
     const code = await generateCode()
-
+    const expiration = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
     const user = await User.findOneAndUpdate(
-        { username: req.body.username }, { verificationCode: code }
+        { username: req.body.username }, { verificationCode: code, codeExpirationDate: expiration },
+        {new:true, runValidators:true}
     )
     if (!user) {
         console.log("resend code failed")
@@ -175,7 +180,7 @@ export const verifyUser = async (req, res) => {
         console.log("verify user. req.body:", req.body)
         // find by username/code that matches. update isVerified boolean.
         const USER = await User.findOneAndUpdate({ username: req.body.username, verificationCode: req.body.verificationCode },
-            { isVerified: true }, { new: true }).select(`-password`)
+            { isVerified: true }, { new: true, runValidators:true }).select(`-password`)
         if (!USER) {
             console.log("wrong code/email")
             return res.status(404).json({ message: 'Wrong code/email' })
@@ -219,9 +224,9 @@ export const sendPassword = async (req, res) => {
 
         const newPw = await generatePassword()
         console.log("newPw", newPw)
-
+        const expiration = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
         const UPDATED_USER = await User.findOneAndUpdate({ username: USER.username },
-            { password: newPw, passwordReset: true }, { new: true }).select("-password")
+            { password: newPw, passwordReset: true, codeExpirationDate: expiration }, { new: true, runValidators:true }).select("-password")
         // sends email
         console.log("updated user", UPDATED_USER)
         sendTestEmail(UPDATED_USER.name, UPDATED_USER.username, newPw, "never")
@@ -237,7 +242,7 @@ export const sendPassword = async (req, res) => {
 export const changePassword = async (req, res) => {
     try {
         console.log("changing pw. req.body:", req.body)
-        const USER = await User.findOneAndUpdate({username: req.body.username}, {password: req.body.password, passwordReset: false }, { new: true }).select(`-password`)
+        const USER = await User.findOneAndUpdate({username: req.body.username}, {password: req.body.password, passwordReset: false }, { new: true, runValidators: true }).select(`-password`)
         if (!USER) {
             console.log("no user!")
             return res.status(404).json({ message: 'User not found.' })
@@ -288,15 +293,11 @@ export const getFamily = async (req, res) => {
 export const updateUser = async (req, res) => {
     console.log("In user controller")
     console.log("user REQ.body", req.body)
-    const options = {
-        new: true,
-        runValidators: true,
-    };
     try {
         const editedUser = await User.findByIdAndUpdate(
             req.body._id,
             req.body,
-            options
+            {new: true, runValidators: true}
         );
         res.status(200).json(editedUser);
     }
