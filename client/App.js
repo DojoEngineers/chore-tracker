@@ -14,6 +14,7 @@ import { UsernameVerification } from "./views/login/UsernameVerification";
 import { StartingPage } from "./views/login/StartingPage";
 import { ForgotPassword } from "./views/login/ForgotPassword";
 import { NewPassword } from "./views/login/NewPassword";
+import { SplashScreen } from "./views/login/SplashScreen";
 
 export default function App() {
 
@@ -22,7 +23,8 @@ export default function App() {
   return (
     <UserContextProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="StartingPage">
+        <Stack.Navigator initialRouteName="SplashScreen">
+          <Stack.Screen name="SplashScreen" component={SplashScreen}></Stack.Screen>
           <Stack.Screen name="StartingPage" component={StartingPage}></Stack.Screen>
           <Stack.Screen name="ChooseAccountType" component={ChooseAccountType}></Stack.Screen>
           <Stack.Screen name="ParentRegistration" component={ParentRegistration}></Stack.Screen>
