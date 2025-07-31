@@ -1,8 +1,17 @@
 import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
-import { Pressable, Text, TextInput, View } from "react-native"
+import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import Toast from 'react-native-toast-message'
 import { checkUsername, register } from "../../services/user.service"
+import { TopSquiggle } from "../../components/squiggles/TopSquiggle"
+import { BackArrow } from "../../components/icons/BackArrow"
+import { BrandBoldText } from "../../components/text/BrandBoldText"
+import { BrandText } from "../../components/text/BrandText"
+import { FirstNameIcon } from "../../components/icons/FirstNameIcon"
+import { EmailIcon } from "../../components/icons/EmailIcon"
+import { PasswordIcon } from "../../components/icons/PasswordIcon"
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { UserInput } from "../../components/UserInput"
 
 const DEFAULT_FORM_VALUES = {
     name: "",
@@ -81,6 +90,7 @@ export const ParentRegistration = () => {
                 type: 'error',
                 text1: "Please make corrections to the form."
             })
+            return
         }
         const { name, password, confirmPassword } = formData
         const isParent = true
@@ -120,103 +130,120 @@ export const ParentRegistration = () => {
                 })
             })
     }
-
+    
     return (
-        <View>
-            <Text>Hello, register to get started.</Text>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                keyboardShouldPersistTaps="handled"
+                enableOnAndroid={true}
+                extraScrollHeight={20}
+            >
+                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
 
-            <View>
+                    <View>
+                        <View>
+                            <TopSquiggle />
+                        </View>
 
-                <View>
-                    {formErrors.name && (
-                        <Text style={{ color: 'red', textAlign: 'center' }}>
-                            {formErrors.name}
-                        </Text>
-                    )}
-                    <Text>First Name:</Text>
-                    <TextInput
-                        placeholder="First Name"
-                        value={formData.name}
-                        onChangeText={(text) => handleChange('name', text)}
-                    />
+                        <View className="items-start ps-10">
+                            <Pressable
+                                onPress={() => navigation.goBack()}
+                            >
+                                <BackArrow/>
+                            </Pressable>
+                        </View>
+
+                        <View className="items-center p-5 mb-4">
+                            <BrandBoldText className="text-[36px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
+                                Create a parent profile to get started
+                            </BrandBoldText>
+                        </View>
+
+                        {apiErrors.register && (
+                            <BrandText className="text-red-500 text-center">
+                                {apiErrors.register}
+                            </BrandText>
+                        )}
+                        {apiErrors.checkUsername && (
+                            <BrandText className="text-red-500 text-center">
+                                {apiErrors.checkUsername}
+                            </BrandText>
+                        )}
+
+                        <View className="mx-8">
+                            <View className="mb-6">
+                                <UserInput
+                                    icon={FirstNameIcon}
+                                    value={formData.name}
+                                    onChangeText={(text) => handleChange('name', text)}
+                                    placeholder="First name"
+                                    error={formErrors.name}
+                                />
+                            </View>
+
+                            <View className="mb-6">
+                                <UserInput
+                                    icon={EmailIcon}
+                                    value={formData.username}
+                                    onChangeText={(text) => handleChange('username', text)}
+                                    placeholder="Email"
+                                    error={formErrors.username}
+                                />
+                            </View>
+
+                            <View className="mb-6">
+                                <UserInput
+                                    icon={PasswordIcon}
+                                    value={formData.password}
+                                    onChangeText={(text) => handleChange('password', text)}
+                                    placeholder="Password"
+                                    error={formErrors.password}
+                                    secureTextEntry={true}
+                                />
+                            </View>
+
+                            <View className="mb-6">
+                                <UserInput
+                                    icon={PasswordIcon}
+                                    value={formData.confirmPassword}
+                                    onChangeText={(text) => handleChange('confirmPassword', text)}
+                                    placeholder="Confirm password"
+                                    error={formErrors.confirmPassword}
+                                    secureTextEntry={true}
+                                />
+                            </View>
+
+                            <View>
+                                <Pressable
+                                    onPress={handleSubmit}
+                                    className="px-4 py-4 rounded-full items-center justify-center bg-lightButton dark:bg-darkButton w-full"
+                                >
+                                    <BrandBoldText className="text-white text-xl">
+                                        Register
+                                    </BrandBoldText>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View className="mx-8 mb-20 mt-10 items-center">
+                        <View className="flex-row mb-2">
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">Already registered? </BrandText>
+                            <Pressable onPress={() => navigation.navigate('UsernameVerification')}>
+                                <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">Verify Here</BrandBoldText>
+                            </Pressable>
+                        </View>
+
+                        <View className="flex-row">
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">Already have an account? </BrandText>
+                            <Pressable onPress={() => navigation.navigate('Login')}>
+                                <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">Login Now</BrandBoldText>
+                            </Pressable>
+                        </View>
+                    </View>
                 </View>
-
-                <View>
-                    {formErrors.username && (
-                        <Text style={{ color: 'red', textAlign: 'center' }}>
-                            {formErrors.username}
-                        </Text>
-                    )}
-                    <Text>Email:</Text>
-                    <TextInput
-                        placeholder="Email"
-                        value={formData.username}
-                        onChangeText={(text) => handleChange('username', text)}
-                    />
-                </View>
-
-                <View>
-                    {formErrors.password && (
-                        <Text style={{ color: 'red', textAlign: 'center' }}>
-                            {formErrors.password}
-                        </Text>
-                    )}
-                    <Text>Password:</Text>
-                    <TextInput
-                        placeholder="Password"
-                        value={formData.password}
-                        onChangeText={(text) => handleChange('password', text)}
-                        secureTextEntry={true}
-                    />
-                </View>
-
-                <View>
-                    {formErrors.confirmPassword && (
-                        <Text style={{ color: 'red', textAlign: 'center' }}>
-                            {formErrors.confirmPassword}
-                        </Text>
-                    )}
-                    <Text>Confirm Password:</Text>
-                    <TextInput
-                        placeholder="Confirm Password"
-                        value={formData.confirmPassword}
-                        onChangeText={(text) => handleChange('confirmPassword', text)}
-                        secureTextEntry={true}
-                    />
-                </View>
-
-                {apiErrors.register && (
-                    <Text style={{ color: 'red', textAlign: 'center' }}>
-                        {apiErrors.register}
-                    </Text>
-                )}
-                {apiErrors.checkUsername && (
-                    <Text style={{ color: 'red', textAlign: 'center' }}>
-                        {apiErrors.checkUsername}
-                    </Text>
-                )}
-
-                <Pressable onPress={handleSubmit}>
-                    <Text>Register</Text>
-                </Pressable>
-
-            </View>
-
-            <View>
-                <Text>Already registered?</Text>
-                <Pressable onPress={() => navigation.navigate('UsernameVerification', { isParent: true })}> 
-                    <Text>Verify Your Account</Text>
-                </Pressable>
-            </View>
-
-            <View>
-                <Text>Already have an account?</Text>
-                <Pressable onPress={() => navigation.navigate('Login')}> 
-                    <Text>Login Now</Text>
-                </Pressable>
-            </View>
-
-        </View>
+            </KeyboardAwareScrollView>
+        </TouchableWithoutFeedback>
     )
-
 }

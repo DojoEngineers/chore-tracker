@@ -1,23 +1,22 @@
 import "./global.css"
+import Toast from 'react-native-toast-message'
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from './context/UserContext';
-import { ChooseAccountType } from "./views/login/ChooseAccountType"
-import Toast from 'react-native-toast-message'
+import { useFonts, Nunito_400Regular, Nunito_700Bold } from '@expo-google-fonts/nunito';
+import { GlobalStyling } from "./components/GlobalStyling";
+import { SplashScreen } from "./views/login/SplashScreen";
+import { StartingPage } from "./views/login/StartingPage";
 import { ParentRegistration } from "./views/login/ParentRegistration";
+import { UsernameVerification } from "./views/login/UsernameVerification";
 import { PasscodeVerification } from "./views/login/PasscodeVerification";
 import { TutorialAssign } from "./views/login/TutorialAssign";
 import { TutorialTrack } from "./views/login/TutorialTrack";
 import { TutorialResults } from "./views/login/TutorialResults";
-import { Home } from "./views/home/Home";
-import { Login } from "./views/login/Login";
-import { UsernameVerification } from "./views/login/UsernameVerification";
-import { StartingPage } from "./views/login/StartingPage";
 import { ForgotPassword } from "./views/login/ForgotPassword";
 import { NewPassword } from "./views/login/NewPassword";
-import { SplashScreen } from "./views/login/SplashScreen";
-import { useFonts, Nunito_400Regular, Nunito_700Bold } from '@expo-google-fonts/nunito';
-import { GlobalStyling } from "./components/GlobalStyling";
+import { Login } from "./views/login/Login";
+import { Home } from "./views/home/Home";
 
 export default function App() {
 
@@ -33,10 +32,9 @@ export default function App() {
     <UserContextProvider>
       <GlobalStyling>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="SplashScreen">
+          <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="SplashScreen" component={SplashScreen}></Stack.Screen>
             <Stack.Screen name="StartingPage" component={StartingPage}></Stack.Screen>
-            <Stack.Screen name="ChooseAccountType" component={ChooseAccountType}></Stack.Screen>
             <Stack.Screen name="ParentRegistration" component={ParentRegistration}></Stack.Screen>
             <Stack.Screen name="PasscodeVerification" component={PasscodeVerification}></Stack.Screen>
             <Stack.Screen name="UsernameVerification" component={UsernameVerification}></Stack.Screen>
