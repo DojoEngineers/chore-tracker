@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: [true, "Account type required."]
     },
+    family: {
+        type: Array,
+        required:[false]
+    },
     children: {
         type: Array,
         required: [false]
