@@ -219,6 +219,7 @@ export const resendCode = async (req, res) => {
     }
     else {
         console.log("resending. emailjs api key", process.env.EMAILJS_SERVICE_ID)
+        console.log("code", code)
         console.log("sending to user", user)
         sendTestEmail(user.name, user.username, code, user.codeExpirationDate)
         res.status(200).json(user)
@@ -233,7 +234,7 @@ export const verifyUser = async (req, res) => {
         // find by username/code that matches. update isVerified boolean.
         const USER = await User.findOneAndUpdate({ username: req.body.username, verificationCode: req.body.verificationCode,
             codeExpirationDate: { $gt: new Date() }
-         },
+        },
             { isVerified: true, passwordReset:true }, { new: true, runValidators: true }).select(`-password`)
         if (!USER) {
             console.log("wrong code/email")
