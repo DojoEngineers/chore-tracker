@@ -1,7 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { View } from "react-native";
-import { BrandBoldText } from '../../components/BrandBoldText'
+import { BrandBoldText } from '../../components/text/BrandBoldText'
+import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle";
+import { LogoTopSquiggle } from "../../components/squiggles/LogoTopSquiggle";
 
 export const SplashScreen = () => {
 
@@ -15,8 +17,22 @@ export const SplashScreen = () => {
     }, [])
 
     return (
-        <View className="flex-1 justify-center items-center bg-lightBg dark:bg-darkBg">
-            <BrandBoldText className="text-7xl text-lightPrimaryText dark:text-darkPrimaryText">Logo</BrandBoldText>
+        <View className="flex-1 justify-between bg-lightBg dark:bg-darkBg">
+
+            <View>
+                <LogoTopSquiggle/>
+            </View>
+
+            <View className="items-center">
+                <BrandBoldText className="text-7xl text-lightPrimaryText dark:text-darkPrimaryText">
+                    Logo
+                </BrandBoldText>
+            </View>
+
+            <View className="items-end">
+                <LogoBottomSquiggle/>
+            </View>
+
         </View>
     )
 }
