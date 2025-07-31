@@ -1,4 +1,5 @@
 import User from "../models/user.model.js"
+import Family from "../models/family.model.js"
 import { generateToken } from "../utils/generateToken.js"
 // import { Resend } from 'resend';
 import emailjs from "@emailjs/nodejs"
@@ -101,7 +102,8 @@ export const sendTestEmail = async (name, username, code, expiration) => {
         await emailjs.send(
             process.env.EMAILJS_SERVICE_ID,
             process.env.EMAILJS_TEMPLATE_ID,
-            {   userEmail: username,
+            {
+                userEmail: username,
                 subject: "Your code to login",
                 message: `Hello ${name}. Your code is ${code}. It expires ${expiration}.`
             }
@@ -113,7 +115,7 @@ export const sendTestEmail = async (name, username, code, expiration) => {
 
 };
 
-// adds unverified user to db and sends email with generated code.
+// adds unverified user to db, creates and links a new family document and sends email with generated code.
 export const registerUser = async (req, res) => {
     console.log("entered register controller. req.body:", req.body)
 
@@ -135,7 +137,15 @@ export const registerUser = async (req, res) => {
         if (user) {
             delete user.password //removes password from the object
             console.log("api key", process.env.EMAILJS_SERVICE_ID)
+            const family = await Family.create({
+                parents: [user._id],
+                children: []
+            });
+            user.family = family._id;
+            await user.save();
+
             sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
+
             res.json({ success: true, message: 'Email sent!' });
         }
         else {
@@ -146,8 +156,50 @@ export const registerUser = async (req, res) => {
         console.log("register error", error)
         res.status(500).json({ error: error.message });
     }
-
 }
+
+// adds user to prexisting family. body must include: family:"idnumber"
+export const addUser = async (req, res) => {
+    console.log("entered register controller. req.body:", req.body)
+
+    async function generateCode() {
+        // Generate secure random 6-digit code
+        return crypto.randomInt(100000, 999999).toString();
+    }
+    const code = await generateCode()
+    const expiration = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
+    console.log("code", code)
+    console.log("expiration", expiration)
+
+    try {
+        const user = await User.create({
+            ...req.body, children: [], parents: [],
+            isVerified: false, isActive: true, verificationCode: code, codeExpirationDate: expiration
+        })
+
+        if (user) {
+            delete user.password //removes password from the object
+            console.log("api key", process.env.EMAILJS_SERVICE_ID)
+            const family = await Family.findByIdAndUpdate(user.family, user.isParent
+                ? { $addToSet: { parents: user._id } } 
+                : { $addToSet: { children: user._id } },
+                { new: true });
+
+            sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
+
+            res.json({ success: true, message: 'Email sent!' });
+        }
+        else {
+            console.log("user creation failed")
+        }
+    }
+    catch (error) {
+        console.log("register error", error)
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
 
 // If requested, resets code in db and resends code to user email.
 export const resendCode = async (req, res) => {
@@ -156,10 +208,10 @@ export const resendCode = async (req, res) => {
         return crypto.randomInt(100000, 999999).toString();
     }
     const code = await generateCode()
-    const expiration = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
+    const expiration = new Date(Date.now() + 5 * 60 * 1000); // 15 minutes from now
     const user = await User.findOneAndUpdate(
         { username: req.body.username }, { verificationCode: code, codeExpirationDate: expiration },
-        {new:true, runValidators:true}
+        { new: true, runValidators: true }
     )
     if (!user) {
         console.log("resend code failed")
@@ -179,8 +231,10 @@ export const verifyUser = async (req, res) => {
     try {
         console.log("verify user. req.body:", req.body)
         // find by username/code that matches. update isVerified boolean.
-        const USER = await User.findOneAndUpdate({ username: req.body.username, verificationCode: req.body.verificationCode },
-            { isVerified: true }, { new: true, runValidators:true }).select(`-password`)
+        const USER = await User.findOneAndUpdate({ username: req.body.username, verificationCode: req.body.verificationCode,
+            codeExpirationDate: { $gt: new Date() }
+         },
+            { isVerified: true, passwordReset:true }, { new: true, runValidators: true }).select(`-password`)
         if (!USER) {
             console.log("wrong code/email")
             return res.status(404).json({ message: 'Wrong code/email' })
@@ -226,7 +280,7 @@ export const sendPassword = async (req, res) => {
         console.log("newPw", newPw)
         const expiration = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
         const UPDATED_USER = await User.findOneAndUpdate({ username: USER.username },
-            { password: newPw, passwordReset: true, codeExpirationDate: expiration }, { new: true, runValidators:true }).select("-password")
+            { password: newPw, passwordReset: true, codeExpirationDate: expiration }, { new: true, runValidators: true }).select("-password")
         // sends email
         console.log("updated user", UPDATED_USER)
         sendTestEmail(UPDATED_USER.name, UPDATED_USER.username, newPw, "never")
@@ -242,7 +296,7 @@ export const sendPassword = async (req, res) => {
 export const changePassword = async (req, res) => {
     try {
         console.log("changing pw. req.body:", req.body)
-        const USER = await User.findOneAndUpdate({username: req.body.username}, {password: req.body.password, passwordReset: false }, { new: true, runValidators: true }).select(`-password`)
+        const USER = await User.findOneAndUpdate({ username: req.body.username }, { password: req.body.password, passwordReset: false }, { new: true, runValidators: true }).select(`-password`)
         if (!USER) {
             console.log("no user!")
             return res.status(404).json({ message: 'User not found.' })
@@ -263,20 +317,29 @@ export const changePassword = async (req, res) => {
     }
 }
 
-// after logging in, get's user info
+// after logging in, get's user info (and use deep population to fetch family data as well).
+// if not mutating the const, add .lean() to return as a JS object and improve speed.
 export const getCurrentUser = async (req, res) => {
     try {
-        const USER = await User.findById(req.user._id).select(`-password`)
+        const USER = await User.findById(req.user._id).select(`-password`).populate({
+            path: 'family',
+            populate: [
+                { path: 'children', select: "name, role, _id" },
+                { path: 'parents', select: "name, role, _id" }
+            ]
+        }).lean();
         if (!USER) {
             return res.status(404).json({ message: 'User not found.' })
         }
+        console.log("user and family", USER)
         res.status(200).json(USER)
     } catch (error) {
         res.status(400).json({ message: error.message || 'An error occurred while fetching the profile.' })
     }
 }
 
-// for getting family by user family array. Make it into a post request if you want to send data like arrays or objects.
+
+//Not in use
 export const getFamily = async (req, res) => {
     try {
 
@@ -297,7 +360,7 @@ export const updateUser = async (req, res) => {
         const editedUser = await User.findByIdAndUpdate(
             req.body._id,
             req.body,
-            {new: true, runValidators: true}
+            { new: true, runValidators: true }
         );
         res.status(200).json(editedUser);
     }
