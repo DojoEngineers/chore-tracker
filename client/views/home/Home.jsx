@@ -9,7 +9,7 @@ export const Home = () => {
 
     const handleLogout = () => {
         logout()
-        navigation.replace("SplashScreen")
+        navigation.replace("StartingPage")
     }
 
     return (

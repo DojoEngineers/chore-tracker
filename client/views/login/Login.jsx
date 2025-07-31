@@ -197,7 +197,7 @@ export const Login = () => {
                     <View className="flex-row mb-20 justify-center">
                         <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-lg">Starting a family? </BrandText>
                         <Pressable onPress={() => navigation.navigate('ParentRegistration')}>
-                            <BrandBoldText className="text-lightLink dark:text-darkLink text-lg">Set up your account here</BrandBoldText>
+                            <BrandBoldText className="text-lightLink dark:text-darkLink text-lg">Set up Your Account Here</BrandBoldText>
                         </Pressable>
                     </View>
 

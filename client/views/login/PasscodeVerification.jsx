@@ -47,20 +47,11 @@ export const PasscodeVerification = ({route}) => {
         const data = {username, verificationCode: value}
         verify(data)
             .then(res => {
-                if (res.passwordReset) {
-                    Toast.show({
-                        type: 'success',
-                        text1: "Verification Successful!"
-                    })
-                    navigation.navigate("NewPassword", {username: res.username})
-                    return
-                }
-                return login(res)
-            })
-            .then(savedToken => {
-                if (savedToken) {
-                    checkUserToken()
-                }
+                Toast.show({
+                    type: 'success',
+                    text1: "Verification Successful!"
+                })
+                navigation.navigate("NewPassword", {username: res.username})
             })
             .catch(error => {
                 console.log("verify error:", error)
@@ -139,9 +130,8 @@ export const PasscodeVerification = ({route}) => {
                                 keyboardType="number-pad"
                                 textContentType="oneTimeCode"
                                 renderCell={({ index, symbol, isFocused }) => (
-                                    <View className="w-12 h-12 border-2 border-gray-300 mx-1 flex items-center justify-center bg-white rounded-lg">
+                                    <View key={index} className="w-12 h-12 border-2 border-gray-300 mx-1 flex items-center justify-center bg-white rounded-lg">
                                         <BrandText
-                                            key={index}
                                             onLayout={getCellOnLayoutHandler(index)}
                                             className={`text-[24px] ${isFocused ? 'border-blue-500' : ''}`}
                                         >
