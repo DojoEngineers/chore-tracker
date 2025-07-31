@@ -1,16 +1,22 @@
 import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
-import { Pressable, Text, TextInput, View } from "react-native"
+import { Keyboard, Pressable, Text, TextInput, TouchableWithoutFeedback, View } from "react-native"
 import Toast from 'react-native-toast-message'
 import { getUserByUsername } from "../../services/user.service"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
+import { BrandText } from "../../components/text/BrandText"
+import { BackArrow } from "../../components/icons/BackArrow"
+import { BrandBoldText } from "../../components/text/BrandBoldText"
+import { EmailIcon } from "../../components/icons/EmailIcon"
+import { UserInput } from "../../components/UserInput"
+import { BottomSquiggle } from "../../components/squiggles/BottomSquiggle"
 
 
-export const UsernameVerification = ({route}) => {
+export const UsernameVerification = () => {
 
     const [username, setUsername] = useState('')
     const [ apiErrors, setApiErrors ] = useState({})
 
-    const { isParent } = route.params
     const navigation = useNavigation()
 
     const handleSubmit = async () => {
@@ -22,7 +28,7 @@ export const UsernameVerification = ({route}) => {
                         text1: "Account Deleted."
                     })
                 }
-                if (res && res.isVerified) {
+                else if (res && res.isVerified) {
                     Toast.show({
                         type: 'success',
                         text1: "Account already verified.",
@@ -37,7 +43,6 @@ export const UsernameVerification = ({route}) => {
                         text1: "Username not found.",
                         text2: "Please register before verifying your account."
                     })
-                    navigation.replace("ChooseAccountType")
                 }
             })
             .catch ( error => {
@@ -51,42 +56,75 @@ export const UsernameVerification = ({route}) => {
     }
 
     return (
-        <View>
-            <View>
-                {apiErrors.getUserByUsername && (
-                    <Text style={{ color: 'red', textAlign: 'center' }}>
-                        {apiErrors.getUserByUsername}
-                    </Text>
-                )}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                keyboardShouldPersistTaps="handled"
+                enableOnAndroid={true}
+                extraScrollHeight={20}
+            >
+                <View className="flex-1 bg-lightBg dark:bg-darkBg items-center justify-between">
+                    <View>
 
-                {isParent
-                    ?
-                        <View>
-                            <Text>Please enter the email linked to your parent account to continue.</Text>
+                        <View className="flex-row justify-center mt-[150px] mb-4">
+                            <Pressable
+                                onPress={() => navigation.goBack()}
+                            >
+                                <BackArrow/>
+                            </Pressable>
+                            <BrandBoldText className="text-5xl text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px] ml-10">
+                                Verify Account
+                            </BrandBoldText>
                         </View>
-                    :
-                        <View>
-                            <Text>To create an account, please ask your parent to add you through the Settings tab in their account.</Text>
-                            <Text>After your account is created, enter the email used to sign up below.</Text>
+
+                        <View className="items-center px-10 mb-6">
+                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-lg">
+                                Please enter the email linked to your account to continue.
+                            </BrandText>
                         </View>
-                }
 
-                <TextInput
-                    placeholder="Email"
-                    value={username}
-                    onChangeText={setUsername}
-                />
-                <Pressable onPress={handleSubmit}> 
-                    <Text>Submit</Text>
-                </Pressable>
-            </View>
+                        {apiErrors.getUserByUsername && (
+                            <BrandText className="text-red-500 text-center">
+                                {apiErrors.getUserByUsername}
+                            </BrandText>
+                        )}
 
-            <View>
-                <Text>Already have an account?</Text>
-                <Pressable onPress={() => navigation.navigate('Login')}> 
-                    <Text>Login Now</Text>
-                </Pressable>
-            </View>
-        </View>
+                        <View className="mb-6 px-10">
+                            <UserInput
+                                icon={EmailIcon}
+                                value={username}
+                                onChangeText={setUsername}
+                                placeholder="Email"
+                            />
+                        </View>
+
+                        <View className="px-10">
+                            <Pressable
+                                onPress={handleSubmit}
+                                className="px-4 py-4 rounded-full items-center justify-center bg-lightButton dark:bg-darkButton w-full"
+                            >
+                                <BrandBoldText className="text-white text-xl">
+                                    Submit
+                                </BrandBoldText>
+                            </Pressable>
+                        </View>
+                    </View>
+
+                    <View className="relative w-full">
+                        <View className="absolute bottom-0 right-0 z-0">
+                            <BottomSquiggle/>
+                        </View>
+
+                        <View className="flex-row mb-20 justify-center">
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">Already have an account? </BrandText>
+                            <Pressable onPress={() => navigation.navigate('Login')}>
+                                <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">Login Now</BrandBoldText>
+                            </Pressable>
+                        </View>
+                    </View>
+
+                </View>
+            </KeyboardAwareScrollView>
+        </TouchableWithoutFeedback>
     )
 }
