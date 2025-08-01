@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     // The hashed password (stored securely, not plain text)
     password: {
         type: String,
-        required: [true, 'Password is required.'],
+        required: [false],
         minLength: [8, `Passwords must be at least eight characters long!`],
         maxLength: [100, `Password cannot exceed 100 characters.`]
     },
@@ -30,14 +30,6 @@ const userSchema = new mongoose.Schema({
         type: Array,
         required:[false]
     },
-    children: {
-        type: Array,
-        required: [false]
-    },
-    parents:{
-        type:Array,
-        required:[false]
-    },
     choresCompleted:
     {
         type: Number,
@@ -45,7 +37,7 @@ const userSchema = new mongoose.Schema({
     },
     isVerified: {
         type: Boolean,
-        required: [true, "Please specify if account is verified"]
+        default: false
     },
     isActive: {
         type: Boolean,
@@ -53,7 +45,7 @@ const userSchema = new mongoose.Schema({
     },
     passwordReset: {
         type: Boolean,
-        default: false
+        default: true
     },
     verificationCode: {
         type: Number,

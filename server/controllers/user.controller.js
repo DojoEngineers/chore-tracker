@@ -133,10 +133,9 @@ export const registerUser = async (req, res) => {
             ...req.body, children: [], parents: [],
             isVerified: false, isActive: true, verificationCode: code, codeExpirationDate: expiration
         })
-
+        // create family doc
         if (user) {
             delete user.password //removes password from the object
-            console.log("api key", process.env.EMAILJS_SERVICE_ID)
             const family = await Family.create({
                 parents: [user._id],
                 children: []
@@ -145,7 +144,6 @@ export const registerUser = async (req, res) => {
             await user.save();
 
             sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
-
             res.json({ success: true, message: 'Email sent!' });
         }
         else {
@@ -160,8 +158,6 @@ export const registerUser = async (req, res) => {
 
 // adds user to prexisting family. body must include: family:"idnumber"
 export const addUser = async (req, res) => {
-    console.log("entered register controller. req.body:", req.body)
-
     async function generateCode() {
         // Generate secure random 6-digit code
         return crypto.randomInt(100000, 999999).toString();
@@ -170,20 +166,18 @@ export const addUser = async (req, res) => {
     const expiration = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
     console.log("code", code)
     console.log("expiration", expiration)
-
     try {
         const user = await User.create({
-            ...req.body, children: [], parents: [],
-            isVerified: false, isActive: true, verificationCode: code, codeExpirationDate: expiration
-        })
+            ...req.body, isActive: true, verificationCode: code, codeExpirationDate: expiration})
 
         if (user) {
             delete user.password //removes password from the object
             console.log("api key", process.env.EMAILJS_SERVICE_ID)
-            const family = await Family.findByIdAndUpdate(user.family, user.isParent
-                ? { $addToSet: { parents: user._id } } 
+            const family = await Family.findByIdAndUpdate(req.body.family, user.isParent
+                ? { $addToSet: { parents: user._id } }
                 : { $addToSet: { children: user._id } },
                 { new: true });
+            console.log("family", family)
 
             sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
 
@@ -199,8 +193,6 @@ export const addUser = async (req, res) => {
     }
 }
 
-
-
 // If requested, resets code in db and resends code to user email.
 export const resendCode = async (req, res) => {
     async function generateCode() {
@@ -208,7 +200,7 @@ export const resendCode = async (req, res) => {
         return crypto.randomInt(100000, 999999).toString();
     }
     const code = await generateCode()
-    const expiration = new Date(Date.now() + 5 * 60 * 1000); // 15 minutes from now
+    const expiration = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
     const user = await User.findOneAndUpdate(
         { username: req.body.username }, { verificationCode: code, codeExpirationDate: expiration },
         { new: true, runValidators: true }
@@ -219,6 +211,7 @@ export const resendCode = async (req, res) => {
     }
     else {
         console.log("resending. emailjs api key", process.env.EMAILJS_SERVICE_ID)
+        console.log("code", code)
         console.log("sending to user", user)
         sendTestEmail(user.name, user.username, code, user.codeExpirationDate)
         res.status(200).json(user)
@@ -231,24 +224,25 @@ export const verifyUser = async (req, res) => {
     try {
         console.log("verify user. req.body:", req.body)
         // find by username/code that matches. update isVerified boolean.
-        const USER = await User.findOneAndUpdate({ username: req.body.username, verificationCode: req.body.verificationCode,
+        const USER = await User.findOneAndUpdate({
+            username: req.body.username, verificationCode: req.body.verificationCode,
             codeExpirationDate: { $gt: new Date() }
-         },
-            { isVerified: true, passwordReset:true }, { new: true, runValidators: true }).select(`-password`)
+        },
+            { isVerified: true, passwordReset: true }, { new: true, runValidators: true }).select(`-password`)
         if (!USER) {
             console.log("wrong code/email")
             return res.status(404).json({ message: 'Wrong code/email' })
         }
         // find by username. update boolean.
-        console.log("making token for user:", USER)
-        const token = generateToken(USER._id);
-        const data = {
-            token: token,
-            _id: USER._id.toString(),
-            username: USER.username,
-        }
-        console.log("user data", data)
-        res.status(200).json(data)
+        // console.log("making token for user:", USER)
+        // const token = generateToken(USER._id);
+        // const data = {
+        //     token: token,
+        //     _id: USER._id.toString(),
+        //     username: USER.username,
+        // }
+        // console.log("user data", data)
+        res.status(200).json(USER.username)
     }
     catch (error) {
         console.log("error", error)
@@ -340,16 +334,15 @@ export const getCurrentUser = async (req, res) => {
 
 
 //Not in use
-export const getFamily = async (req, res) => {
-    try {
-
-        const ids = req.body; // req.body is an array here
-        const objectIds = ids.map(id => new mongoose.Types.ObjectId(id));
-        const USERS = await User.find({ _id: { $in: objectIds } }).select(`-password`)
-        res.json(USERS);
-        res.status(200).json(USERS)
-    } catch (error) { res.status(400).json(error) }
-}
+// export const getFamily = async (req, res) => {
+//     try {
+//         const ids = req.body; 
+//         const objectIds = ids.map(id => new mongoose.Types.ObjectId(id));
+//         const USERS = await User.find({ _id: { $in: objectIds } }).select(`-password`)
+//         res.json(USERS);
+//         res.status(200).json(USERS)
+//     } catch (error) { res.status(400).json(error) }
+// }
 
 
 // Use for "deleting users". Frontend changes user attribute active => inactive
