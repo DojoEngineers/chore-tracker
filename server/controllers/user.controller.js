@@ -233,16 +233,7 @@ export const verifyUser = async (req, res) => {
             console.log("wrong code/email")
             return res.status(404).json({ message: 'Wrong code/email' })
         }
-        // find by username. update boolean.
-        // console.log("making token for user:", USER)
-        // const token = generateToken(USER._id);
-        // const data = {
-        //     token: token,
-        //     _id: USER._id.toString(),
-        //     username: USER.username,
-        // }
-        // console.log("user data", data)
-        res.status(200).json(USER.username)
+        res.status(200).json({username: USER.username})
     }
     catch (error) {
         console.log("error", error)
