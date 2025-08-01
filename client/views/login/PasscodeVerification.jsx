@@ -66,7 +66,7 @@ export const PasscodeVerification = ({route}) => {
             })
     }
 
-    const resend = () => {
+    const resend = (username) => {
         resendCode(username)
             .then(() => {
                 Toast.show({
@@ -157,7 +157,7 @@ export const PasscodeVerification = ({route}) => {
                         </View>
 
                         <View className="flex-row mb-20 justify-center">
-                            <BottomLink onPress={resend} text="Didn't receive a code? " link="Resend" />
+                            <BottomLink onPress={() => resend(username)} text="Didn't receive a code? " link="Resend" />
                         </View>
                     </View>
                 </View>
