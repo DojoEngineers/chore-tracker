@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     // The hashed password (stored securely, not plain text)
     password: {
         type: String,
-        required: [false, 'Password is required.'],
+        required: [true, 'Password is required.'],
         minLength: [8, `Passwords must be at least eight characters long!`],
         maxLength: [100, `Password cannot exceed 100 characters.`]
     },
