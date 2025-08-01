@@ -20,7 +20,7 @@ export const UserInput = ({
             {error && (
                 <BrandText className="text-red-500 text-center">{error}</BrandText>
             )}
-            <View className="dark:border dark:border-white dark:bg-transparent bg-white rounded-full shadow-md px-6 py-4 flex-row items-center">
+            <View className="dark:border dark:border-white dark:bg-transparent bg-white rounded-full shadow-md px-[16px] ps-[24px] flex-row items-center w-full h-[50px]">
                 {Icon && <Icon />}
                 <TextInput
                 value={value}
@@ -28,7 +28,7 @@ export const UserInput = ({
                 placeholder={placeholder}
                 placeholderTextColor={placeholderColor}
                 secureTextEntry={secureTextEntry}
-                className="flex-1 ml-6 text-xl font-nunito dark:text-white text-lightSecondaryText"
+                className="flex-1 ml-[16px] text-[15px] font-nunito dark:text-white text-lightSecondaryText"
                 />
             </View>
         </View>

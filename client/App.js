@@ -14,7 +14,7 @@ import { TutorialAssign } from "./views/login/TutorialAssign";
 import { TutorialTrack } from "./views/login/TutorialTrack";
 import { TutorialResults } from "./views/login/TutorialResults";
 import { ForgotPassword } from "./views/login/ForgotPassword";
-import { NewPassword } from "./views/login/NewPassword";
+import { ChangePassword } from "./views/login/ChangePassword";
 import { Login } from "./views/login/Login";
 import { Home } from "./views/home/Home";
 
@@ -44,7 +44,7 @@ export default function App() {
             <Stack.Screen name="Home" component={Home}></Stack.Screen>
             <Stack.Screen name="Login" component={Login}></Stack.Screen>
             <Stack.Screen name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
-            <Stack.Screen name="NewPassword" component={NewPassword}></Stack.Screen>
+            <Stack.Screen name="ChangePassword" component={ChangePassword}></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
       </GlobalStyling>

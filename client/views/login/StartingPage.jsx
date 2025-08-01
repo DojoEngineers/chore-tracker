@@ -16,35 +16,36 @@ export const StartingPage = () => {
                 <LogoTopSquiggle />
             </View>
 
-            <View className="items-center px-10">
-                <BrandBoldText className="text-5xl text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
+            <View className="items-center px-[16px]">
+                <BrandBoldText className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
                     Chore Tracking App
                 </BrandBoldText>
             </View>
 
-            <View className="items-center px-10">
+            <View className="items-center px-[16px]">
                 <Pressable
-                    className="px-4 py-4 mx-10 mb-8 rounded-full items-center justify-center bg-[#84A99D] w-full"
+                    className="p-[10px] mb-6 rounded-full items-center justify-center bg-[#84A99D] w-full h-[56px]"
                     onPress={() => navigation.navigate('Login')}
                 >
-                    <BrandBoldText className="text-white text-xl">Login</BrandBoldText>
+                    <BrandBoldText className="text-white text-[20px]">Login</BrandBoldText>
                 </Pressable>
 
                 <Pressable
-                    className="px-4 py-4 rounded-full items-center justify-center bg-[#455C56] w-full"
+                    className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px]"
                     onPress={() => navigation.navigate('ParentRegistration')}
                     >
-                    <BrandBoldText className="text-white text-xl">Start a family account</BrandBoldText>
+                    <BrandBoldText className="text-white text-[20px]">Start a family account</BrandBoldText>
                 </Pressable>
             </View>
 
             <View>
-                <View className="flex-row px-10 justify-center">
+                <View className="flex-row px-[16px] justify-center">
                     <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">Added by a parent? </BrandText>
                     <Pressable onPress={() => navigation.navigate('UsernameVerification')}>
                         <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">Verify Here</BrandBoldText>
                     </Pressable>
                 </View>
+
                 <View className="items-end">
                     <LogoBottomSquiggle/>
                 </View>

@@ -1,12 +1,21 @@
 import { useState } from "react"
-import { Text, TextInput, View, Pressable } from "react-native"
+import { View, Pressable, TouchableWithoutFeedback, Keyboard } from "react-native"
 import { sendPassword, getUserByUsername } from "../../services/user.service"
 import { useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
+import { EmailIcon } from "../../components/icons/EmailIcon"
+import { UserInput } from "../../components/UserInput"
+import { BrandBoldText } from "../../components/text/BrandBoldText"
+import { BottomSquiggle } from "../../components/squiggles/BottomSquiggle"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
+import { BackArrow } from "../../components/icons/BackArrow"
+import { BrandText } from "../../components/text/BrandText"
+import { PrimaryButton } from "../../components/PrimaryButton"
 
 export const ForgotPassword = () => {
 
     const [username, setUsername] = useState("")
+    const [ apiErrors, setApiErrors ] = useState({})
 
     const navigation = useNavigation()
 
@@ -23,7 +32,7 @@ export const ForgotPassword = () => {
                     Toast.show({
                         type: 'error',
                         text1: "Account is not verified.",
-                        text2: "Verify your account in the registration section."
+                        text2: "Verify your account in the home screen."
                     })
                 }
                 else if (res) {
@@ -37,6 +46,7 @@ export const ForgotPassword = () => {
                         })
                         .catch(error => {
                             console.log("sendPassword error: ", error)
+                            setApiErrors(prev => ({...prev, sendPassword: "Unable to reset password."}))
                             Toast.show({
                                 type: 'error',
                                 text1: "Unable to reset password.",
@@ -51,33 +61,74 @@ export const ForgotPassword = () => {
             })
             .catch(error => {
                 console.log("getUserByUsername error:", error)
+                setApiErrors(prev => ({...prev, getUserByUsername: "Unable to check username."}))
                 Toast.show({
                     type: 'error',
-                    text1: "Unable to validate username.",
+                    text1: "Unable to check username.",
                 })
             })
     }
 
     return (
-        <View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                keyboardShouldPersistTaps="handled"
+                enableOnAndroid={true}
+                extraScrollHeight={20}
+            >
+                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
+                    <View className="px-[16px]">
+        
+                        <View className="flex-row items-center mt-[150px] mb-8 ps-2">
+                            <Pressable
+                                onPress={() => navigation.goBack()}
+                            >
+                                <BackArrow/>
+                            </Pressable>
 
-            <Text>Forgot Password?</Text>
+                            <BrandBoldText className="text-[30px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] ml-10">
+                                Forgot Password?
+                            </BrandBoldText>
+                        </View>
 
-            <Text>
-                Don't worry! It happens. Please enter the email address or phone number linked with your account.
-                You will receive a message with a temporary password.
-            </Text>
+                        <View className="items-center mb-8 px-[4px]">
+                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
+                                Don't worry! It happens. Please enter the email address linked to your account.
+                                You will receive a message with a temporary password.
+                            </BrandText>
+                        </View>
 
-            <TextInput
-                placeholder="Email or Phone Number"
-                value={username}
-                onChangeText={setUsername}
-            />
+                        {apiErrors.getUserByUsername && (
+                            <BrandText className="text-red-500 text-center">
+                                {apiErrors.getUserByUsername}
+                            </BrandText>
+                        )}
+                        {apiErrors.sendPassword && (
+                            <BrandText className="text-red-500 text-center">
+                                {apiErrors.sendPassword}
+                            </BrandText>
+                        )}
 
-            <Pressable onPress={resetPassword}>
-                <Text>Submit</Text>
-            </Pressable>
+                        <View className="mb-10">
+                            <UserInput
+                                icon={EmailIcon}
+                                value={username}
+                                onChangeText={setUsername}
+                                placeholder="Email"
+                            />
+                        </View>
+                
+                        <View>
+                            <PrimaryButton onPress={resetPassword} label="Submit" />
+                        </View>
+                    </View>
 
-        </View>
+                    <View className="items-end">
+                        <BottomSquiggle/>
+                    </View>
+                </View>
+            </KeyboardAwareScrollView>
+        </TouchableWithoutFeedback>
     )
 }

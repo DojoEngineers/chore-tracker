@@ -4,7 +4,7 @@ import LightBackArrow from '../../assets/icons/LightBackArrow';
 
 const aspectRatio = 11 / 20
 
-export const BackArrow = ({width = 20}) => {
+export const BackArrow = ({width = 11}) => {
 
     const colorScheme = useColorScheme()
 

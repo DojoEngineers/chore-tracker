@@ -4,7 +4,7 @@ import LightEmailIcon from '../../assets/icons/LightEmailIcon';
 
 const aspectRatio = 14 / 11
 
-export const EmailIcon = ({width = 20}) => {
+export const EmailIcon = ({width = 14}) => {
 
     const colorScheme = useColorScheme()
 

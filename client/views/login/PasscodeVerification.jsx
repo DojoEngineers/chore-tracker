@@ -10,6 +10,8 @@ import { BackArrow } from '../../components/icons/BackArrow'
 import { BrandBoldText } from '../../components/text/BrandBoldText'
 import { BrandText } from '../../components/text/BrandText'
 import { BottomSquiggle } from '../../components/squiggles/BottomSquiggle'
+import { PrimaryButton } from '../../components/PrimaryButton'
+import { BottomLink } from '../../components/BottomLink'
 
 const CELL_COUNT = 6
 
@@ -47,27 +49,19 @@ export const PasscodeVerification = ({route}) => {
         const data = {username, verificationCode: value}
         verify(data)
             .then(res => {
-                if (res.passwordReset) {
-                    Toast.show({
-                        type: 'success',
-                        text1: "Verification Successful!"
-                    })
-                    navigation.navigate("NewPassword", {username: res.username})
-                    return
-                }
-                return login(res)
-            })
-            .then(savedToken => {
-                if (savedToken) {
-                    checkUserToken()
-                }
+                Toast.show({
+                    type: 'success',
+                    text1: "Verification Successful!"
+                })
+                navigation.navigate("ChangePassword", {username: res.username})
             })
             .catch(error => {
                 console.log("verify error:", error)
-                setApiErrors(prev => ({...prev, verify: "Unable to verify account."}))
+                setApiErrors(prev => ({...prev, verify: "Unable to verify account. Wrong or expired code."}))
                 Toast.show({
                     type: 'error',
-                    text1: "Unable to verify account."
+                    text1: "Unable to verify account.",
+                    text2: "Wrong or expired code."
                 })
             })
     }
@@ -99,15 +93,16 @@ export const PasscodeVerification = ({route}) => {
                 extraScrollHeight={20}
                 >
                 <View className="flex-1 bg-lightBg dark:bg-darkBg items-center justify-between">
-                    <View>
+                    <View className="px-[16px]">
 
-                        <View className="flex-row justify-center items-center mt-[150px] mb-4">
+                        <View className="flex-row items-center mt-[150px] mb-4 ps-2">
                             <Pressable
                                 onPress={() => navigation.goBack()}
                             >
                                 <BackArrow/>
                             </Pressable>
-                            <BrandBoldText className="text-[36px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px] ml-10">
+
+                            <BrandBoldText className="text-[30px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] ml-10">
                                 OTP Verification
                             </BrandBoldText>
                         </View>
@@ -123,13 +118,13 @@ export const PasscodeVerification = ({route}) => {
                             </BrandText>
                         )}
 
-                        <View className="items-center px-10 mb-6">
-                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-lg">
+                        <View className="items-center mb-8">
+                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
                                 Enter the verification code that was sent to {username}.
                             </BrandText>
                         </View>
 
-                        <View className="px-10">
+                        <View className="px-6 mb-12">
                             <CodeField
                                 ref={ref}
                                 {...props}
@@ -139,9 +134,8 @@ export const PasscodeVerification = ({route}) => {
                                 keyboardType="number-pad"
                                 textContentType="oneTimeCode"
                                 renderCell={({ index, symbol, isFocused }) => (
-                                    <View className="w-12 h-12 border-2 border-gray-300 mx-1 flex items-center justify-center bg-white rounded-lg">
+                                    <View key={index} className="w-12 h-12 border-2 border-gray-300 mx-1 flex items-center justify-center bg-white rounded-lg">
                                         <BrandText
-                                            key={index}
                                             onLayout={getCellOnLayoutHandler(index)}
                                             className={`text-[24px] ${isFocused ? 'border-blue-500' : ''}`}
                                         >
@@ -152,15 +146,8 @@ export const PasscodeVerification = ({route}) => {
                             />
                         </View>
 
-                        <View className="px-10 mt-8">
-                            <Pressable
-                                onPress={() => handleVerify(value)}
-                                className="px-4 py-4 rounded-full items-center justify-center bg-lightButton dark:bg-darkButton w-full"
-                            >
-                                <BrandBoldText className="text-white text-xl">
-                                    Verify
-                                </BrandBoldText>
-                            </Pressable>
+                        <View>
+                            <PrimaryButton onPress={() => handleVerify(value)} label="Verify" />
                         </View>
                     </View>
 
@@ -170,10 +157,7 @@ export const PasscodeVerification = ({route}) => {
                         </View>
 
                         <View className="flex-row mb-20 justify-center">
-                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">Didn't receive a code? </BrandText>
-                            <Pressable onPress={resend}>
-                                <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">Resend</BrandBoldText>
-                            </Pressable>
+                            <BottomLink onPress={resend} text="Didn't receive a code? " link="Resend" />
                         </View>
                     </View>
                 </View>

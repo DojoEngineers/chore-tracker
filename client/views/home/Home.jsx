@@ -9,11 +9,11 @@ export const Home = () => {
 
     const handleLogout = () => {
         logout()
-        navigation.replace("SplashScreen")
+        navigation.replace("StartingPage")
     }
 
     return (
-        <View>
+        <View className="m-20">
             <Text>Home Page</Text>
             <Pressable onPress={handleLogout}>
                 <Text>Logout</Text>
