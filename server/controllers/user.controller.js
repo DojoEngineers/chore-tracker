@@ -281,7 +281,7 @@ export const sendPassword = async (req, res) => {
 export const changePassword = async (req, res) => {
     try {
         console.log("changing pw. req.body:", req.body)
-        const USER = await User.findOneAndUpdate({ username: req.body.username }, { password: req.body.password, passwordReset: false }, { new: true, runValidators: true }).select(`-password`)
+        const USER = await User.findOneAndUpdate({ username: req.body.username }, { password: req.body.password, confirmPassword: req.body.confirmPassword, passwordReset: false }, { new: true, runValidators: true }).select(`-password`)
         if (!USER) {
             console.log("no user!")
             return res.status(404).json({ message: 'User not found.' })
