@@ -4,7 +4,7 @@ import LightFirstNameIcon from '../../assets/icons/LightFirstNameIcon';
 
 const aspectRatio = 14 / 13
 
-export const FirstNameIcon = ({width = 20}) => {
+export const FirstNameIcon = ({width = 14}) => {
 
     const colorScheme = useColorScheme()
 

@@ -10,6 +10,8 @@ import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { EmailIcon } from "../../components/icons/EmailIcon"
 import { UserInput } from "../../components/UserInput"
 import { BottomSquiggle } from "../../components/squiggles/BottomSquiggle"
+import { PrimaryButton } from "../../components/PrimaryButton"
+import { BottomLink } from "../../components/BottomLink"
 
 
 export const UsernameVerification = () => {
@@ -64,21 +66,22 @@ export const UsernameVerification = () => {
                 extraScrollHeight={20}
             >
                 <View className="flex-1 bg-lightBg dark:bg-darkBg items-center justify-between">
-                    <View>
+                    <View className="px-[16px]">
 
-                        <View className="flex-row justify-center mt-[150px] mb-4">
+                        <View className="flex-row mt-[150px] mb-4 items-center ps-2">
                             <Pressable
                                 onPress={() => navigation.goBack()}
                             >
                                 <BackArrow/>
                             </Pressable>
-                            <BrandBoldText className="text-5xl text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px] ml-10">
+                            
+                            <BrandBoldText className="text-[30px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] ml-10">
                                 Verify Account
                             </BrandBoldText>
                         </View>
 
-                        <View className="items-center px-10 mb-6">
-                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-lg">
+                        <View className="items-center mb-8">
+                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
                                 Please enter the email linked to your account to continue.
                             </BrandText>
                         </View>
@@ -89,7 +92,7 @@ export const UsernameVerification = () => {
                             </BrandText>
                         )}
 
-                        <View className="mb-6 px-10">
+                        <View className="mb-12">
                             <UserInput
                                 icon={EmailIcon}
                                 value={username}
@@ -98,16 +101,10 @@ export const UsernameVerification = () => {
                             />
                         </View>
 
-                        <View className="px-10">
-                            <Pressable
-                                onPress={handleSubmit}
-                                className="px-4 py-4 rounded-full items-center justify-center bg-lightButton dark:bg-darkButton w-full"
-                            >
-                                <BrandBoldText className="text-white text-xl">
-                                    Submit
-                                </BrandBoldText>
-                            </Pressable>
-                        </View>
+                            <View>
+                                <PrimaryButton onPress={handleSubmit} label="Submit" />
+                            </View>
+
                     </View>
 
                     <View className="relative w-full">
@@ -116,10 +113,7 @@ export const UsernameVerification = () => {
                         </View>
 
                         <View className="flex-row mb-20 justify-center">
-                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">Already have an account? </BrandText>
-                            <Pressable onPress={() => navigation.navigate('Login')}>
-                                <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">Login Now</BrandBoldText>
-                            </Pressable>
+                            <BottomLink onPress={() => navigation.navigate('Login')} text="Already have an account? " link="Login Now" />
                         </View>
                     </View>
 

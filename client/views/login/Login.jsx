@@ -1,4 +1,4 @@
-import { Text, TextInput, View, Pressable, Keyboard, TouchableWithoutFeedback } from "react-native"
+import { View, Pressable, Keyboard, TouchableWithoutFeedback } from "react-native"
 import { useLogin } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
 import { useNavigation } from '@react-navigation/native'
@@ -12,6 +12,8 @@ import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { UserInput } from "../../components/UserInput"
 import { EmailIcon } from "../../components/icons/EmailIcon"
 import { PasswordIcon } from "../../components/icons/PasswordIcon"
+import { PrimaryButton } from "../../components/PrimaryButton"
+import { BottomLink } from "../../components/BottomLink"
 
 export const Login = () => {
 
@@ -64,17 +66,19 @@ export const Login = () => {
                         text1: "Account Deleted."
                     })
                 }
-                else if (res && res.isVerified && res.passwordReset) {
-                    navigation.replace("NewPassword", {username: formData.username})
-                }
                 else if (res && res.isVerified) {
                     login(formData)
                         .then(res => {
-                            return loginUser(res)
-                        })
-                        .then(savedToken => {
-                            if (savedToken) {
-                                checkUserToken()
+                            if (res.passwordReset) {
+                                navigation.replace("ChangePassword", {username: formData.username})
+                            }
+                            else {
+                                loginUser(res)
+                                    .then(savedToken => {
+                                        if (savedToken) {
+                                            checkUserToken()
+                                        }
+                                    })
                             }
                         })
                         .catch(error => {
@@ -101,10 +105,10 @@ export const Login = () => {
             })
             .catch(error => {
                 console.log("getUserByUsername error:", error)
-                    setApiErrors(prev => ({...prev, getUserByUsername: "Unable to validate username."}))
+                    setApiErrors(prev => ({...prev, getUserByUsername: "Unable to check username."}))
                     Toast.show({
                         type: 'error',
-                        text1: "Unable to validate username.",
+                        text1: "Unable to check username.",
                     })
             })
     }
@@ -124,83 +128,77 @@ export const Login = () => {
                             <TopSquiggle />
                         </View>
 
-                        <View className="items-start ps-10">
-                            <Pressable
-                                onPress={() => navigation.goBack()}
-                            >
-                                <BackArrow/>
-                            </Pressable>
-                        </View>
+                        <View className="px-[16px] mt-[75px]">
 
-                        <View className="items-center mt-6">
-                            <BrandBoldText className="text-5xl text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                                Hi, welcome.
-                            </BrandBoldText>
-                        </View>
+                            <View className="flex-row items-center ps-2">
+                                <View className="pe-[66px]">
+                                    <Pressable
+                                        onPress={() => navigation.goBack()}
+                                    >
+                                        <BackArrow/>
+                                    </Pressable>
+                                </View>
 
-                        <View className="items-center px-10 mb-6">
-                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-2xl">
-                                Sign in to your account
-                            </BrandText>
-                        </View>
+                                <View className="">
+                                    <BrandBoldText className="text-[32px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[37px]">
+                                        Hi, welcome.
+                                    </BrandBoldText>
+                                </View>
+                            </View>
 
-                        {apiErrors.login && (
-                            <BrandText className="text-red-500 text-center">
-                                {apiErrors.login}
-                            </BrandText>
-                        )}
-                        {apiErrors.getUserByUsername && (
-                            <BrandText className="text-red-500 text-center">
-                                {apiErrors.getUserByUsername}
-                            </BrandText>
-                        )}
-
-                        <View className="mb-6 px-10">
-                            <UserInput
-                                icon={EmailIcon}
-                                value={formData.username}
-                                onChangeText={(text) => handleChange('username', text)}
-                                placeholder="Email"
-                            />
-                        </View>
-
-                        <View className="mb-6 px-10">
-                            <UserInput
-                                icon={PasswordIcon}
-                                value={formData.password}
-                                onChangeText={(text) => handleChange('password', text)}
-                                placeholder="Password"
-                                secureTextEntry={true}
-                            />
-                        </View>
-
-                        <View className="items-end px-12 mb-6">
-                            <Pressable onPress={() => navigation.navigate('ForgotPassword')}> 
-                                <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-xl">
-                                    Forgot your password?
+                            <View className="items-center mb-10">
+                                <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[18px]">
+                                    Sign in to your account
                                 </BrandText>
-                            </Pressable>
-                        </View>
+                            </View>
 
-                        <View className="px-10">
-                            <Pressable
-                                onPress={handleLogin}
-                                className="px-4 py-4 rounded-full items-center justify-center bg-lightButton dark:bg-darkButton w-full"
-                            >
-                                <BrandBoldText className="text-white text-xl">
-                                    Login
-                                </BrandBoldText>
-                            </Pressable>
+                            {apiErrors.login && (
+                                <BrandText className="text-red-500 text-center">
+                                    {apiErrors.login}
+                                </BrandText>
+                            )}
+                            {apiErrors.getUserByUsername && (
+                                <BrandText className="text-red-500 text-center">
+                                    {apiErrors.getUserByUsername}
+                                </BrandText>
+                            )}
+
+                            <View className="mb-6">
+                                <UserInput
+                                    icon={EmailIcon}
+                                    value={formData.username}
+                                    onChangeText={(text) => handleChange('username', text)}
+                                    placeholder="Email"
+                                />
+                            </View>
+
+                            <View className="mb-8">
+                                <UserInput
+                                    icon={PasswordIcon}
+                                    value={formData.password}
+                                    onChangeText={(text) => handleChange('password', text)}
+                                    placeholder="Password"
+                                    secureTextEntry={true}
+                                />
+                            </View>
+
+                            <View className="items-end mb-8 pe-2">
+                                <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
+                                    <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[14px]">
+                                        Forgot your password?
+                                    </BrandText>
+                                </Pressable>
+                            </View>
+
+                            <View className="">
+                                <PrimaryButton onPress={handleLogin} label="Sign in" />
+                            </View>
                         </View>
                     </View>
 
-                    <View className="flex-row mb-20 justify-center">
-                        <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-lg">Starting a family? </BrandText>
-                        <Pressable onPress={() => navigation.navigate('ParentRegistration')}>
-                            <BrandBoldText className="text-lightLink dark:text-darkLink text-lg">Set up Your Account Here</BrandBoldText>
-                        </Pressable>
+                    <View className="mb-20 items-center">
+                        <BottomLink onPress={() => navigation.navigate('ParentRegistration')} text="Starting a family? " link="Set up Your Account Here" />
                     </View>
-
                 </View>
             </KeyboardAwareScrollView>
         </TouchableWithoutFeedback>

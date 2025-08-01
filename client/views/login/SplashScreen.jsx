@@ -23,7 +23,7 @@ export const SplashScreen = () => {
                 <LogoTopSquiggle/>
             </View>
 
-            <View className="items-center">
+            <View className="items-center p-16">
                 <BrandBoldText className="text-7xl text-lightPrimaryText dark:text-darkPrimaryText">
                     Logo
                 </BrandBoldText>

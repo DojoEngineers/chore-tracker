@@ -4,7 +4,7 @@ import LightPasswordIcon from '../../assets/icons/LightPasswordIcon';
 
 const aspectRatio = 14 / 17
 
-export const PasswordIcon = ({width = 20}) => {
+export const PasswordIcon = ({width = 14}) => {
 
     const colorScheme = useColorScheme()
 

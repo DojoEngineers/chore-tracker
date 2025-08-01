@@ -12,6 +12,8 @@ import { EmailIcon } from "../../components/icons/EmailIcon"
 import { PasswordIcon } from "../../components/icons/PasswordIcon"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { UserInput } from "../../components/UserInput"
+import { PrimaryButton } from "../../components/PrimaryButton"
+import { BottomLink } from "../../components/BottomLink"
 
 const DEFAULT_FORM_VALUES = {
     name: "",
@@ -92,7 +94,7 @@ export const ParentRegistration = () => {
             })
             return
         }
-        const { name, password, confirmPassword } = formData
+        const { name } = formData
         const isParent = true
         const username = formData.username.toLowerCase()
         checkUsername(username)
@@ -103,7 +105,7 @@ export const ParentRegistration = () => {
                         text1: "Username already exists."
                     })
                 } else {
-                    register({name, username, password, confirmPassword, isParent})
+                    register({name, username, isParent})
                         .then( () => { 
                             Toast.show({
                                 type: 'success',
@@ -146,18 +148,20 @@ export const ParentRegistration = () => {
                             <TopSquiggle />
                         </View>
 
-                        <View className="items-start ps-10">
-                            <Pressable
-                                onPress={() => navigation.goBack()}
-                            >
-                                <BackArrow/>
-                            </Pressable>
-                        </View>
+                        <View className="flex-row p-[17px]">
+                            <View className="pt-4 ps-2">
+                                <Pressable
+                                    onPress={() => navigation.goBack()}
+                                >
+                                    <BackArrow/>
+                                </Pressable>
+                            </View>
 
-                        <View className="items-center p-5 mb-4">
-                            <BrandBoldText className="text-[36px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                                Create a parent profile to get started
-                            </BrandBoldText>
+                            <View className="flex-1 mb-6 ms-[34px]">
+                                <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
+                                    Create a parent profile to get started
+                                </BrandBoldText>
+                            </View>
                         </View>
 
                         {apiErrors.register && (
@@ -171,7 +175,7 @@ export const ParentRegistration = () => {
                             </BrandText>
                         )}
 
-                        <View className="mx-8">
+                        <View className="px-[16px]">
                             <View className="mb-6">
                                 <UserInput
                                     icon={FirstNameIcon}
@@ -182,7 +186,7 @@ export const ParentRegistration = () => {
                                 />
                             </View>
 
-                            <View className="mb-6">
+                            <View className="mb-12">
                                 <UserInput
                                     icon={EmailIcon}
                                     value={formData.username}
@@ -192,55 +196,24 @@ export const ParentRegistration = () => {
                                 />
                             </View>
 
-                            <View className="mb-6">
-                                <UserInput
-                                    icon={PasswordIcon}
-                                    value={formData.password}
-                                    onChangeText={(text) => handleChange('password', text)}
-                                    placeholder="Password"
-                                    error={formErrors.password}
-                                    secureTextEntry={true}
-                                />
-                            </View>
-
-                            <View className="mb-6">
-                                <UserInput
-                                    icon={PasswordIcon}
-                                    value={formData.confirmPassword}
-                                    onChangeText={(text) => handleChange('confirmPassword', text)}
-                                    placeholder="Confirm password"
-                                    error={formErrors.confirmPassword}
-                                    secureTextEntry={true}
-                                />
-                            </View>
-
-                            <View>
-                                <Pressable
-                                    onPress={handleSubmit}
-                                    className="px-4 py-4 rounded-full items-center justify-center bg-lightButton dark:bg-darkButton w-full"
-                                >
-                                    <BrandBoldText className="text-white text-xl">
-                                        Register
-                                    </BrandBoldText>
-                                </Pressable>
-                            </View>
+                            <PrimaryButton onPress={handleSubmit} label="Register"/>
                         </View>
                     </View>
 
-                    <View className="mx-8 mb-20 mt-10 items-center">
-                        <View className="flex-row mb-2">
-                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">Already registered? </BrandText>
-                            <Pressable onPress={() => navigation.navigate('UsernameVerification')}>
-                                <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">Verify Here</BrandBoldText>
-                            </Pressable>
+                    <View className="mb-20 items-center">
+                        <View className="mb-2">
+                            <BottomLink
+                                onPress={() => navigation.navigate('UsernameVerification')}
+                                text="Already Registerd? "
+                                link="Verify Here"
+                            />
                         </View>
 
-                        <View className="flex-row">
-                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">Already have an account? </BrandText>
-                            <Pressable onPress={() => navigation.navigate('Login')}>
-                                <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">Login Now</BrandBoldText>
-                            </Pressable>
-                        </View>
+                            <BottomLink
+                                onPress={() => navigation.navigate('Login')}
+                                text="Already have an account? "
+                                link="Login Now"
+                            />
                     </View>
                 </View>
             </KeyboardAwareScrollView>

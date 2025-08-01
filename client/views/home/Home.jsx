@@ -13,7 +13,7 @@ export const Home = () => {
     }
 
     return (
-        <View>
+        <View className="m-20">
             <Text>Home Page</Text>
             <Pressable onPress={handleLogout}>
                 <Text>Logout</Text>

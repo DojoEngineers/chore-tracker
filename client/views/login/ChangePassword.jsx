@@ -1,9 +1,16 @@
 import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
-import { Pressable, Text, TextInput, View } from "react-native"
+import { Keyboard, Pressable, Text, TextInput, TouchableWithoutFeedback, View } from "react-native"
 import Toast from "react-native-toast-message"
 import { changePassword, getCurrentUser } from "../../services/user.service"
 import { useLogin } from "../../context/UserContext"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
+import { BrandBoldText } from "../../components/text/BrandBoldText"
+import { BrandText } from "../../components/text/BrandText"
+import { UserInput } from "../../components/UserInput"
+import { BottomSquiggle } from "../../components/squiggles/BottomSquiggle"
+import { PasswordIcon } from "../../components/icons/PasswordIcon"
+import { PrimaryButton } from "../../components/PrimaryButton"
 
 const DEFAULT_FORM_VALUES = {
     password: "",
@@ -12,7 +19,7 @@ const DEFAULT_FORM_VALUES = {
 
 const NO_EMOJI_REGEX = /^[\p{L}\p{N}\p{P}\p{Zs}]*$/u
 
-export const NewPassword = ({route}) => {
+export const ChangePassword = ({route}) => {
 
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
@@ -86,6 +93,7 @@ export const NewPassword = ({route}) => {
                 type: 'error',
                 text1: "Please make corrections to the form."
             })
+            return
         }
         const data = {username, password: formData.password}
         changePassword(data)
@@ -108,49 +116,67 @@ export const NewPassword = ({route}) => {
     }
 
     return (
-        <View>
-            <Text>Create New Password</Text>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                keyboardShouldPersistTaps="handled"
+                enableOnAndroid={true}
+                extraScrollHeight={20}
+            >
+                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
 
-            <View>
-                {formErrors.password && (
-                    <Text style={{ color: 'red', textAlign: 'center' }}>
-                        {formErrors.password}
-                    </Text>
-                )}
-                <Text>Password:</Text>
-                <TextInput
-                    placeholder="New password"
-                    value={formData.password}
-                    onChangeText={(text) => handleChange('password', text)}
-                    secureTextEntry={true}
-                />
-            </View>
+                    <View className="px-[16px]">
+        
+                        <View className="flex-row justify-center mt-[150px] mb-10">
+                            <BrandBoldText className="text-[30px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[35px]">
+                                Create New Password
+                            </BrandBoldText>
+                        </View>
 
-            <View>
-                {formErrors.confirmPassword && (
-                    <Text style={{ color: 'red', textAlign: 'center' }}>
-                        {formErrors.confirmPassword}
-                    </Text>
-                )}
-                <Text>Confirm Password:</Text>
-                <TextInput
-                    placeholder="Confirm Password"
-                    value={formData.confirmPassword}
-                    onChangeText={(text) => handleChange('confirmPassword', text)}
-                    secureTextEntry={true}
-                />
-            </View>
+                        <View className="items-center mb-6 px-2">
+                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
+                                Create a strong password with at least 8 characters.
+                            </BrandText>
+                        </View>
 
-            {apiErrors.changePassword && (
-                <Text style={{ color: 'red', textAlign: 'center' }}>
-                    {apiErrors.changePassword}
-                </Text>
-            )}
+                        {apiErrors.changePassword && (
+                            <BrandText className="text-red-500 text-center">
+                                {apiErrors.changePassword}
+                            </BrandText>
+                        )}
 
-            <Pressable onPress={handleSubmit}>
-                <Text>Submit</Text>
-            </Pressable>
+                        <View className="mb-6">
+                            <UserInput
+                                icon={PasswordIcon}
+                                value={formData.password}
+                                onChangeText={(text) => handleChange('password', text)}
+                                placeholder="New password"
+                                error={formErrors.password}
+                                secureTextEntry={true}
+                            />
+                        </View>
 
-        </View>
+                        <View className="mb-[50px]">
+                            <UserInput
+                                icon={PasswordIcon}
+                                value={formData.confirmPassword}
+                                onChangeText={(text) => handleChange('confirmPassword', text)}
+                                placeholder="Confirm password"
+                                error={formErrors.confirmPassword}
+                                secureTextEntry={true}
+                            />
+                        </View>
+
+                        <View>
+                            <PrimaryButton onPress={handleSubmit} label="Submit" />
+                        </View>
+                    </View>
+
+                    <View className="items-end">
+                        <BottomSquiggle/>
+                    </View>
+                </View>
+            </KeyboardAwareScrollView>
+        </TouchableWithoutFeedback>
     )
 }
