@@ -1,7 +1,6 @@
 import User from "../models/user.model.js"
 import Family from "../models/family.model.js"
 import { generateToken } from "../utils/generateToken.js"
-// import { Resend } from 'resend';
 import emailjs from "@emailjs/nodejs"
 import crypto from "crypto"
 
