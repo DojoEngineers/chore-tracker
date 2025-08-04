@@ -1,18 +1,17 @@
-import { useNavigation } from "@react-navigation/native"
-import { useState } from "react"
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
-import Toast from 'react-native-toast-message'
-import { checkUsername, register } from "../../services/user.service"
-import { TopSquiggle } from "../../components/squiggles/TopSquiggle"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
+import { UserInput } from "../../components/UserInput"
 import { FirstNameIcon } from "../../components/icons/FirstNameIcon"
 import { EmailIcon } from "../../components/icons/EmailIcon"
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { UserInput } from "../../components/UserInput"
+import { useNavigation } from "@react-navigation/native"
+import { useState } from "react"
+import { checkUsername } from "../../services/user.service"
+import Toast from "react-native-toast-message"
 import { PrimaryButton } from "../../components/PrimaryButton"
-import { BottomLink } from "../../components/BottomLink"
+import { useLogin } from "../../context/UserContext"
 
 const DEFAULT_FORM_VALUES = {
     name: "",
@@ -22,13 +21,15 @@ const DEFAULT_FORM_VALUES = {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const NO_EMOJI_REGEX = /^[\p{L}\p{N}\p{P}\p{Zs}]*$/u
 
-export const ParentRegistration = () => {
+export const AddFamilyMember = ({route}) => {
 
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
     const [formErrors, setFormErrors] = useState({})
 
     const navigation = useNavigation()
+    const { isParent } = route.params
+    const {loggedInData} = useLogin()
 
     // Dynamically set form data
     const handleChange = (name, value) => {
@@ -74,7 +75,6 @@ export const ParentRegistration = () => {
             return
         }
         const { name } = formData
-        const isParent = true
         const username = formData.username.toLowerCase()
         checkUsername(username)
             .then((res) => {
@@ -84,13 +84,13 @@ export const ParentRegistration = () => {
                         text1: "Username already exists."
                     })
                 } else {
-                    register({name, username, isParent})
+                    register({name, username, isParent, family: loggedInData.family})
                         .then( () => { 
                             Toast.show({
                                 type: 'success',
                                 text1: "Account created successfully!"
                             })
-                            navigation.navigate('PasscodeVerification', {username}) 
+                            navigation.navigate('Settings') 
                         })
                         .catch( error => {
                             console.log("register error:", error)
@@ -111,7 +111,7 @@ export const ParentRegistration = () => {
                 })
             })
     }
-    
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <KeyboardAwareScrollView
@@ -120,14 +120,9 @@ export const ParentRegistration = () => {
                 enableOnAndroid={true}
                 extraScrollHeight={20}
             >
-                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
-
+                <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px]">
                     <View>
-                        <View>
-                            <TopSquiggle />
-                        </View>
-
-                        <View className="flex-row p-[17px]">
+                        <View className="flex-row mt-[150px]">
                             <View className="pt-4 ps-2">
                                 <Pressable
                                     onPress={() => navigation.goBack()}
@@ -138,7 +133,7 @@ export const ParentRegistration = () => {
 
                             <View className="flex-1 mb-6 ms-[34px]">
                                 <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                                    Create a parent profile to get started
+                                    {isParent ? "Add another parent" : "Add a kid"}
                                 </BrandBoldText>
                             </View>
                         </View>
@@ -154,45 +149,29 @@ export const ParentRegistration = () => {
                             </BrandText>
                         )}
 
-                        <View className="px-[16px]">
-                            <View className="mb-6">
-                                <UserInput
-                                    icon={FirstNameIcon}
-                                    value={formData.name}
-                                    onChangeText={(text) => handleChange('name', text)}
-                                    placeholder="First name"
-                                    error={formErrors.name}
-                                />
-                            </View>
+                        <View className="mb-6">
+                            <UserInput
+                                icon={FirstNameIcon}
+                                value={formData.name}
+                                onChangeText={(text) => handleChange('name', text)}
+                                placeholder="First name"
+                                error={formErrors.name}
+                            />
+                        </View>
 
-                            <View className="mb-12">
-                                <UserInput
-                                    icon={EmailIcon}
-                                    value={formData.username}
-                                    onChangeText={(text) => handleChange('username', text)}
-                                    placeholder="Email"
-                                    error={formErrors.username}
-                                />
-                            </View>
-
-                            <PrimaryButton onPress={handleSubmit} label="Register"/>
+                        <View className="mb-12">
+                            <UserInput
+                                icon={EmailIcon}
+                                value={formData.username}
+                                onChangeText={(text) => handleChange('username', text)}
+                                placeholder="Email"
+                                error={formErrors.username}
+                            />
                         </View>
                     </View>
-
-                    <View className="mb-20 items-center">
-                        <View className="mb-2">
-                            <BottomLink
-                                onPress={() => navigation.navigate('UsernameVerification')}
-                                text="Already Registerd? "
-                                link="Verify Here"
-                            />
-                        </View>
-
-                            <BottomLink
-                                onPress={() => navigation.navigate('Login')}
-                                text="Already have an account? "
-                                link="Login Now"
-                            />
+                    
+                    <View className="mb-12">
+                        <PrimaryButton onPress={handleSubmit} label="Submit"/>
                     </View>
                 </View>
             </KeyboardAwareScrollView>

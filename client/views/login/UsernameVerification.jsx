@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
-import { Keyboard, Pressable, Text, TextInput, TouchableWithoutFeedback, View } from "react-native"
+import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import Toast from 'react-native-toast-message'
 import { getUserByUsername } from "../../services/user.service"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"

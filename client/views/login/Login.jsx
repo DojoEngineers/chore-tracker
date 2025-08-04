@@ -35,7 +35,11 @@ export const Login = () => {
                 type: 'success',
                 text1: "Login Successful!"
             })
-            navigation.replace('Home')
+            if (data.isParent) {
+            navigation.replace('ParentDashboard')
+            } else {
+                navigation.replace('KidDashboard')
+            }
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }
@@ -70,7 +74,7 @@ export const Login = () => {
                     login(formData)
                         .then(res => {
                             if (res.passwordReset) {
-                                navigation.replace("ChangePassword", {username: formData.username})
+                                navigation.replace("SetPassword", {username: formData.username})
                             }
                             else {
                                 loginUser(res)

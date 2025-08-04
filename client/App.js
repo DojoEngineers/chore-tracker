@@ -14,9 +14,13 @@ import { TutorialAssign } from "./views/login/TutorialAssign";
 import { TutorialTrack } from "./views/login/TutorialTrack";
 import { TutorialResults } from "./views/login/TutorialResults";
 import { ForgotPassword } from "./views/login/ForgotPassword";
-import { ChangePassword } from "./views/login/ChangePassword";
+import { SetPassword } from "./views/login/SetPassword";
 import { Login } from "./views/login/Login";
-import { Home } from "./views/home/Home";
+import { ParentDashboard } from "./views/parent/ParentDashboard";
+import { Settings } from "./views/settings/Settings";
+import { EditProfile } from "./views/settings/EditProfile";
+import { FamilySettings } from "./views/settings/FamilySettings";
+import { AddFamilyMember } from "./views/settings/AddFamilyMember";
 
 export default function App() {
 
@@ -41,10 +45,14 @@ export default function App() {
             <Stack.Screen name="TutorialAssign" component={TutorialAssign}></Stack.Screen>
             <Stack.Screen name="TutorialTrack" component={TutorialTrack}></Stack.Screen>
             <Stack.Screen name="TutorialResults" component={TutorialResults}></Stack.Screen>
-            <Stack.Screen name="Home" component={Home}></Stack.Screen>
+            <Stack.Screen name="ParentDashboard" component={ParentDashboard}></Stack.Screen>
             <Stack.Screen name="Login" component={Login}></Stack.Screen>
             <Stack.Screen name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
-            <Stack.Screen name="ChangePassword" component={ChangePassword}></Stack.Screen>
+            <Stack.Screen name="SetPassword" component={SetPassword}></Stack.Screen>
+            <Stack.Screen name="Settings" component={Settings}></Stack.Screen>
+            <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
+            <Stack.Screen name="FamilySettings" component={FamilySettings}></Stack.Screen>
+            <Stack.Screen name="AddFamilyMember" component={AddFamilyMember}></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
       </GlobalStyling>
