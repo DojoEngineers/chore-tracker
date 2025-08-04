@@ -76,7 +76,6 @@ export const SetPassword = ({route}) => {
     const checkUserToken = async () => {
         console.log("user already logged in:", user)
         try {
-            console.log("Authorization header being sent:", axios.defaults.headers.common['Authorization'])
             const data = await getCurrentUser()
             setLoggedInData(data)
             Toast.show({
