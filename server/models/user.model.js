@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     // The hashed password (stored securely, not plain text)
     password: {
         type: String,
-        required: [false],
+        required: false,
         minLength: [8, `Passwords must be at least eight characters long!`],
         maxLength: [100, `Password cannot exceed 100 characters.`]
     },
@@ -27,8 +27,11 @@ const userSchema = new mongoose.Schema({
         required: [true, "Account type required."]
     },
     family: {
-        type: Array,
-        required:[false]
+        type: String,
+        required:[false],
+        // this ref tells db that this string represents a Family document ID and can be used for .populate()
+        // this way we can use deep populate to get the logged in user's info and and the ids of everyone and their info all in 1 API call.
+        ref: "Family"
     },
     choresCompleted:
     {

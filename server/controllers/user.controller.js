@@ -115,7 +115,7 @@ export const sendTestEmail = async (name, username, code, expiration) => {
 
 };
 
-// adds unverified user to db, creates and links a new family document and sends email with generated code.
+// adds unverified user to db, creates family doc if there isn't any, links family doc to user and sends email with generated code.
 export const registerUser = async (req, res) => {
     console.log("entered register controller. req.body:", req.body)
 
@@ -130,70 +130,74 @@ export const registerUser = async (req, res) => {
 
     try {
         const user = await User.create({
-            ...req.body, children: [], parents: [],
+            ...req.body,
             isVerified: false, isActive: true, verificationCode: code, codeExpirationDate: expiration
         })
-        // create family doc
         if (user) {
             delete user.password //removes password from the object
+        }
+        // create family doc
+        if (!req.body.family) {
             const family = await Family.create({
                 parents: [user._id],
                 children: []
             });
             user.family = family._id;
             await user.save();
-
-            sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
-            res.json({ success: true, message: 'Email sent!' });
         }
+        // Or add to existing family
         else {
-            console.log("user creation failed")
-        }
-    }
-    catch (error) {
-        console.log("register error", error)
-        res.status(500).json({ error: error.message });
-    }
-}
-
-// adds user to prexisting family. body must include: family:"idnumber"
-export const addUser = async (req, res) => {
-    async function generateCode() {
-        // Generate secure random 6-digit code
-        return crypto.randomInt(100000, 999999).toString();
-    }
-    const code = await generateCode()
-    const expiration = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
-    console.log("code", code)
-    console.log("expiration", expiration)
-    try {
-        const user = await User.create({
-            ...req.body, isActive: true, verificationCode: code, codeExpirationDate: expiration})
-
-        if (user) {
-            delete user.password //removes password from the object
-            console.log("api key", process.env.EMAILJS_SERVICE_ID)
-            const family = await Family.findByIdAndUpdate(req.body.family, user.isParent
+            const updatedFamily = await Family.findByIdAndUpdate(req.body.family, user.isParent
                 ? { $addToSet: { parents: user._id } }
                 : { $addToSet: { children: user._id } },
                 { new: true });
-            console.log("family", family)
-
+            console.log("updated family", updatedFamily)
+        }
             sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
-
             res.json({ success: true, message: 'Email sent!' });
         }
-        else {
-            console.log("user creation failed")
-        }
-    }
     catch (error) {
         console.log("register error", error)
         res.status(500).json({ error: error.message });
     }
 }
 
+//Not in use
+// export const addUser = async (req, res) => {
+//     async function generateCode() {
+//         return crypto.randomInt(100000, 999999).toString();
+//     }
+//     const code = await generateCode()
+//     const expiration = new Date(Date.now() + 15 * 60 * 1000);
+//     console.log("code", code)
+//     console.log("expiration", expiration)
+//     try {
+//         const user = await User.create({
+//             ...req.body, isActive: true, verificationCode: code, codeExpirationDate: expiration})
+
+//         if (user) {
+//             delete user.password
+//             console.log("api key", process.env.EMAILJS_SERVICE_ID)
+//             const family = await Family.findByIdAndUpdate(req.body.family, user.isParent
+//                 ? { $addToSet: { parents: user._id } }
+//                 : { $addToSet: { children: user._id } },
+//                 { new: true });
+//             console.log("family", family)
+//             sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
+//             res.json({ success: true, message: 'Email sent!' });
+//         }
+//         else {
+//             console.log("user creation failed")
+//         }
+//     }
+//     catch (error) {
+//         console.log("register error", error)
+//         res.status(500).json({ error: error.message });
+//     }
+// }
+
 // If requested, resets code in db and resends code to user email.
+
 export const resendCode = async (req, res) => {
     async function generateCode() {
         // Generate secure random 6-digit code

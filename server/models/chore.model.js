@@ -31,6 +31,10 @@ const choreSchema = new mongoose.Schema({
         type: Date,
         required: [false]
     },
+    dateApproved: {
+        type: Date,
+        required: [false]
+    },
     stage: {
         type: String,
         enum: ["incomplete", "complete", "approved", "rejected" ],
