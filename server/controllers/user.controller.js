@@ -346,7 +346,7 @@ export const updateUser = async (req, res) => {
     console.log("user REQ.body", req.body)
     try {
         const editedUser = await User.findByIdAndUpdate(
-            req.body._id,
+            req.user.id,
             req.body,
             { new: true, runValidators: true }
         );

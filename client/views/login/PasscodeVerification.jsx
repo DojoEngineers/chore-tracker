@@ -20,7 +20,7 @@ export const PasscodeVerification = ({route}) => {
     const [ apiErrors, setApiErrors ] = useState({})
 
     const navigation = useNavigation()
-    const { username } = route.params
+    const { username, isFirstLogin = false, updatingUsername = false } = route.params
 
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT })
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -36,7 +36,10 @@ export const PasscodeVerification = ({route}) => {
                     type: 'success',
                     text1: "Verification Successful!"
                 })
-                navigation.navigate("SetPassword", {username: res.username})
+                if (updatingUsername) {
+                    navigation.navigate("Login")
+                }
+                navigation.navigate("SetPassword", {username: res.username, isFirstLogin})
             })
             .catch(error => {
                 console.log("verify error:", error)

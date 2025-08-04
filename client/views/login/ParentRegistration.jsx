@@ -90,7 +90,7 @@ export const ParentRegistration = () => {
                                 type: 'success',
                                 text1: "Account created successfully!"
                             })
-                            navigation.navigate('PasscodeVerification', {username}) 
+                            navigation.navigate('PasscodeVerification', {username, isFirstLogin: true})
                         })
                         .catch( error => {
                             console.log("register error:", error)
