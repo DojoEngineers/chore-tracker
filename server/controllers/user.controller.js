@@ -149,6 +149,7 @@ export const registerUser = async (req, res) => {
             const updatedFamily = await Family.findByIdAndUpdate(req.body.family, user.isParent
                 ? { $addToSet: { parents: user._id } }
                 : { $addToSet: { children: user._id } },
+                
                 { new: true });
             console.log("updated family", updatedFamily)
         }
