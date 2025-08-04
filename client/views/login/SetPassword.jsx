@@ -11,6 +11,7 @@ import { UserInput } from "../../components/UserInput"
 import { BottomSquiggle } from "../../components/squiggles/BottomSquiggle"
 import { PasswordIcon } from "../../components/icons/PasswordIcon"
 import { PrimaryButton } from "../../components/PrimaryButton"
+import { BackArrow } from "../../components/icons/BackArrow"
 
 const DEFAULT_FORM_VALUES = {
     password: "",
@@ -19,7 +20,7 @@ const DEFAULT_FORM_VALUES = {
 
 const NO_EMOJI_REGEX = /^[\p{L}\p{N}\p{P}\p{Zs}]*$/u
 
-export const ChangePassword = ({route}) => {
+export const SetPassword = ({route}) => {
 
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
@@ -78,9 +79,19 @@ export const ChangePassword = ({route}) => {
             setLoggedInData(data)
             Toast.show({
                 type: 'success',
-                text1: "Login Successful!"
+                text1: "New password set!"
             })
-            navigation.replace('Home')
+            const createdTime = new Date(data.createdAt).getTime()
+            const now = Date.now()
+            if (now - createdTime <= 30000) {
+                navigation.replace('TutorialAssign')
+            }
+            else if (data.isParent) {
+                navigation.replace('ParentDashboard')
+            }
+            else {
+                navigation.replace('KidDashboard')
+            }
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }
@@ -127,8 +138,13 @@ export const ChangePassword = ({route}) => {
 
                     <View className="px-[16px]">
         
-                        <View className="flex-row justify-center mt-[150px] mb-10">
-                            <BrandBoldText className="text-[30px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[35px]">
+                        <View className="flex-row ps-2 mt-[150px] mb-10 items-center">
+                            <Pressable
+                                onPress={() => navigation.goBack()}
+                            >
+                                <BackArrow/>
+                            </Pressable>
+                            <BrandBoldText className="text-[30px] text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] ps-6">
                                 Create New Password
                             </BrandBoldText>
                         </View>

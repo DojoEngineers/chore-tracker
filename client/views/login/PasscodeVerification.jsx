@@ -1,10 +1,9 @@
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
-import { Pressable, Text, View, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { Pressable, View, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { CodeField, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field'
-import { getCurrentUser, resendCode, verify } from '../../services/user.service'
+import { resendCode, verify } from '../../services/user.service'
 import Toast from 'react-native-toast-message'
-import { useLogin } from "../../context/UserContext"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { BackArrow } from '../../components/icons/BackArrow'
 import { BrandBoldText } from '../../components/text/BrandBoldText'
@@ -22,28 +21,12 @@ export const PasscodeVerification = ({route}) => {
 
     const navigation = useNavigation()
     const { username } = route.params
-    const { login, user, setLoggedInData } = useLogin()
 
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT })
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
         setValue,
     })
-
-    const checkUserToken = async () => {
-        console.log("user already logged in:", user)
-        try {
-            const data = await getCurrentUser()
-            setLoggedInData(data)
-            Toast.show({
-                type: 'success',
-                text1: "Login Successful!"
-            })
-            navigation.replace('TutorialAssign')
-        } catch (error) {
-            console.log('Failed to fetch user data', error)
-        }
-    }
 
     const handleVerify = value => {
         const data = {username, verificationCode: value}
@@ -53,7 +36,7 @@ export const PasscodeVerification = ({route}) => {
                     type: 'success',
                     text1: "Verification Successful!"
                 })
-                navigation.navigate("ChangePassword", {username: res.username})
+                navigation.navigate("SetPassword", {username: res.username})
             })
             .catch(error => {
                 console.log("verify error:", error)
