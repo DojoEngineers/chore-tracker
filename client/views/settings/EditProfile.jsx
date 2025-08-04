@@ -95,7 +95,7 @@ export const EditProfile = () => {
                                 logout()
                                 navigation.reset({
                                     index: 0,
-                                    routes: [{ name: 'PasscodeVerification', params: {username}}]
+                                    routes: [{ name: 'PasscodeVerification', params: {username, updatingUsername: true}}]
                                 })
                             })
                             .catch( error => {

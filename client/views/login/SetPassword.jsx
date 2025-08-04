@@ -12,6 +12,7 @@ import { BottomSquiggle } from "../../components/squiggles/BottomSquiggle"
 import { PasswordIcon } from "../../components/icons/PasswordIcon"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { BackArrow } from "../../components/icons/BackArrow"
+import axios from 'axios';
 
 const DEFAULT_FORM_VALUES = {
     password: "",
@@ -27,7 +28,7 @@ export const SetPassword = ({route}) => {
     const [formErrors, setFormErrors] = useState({})
 
     const navigation = useNavigation()
-    const { username } = route.params
+    const { username, isFirstLogin = false } = route.params
     const { login, user, setLoggedInData } = useLogin()
 
     // Dynamically set form data
@@ -75,15 +76,14 @@ export const SetPassword = ({route}) => {
     const checkUserToken = async () => {
         console.log("user already logged in:", user)
         try {
+            console.log("Authorization header being sent:", axios.defaults.headers.common['Authorization'])
             const data = await getCurrentUser()
             setLoggedInData(data)
             Toast.show({
                 type: 'success',
                 text1: "New password set!"
             })
-            const createdTime = new Date(data.createdAt).getTime()
-            const now = Date.now()
-            if (now - createdTime <= 30000) {
+            if (isFirstLogin) {
                 navigation.replace('TutorialAssign')
             }
             else if (data.isParent) {
@@ -93,7 +93,11 @@ export const SetPassword = ({route}) => {
                 navigation.replace('KidDashboard')
             }
         } catch (error) {
-            console.log('Failed to fetch user data', error)
+            console.log('Failed to fetch user data',{
+                status: error.response?.status,
+                data: error.response?.data,
+                headers: error.response?.headers,
+            })
         }
     }
 
@@ -106,7 +110,8 @@ export const SetPassword = ({route}) => {
             })
             return
         }
-        const data = {username, password: formData.password}
+        const {password, confirmPassword} = formData
+        const data = {username, password, confirmPassword}
         changePassword(data)
             .then(res => {
                 return login(res)
