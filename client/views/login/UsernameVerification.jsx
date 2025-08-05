@@ -70,7 +70,7 @@ export const UsernameVerification = () => {
 
                         <View className="flex-row mt-[150px] mb-4 items-center ps-2">
                             <Pressable
-                                onPress={() => navigation.goBack()}
+                                onPress={() => navigation.navigate("StartingPage")}
                             >
                                 <BackArrow/>
                             </Pressable>

@@ -21,6 +21,8 @@ import { Settings } from "./views/settings/Settings";
 import { EditProfile } from "./views/settings/EditProfile";
 import { FamilySettings } from "./views/settings/FamilySettings";
 import { AddFamilyMember } from "./views/settings/AddFamilyMember";
+import { NewChore } from "./views/parent/NewChore";
+import { NewChoreDetails } from "./views/parent/NewChoreDetails";
 
 export default function App() {
 
@@ -53,6 +55,8 @@ export default function App() {
             <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
             <Stack.Screen name="FamilySettings" component={FamilySettings}></Stack.Screen>
             <Stack.Screen name="AddFamilyMember" component={AddFamilyMember}></Stack.Screen>
+            <Stack.Screen name="NewChore" component={NewChore}></Stack.Screen>
+            <Stack.Screen name="NewChoreDetails" component={NewChoreDetails}></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
       </GlobalStyling>

@@ -1,9 +1,19 @@
 import { useNavigation } from "@react-navigation/native"
 import { Pressable, Text, View } from "react-native"
+import { useLogin } from "../../context/UserContext"
 
 export const TutorialAssign = () => {
 
     const navigation = useNavigation()
+    const {loggedInData} = useLogin()
+    
+    const handleSubmit = () => {
+        if (loggedInData.isParent) {
+            navigation.navigate('ParentDashboard')
+        } else {
+            navigation.navigate('KidDashboard')
+        }
+    }
 
     return (
         <View>
@@ -13,7 +23,7 @@ export const TutorialAssign = () => {
             <Pressable onPress={() => navigation.navigate('TutorialTrack')}> 
                 <Text>Continue</Text>
             </Pressable>
-            <Pressable onPress={() => navigation.navigate('Home')}> 
+            <Pressable onPress={handleSubmit}> 
                 <Text>Skip</Text>
             </Pressable>
         </View>
