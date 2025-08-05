@@ -11,7 +11,15 @@ import { useLogin } from "../../context/UserContext"
 export const Settings = () => {
 
     const navigation = useNavigation()
-    const {loggedInData} = useLogin()
+    const {loggedInData, logout} = useLogin()
+
+    const handleLogout = () => {
+        logout()
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'StartingPage'}]
+        })
+    }
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px]">
@@ -29,6 +37,7 @@ export const Settings = () => {
             <SettingsButton icon={EditProfileIcon} text="Edit Profile" onPress={() => navigation.navigate("EditProfile")}/>
             <SettingsButton icon={FamilySettingsIcon} text="Family Settings" onPress={() => navigation.navigate("FamilySettings")}/>
             <SettingsButton icon={ChangePasswordIcon} text="Change Password" onPress={() => navigation.navigate("SetPassword", {username: loggedInData.username})}/>
+            <SettingsButton icon={EditProfileIcon} text="Logout" onPress={handleLogout}/>
         </View>
     )
 }

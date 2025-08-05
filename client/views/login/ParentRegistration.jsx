@@ -130,7 +130,7 @@ export const ParentRegistration = () => {
                         <View className="flex-row p-[17px]">
                             <View className="pt-4 ps-2">
                                 <Pressable
-                                    onPress={() => navigation.goBack()}
+                                    onPress={() => navigation.navigate("StartingPage")}
                                 >
                                     <BackArrow/>
                                 </Pressable>

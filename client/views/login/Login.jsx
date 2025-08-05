@@ -36,7 +36,7 @@ export const Login = () => {
                 text1: "Login Successful!"
             })
             if (data.isParent) {
-            navigation.replace('ParentDashboard')
+                navigation.replace('ParentDashboard')
             } else {
                 navigation.replace('KidDashboard')
             }
@@ -78,11 +78,6 @@ export const Login = () => {
                             }
                             else {
                                 loginUser(res)
-                                    .then(savedToken => {
-                                        if (savedToken) {
-                                            checkUserToken()
-                                        }
-                                    })
                             }
                         })
                         .catch(error => {
@@ -137,7 +132,7 @@ export const Login = () => {
                             <View className="flex-row items-center ps-2">
                                 <View className="pe-[66px]">
                                     <Pressable
-                                        onPress={() => navigation.goBack()}
+                                        onPress={() => navigation.navigate("StartingPage")}
                                     >
                                         <BackArrow/>
                                     </Pressable>

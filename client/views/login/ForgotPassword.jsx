@@ -82,7 +82,7 @@ export const ForgotPassword = () => {
         
                         <View className="flex-row items-center mt-[150px] mb-8 ps-2">
                             <Pressable
-                                onPress={() => navigation.goBack()}
+                                onPress={() => navigation.navigate("Login")}
                             >
                                 <BackArrow/>
                             </Pressable>
