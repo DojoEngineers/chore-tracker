@@ -10,7 +10,8 @@ choreRouter.route('/all')
     .delete ( deleteAllChores)
 
 choreRouter.route('/')
-    .post(protect, addChore)
+// add protect after done testing
+    .post(addChore)
     .get(getChoresByWorker)
     .put(protect, updateChore)
     .delete (deleteChore)

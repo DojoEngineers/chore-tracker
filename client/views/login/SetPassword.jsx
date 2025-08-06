@@ -29,7 +29,7 @@ export const SetPassword = ({route}) => {
 
     const navigation = useNavigation()
     const { username, isFirstLogin = false } = route.params
-    const { login, user, setLoggedInData } = useLogin()
+    const { login, user, setLoggedInData, setFamilyData } = useLogin()
 
     // Dynamically set form data
     const handleChange = (name, value) => {
@@ -78,6 +78,7 @@ export const SetPassword = ({route}) => {
         try {
             const data = await getCurrentUser()
             setLoggedInData(data)
+            setFamilyData(data.family)
             Toast.show({
                 type: 'success',
                 text1: "New password set!"
