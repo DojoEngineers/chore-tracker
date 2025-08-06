@@ -1,5 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+
+  // Add this line - crucial for Android compatibility
+  darkMode: 'media',
   content: [
     "./App.{js,jsx,ts,tsx}",
     "./views/**/*.{js,jsx,ts,tsx}",
