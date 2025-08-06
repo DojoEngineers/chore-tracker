@@ -132,3 +132,12 @@ export const changePassword = async ({username, password}) => {
         return RES.data
     } catch (error) {throw error}
 }
+
+export const verifyPassword = async ({username, password}) => {
+    try {
+        const RES = await USER_INSTANCE.get('/verifyPassword', {
+            params: {username, password}
+        })
+        return RES.data
+    } catch (error) {throw error}
+}

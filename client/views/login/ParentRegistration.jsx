@@ -130,7 +130,7 @@ export const ParentRegistration = () => {
                         <View className="flex-row p-[17px]">
                             <View className="pt-4 ps-2">
                                 <Pressable
-                                    onPress={() => navigation.navigate("StartingPage")}
+                                    onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
                                 >
                                     <BackArrow/>
                                 </Pressable>

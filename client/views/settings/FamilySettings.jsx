@@ -17,7 +17,7 @@ export const FamilySettings = () => {
 
                 <Pressable
                     className="mb-6 px-2"
-                    onPress={() => navigation.goBack()}
+                    onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
                 >
                     <BackArrow/>
                 </Pressable>
@@ -36,14 +36,14 @@ export const FamilySettings = () => {
                     <BrandBoldText className="text-white text-[20px]">Add a kid</BrandBoldText>
                 </Pressable>
 
-                {/* {loggedInData.family?.parents?.length <= 2 && */}
+                {loggedInData.family.parents.length <= 2 &&
                     <Pressable
                         className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px]"
                         onPress={() => navigation.navigate('AddFamilyMember', {isParent:true})}
                     >
                         <BrandBoldText className="text-white text-[20px]">Add a second parent</BrandBoldText>
                     </Pressable>
-                {/* } */}
+                }
             </View>
         </View>
     )
