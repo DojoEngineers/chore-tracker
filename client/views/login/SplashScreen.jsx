@@ -11,7 +11,7 @@ export const SplashScreen = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            navigation.replace('StartingPage')
+            navigation.replace('StartingPage', {animationType: "fade"})
         }, 2000)
     return () => clearTimeout(timer)
     }, [])

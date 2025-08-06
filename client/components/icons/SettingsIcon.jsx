@@ -4,7 +4,7 @@ import LightSettingsIcon from '../../assets/icons/LightSettingsIcon';
 
 const aspectRatio = 20 / 20
 
-export const SettingsIcon = ({width = 20}) => {
+export const SettingsIcon = ({width = 30}) => {
 
     const colorScheme = useColorScheme()
 

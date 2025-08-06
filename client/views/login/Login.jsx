@@ -132,7 +132,7 @@ export const Login = () => {
                             <View className="flex-row items-center ps-2">
                                 <View className="pe-[66px]">
                                     <Pressable
-                                        onPress={() => navigation.navigate("StartingPage")}
+                                        onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
                                     >
                                         <BackArrow/>
                                     </Pressable>
@@ -189,7 +189,7 @@ export const Login = () => {
                                 </Pressable>
                             </View>
 
-                            <View className="">
+                            <View>
                                 <PrimaryButton onPress={handleLogin} label="Sign in" />
                             </View>
                         </View>

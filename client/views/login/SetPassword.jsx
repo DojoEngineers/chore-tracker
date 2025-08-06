@@ -149,6 +149,7 @@ export const SetPassword = ({route}) => {
                             >
                                 <BackArrow/>
                             </Pressable>
+                            
                             <BrandBoldText className="text-[30px] text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] ps-6">
                                 Create New Password
                             </BrandBoldText>

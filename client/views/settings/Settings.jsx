@@ -17,7 +17,7 @@ export const Settings = () => {
         logout()
         navigation.reset({
             index: 0,
-            routes: [{ name: 'StartingPage'}]
+            routes: [{ name: 'Login', params: { animationType: 'slide_from_left' }}]
         })
     }
 
@@ -25,7 +25,7 @@ export const Settings = () => {
         <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px]">
             <View className="flex-row mt-[100px] items-center ps-2 mb-4">
                 <Pressable
-                    onPress={() => navigation.goBack()}
+                    onPress={() => navigation.navigate(loggedInData.isParent ? "ParentDashboard" : "KidDashboard", {animationType: "slide_from_left"})}
                 >
                     <BackArrow/>
                 </Pressable>
@@ -35,9 +35,12 @@ export const Settings = () => {
                 </BrandBoldText>
             </View>
             <SettingsButton icon={EditProfileIcon} text="Edit Profile" onPress={() => navigation.navigate("EditProfile")}/>
-            <SettingsButton icon={FamilySettingsIcon} text="Family Settings" onPress={() => navigation.navigate("FamilySettings")}/>
-            <SettingsButton icon={ChangePasswordIcon} text="Change Password" onPress={() => navigation.navigate("SetPassword", {username: loggedInData.username})}/>
+            {loggedInData?.isParent &&
+                <SettingsButton icon={FamilySettingsIcon} text="Family Settings" onPress={() => navigation.navigate("FamilySettings")}/>
+            }
+            <SettingsButton icon={ChangePasswordIcon} text="Change Password" onPress={() => navigation.navigate("VerifyPassword", {changePassword: true})}/>
             <SettingsButton icon={EditProfileIcon} text="Logout" onPress={handleLogout}/>
+            <SettingsButton icon={EditProfileIcon} text="Delete Account" onPress={() => navigation.navigate("VerifyPassword", {deleteAccount: true})}/>
         </View>
     )
 }

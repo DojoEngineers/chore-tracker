@@ -128,7 +128,7 @@ export const NewChoreDetails = ({ route }) => {
                         type: 'success',
                         text1: "Chore added"
                     })
-                    navigation.navigate("ParentRegistration")
+                    navigation.navigate("ParentRegistration", {animationType: "fade"})
                 }
                 else {
                     Toast.show({
@@ -154,7 +154,7 @@ export const NewChoreDetails = ({ route }) => {
                     <View className="flex-row w-full mt-[100px] items-center mb-8">
                         <Pressable
                             className="ps-6 pe-8"
-                            onPress={() => navigation.navigate("ParentDashboard")}
+                            onPress={() => navigation.navigate("ParentDashboard", {animationType: "fade"})}
                         >
                             <CloseIcon />
                         </Pressable>

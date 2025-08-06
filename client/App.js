@@ -23,6 +23,8 @@ import { FamilySettings } from "./views/settings/FamilySettings";
 import { AddFamilyMember } from "./views/settings/AddFamilyMember";
 import { NewChore } from "./views/parent/NewChore";
 import { NewChoreDetails } from "./views/parent/NewChoreDetails";
+import { DeleteAccount } from "./views/settings/DeleteAccount";
+import { VerifyPassword } from "./views/settings/VerifyPassword";
 
 export default function App() {
 
@@ -32,6 +34,11 @@ export default function App() {
   })
   if (!fontsLoaded) return null
 
+  const chooseAnimation = ({route}) => {
+    const animationType = route.params?.animationType || 'slide_from_right';
+    return {animation: animationType}
+  }
+
   const Stack = createStackNavigator()
 
   return (
@@ -40,23 +47,25 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="SplashScreen" component={SplashScreen}></Stack.Screen>
-            <Stack.Screen name="StartingPage" component={StartingPage}></Stack.Screen>
+            <Stack.Screen name="StartingPage" component={StartingPage} options={chooseAnimation}></Stack.Screen>
             <Stack.Screen name="ParentRegistration" component={ParentRegistration}></Stack.Screen>
             <Stack.Screen name="PasscodeVerification" component={PasscodeVerification}></Stack.Screen>
             <Stack.Screen name="UsernameVerification" component={UsernameVerification}></Stack.Screen>
             <Stack.Screen name="TutorialAssign" component={TutorialAssign}></Stack.Screen>
             <Stack.Screen name="TutorialTrack" component={TutorialTrack}></Stack.Screen>
             <Stack.Screen name="TutorialResults" component={TutorialResults}></Stack.Screen>
-            <Stack.Screen name="ParentDashboard" component={ParentDashboard}></Stack.Screen>
-            <Stack.Screen name="Login" component={Login}></Stack.Screen>
+            <Stack.Screen name="ParentDashboard" component={ParentDashboard} options={chooseAnimation}></Stack.Screen>
+            <Stack.Screen name="Login" component={Login} options={chooseAnimation}></Stack.Screen>
             <Stack.Screen name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
             <Stack.Screen name="SetPassword" component={SetPassword}></Stack.Screen>
-            <Stack.Screen name="Settings" component={Settings}></Stack.Screen>
+            <Stack.Screen name="Settings" component={Settings} options={chooseAnimation}></Stack.Screen>
             <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
-            <Stack.Screen name="FamilySettings" component={FamilySettings}></Stack.Screen>
+            <Stack.Screen name="FamilySettings" component={FamilySettings} options={chooseAnimation}></Stack.Screen>
             <Stack.Screen name="AddFamilyMember" component={AddFamilyMember}></Stack.Screen>
             <Stack.Screen name="NewChore" component={NewChore}></Stack.Screen>
             <Stack.Screen name="NewChoreDetails" component={NewChoreDetails}></Stack.Screen>
+            <Stack.Screen name="DeleteAccount" component={DeleteAccount}></Stack.Screen>
+            <Stack.Screen name="VerifyPassword" component={VerifyPassword}></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
       </GlobalStyling>

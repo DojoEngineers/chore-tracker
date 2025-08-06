@@ -75,7 +75,6 @@ export const EditProfile = () => {
         }
         const { name } = formData
         const username = formData.username.toLowerCase()
-        const isVerified = false
         if (loggedInData.username != username) {
             checkUsername(username)
                 .then((res) => {
@@ -85,7 +84,7 @@ export const EditProfile = () => {
                             text1: "Username already exists."
                         })
                     } else {
-                        updateUser({name, username, isVerified})
+                        updateUser({name, username, isVerified: false})
                             .then( () => { 
                                 Toast.show({
                                     type: 'success',
@@ -156,7 +155,7 @@ export const EditProfile = () => {
                         <View className="flex-row mt-[150px]">
                             <View className="pt-4 ps-2">
                                 <Pressable
-                                    onPress={() => navigation.goBack()}
+                                    onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
                                 >
                                     <BackArrow/>
                                 </Pressable>

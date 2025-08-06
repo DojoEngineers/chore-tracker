@@ -11,6 +11,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandText } from "../../components/text/BrandText"
 import { PrimaryButton } from "../../components/PrimaryButton"
+import { useLogin } from "../../context/UserContext"
 
 export const ForgotPassword = () => {
 
@@ -18,6 +19,7 @@ export const ForgotPassword = () => {
     const [ apiErrors, setApiErrors ] = useState({})
 
     const navigation = useNavigation()
+    const {logout} = useLogin()
 
     const resetPassword = () => {
         getUserByUsername(username)
@@ -42,7 +44,11 @@ export const ForgotPassword = () => {
                                 type: 'success',
                                 text1: "Email sent!",
                             })
-                            navigation.replace("Login")
+                            logout()
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'Login', params: { animationType: 'slide_from_left' }}]
+                            })
                         })
                         .catch(error => {
                             console.log("sendPassword error: ", error)
@@ -82,7 +88,7 @@ export const ForgotPassword = () => {
         
                         <View className="flex-row items-center mt-[150px] mb-8 ps-2">
                             <Pressable
-                                onPress={() => navigation.navigate("Login")}
+                                onPress={() => navigation.goBack()}
                             >
                                 <BackArrow/>
                             </Pressable>
