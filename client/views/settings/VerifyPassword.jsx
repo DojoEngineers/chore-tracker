@@ -98,6 +98,7 @@ export const VerifyPassword = ({route}) => {
                                 value={password}
                                 placeholder="Password"
                                 secureTextEntry={true}
+                                onChangeText={setPassword}
                             />
                         </View>
 
