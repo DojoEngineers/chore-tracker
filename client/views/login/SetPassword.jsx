@@ -90,7 +90,7 @@ export const SetPassword = ({route}) => {
                 navigation.replace('ParentDashboard')
             }
             else {
-                navigation.replace('KidDashboard')
+                navigation.replace('ParentDashboard') // Change to kid dashboard when finished
             }
         } catch (error) {
             console.log('Failed to fetch user data',{

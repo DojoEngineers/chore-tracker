@@ -25,7 +25,7 @@ export const Settings = () => {
         <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px]">
             <View className="flex-row mt-[100px] items-center ps-2 mb-4">
                 <Pressable
-                    onPress={() => navigation.navigate(loggedInData.isParent ? "ParentDashboard" : "KidDashboard", {animationType: "slide_from_left"})}
+                    onPress={() => navigation.navigate(loggedInData.isParent ? "ParentDashboard" : "ParentDashboard", {animationType: "slide_from_left"})} // Change to kid dashboard when finished
                 >
                     <BackArrow/>
                 </Pressable>

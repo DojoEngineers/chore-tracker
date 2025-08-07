@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 import Toast from "react-native-toast-message"
 import { BrandText } from "../../components/text/BrandText"
+import { PrimaryButton } from "../../components/PrimaryButton"
 
 
 export const DeleteAccount = () => {
