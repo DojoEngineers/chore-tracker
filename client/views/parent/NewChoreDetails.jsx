@@ -128,7 +128,7 @@ export const NewChoreDetails = ({ route }) => {
                         type: 'success',
                         text1: "Chore added"
                     })
-                    navigation.navigate("ParentRegistration", {animationType: "fade"})
+                    navigation.navigate("ParentDashboard", {animationType: "fade"})
                 }
                 else {
                     Toast.show({
