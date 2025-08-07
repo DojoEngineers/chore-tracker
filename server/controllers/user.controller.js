@@ -149,13 +149,13 @@ export const registerUser = async (req, res) => {
             const updatedFamily = await Family.findByIdAndUpdate(req.body.family, user.isParent
                 ? { $addToSet: { parents: user._id } }
                 : { $addToSet: { children: user._id } },
-                
+
                 { new: true });
             console.log("updated family", updatedFamily)
         }
-            sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
-            res.json({ success: true, message: 'Email sent!' });
-        }
+        sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
+        res.json({ success: true, message: 'Email sent!' });
+    }
     catch (error) {
         console.log("register error", error)
         res.status(500).json({ error: error.message });
@@ -237,11 +237,36 @@ export const verifyUser = async (req, res) => {
             console.log("wrong code/email")
             return res.status(404).json({ message: 'Wrong code/email' })
         }
-        res.status(200).json({username: USER.username})
+        res.status(200).json({ username: USER.username })
     }
     catch (error) {
         console.log("error", error)
         res.status(400).json({ message: error.message || 'An error occurred while verifying' })
+    }
+}
+
+// checks if inputted pw is correct (used before changing pw or deleting account)
+export const verifyPassword = async (req, res) => {
+    console.log("name", req.query.username)
+    console.log("pw", req.query.password)
+    try {
+        const USER = await User.findOne({ username: req.query.username })
+        if (!USER) {
+            console.log("no user found")
+            return res.json(false)
+        }
+        else {
+            const isMatch = await USER.matchPassword(req.query.password)
+            if (!isMatch) {
+                return res.json(false)
+            }
+            console.log("verified...")
+            return res.json(true)
+        }
+    }
+    catch (error) {
+        console.log("verify pw error", error)
+        throw error
     }
 }
 
@@ -313,8 +338,8 @@ export const getCurrentUser = async (req, res) => {
         const USER = await User.findById(req.user._id).select(`-password`).populate({
             path: 'family',
             populate: [
-                { path: 'children', model:"User" },
-                { path: 'parents', model:"User", select: "name isParent _id" }
+                { path: 'children', model: "User" },
+                { path: 'parents', model: "User", select: "name isParent _id" }
             ]
         }).lean();
         if (!USER) {

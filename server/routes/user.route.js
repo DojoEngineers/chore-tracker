@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { protect } from "../middleware/authMiddleware.js"
-import { getCurrentUser, loginUser, registerUser, updateUser, checkUsername, getUserByUsername, verifyUser, changePassword, resendCode, sendPassword, deleteUser, getAllUsers } from "../controllers/user.controller.js"
+import { getCurrentUser, loginUser, registerUser, updateUser, checkUsername, getUserByUsername, verifyUser, verifyPassword, changePassword, resendCode, sendPassword, deleteUser, getAllUsers } from "../controllers/user.controller.js"
 // import { verify } from "jsonwebtoken"
 
 const userRouter = Router()
@@ -32,6 +32,9 @@ userRouter.route('/getUserByUsername')
 
 userRouter.route('/verify')
     .post(verifyUser)
+
+    userRouter.route('/verifyPassword')
+    .get(verifyPassword)
 
 userRouter.route('/resendCode')
     .post(resendCode)
