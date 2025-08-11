@@ -5,46 +5,72 @@ import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-nativ
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { useState, useEffect } from "react"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
-import { UserInput } from "../../components/UserInput"
+// import { UserInput } from "../../components/UserInput"
 import { CloseIcon } from "../../components/icons/CloseIcon"
 import { BrandText } from "../../components/text/BrandText"
-import SwitchToggle from 'react-native-switch-toggle';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { addChore } from "../../services/chore.service"
+import { PrimaryButton } from "../../components/PrimaryButton"
+import { Switch } from 'react-native-paper';
+import { useColorScheme } from 'react-native';
+import { TextInput } from "react-native"
 
 //NOTE: familyData in userContext is currently empty. Right now, I'm getting the data from inside of loggedInData.family
 
 const DEFAULT_FORM_VALUES = {
-    details: ""
-
+    // childValue: "",
+    // date: "",
+    // time: "",
+    // repeatValue: "",
+    // requirePhotos: false,
+    details: "",
 }
 
 export const NewChoreDetails = ({ route }) => {
+    const {title} = route.params
+
+    // for checking dark/light mode inside inputs that dont support nativewind's classname.
+    const colorScheme = useColorScheme()
+    const isDark = colorScheme === "dark"
+
+    // variables for validating selected date. User must select a date between today and 1 month from now.
+    const today = new Date();
+    const aMonthFromNow = new Date();
+    aMonthFromNow.setMonth(today.getMonth() + 1);
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1)
+    const aWeekFromNow = new Date();
+    aWeekFromNow.setDate(today.getDate() + 7)
+    const sixPM = new Date();
+    sixPM.setHours(18, 0, 0, 0);
+
+    const [repeat, setRepeat] = useState([{ label: "never", value: "never" }, { label: "daily", value: "daily" }, { label: "weekly", value: "weekly" }, { label: "monthly", value: "monthly" }])
+    const [openRepeat, setOpenRepeat] = useState(false)
+    const [repeatValue, setRepeatValue] = useState(repeat[0]["value"])
 
     const [apiErrors, setApiErrors] = useState({})
     const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
     const [formErrors, setFormErrors] = useState({})
 
-    const { title } = route.params
     const navigation = useNavigation()
     const { loggedInData, familyData } = useLogin()
 
-    // an array of objects that hold the name/id of each child in family
+    // an array of objects that hold the name/id of each child in family. Required for the dropDownPicker.
     const [children, setChildren] = useState("")
 
     // dropdown picker variables (select a child)
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
+    const [childValue, setChildValue] = useState(null);
     const [items, setItems] = useState([])
     // { label: 'Rue', value: 'edrttyfg' }, { label: 'Goo', value: 'dfkhhfks' }
 
     //"require photos" toggle boolean
-    const [isOn, setIsOn] = useState(false);
+    const [requirePhotos, setRequirePhotos] = useState(false);
 
     //Sets date/time to today
-    const [date, setDate] = useState(new Date())
-    const [time, setTime] = useState(new Date())
+    const [date, setDate] = useState(tomorrow)
+    const [time, setTime] = useState(sixPM)
 
     // controls when date/time modals are open/closed
     const [openTime, setOpenTime] = useState(false)
@@ -80,7 +106,7 @@ export const NewChoreDetails = ({ route }) => {
         const validations = {
             details: value => (
                 value.length < 5 ? "Details must be at least 5 characters."
-                    : value.length > 250 ? "Details cannot exceed 250 characters."
+                    : value.length >= 100 ? "Details cannot exceed 100 characters."
                         : false
             )
         }
@@ -95,12 +121,16 @@ export const NewChoreDetails = ({ route }) => {
                 return false
             }
         }
+        if (!childValue) {
+            return false
+        }
         console.log("ready")
         return true
     }
 
     // Submit form
     const handleSubmit = async () => {
+        console.log("add...")
         if (!isReadyToSubmit()) {
             Toast.show({
                 type: 'error',
@@ -118,26 +148,26 @@ export const NewChoreDetails = ({ route }) => {
                 0, 0
             );
             const allData = {
-                title: title, details: formData.details,
-                creator: loggedInData._id, worker: value, dueDate: dateTime, needsPics: isOn
+                title: title, details: formData.details, creator: loggedInData._id,
+                worker: childValue, dueDate: dateTime, needsPics: requirePhotos, repeat: repeatValue,
             }
             addChore(allData)
-            .then(res => {
-                if (res) {
-                    Toast.show({
-                        type: 'success',
-                        text1: "Chore added"
-                    })
-                    navigation.navigate("ParentDashboard", {animationType: "fade"})
-                }
-                else {
-                    Toast.show({
-                        type: 'error',
-                        text1: "Unable to add chore"
-                    })
-                }
+                .then(res => {
+                    if (res) {
+                        Toast.show({
+                            type: 'success',
+                            text1: "Chore added"
+                        })
+                        navigation.navigate("ParentDashboard", { animationType: "fade" })
+                    }
+                    else {
+                        Toast.show({
+                            type: 'error',
+                            text1: "Unable to add chore"
+                        })
+                    }
 
-            })
+                })
         }
     }
 
@@ -149,12 +179,14 @@ export const NewChoreDetails = ({ route }) => {
                 enableOnAndroid={true}
                 extraScrollHeight={20}
             >
-                <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px]">
-
-                    <View className="flex-row w-full mt-[100px] items-center mb-8">
+                {/* bg-lightBg dark:bg-darkBg */}
+                <View className="flex-1 px-[16px]"
+                style={{backgroundColor: isDark? "#22252B" : "white"}}>
+                    {/* is there a reason we need 100px for marginTop? */}
+                    <View className="flex-row w-full mt-[50px] items-center mb-8">
                         <Pressable
                             className="ps-6 pe-8"
-                            onPress={() => navigation.navigate("ParentDashboard", {animationType: "fade"})}
+                            onPress={() => navigation.navigate("ParentDashboard", { animationType: "fade" })}
                         >
                             <CloseIcon />
                         </Pressable>
@@ -163,63 +195,51 @@ export const NewChoreDetails = ({ route }) => {
                         </BrandBoldText>
                     </View>
 
-                    <View>
-                        <BrandText
-                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-2 my-5"
-                        >
-                            Notes
-                        </BrandText>
-
-                        <UserInput
-                            value={formData.details}
-                            onChangeText={(text) => handleChange('details', text)}
-                            placeholder="Add notes"
-                            error={formErrors.details}
-                        />
-                    </View>
-
-                    {/* <View className="flex-row justify-between items-center">
-                        <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
-                            Assign to
-                        </BrandText>
-                    </View> */}
-                    <View>
+                    <View
+                        style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems:"center"}}>
+                        <BrandBoldText className="text-black dark:text-white">Assign to</BrandBoldText>
                         <DropDownPicker
                             open={open}
-                            value={value}
+                            value={childValue}
                             items={items}
                             setOpen={setOpen}
-                            setValue={setValue}
+                            setValue={setChildValue}
                             setItems={setItems}
-                            placeholder="Assign to"
+                            placeholder="Pick one"
                             listMode="SCROLLVIEW"
+                            containerStyle={{
+                                width: 150, // This controls the overall container
+                            }}
                             style={{
-                                backgroundColor: '#000000',
-                                borderColor: '#333333',
+                                backgroundColor: "transparent",
+                                border: 2,
+                                borderColor: isDark ? "white" : "#22252B",
+                            }}
+                            arrowIconContainerStyle={{
+                                marginRight: 10, // Moves arrow away from right edge
                             }}
                             textStyle={{
-                                color: '#ffffff',
+                                color: isDark ? "white" : "#22252B",
+                                paddingLeft: 10,
+                                fontFamily: "nunito"
                             }}
                             placeholderStyle={{
-                                color: '#ffffff',
+                                color: isDark ? "white" : "#22252B",
+                                fontFamily: "nunito"
                             }}
 
                             // Open state styling
-                            dropDownContainerStyle={{
-                                backgroundColor: '#000000',
-                                borderColor: '#333333',
-                            }}
-                            listItemLabelStyle={{
-                                color: '#ffffff',
-                            }}
-                            selectedItemLabelStyle={{
-                                color: '#ffffff',
-                                fontWeight: 'bold',
+                            dropDownContainerStyle=
+                            {{
+                                backgroundColor: isDark ? "#22252B" : "white",
+                                width: 150
                             }}
 
                             // Arrow styling
                             arrowIconStyle={{
                                 tintColor: '#ffffff',
+                                marginLeft: 5,
+                                color: isDark ? "white" : "#22252B"
                             }}
                             tickIconStyle={{
                                 tintColor: '#ffffff',
@@ -232,83 +252,197 @@ export const NewChoreDetails = ({ route }) => {
                         />
                     </View>
 
-                    <BrandBoldText>Due date:</BrandBoldText>
-                    <View style={{ marginTop: 20 }}>
-                        <Pressable onPress={() => { setOpenDate(true) }}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                backgroundColor: "lightblue",
-                                borderRadius: 5,
-                                paddingHorizontal: 20,
-                                paddingVertical: 10
-                            }}
-                        ><BrandBoldText>Select a date</BrandBoldText></Pressable>
-                        {openDate &&
-                            <DateTimePicker value={date} mode="date" display="default"
-                                onChange={(event, selectedDate) => {
-                                    setOpenDate(false);
-                                    if (selectedDate) { setDate(selectedDate) };
-                                }} />
-                        }
-                        <BrandBoldText>Date: {date.toDateString()} </BrandBoldText>
-                    </View>
-                    <View style={{ marginVertical: 20 }}>
-                        <Pressable onPress={() => { setOpenTime(true) }}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                backgroundColor: "lightblue",
-                                borderRadius: 5,
-                                paddingHorizontal: 20,
-                                paddingVertical: 10
-                            }}
-                        ><BrandBoldText>Select a time</BrandBoldText></Pressable>
-                        {openTime &&
-                            <DateTimePicker value={time} mode="time" display="default"
-                                onChange={(event, selectedTime) => {
-                                    setOpenTime(false);
-                                    if (selectedTime) { setTime(selectedTime) };
-                                }} />
-                        }
-                        <BrandBoldText>Time: {time.toLocaleTimeString('en-US', {
-                            hour: 'numeric',
-                            minute: '2-digit'
-                        })}</BrandBoldText>
-                    </View>
-                    <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-around", alignItems: "center", width: "100%" }}>
-                        <View>
-                            <BrandBoldText>Require photos?</BrandBoldText>
+                    <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
+
+                    <View className="w-[100%] flex-row items-start gap-20 justify-between">
+                        <BrandBoldText className="text-black dark:text-white" style={{ paddingVertical: 10 }}>Due Date</BrandBoldText>
+                        <View className="flex-col items-center">
+                            <BrandText className="text-black dark:text-white">Select date</BrandText>
+                            <Pressable onPress={() => { setOpenDate(true) }}
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    backgroundColor: "black",
+                                    borderWidth: 1,
+                                    borderColor: isDark? "white" : "black",
+                                    borderRadius: 5,
+                                    paddingHorizontal: 20,
+                                    paddingVertical: 10,
+                                }}
+                            >
+                            <BrandBoldText className="text-black dark:text-white flex justify-center">{date.toDateString()} </BrandBoldText>
+                         </Pressable>
+                            {openDate &&
+                                <DateTimePicker value={date} mode="date" display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setOpenDate(false);
+                                        if (selectedDate) { setDate(selectedDate) };
+                                    }}
+                                    minimumDate={today}
+                                    maximumDate={aMonthFromNow}
+                                />
+                            }
+                        
+                            
+
                         </View>
-                        <SwitchToggle
-                            switchOn={isOn}
-                            onPress={() => setIsOn(!isOn)}
-                            backgroundColorOn='#6D6D6D'
-                            backgroundColorOff='#C4C4C4'
-                            circleColorOff='#343434ff'
-                            circleColorOn='#ffffffff'
+                    </View>
+
+                    <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
+
+                    <View className="w-[100%] gap-20 flex-row items-start justify-between">
+                        <BrandBoldText className="text-black dark:text-white flex" style={{ paddingVertical: 10 }}>Time Due</BrandBoldText>
+                        <View className="flex-col items-center">
+                            <BrandText style={{ color: isDark ? "white" : "black" }}>Select time</BrandText>
+                            <Pressable onPress={() => { setOpenTime(true) }}
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    backgroundColor: "black",
+                                    borderWidth: 1,
+                                    borderColor: isDark? "white" : "black",
+                                    borderRadius: 5,
+                                    borderRadius: 5,
+                                    paddingHorizontal: 20,
+                                    paddingVertical: 10,
+                                }}
+                            ><BrandBoldText className="text-black dark:text-white">{time.toLocaleTimeString('en-US', {
+                                    hour: 'numeric',
+                                    minute: '2-digit'
+                                })}</BrandBoldText></Pressable>
+                            {openTime &&
+                                <DateTimePicker value={time} mode="time" display="default"
+                                    onChange={(event, selectedTime) => {
+                                        setOpenTime(false);
+                                        if (selectedTime) { setTime(selectedTime) };
+                                    }} />
+                            }
+                        </View>
+                    </View>
+
+                    <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
+
+                    <View className="flex-row w-[100%] justify-between items-start mt-[20px]">
+                        <BrandBoldText className="text-black dark:text-white mt-[10px]">Repeat</BrandBoldText>
+                        <DropDownPicker
+                            open={openRepeat}
+                            value={repeatValue}
+                            items={repeat}
+                            setOpen={setOpenRepeat}
+                            setValue={setRepeatValue}
+                            setItems={setRepeat}
+                            listMode="SCROLLVIEW"
                             containerStyle={{
-                                marginTop: 16,
-                                marginBottom: 16,
-                                width: 106,
-                                height: 48,
-                                borderRadius: 25,
-                                padding: 5,
+                                width: 150, // This controls the overall container
                             }}
-                            circleStyle={{
-                                width: 30,
-                                height: 30,
-                                borderRadius: 20,
+                            style={{
+                                backgroundColor: "transparent",
+                                border: 2,
+                                borderColor: isDark ? "white" : "black",
+                            }}
+                            arrowIconContainerStyle={{
+                                marginRight: 10, // Moves arrow away from right edge
+                            }}
+                            textStyle={{
+                                color: isDark ? "white" : "black",
+                                paddingLeft: 10,
+                                fontFamily: "nunito"
+                            }}
+                            // placeholderStyle={ `text-black dark:text-white bg-white dark:bg-black`}
+                            //{{
+                            //     color: colorScheme === 'dark' ? "black" : '#ffffff',
+                            //     fontFamily: "nunito"
+                            // }}
+
+                            // Open state styling
+                            dropDownContainerStyle=
+                            {{
+                                backgroundColor: isDark ? "black" : "white",
+                                width: 150,
+
+                            }}
+                            // listItemLabelStyle={ `text-black dark:text-white bg-white dark:bg-black`}
+                            // {{
+                            //     color: '#ffffff',
+                            // }}
+                            // selectedItemLabelStyle={{`text-black dark:text-white bg-white dark:bg-black`}}
+                            // {{
+                            //     color: '#ffffff',
+                            //     fontWeight: 'bold',
+                            // }}
+
+                            // Arrow styling
+                            arrowIconStyle={{
+                                tintColor: '#ffffff',
+                                marginLeft: 5,
+                                color: isDark ? "white" : "black"
+                            }}
+                            tickIconStyle={{
+                                tintColor: '#ffffff',
+                            }}
+
+                            // Additional styling
+                            labelStyle={{
+                                color: '#ffffff',
                             }}
                         />
                     </View>
 
-                    <View className="mt-8">
-                        <Pressable onPress={handleSubmit} style={{ backgroundColor: "#FB943C", padding: 20 }}><BrandText>Create</BrandText></Pressable>
+                    <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
+
+                    <View className="flex-row justify-between items-center w-[100%]">
+                        < View >
+                            <BrandBoldText className="text-black dark:text-white">Require photos?</BrandBoldText>
+                        </View>
+                        <Switch
+                            value={requirePhotos}
+                            onValueChange={setRequirePhotos}
+                            color="#ff8000ff"
+                            style={{ transform: [{ scale: 1.5 }] }}
+                        />
+                    </View>
+
+                    <View className="h-[1px] mt-6 mb-4 bg-black dark:bg-white"></View>
+
+                    <View className="flex-row justify-between items-start">
+                        <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-2 mt-4">
+                            Notes
+                        </BrandText>
+
+                        {/* <UserInput
+                            multiline={true}
+                            numberOfLines={4}
+                            value={formData.details}
+                            onChangeText={(text) => handleChange('details', text)}
+                            placeholder="Add notes"
+                            error={formErrors.details}
+                        /> */}
+                        <View className="dark:border dark:border-white dark:bg-transparent bg-white rounded-lg shadow-md h-[100px] w-[70%] mt-4">
+                            <TextInput
+                                multiline={true}
+                                numberOfLines={3}
+                                value={formData.details}
+                                onChangeText={(text) => handleChange('details', text)}
+                                placeholder="Add optional note"
+                                error={formErrors.details}
+                                style={{
+                                    textAlignVertical: 'top',
+                                    fontSize: 15,
+                                    color: isDark ? "white" : "black",
+                                    paddingHorizontal: 10
+                                }}
+                                placeholderTextColor={isDark? "white" : "black"}
+                            />
+                        </View>
+
+
+                    </View>
+                    <View className="mt-8 mb-14">
+                        <PrimaryButton onPress={handleSubmit} label="Add" />
                     </View>
 
                 </View>
-            </KeyboardAwareScrollView>
-        </TouchableWithoutFeedback>
+            </KeyboardAwareScrollView >
+        </TouchableWithoutFeedback >
     )
 }

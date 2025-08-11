@@ -25,6 +25,7 @@
     "react-native-confirmation-code-field": "^8.0.1",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-paper": "^5.14.5",
     "react-native-safe-area-context": "^5.4.0",
     "react-native-svg": "15.11.2",
     "react-native-switch-toggle": "^2.2.1",
