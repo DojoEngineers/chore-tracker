@@ -28,7 +28,7 @@ const DEFAULT_FORM_VALUES = {
 }
 
 export const NewChoreDetails = ({ route }) => {
-    const {title} = route.params
+    const { title } = route.params
 
     // for checking dark/light mode inside inputs that dont support nativewind's classname.
     const colorScheme = useColorScheme()
@@ -47,7 +47,7 @@ export const NewChoreDetails = ({ route }) => {
 
     const [repeat, setRepeat] = useState([{ label: "never", value: "never" }, { label: "daily", value: "daily" }, { label: "weekly", value: "weekly" }, { label: "monthly", value: "monthly" }])
     const [openRepeat, setOpenRepeat] = useState(false)
-    const [repeatValue, setRepeatValue] = useState(repeat[0]["value"])
+    const [repeatValue, setRepeatValue] = useState(repeat[0].value)
 
     const [apiErrors, setApiErrors] = useState({})
     const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
@@ -177,11 +177,11 @@ export const NewChoreDetails = ({ route }) => {
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled"
                 enableOnAndroid={true}
-                extraScrollHeight={20}
+                extraScrollHeight={100}
             >
                 {/* bg-lightBg dark:bg-darkBg */}
                 <View className="flex-1 px-[16px]"
-                style={{backgroundColor: isDark? "#22252B" : "white"}}>
+                    style={{ backgroundColor: isDark ? "#22252B" : "white" }}>
                     {/* is there a reason we need 100px for marginTop? */}
                     <View className="flex-row w-full mt-[50px] items-center mb-8">
                         <Pressable
@@ -196,7 +196,7 @@ export const NewChoreDetails = ({ route }) => {
                     </View>
 
                     <View
-                        style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems:"center"}}>
+                        style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <BrandBoldText className="text-black dark:text-white">Assign to</BrandBoldText>
                         <DropDownPicker
                             open={open}
@@ -211,43 +211,40 @@ export const NewChoreDetails = ({ route }) => {
                                 width: 150, // This controls the overall container
                             }}
                             style={{
-                                backgroundColor: "transparent",
+                                backgroundColor: isDark ? "black" : "white",
                                 border: 2,
-                                borderColor: isDark ? "white" : "#22252B",
+                                borderColor: isDark ? "white" : "black",
                             }}
                             arrowIconContainerStyle={{
                                 marginRight: 10, // Moves arrow away from right edge
                             }}
                             textStyle={{
-                                color: isDark ? "white" : "#22252B",
+                                color: isDark ? "white" : "black",
                                 paddingLeft: 10,
                                 fontFamily: "nunito"
                             }}
                             placeholderStyle={{
-                                color: isDark ? "white" : "#22252B",
+                                color: isDark ? "white" : "black",
                                 fontFamily: "nunito"
                             }}
-
                             // Open state styling
                             dropDownContainerStyle=
                             {{
                                 backgroundColor: isDark ? "#22252B" : "white",
                                 width: 150
                             }}
-
                             // Arrow styling
                             arrowIconStyle={{
-                                tintColor: '#ffffff',
+                                tintColor: isDark ? "white" : "black",
                                 marginLeft: 5,
-                                color: isDark ? "white" : "#22252B"
+                                color: isDark ? "white" : "black"
                             }}
                             tickIconStyle={{
-                                tintColor: '#ffffff',
+                                tintColor: isDark ? "white" : "black",
                             }}
-
                             // Additional styling
                             labelStyle={{
-                                color: '#ffffff',
+                                color: isDark ? "white" : "black",
                             }}
                         />
                     </View>
@@ -262,16 +259,16 @@ export const NewChoreDetails = ({ route }) => {
                                 style={{
                                     display: "flex",
                                     alignItems: "center",
-                                    backgroundColor: "black",
+                                    backgroundColor: isDark ? "black" : "white",
                                     borderWidth: 1,
-                                    borderColor: isDark? "white" : "black",
+                                    borderColor: isDark ? "white" : "black",
                                     borderRadius: 5,
                                     paddingHorizontal: 20,
                                     paddingVertical: 10,
                                 }}
                             >
-                            <BrandBoldText className="text-black dark:text-white flex justify-center">{date.toDateString()} </BrandBoldText>
-                         </Pressable>
+                                <BrandBoldText className="text-black dark:text-white flex justify-center">{date.toDateString()} </BrandBoldText>
+                            </Pressable>
                             {openDate &&
                                 <DateTimePicker value={date} mode="date" display="default"
                                     onChange={(event, selectedDate) => {
@@ -282,8 +279,8 @@ export const NewChoreDetails = ({ route }) => {
                                     maximumDate={aMonthFromNow}
                                 />
                             }
-                        
-                            
+
+
 
                         </View>
                     </View>
@@ -298,18 +295,17 @@ export const NewChoreDetails = ({ route }) => {
                                 style={{
                                     display: "flex",
                                     alignItems: "center",
-                                    backgroundColor: "black",
+                                    backgroundColor: isDark ? "black" : "white",
                                     borderWidth: 1,
-                                    borderColor: isDark? "white" : "black",
-                                    borderRadius: 5,
+                                    borderColor: isDark ? "white" : "black",
                                     borderRadius: 5,
                                     paddingHorizontal: 20,
                                     paddingVertical: 10,
                                 }}
                             ><BrandBoldText className="text-black dark:text-white">{time.toLocaleTimeString('en-US', {
-                                    hour: 'numeric',
-                                    minute: '2-digit'
-                                })}</BrandBoldText></Pressable>
+                                hour: 'numeric',
+                                minute: '2-digit'
+                            })}</BrandBoldText></Pressable>
                             {openTime &&
                                 <DateTimePicker value={time} mode="time" display="default"
                                     onChange={(event, selectedTime) => {
@@ -336,10 +332,12 @@ export const NewChoreDetails = ({ route }) => {
                                 width: 150, // This controls the overall container
                             }}
                             style={{
-                                backgroundColor: "transparent",
+                                backgroundColor: isDark ? "black" : "white",
                                 border: 2,
                                 borderColor: isDark ? "white" : "black",
+                                color: isDark? "white" : "black"
                             }}
+
                             arrowIconContainerStyle={{
                                 marginRight: 10, // Moves arrow away from right edge
                             }}
@@ -348,42 +346,27 @@ export const NewChoreDetails = ({ route }) => {
                                 paddingLeft: 10,
                                 fontFamily: "nunito"
                             }}
-                            // placeholderStyle={ `text-black dark:text-white bg-white dark:bg-black`}
-                            //{{
-                            //     color: colorScheme === 'dark' ? "black" : '#ffffff',
-                            //     fontFamily: "nunito"
-                            // }}
 
                             // Open state styling
                             dropDownContainerStyle=
                             {{
                                 backgroundColor: isDark ? "black" : "white",
                                 width: 150,
-
                             }}
-                            // listItemLabelStyle={ `text-black dark:text-white bg-white dark:bg-black`}
-                            // {{
-                            //     color: '#ffffff',
-                            // }}
-                            // selectedItemLabelStyle={{`text-black dark:text-white bg-white dark:bg-black`}}
-                            // {{
-                            //     color: '#ffffff',
-                            //     fontWeight: 'bold',
-                            // }}
 
                             // Arrow styling
                             arrowIconStyle={{
-                                tintColor: '#ffffff',
+                                tintColor: isDark ? "white" : "black",
                                 marginLeft: 5,
                                 color: isDark ? "white" : "black"
                             }}
                             tickIconStyle={{
-                                tintColor: '#ffffff',
+                                tintColor: "white",
                             }}
 
-                            // Additional styling
+                            // styles the selected value
                             labelStyle={{
-                                color: '#ffffff',
+                                color: isDark? "white": "black",
                             }}
                         />
                     </View>
@@ -408,16 +391,7 @@ export const NewChoreDetails = ({ route }) => {
                         <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-2 mt-4">
                             Notes
                         </BrandText>
-
-                        {/* <UserInput
-                            multiline={true}
-                            numberOfLines={4}
-                            value={formData.details}
-                            onChangeText={(text) => handleChange('details', text)}
-                            placeholder="Add notes"
-                            error={formErrors.details}
-                        /> */}
-                        <View className="dark:border dark:border-white dark:bg-transparent bg-white rounded-lg shadow-md h-[100px] w-[70%] mt-4">
+                        <View className="border-[1px] dark:border-black dark:border-white dark:bg-transparent bg-white rounded-lg shadow-md h-[100px] w-[70%] mt-4">
                             <TextInput
                                 multiline={true}
                                 numberOfLines={3}
@@ -429,9 +403,9 @@ export const NewChoreDetails = ({ route }) => {
                                     textAlignVertical: 'top',
                                     fontSize: 15,
                                     color: isDark ? "white" : "black",
-                                    paddingHorizontal: 10
+                                    paddingHorizontal: 10,
                                 }}
-                                placeholderTextColor={isDark? "white" : "black"}
+                                placeholderTextColor={isDark ? "white" : "black"}
                             />
                         </View>
 
