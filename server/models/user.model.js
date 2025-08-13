@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
         // this way we can use deep populate to get the logged in user's info and and the ids of everyone and their info all in 1 API call.
         ref: "Family"
     },
+    firstLogin:{
+        type:Boolean,
+        default: true
+    },
     choresCompleted:
     {
         type: Number,
