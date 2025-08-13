@@ -10,9 +10,8 @@ const choreSchema = new mongoose.Schema({
     },
     details: {
         type: String,
-        required: [true, 'Details required.'],
-        minLength: [5, `Details must be at least 5 characters.`],
-        maxLength: [250, `Details cannot exceed 250 characters.`]
+        required: [false],
+        maxLength: [100, `Details cannot exceed 100 characters.`]
     },
     creator: {
         type: String,
@@ -39,6 +38,12 @@ const choreSchema = new mongoose.Schema({
         type: String,
         enum: ["incomplete", "complete", "approved", "rejected" ],
         default: "incomplete",
+        required: [true]
+    },
+    repeat: {
+        type: String,
+        enum:["never", "daily", "weekly", "monthly"],
+        default: "never",
         required: [true]
     },
     needsPics: {
