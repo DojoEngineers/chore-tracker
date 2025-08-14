@@ -35,6 +35,9 @@ export const Login = () => {
                 type: 'success',
                 text1: "Login Successful!"
             })
+            if (data.firstLogin) {
+                navigation.replace('TutorialAssign')
+            }
             if (data.isParent) {
                 navigation.replace('ParentDashboard')
             } else {
