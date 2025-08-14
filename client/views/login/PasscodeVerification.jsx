@@ -20,7 +20,7 @@ export const PasscodeVerification = ({route}) => {
     const [ apiErrors, setApiErrors ] = useState({})
 
     const navigation = useNavigation()
-    const { username, isFirstLogin = false, updatingUsername = false } = route.params
+    const { username, updatingUsername = false } = route.params
 
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT })
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -39,7 +39,7 @@ export const PasscodeVerification = ({route}) => {
                 if (updatingUsername) {
                     navigation.navigate("Login")
                 }
-                navigation.navigate("SetPassword", {username: res.username, isFirstLogin})
+                navigation.navigate("SetPassword", {username: res.username})
             })
             .catch(error => {
                 console.log("verify error:", error)
@@ -83,6 +83,7 @@ export const PasscodeVerification = ({route}) => {
 
                         <View className="flex-row items-center mt-[150px] mb-4 ps-2">
                             <Pressable
+                                hitSlop={20}
                                 onPress={() => navigation.goBack()}
                             >
                                 <BackArrow/>

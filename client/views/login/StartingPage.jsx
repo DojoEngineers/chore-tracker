@@ -4,10 +4,46 @@ import { BrandBoldText } from '../../components/text/BrandBoldText'
 import { BrandText } from '../../components/text/BrandText'
 import { LogoTopSquiggle } from "../../components/squiggles/LogoTopSquiggle"
 import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle"
+import { useLogin } from "../../context/UserContext"
+import { getCurrentUser } from "../../services/user.service"
+import Toast from "react-native-toast-message"
+import { useEffect } from "react"
 
 export const StartingPage = () => {
 
     const navigation = useNavigation()
+    const {user, isLoggingOut, isLoggedIn, setLoggedInData} = useLogin()
+
+    const checkUserToken = async () => {
+        console.log("user already logged in:", user)
+        try {
+            const data = await getCurrentUser()
+            setLoggedInData(data)
+            Toast.show({
+                type: 'success',
+                text1: "Login Successful!"
+            })
+            if (data.isParent) {
+                navigation.replace('ParentDashboard')
+            } else {
+                navigation.replace('KidDashboard')
+            }
+        } catch (error) {
+            console.log('Failed to fetch user data', error)
+        }
+    }
+
+    useEffect(() => {
+        console.log("login useEffect")
+        if (!user || !user._id) {
+            console.log("No valid user, staying on login page")
+            return;
+        }
+        const timer = setTimeout(() => {
+            checkUserToken()
+        }, 200)
+        return () => clearTimeout(timer)
+    }, [])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
@@ -41,7 +77,7 @@ export const StartingPage = () => {
             <View>
                 <View className="flex-row px-[16px] justify-center">
                     <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">Added by a parent? </BrandText>
-                    <Pressable onPress={() => navigation.navigate('UsernameVerification')}>
+                    <Pressable hitSlop={20} onPress={() => navigation.navigate('UsernameVerification')}>
                         <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">Verify Here</BrandBoldText>
                     </Pressable>
                 </View>

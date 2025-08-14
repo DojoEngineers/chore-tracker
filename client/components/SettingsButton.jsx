@@ -11,7 +11,7 @@ export const SettingsButton = ({icon:Icon, text, onPress}) => {
     return (
             <Pressable
                 onPress={onPress}
-                className="flex-row items-center justify-between w-full rounded-full py-5"
+                className="flex-row items-center justify-between w-full py-5"
             >
                 <View className="flex-1 flex-row items-center">
                     {Icon && <Icon />}

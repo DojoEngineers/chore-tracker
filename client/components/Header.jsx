@@ -27,6 +27,7 @@ export const Header = () => {
                     </BrandText>
                 </View>
                 <Pressable
+                    hitSlop={20}
                     onPress={() => navigation.navigate("Settings")}
                 >
                 <SettingsIcon />
