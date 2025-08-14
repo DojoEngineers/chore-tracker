@@ -12,6 +12,7 @@ import { checkUsername, resendCode, updateUser } from "../../services/user.servi
 import { useLogin } from "../../context/UserContext"
 import Toast from "react-native-toast-message"
 import { PrimaryButton } from "../../components/PrimaryButton"
+import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle"
 
 const DEFAULT_FORM_VALUES = {
     name: "",
@@ -150,28 +151,22 @@ export const EditProfile = () => {
                 enableOnAndroid={true}
                 extraScrollHeight={20}
             >
-                <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px]">
-                    <View>
+                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
+                    <View className="px-[16px]">
                         <View className="flex-row mt-[150px]">
-                            <View className="pt-4 ps-2">
-                                <Pressable
-                                    onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
-                                >
-                                    <BackArrow/>
-                                </Pressable>
-                            </View>
+                            <Pressable
+                                className="pt-4 ps-2"
+                                hitSlop={20}
+                                onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
+                            >
+                                <BackArrow/>
+                            </Pressable>
 
-                            <View className="flex-1 mb-6 ms-[34px]">
+                            <View className="flex-1 mb-8 ms-[34px]">
                                 <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
                                     Edit Profile
                                 </BrandBoldText>
                             </View>
-                        </View>
-
-                        <View className="items-center mb-8">
-                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                                Email verification is required upon updating your email.
-                            </BrandText>
                         </View>
 
                         {apiErrors.updateUser && (
@@ -195,7 +190,7 @@ export const EditProfile = () => {
                             />
                         </View>
 
-                        <View className="mb-12">
+                        <View className="mb-6">
                             <UserInput
                                 icon={EmailIcon}
                                 value={formData.username}
@@ -204,10 +199,21 @@ export const EditProfile = () => {
                                 error={formErrors.username}
                             />
                         </View>
+
+                        <View className="items-center">
+                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
+                                Email verification is required upon updating your email.
+                            </BrandText>
+                        </View>
                     </View>
                     
-                    <View className="mb-12">
-                        <PrimaryButton onPress={handleSubmit} label="Confirm"/>
+                    <View className="items-end">
+
+                        <View className="px-[16px] w-full -mb-[60px] z-10">
+                            <PrimaryButton onPress={handleSubmit} label="Confirm"/>
+                        </View>
+
+                        <LogoBottomSquiggle />
                     </View>
                 </View>
             </KeyboardAwareScrollView>

@@ -2,8 +2,6 @@ import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-nativ
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { useNavigation } from "@react-navigation/native"
-import { PasswordIcon } from "../../components/icons/PasswordIcon"
-import { UserInput } from "../../components/UserInput"
 import { verifyPassword } from "../../services/user.service"
 import Toast from "react-native-toast-message"
 import { useState } from "react"
@@ -13,6 +11,7 @@ import { BrandText } from "../../components/text/BrandText"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { BottomSquiggle } from "../../components/squiggles/BottomSquiggle"
 import { BottomLink } from "../../components/BottomLink"
+import { PasswordInput } from "../../components/PasswordInput"
 
 export const VerifyPassword = ({route}) => {
 
@@ -65,6 +64,7 @@ export const VerifyPassword = ({route}) => {
         
                         <View className="flex-row ps-2 mt-[150px] mb-10 items-center">
                             <Pressable
+                                hitSlop={20}
                                 onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
                             >
                                 <BackArrow/>
@@ -93,11 +93,9 @@ export const VerifyPassword = ({route}) => {
                         )}
 
                         <View className="mb-6">
-                            <UserInput
-                                icon={PasswordIcon}
+                            <PasswordInput
                                 value={password}
                                 placeholder="Password"
-                                secureTextEntry={true}
                                 onChangeText={setPassword}
                             />
                         </View>

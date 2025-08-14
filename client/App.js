@@ -25,6 +25,9 @@ import { NewChore } from "./views/parent/NewChore";
 import { NewChoreDetails } from "./views/parent/NewChoreDetails";
 import { DeleteAccount } from "./views/settings/DeleteAccount";
 import { VerifyPassword } from "./views/settings/VerifyPassword";
+import { Help } from "./views/settings/Help";
+import { Terms } from "./views/settings/Terms";
+import { Privacy } from "./views/settings/Privacy";
 
 export default function App() {
 
@@ -66,6 +69,9 @@ export default function App() {
             <Stack.Screen name="NewChoreDetails" component={NewChoreDetails}></Stack.Screen>
             <Stack.Screen name="DeleteAccount" component={DeleteAccount}></Stack.Screen>
             <Stack.Screen name="VerifyPassword" component={VerifyPassword}></Stack.Screen>
+            <Stack.Screen name="Help" component={Help}></Stack.Screen>
+            <Stack.Screen name="Terms" component={Terms}></Stack.Screen>
+            <Stack.Screen name="Privacy" component={Privacy}></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
       </GlobalStyling>

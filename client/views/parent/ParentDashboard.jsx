@@ -1,4 +1,4 @@
-import { Pressable, Text, View } from "react-native"
+import { View } from "react-native"
 import { useLogin } from "../../context/UserContext"
 import { useNavigation } from "@react-navigation/native"
 import { Header } from "../../components/Header"

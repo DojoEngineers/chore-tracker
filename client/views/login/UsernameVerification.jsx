@@ -70,6 +70,7 @@ export const UsernameVerification = () => {
 
                         <View className="flex-row mt-[150px] mb-4 items-center ps-2">
                             <Pressable
+                                hitSlop={20}
                                 onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
                             >
                                 <BackArrow/>

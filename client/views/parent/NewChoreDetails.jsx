@@ -185,6 +185,7 @@ export const NewChoreDetails = ({ route }) => {
                     {/* is there a reason we need 100px for marginTop? */}
                     <View className="flex-row w-full mt-[50px] items-center mb-8">
                         <Pressable
+                            hitSlop={20}
                             className="ps-6 pe-8"
                             onPress={() => navigation.navigate("ParentDashboard", { animationType: "fade" })}
                         >
