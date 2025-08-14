@@ -1,18 +1,16 @@
 import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
-import { Keyboard, Pressable, Text, TextInput, TouchableWithoutFeedback, View } from "react-native"
+import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import Toast from "react-native-toast-message"
 import { changePassword, getCurrentUser } from "../../services/user.service"
 import { useLogin } from "../../context/UserContext"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
-import { UserInput } from "../../components/UserInput"
 import { BottomSquiggle } from "../../components/squiggles/BottomSquiggle"
-import { PasswordIcon } from "../../components/icons/PasswordIcon"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { BackArrow } from "../../components/icons/BackArrow"
-import axios from 'axios';
+import { PasswordInput } from "../../components/PasswordInput"
 
 const DEFAULT_FORM_VALUES = {
     password: "",
@@ -28,7 +26,7 @@ export const SetPassword = ({route}) => {
     const [formErrors, setFormErrors] = useState({})
 
     const navigation = useNavigation()
-    const { username, isFirstLogin = false } = route.params
+    const { username } = route.params
     const { login, user, setLoggedInData, setFamilyData } = useLogin()
 
     // Dynamically set form data
@@ -83,21 +81,18 @@ export const SetPassword = ({route}) => {
                 type: 'success',
                 text1: "New password set!"
             })
-            if (isFirstLogin) {
+            if (data.firstLogin) {
                 navigation.replace('TutorialAssign')
             }
             else if (data.isParent) {
+                console.log("Navigating to parent dashboard")
                 navigation.replace('ParentDashboard')
             }
             else {
-                navigation.replace('ParentDashboard') // Change to kid dashboard when finished
+                navigation.replace('KidDashboard')
             }
         } catch (error) {
-            console.log('Failed to fetch user data',{
-                status: error.response?.status,
-                data: error.response?.data,
-                headers: error.response?.headers,
-            })
+            console.log('Failed to fetch user data', error)
         }
     }
 
@@ -114,12 +109,8 @@ export const SetPassword = ({route}) => {
         const data = {username, password, confirmPassword}
         changePassword(data)
             .then(res => {
-                return login(res)
-            })
-            .then(savedToken => {
-                if (savedToken) {
-                    checkUserToken()
-                }
+                login(res)
+                    .then(()=> checkUserToken())
             })
             .catch(error => {
                 console.log("changePassword error:", error)
@@ -145,6 +136,7 @@ export const SetPassword = ({route}) => {
         
                         <View className="flex-row ps-2 mt-[150px] mb-10 items-center">
                             <Pressable
+                                hitSlop={20}
                                 onPress={() => navigation.goBack()}
                             >
                                 <BackArrow/>
@@ -168,24 +160,20 @@ export const SetPassword = ({route}) => {
                         )}
 
                         <View className="mb-6">
-                            <UserInput
-                                icon={PasswordIcon}
+                            <PasswordInput
                                 value={formData.password}
                                 onChangeText={(text) => handleChange('password', text)}
                                 placeholder="New password"
                                 error={formErrors.password}
-                                secureTextEntry={true}
                             />
                         </View>
 
                         <View className="mb-[50px]">
-                            <UserInput
-                                icon={PasswordIcon}
+                            <PasswordInput
                                 value={formData.confirmPassword}
                                 onChangeText={(text) => handleChange('confirmPassword', text)}
                                 placeholder="Confirm password"
                                 error={formErrors.confirmPassword}
-                                secureTextEntry={true}
                             />
                         </View>
 

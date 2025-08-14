@@ -6,7 +6,8 @@ import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 import Toast from "react-native-toast-message"
 import { BrandText } from "../../components/text/BrandText"
-import { PrimaryButton } from "../../components/PrimaryButton"
+import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle"
+import { updateUser } from "../../services/user.service"
 
 
 export const DeleteAccount = () => {
@@ -16,17 +17,17 @@ export const DeleteAccount = () => {
     const {logout} = useLogin()
     const navigation = useNavigation()
 
-    handleSubmit = () => {
+    const handleSubmit = () => {
         updateUser({isActive: false})
             .then( () => { 
                 Toast.show({
                     type: 'success',
-                    text1: "Profile successfully deleted!"
+                    text1: "Account successfully deleted!"
                 })
                 logout()
                 navigation.reset({
                     index: 0,
-                    routes: [{ name: 'StartingPage', params: {animationType: "swipe_from_left"}}]
+                    routes: [{ name: 'StartingPage', params: {animationType: "slide_from_left"}}]
                 })
             })
             .catch( error => {
@@ -40,22 +41,25 @@ export const DeleteAccount = () => {
     }
 
     return (
-        <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px]">
-            <View className="flex-row mt-[100px] items-center ps-2 mb-4">
-                <Pressable
-                    onPress={() => navigation.goBack()}
-                >
-                    <BackArrow/>
-                </Pressable>
+        <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
+            <View className="px-[16px]">
+                <View className="flex-row mt-[150px] mb-[60px] items-center ps-2 mb-4">
+                    <Pressable
+                        hitSlop={20}
+                        onPress={() => navigation.goBack()}
+                    >
+                        <BackArrow/>
+                    </Pressable>
                 
-                <BrandBoldText className="text-[36px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[41px] ml-8">
-                    Delete Account
-                </BrandBoldText>
+                    <BrandBoldText className="text-[36px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[41px] ml-8">
+                        Delete Account
+                    </BrandBoldText>
+                </View>
 
-                <View className="items-center mb-6 px-2">
-                    <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
-                        WARNING! Are you sure you want to delete your account? This cannot be undone.
-                    </BrandText>
+                <View className="items-center mb-[60px] px-2">
+                    <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] text-center">
+                        WARNING!{"\n"}{"\n"}Are you sure you want to delete your account?{"\n"}{"\n"}This cannot be undone.
+                    </BrandBoldText>
                 </View>
 
                 {apiErrors.updateUser && (
@@ -65,9 +69,19 @@ export const DeleteAccount = () => {
                 )}
 
                 <View>
-                    <PrimaryButton onPress={handleSubmit} label="Delete Account" />
+                    <Pressable
+                        onPress={handleSubmit}
+                        className="p-[10px] rounded-full items-center justify-center bg-[#F40000] w-full h-[56px]"
+                    >
+                        <BrandBoldText className="text-white text-[20px]">
+                            Delete account
+                        </BrandBoldText>
+                    </Pressable>
                 </View>
+            </View>
 
+            <View className="items-end">
+                <LogoBottomSquiggle />
             </View>
         </View>
     )

@@ -12,6 +12,7 @@ import { checkUsername, register } from "../../services/user.service"
 import Toast from "react-native-toast-message"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { useLogin } from "../../context/UserContext"
+import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle"
 
 const DEFAULT_FORM_VALUES = {
     name: "",
@@ -120,16 +121,16 @@ export const AddFamilyMember = ({route}) => {
                 enableOnAndroid={true}
                 extraScrollHeight={20}
             >
-                <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px]">
-                    <View>
-                        <View className="flex-row mt-[150px]">
-                            <View className="pt-4 ps-2">
-                                <Pressable
-                                    onPress={() => navigation.navigate("FamilySettings", {animationType: "slide_from_left"})}
-                                >
-                                    <BackArrow/>
-                                </Pressable>
-                            </View>
+                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
+                    <View className="px-[16px]">
+                        <View className="flex-row mt-[100px]">
+                            <Pressable
+                                className="pt-4 ps-2"
+                                hitSlop={20}
+                                onPress={() => navigation.navigate("FamilySettings", {animationType: "slide_from_left"})}
+                            >
+                                <BackArrow/>
+                            </Pressable>
 
                             <View className="flex-1 mb-6 ms-[34px]">
                                 <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
@@ -168,11 +169,14 @@ export const AddFamilyMember = ({route}) => {
                                 error={formErrors.username}
                             />
                         </View>
-                    </View>
-                    
-                    <View className="mb-12">
+
                         <PrimaryButton onPress={handleSubmit} label="Submit"/>
                     </View>
+
+                    <View className="items-end">
+                        <LogoBottomSquiggle />
+                    </View>
+                    
                 </View>
             </KeyboardAwareScrollView>
         </TouchableWithoutFeedback>

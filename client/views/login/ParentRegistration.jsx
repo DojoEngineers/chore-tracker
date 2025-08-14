@@ -90,7 +90,7 @@ export const ParentRegistration = () => {
                                 type: 'success',
                                 text1: "Account created successfully!"
                             })
-                            navigation.navigate('PasscodeVerification', {username, isFirstLogin: true})
+                            navigation.navigate('PasscodeVerification', {username})
                         })
                         .catch( error => {
                             console.log("register error:", error)
@@ -128,13 +128,13 @@ export const ParentRegistration = () => {
                         </View>
 
                         <View className="flex-row p-[17px]">
-                            <View className="pt-4 ps-2">
-                                <Pressable
-                                    onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
-                                >
-                                    <BackArrow/>
-                                </Pressable>
-                            </View>
+                            <Pressable
+                                hitSlop={20}
+                                className="pt-4 ps-2"
+                                onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
+                            >
+                                <BackArrow/>
+                            </Pressable>
 
                             <View className="flex-1 mb-6 ms-[34px]">
                                 <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">

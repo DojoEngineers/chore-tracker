@@ -7,13 +7,12 @@ export const UserInput = ({
     value,
     onChangeText,
     placeholder,
-    error,
-    secureTextEntry = false
+    error = false,
     }) => {
 
-        // Text input placeholder color
-        const colorScheme = useColorScheme();
-        const placeholderColor = colorScheme === 'dark' ? '#FFFFFF' : '#737780';
+    // Text input placeholder color
+    const colorScheme = useColorScheme();
+    const placeholderColor = colorScheme === 'dark' ? '#FFFFFF' : '#737780';
 
     return (
         <View>
@@ -23,12 +22,11 @@ export const UserInput = ({
             <View className="dark:border dark:border-white dark:bg-transparent bg-white rounded-full shadow-md px-[16px] ps-[24px] flex-row items-center w-full h-[50px]">
                 {Icon && <Icon />}
                 <TextInput
-                value={value}
-                onChangeText={onChangeText}
-                placeholder={placeholder}
-                placeholderTextColor={placeholderColor}
-                secureTextEntry={secureTextEntry}
-                className="flex-1 ml-[16px] text-[15px] font-nunito dark:text-white text-lightSecondaryText"
+                    value={value}
+                    onChangeText={onChangeText}
+                    placeholder={placeholder}
+                    placeholderTextColor={placeholderColor}
+                    className="flex-1 ml-[16px] text-[15px] font-nunito dark:text-white text-lightSecondaryText"
                 />
             </View>
         </View>

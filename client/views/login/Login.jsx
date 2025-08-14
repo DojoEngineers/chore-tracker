@@ -3,7 +3,7 @@ import { useLogin } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
 import { useNavigation } from '@react-navigation/native'
 import { getCurrentUser, getUserByUsername, login } from "../../services/user.service"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { BrandText } from "../../components/text/BrandText"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { TopSquiggle } from "../../components/squiggles/TopSquiggle"
@@ -11,9 +11,9 @@ import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { UserInput } from "../../components/UserInput"
 import { EmailIcon } from "../../components/icons/EmailIcon"
-import { PasswordIcon } from "../../components/icons/PasswordIcon"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { BottomLink } from "../../components/BottomLink"
+import { PasswordInput } from "../../components/PasswordInput"
 
 export const Login = () => {
 
@@ -24,7 +24,7 @@ export const Login = () => {
         })
 
     const navigation = useNavigation()
-    const { login: loginUser, user, isLoggingOut, isLoggedIn, setLoggedInData } = useLogin()
+    const { login: loginUser, user, setLoggedInData } = useLogin()
 
     const checkUserToken = async () => {
         console.log("user already logged in:", user)
@@ -35,6 +35,9 @@ export const Login = () => {
                 type: 'success',
                 text1: "Login Successful!"
             })
+            if (data.firstLogin) {
+                navigation.replace('TutorialAssign')
+            }
             if (data.isParent) {
                 navigation.replace('ParentDashboard')
             } else {
@@ -44,18 +47,6 @@ export const Login = () => {
             console.log('Failed to fetch user data', error)
         }
     }
-
-    useEffect(() => {
-        console.log("login useEffect")
-        if (!user || !user._id) {
-            console.log("No valid user, staying on login page")
-            return;
-        }
-        const timer = setTimeout(() => {
-            checkUserToken()
-        }, 200)
-        return () => clearTimeout(timer)
-    }, [user, isLoggingOut, isLoggedIn])
 
     const handleChange = (name, value) => {
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -78,6 +69,7 @@ export const Login = () => {
                             }
                             else {
                                 loginUser(res)
+                                    .then(()=> checkUserToken())
                             }
                         })
                         .catch(error => {
@@ -130,13 +122,13 @@ export const Login = () => {
                         <View className="px-[16px] mt-[75px]">
 
                             <View className="flex-row items-center ps-2">
-                                <View className="pe-[66px]">
-                                    <Pressable
-                                        onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
-                                    >
-                                        <BackArrow/>
-                                    </Pressable>
-                                </View>
+                                <Pressable
+                                    className="pe-[66px]"
+                                    hitSlop={20}
+                                    onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
+                                >
+                                    <BackArrow/>
+                                </Pressable>
 
                                 <View className="">
                                     <BrandBoldText className="text-[32px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[37px]">
@@ -172,12 +164,10 @@ export const Login = () => {
                             </View>
 
                             <View className="mb-8">
-                                <UserInput
-                                    icon={PasswordIcon}
+                                <PasswordInput
                                     value={formData.password}
                                     onChangeText={(text) => handleChange('password', text)}
                                     placeholder="Password"
-                                    secureTextEntry={true}
                                 />
                             </View>
 
