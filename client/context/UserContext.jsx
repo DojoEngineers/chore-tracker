@@ -38,9 +38,9 @@ export const UserContextProvider = ({ children }) => {
                 // Theme
                 const storedTheme = await AsyncStorage.getItem('theme');
                 if (storedTheme) {
-                    setTheme(storedTheme);
-                    if (storedTheme === 'l') setColorScheme('light');
-                    else if (storedTheme === 'd') setColorScheme('dark');
+                    setAppTheme(storedTheme)
+                } else {
+                    setAppTheme('a')
                 }
 
                 } catch (error) {
@@ -50,13 +50,6 @@ export const UserContextProvider = ({ children }) => {
 
         loadData()
     }, [])
-
-    // Dynamically set theme
-    useEffect(() => {
-        if (theme === 'l') setColorScheme('light')
-        else if (theme === 'd') setColorScheme('dark')
-        else setColorScheme('system')
-    }, [theme])
 
     const toggleNotifications = async (value) => {
         setNotifications(value)
@@ -74,8 +67,7 @@ export const UserContextProvider = ({ children }) => {
         } else if (value === 'd') {
             setColorScheme('dark')
         } else {
-            const systemScheme = Appearance.getColorScheme()
-            setColorScheme(systemScheme)
+            setColorScheme('system')
         }
         try {
             await AsyncStorage.setItem('theme', value);

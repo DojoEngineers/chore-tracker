@@ -28,6 +28,8 @@ import { VerifyPassword } from "./views/settings/VerifyPassword";
 import { Help } from "./views/settings/Help";
 import { Terms } from "./views/settings/Terms";
 import { Privacy } from "./views/settings/Privacy";
+import { Kids } from "./views/parent/Kids";
+import { KidDetails } from "./views/parent/KidDetails";
 
 export default function App() {
 
@@ -72,6 +74,8 @@ export default function App() {
             <Stack.Screen name="Help" component={Help}></Stack.Screen>
             <Stack.Screen name="Terms" component={Terms}></Stack.Screen>
             <Stack.Screen name="Privacy" component={Privacy}></Stack.Screen>
+            <Stack.Screen name="Kids" component={Kids} options={chooseAnimation}></Stack.Screen>
+            <Stack.Screen name="KidDetails" component={KidDetails} options={chooseAnimation}></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
       </GlobalStyling>

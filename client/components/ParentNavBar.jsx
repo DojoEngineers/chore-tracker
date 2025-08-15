@@ -17,7 +17,9 @@ export const ParentNavBar = () => {
     const navigation = useNavigation()
     const route = useRoute()
     const homeRoutes = ['ParentDashboard']
+    const kidsRoutes = ['Kids']
     const isOnHome = homeRoutes.includes(route.name)
+    const isOnKids = kidsRoutes.includes(route.name)
 
     return (
         <View className="relative">
@@ -26,7 +28,7 @@ export const ParentNavBar = () => {
                     ?
                         <Pressable
                             className="justify-center items-center"
-                            onPress={[]}
+                            onPress={() => {}}
                         >
                             <HighlightedHomeIcon width={26} />
                             <BrandText className="text-lightButton dark:text-darkButton mt-1 text-[14px]">
@@ -36,7 +38,7 @@ export const ParentNavBar = () => {
                     :
                         <Pressable
                             className="justify-center items-center"
-                            onPress={[]}
+                            onPress={() => navigation.navigate("ParentDashboard", {animationType: "fade"})}
                         >
                             <HomeIcon width={26} />
                             <BrandText className="text-[#D0D1D4] mt-1 text-[14px]">
@@ -44,11 +46,11 @@ export const ParentNavBar = () => {
                             </BrandText>
                         </Pressable>
                 }
-                {!isOnHome
+                {!isOnHome && !isOnKids
                     ?
                         <Pressable
                             className="justify-center items-center"
-                            onPress={[]}
+                            onPress={() => {}}
                         >
                             <HighlightedTodayIcon width={26} />
                             <BrandText className="text-lightButton dark:text-darkButton mt-1 text-[14px]">
@@ -58,7 +60,7 @@ export const ParentNavBar = () => {
                     :
                         <Pressable
                             className="justify-center items-center"
-                            onPress={[]}
+                            onPress={() => {}}
                         >
                             <TodayIcon width={26} />
                             <BrandText className="text-[#D0D1D4] mt-1 text-[14px]">
@@ -67,11 +69,11 @@ export const ParentNavBar = () => {
                         </Pressable>
                 }
                 <View className="justify-center items-center"></View>
-                {!isOnHome
+                {!isOnHome && !isOnKids
                     ?
                         <Pressable
                             className="justify-center items-center"
-                            onPress={[]}
+                            onPress={() => {}}
                         >
                             <HighlightedApproveIcon width={28} />
                             <BrandText className="text-lightButton dark:text-darkButton mt-1 text-[14px]">
@@ -81,21 +83,21 @@ export const ParentNavBar = () => {
                     :
                         <Pressable
                             className="justify-center items-center"
-                            onPress={[]}
+                            onPress={() => {}}
                         >
-                            <ApproveIcon width={26} />
+                            <ApproveIcon width={28} />
                             <BrandText className="text-[#D0D1D4] mt-1 text-[14px]">
                                 Approve
                             </BrandText>
                         </Pressable>
                 }
-                {!isOnHome
+                {isOnKids
                     ?
                         <Pressable
                             className="justify-center items-center"
-                            onPress={[]}
+                            onPress={() => navigation.navigate("Kids", {animationType: "fade"})}
                         >
-                            <HighlightedKidsIcon width={22} />
+                            <HighlightedKidsIcon width={26} />
                             <BrandText className="text-lightButton dark:text-darkButton mt-1 text-[14px]">
                                 Kids
                             </BrandText>
@@ -103,7 +105,7 @@ export const ParentNavBar = () => {
                     :
                         <Pressable
                             className="justify-center items-center"
-                            onPress={[]}
+                            onPress={() => navigation.navigate("Kids", {animationType: "fade"})}
                         >
                             <KidsIcon width={26} />
                             <BrandText className="text-[#D0D1D4] mt-1 text-[14px]">
