@@ -10,7 +10,7 @@ const choreSchema = new mongoose.Schema({
     },
     details: {
         type: String,
-        required: [false],
+        required: false,
         maxLength: [100, `Details cannot exceed 100 characters.`]
     },
     creator: {
@@ -26,38 +26,42 @@ const choreSchema = new mongoose.Schema({
         type: Date,
         required: [true, "Please assign a due date."],
     },
+    day: {
+        type: String,
+        enum: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        required: false
+    },
     dateCompleted: {
         type: Date,
-        required: [false]
+        required: false
     },
     dateApproved: {
         type: Date,
-        required: [false]
+        required: false
     },
     stage: {
         type: String,
-        enum: ["incomplete", "complete", "approved", "rejected" ],
+        enum: ["incomplete", "complete", "approved", "rejected"],
         default: "incomplete",
-        required: [true]
+        required: [true, "must have stage."]
     },
     repeat: {
         type: String,
-        enum:["never", "daily", "weekly", "monthly"],
+        enum: ["never", "daily", "weekly", "monthly"],
         default: "never",
-        required: [true]
+        required: [true, "must state if chore repeats"]
     },
     needsPics: {
         type: Boolean,
-        default: false,
-        required: [true]
+        default: false
     },
     beforePic: {
         type: String,
-        required: [false]
+        required: false
     },
     afterPic: {
         type: String,
-        required: [false]
+        required: false
     },
     isActive: {
         type: Boolean,
