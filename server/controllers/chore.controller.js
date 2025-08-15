@@ -65,8 +65,31 @@ export async function getChoresByCreator(req, res) {
 export const addChore = async (req, res) => {
     console.log("addChore controller. req.body:", req.body)
     try {
-        const CHORE = await Chore.create({...req.body, stage:"incomplete", isActive:true, })
-        res.status(201).json(CHORE)
+        if (req.body.repeat == "never") {
+            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, })
+            res.status(201).json(CHORE)
+        }
+        else if (req.body.repeat == "daily") {
+            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, })
+            console.log("running cron job. Daily.")
+            res.status(201).json(CHORE)
+        }
+        else if (req.body.repeat == "daily") {
+            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, })
+            console.log("running cron job. Daily.")
+            res.status(201).json(CHORE)
+        }
+        else if (req.body.repeat == "weekly") {
+            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, })
+            console.log("running cron job. Weekly.")
+            res.status(201).json(CHORE)
+        }
+        else if (req.body.repeat == "monthly") {
+            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, })
+            console.log("running cron job. Monthly.")
+            res.status(201).json(CHORE)
+        }
+
     } catch (error) {
         console.log("addChore controller error", error)
         res.status(400).json(error)
