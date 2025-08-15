@@ -51,13 +51,13 @@ export const Settings = () => {
                         <BackArrow/>
                     </Pressable>
                 
-                    <BrandBoldText className="text-[36px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[41px] ml-8">
+                    <BrandBoldText className="text-[36px] text-lightPrimaryText dark:text-darkPrimaryText leading-[41px] ml-8">
                         Settings
                     </BrandBoldText>
                 </View>
                 <SettingsButton icon={EditProfileIcon} text="Edit Profile" onPress={() => navigation.navigate("EditProfile")}/>
                 {loggedInData?.isParent &&
-                    <SettingsButton icon={FamilySettingsIcon} text="Family Settings" onPress={() => navigation.navigate("FamilySettings")}/>
+                    <SettingsButton icon={FamilySettingsIcon} text="Add Family Member" onPress={() => navigation.navigate("FamilySettings")}/>
                 }
                 <SettingsButton icon={ChangePasswordIcon} text="Change Password" onPress={() => navigation.navigate("VerifyPassword", {changePassword: true})}/>
 
@@ -92,6 +92,7 @@ export const Settings = () => {
                     <DropDownPicker
                         open={open}
                         value={theme}
+                        placeholder=''
                         items={items}
                         setOpen={setOpen}
                         setValue={callback => {

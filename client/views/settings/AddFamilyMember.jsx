@@ -91,7 +91,7 @@ export const AddFamilyMember = ({route}) => {
                                 type: 'success',
                                 text1: "Account created successfully!"
                             })
-                            navigation.navigate('Settings', {animationType: "slide_from_left"})
+                            navigation.navigate('ParentDashboard', {animationType: "slide_from_left"})
                         })
                         .catch( error => {
                             console.log("register error:", error)
@@ -127,7 +127,7 @@ export const AddFamilyMember = ({route}) => {
                             <Pressable
                                 className="pt-4 ps-2"
                                 hitSlop={20}
-                                onPress={() => navigation.navigate("FamilySettings", {animationType: "slide_from_left"})}
+                                onPress={() => navigation.goBack()}
                             >
                                 <BackArrow/>
                             </Pressable>
