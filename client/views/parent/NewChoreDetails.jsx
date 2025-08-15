@@ -5,7 +5,6 @@ import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-nativ
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { useState, useEffect } from "react"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
-// import { UserInput } from "../../components/UserInput"
 import { CloseIcon } from "../../components/icons/CloseIcon"
 import { BrandText } from "../../components/text/BrandText"
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -26,6 +25,15 @@ const DEFAULT_FORM_VALUES = {
     // requirePhotos: false,
     details: "",
 }
+const weekdays = [
+    { id: 0, short: 'Mon', full: 'Monday' },
+    { id: 1, short: 'Tue', full: 'Tuesday' },
+    { id: 2, short: 'Wed', full: 'Wednesday' },
+    { id: 3, short: 'Thu', full: 'Thursday' },
+    { id: 4, short: 'Fri', full: 'Friday' },
+    { id: 5, short: 'Sat', full: 'Saturday' },
+    { id: 6, short: 'Sun', full: 'Sunday' },
+];
 
 export const NewChoreDetails = ({ route }) => {
     const { title } = route.params
@@ -63,7 +71,6 @@ export const NewChoreDetails = ({ route }) => {
     const [open, setOpen] = useState(false);
     const [childValue, setChildValue] = useState(null);
     const [items, setItems] = useState([])
-    // { label: 'Rue', value: 'edrttyfg' }, { label: 'Goo', value: 'dfkhhfks' }
 
     //"require photos" toggle boolean
     const [requirePhotos, setRequirePhotos] = useState(false);
@@ -71,6 +78,9 @@ export const NewChoreDetails = ({ route }) => {
     //Sets date/time to today
     const [date, setDate] = useState(tomorrow)
     const [time, setTime] = useState(sixPM)
+
+    // Sets day of week (if chore repeats weekly)
+    const [dayValue, setDayValue] = useState(null)
 
     // controls when date/time modals are open/closed
     const [openTime, setOpenTime] = useState(false)
@@ -147,9 +157,10 @@ export const NewChoreDetails = ({ route }) => {
                 time.getMinutes(),
                 0, 0
             );
+            console.log("day", dayValue)
             const allData = {
                 title: title, details: formData.details, creator: loggedInData._id,
-                worker: childValue, dueDate: dateTime, needsPics: requirePhotos, repeat: repeatValue,
+                worker: childValue, dueDate: dateTime, needsPics: requirePhotos, repeat: repeatValue, day: dayValue
             }
             addChore(allData)
                 .then(res => {
@@ -179,7 +190,6 @@ export const NewChoreDetails = ({ route }) => {
                 enableOnAndroid={true}
                 extraScrollHeight={100}
             >
-                {/* bg-lightBg dark:bg-darkBg */}
                 <View className="flex-1 px-[16px]"
                     style={{ backgroundColor: isDark ? "#22252B" : "white" }}>
                     {/* is there a reason we need 100px for marginTop? */}
@@ -212,6 +222,7 @@ export const NewChoreDetails = ({ route }) => {
                                 width: 150, // This controls the overall container
                             }}
                             style={{
+                                zIndex: 100,
                                 backgroundColor: isDark ? "black" : "white",
                                 border: 2,
                                 borderColor: isDark ? "white" : "black",
@@ -231,6 +242,7 @@ export const NewChoreDetails = ({ route }) => {
                             // Open state styling
                             dropDownContainerStyle=
                             {{
+                                zIndex: 100,
                                 backgroundColor: isDark ? "#22252B" : "white",
                                 width: 150
                             }}
@@ -252,42 +264,122 @@ export const NewChoreDetails = ({ route }) => {
 
                     <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
 
-                    <View className="w-[100%] flex-row items-start gap-20 justify-between">
-                        <BrandBoldText className="text-black dark:text-white" style={{ paddingVertical: 10 }}>Due Date</BrandBoldText>
-                        <View className="flex-col items-center">
-                            <BrandText className="text-black dark:text-white">Select date</BrandText>
-                            <Pressable onPress={() => { setOpenDate(true) }}
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    backgroundColor: isDark ? "black" : "white",
-                                    borderWidth: 1,
-                                    borderColor: isDark ? "white" : "black",
-                                    borderRadius: 5,
-                                    paddingHorizontal: 20,
-                                    paddingVertical: 10,
-                                }}
-                            >
-                                <BrandBoldText className="text-black dark:text-white flex justify-center">{date.toDateString()} </BrandBoldText>
-                            </Pressable>
-                            {openDate &&
-                                <DateTimePicker value={date} mode="date" display="default"
-                                    onChange={(event, selectedDate) => {
-                                        setOpenDate(false);
-                                        if (selectedDate) { setDate(selectedDate) };
-                                    }}
-                                    minimumDate={today}
-                                    maximumDate={aMonthFromNow}
-                                />
-                            }
+                    <View className="flex-row w-[100%] justify-between items-start mt-[20px]">
+                        <BrandBoldText className="text-black dark:text-white mt-[10px]">Repeat</BrandBoldText>
+                        <DropDownPicker
+                            open={openRepeat}
+                            value={repeatValue}
+                            items={repeat}
+                            setOpen={setOpenRepeat}
+                            setValue={setRepeatValue}
+                            setItems={setRepeat}
+                            listMode="SCROLLVIEW"
+                            containerStyle={{
+                                width: 150, // This controls the overall container
+                            }}
+                            style={{
+                                zIndex: 10,
+                                backgroundColor: isDark ? "black" : "white",
+                                border: 2,
+                                borderColor: isDark ? "white" : "black",
+                                color: isDark ? "white" : "black"
+                            }}
 
+                            arrowIconContainerStyle={{
+                                marginRight: 10, // Moves arrow away from right edge
+                            }}
+                            textStyle={{
+                                color: isDark ? "white" : "black",
+                                paddingLeft: 10,
+                                fontFamily: "nunito"
+                            }}
 
+                            // Open state styling
+                            dropDownContainerStyle=
+                            {{
+                                zIndex: 10,
+                                backgroundColor: isDark ? "black" : "white",
+                                width: 150,
+                            }}
 
-                        </View>
+                            // Arrow styling
+                            arrowIconStyle={{
+                                tintColor: isDark ? "white" : "black",
+                                marginLeft: 5,
+                                color: isDark ? "white" : "black"
+                            }}
+                            tickIconStyle={{
+                                tintColor: "white",
+                            }}
+
+                            // styles the selected value
+                            labelStyle={{
+                                color: isDark ? "white" : "black",
+                            }}
+                        />
                     </View>
 
+                    {(repeatValue == "never" || repeatValue == "monthly") &&
+                        <>
+                            <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
+                            <View className="w-[100%] flex-row items-start gap-20 justify-between">
+                                <BrandBoldText className="text-black dark:text-white" style={{ paddingVertical: 10 }}>Due Date</BrandBoldText>
+                                <View className="flex-col items-center z-1">
+                                    <BrandText className="text-black dark:text-white">Select date</BrandText>
+                                    <Pressable onPress={() => { setOpenDate(true) }}
+                                        style={{
+                                            zIndex: 1,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            backgroundColor: isDark ? "black" : "white",
+                                            borderWidth: 1,
+                                            borderColor: isDark ? "white" : "black",
+                                            borderRadius: 5,
+                                            paddingHorizontal: 20,
+                                            paddingVertical: 10,
+                                        }}
+                                    >
+                                        <BrandBoldText className="text-black dark:text-white flex justify-center">
+                                            {repeatValue == "never" ? date.toDateString() :
+                                                date.toLocaleDateString('en-US', {
+                                                    month: 'short',
+                                                    day: 'numeric'
+                                                })} </BrandBoldText>
+                                    </Pressable>
+                                    {openDate &&
+                                        <DateTimePicker value={date} mode="date" display="default"
+                                            onChange={(event, selectedDate) => {
+                                                setOpenDate(false);
+                                                if (selectedDate) { setDate(selectedDate) };
+                                            }}
+                                            minimumDate={today}
+                                            maximumDate={aMonthFromNow}
+                                        />
+                                    }
+                                </View>
+                            </View>
+                        </>
+                    }
+                    {repeatValue == "weekly" &&
+                        <>
+                            <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
+                            <View className="flex-row w-full">
+                                {weekdays.map((day) => (
+                                    <Pressable
+                                        key={day.id}
+                                        className={`w-[42px] h-[42px] flex justify-center items-center m-1 rounded-full ${dayValue == day.short? isDark ? "bg-gray-100": "bg-gray-600": isDark? "bg-gray-700": "bg-red"}`}
+                                        onPress={() => setDayValue(day.short)}
+                                    >
+                                        <BrandBoldText className={`${ dayValue == day.short? " text-white dark:text-black": "text-black dark:text-white" }`
+                                        }>
+                                            {day.short}
+                                        </BrandBoldText>
+                                    </Pressable>
+                                ))}
+                            </View>
+                        </>
+                    }
                     <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
-
                     <View className="w-[100%] gap-20 flex-row items-start justify-between">
                         <BrandBoldText className="text-black dark:text-white flex" style={{ paddingVertical: 10 }}>Time Due</BrandBoldText>
                         <View className="flex-col items-center">
@@ -315,61 +407,6 @@ export const NewChoreDetails = ({ route }) => {
                                     }} />
                             }
                         </View>
-                    </View>
-
-                    <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
-
-                    <View className="flex-row w-[100%] justify-between items-start mt-[20px]">
-                        <BrandBoldText className="text-black dark:text-white mt-[10px]">Repeat</BrandBoldText>
-                        <DropDownPicker
-                            open={openRepeat}
-                            value={repeatValue}
-                            items={repeat}
-                            setOpen={setOpenRepeat}
-                            setValue={setRepeatValue}
-                            setItems={setRepeat}
-                            listMode="SCROLLVIEW"
-                            containerStyle={{
-                                width: 150, // This controls the overall container
-                            }}
-                            style={{
-                                backgroundColor: isDark ? "black" : "white",
-                                border: 2,
-                                borderColor: isDark ? "white" : "black",
-                                color: isDark? "white" : "black"
-                            }}
-
-                            arrowIconContainerStyle={{
-                                marginRight: 10, // Moves arrow away from right edge
-                            }}
-                            textStyle={{
-                                color: isDark ? "white" : "black",
-                                paddingLeft: 10,
-                                fontFamily: "nunito"
-                            }}
-
-                            // Open state styling
-                            dropDownContainerStyle=
-                            {{
-                                backgroundColor: isDark ? "black" : "white",
-                                width: 150,
-                            }}
-
-                            // Arrow styling
-                            arrowIconStyle={{
-                                tintColor: isDark ? "white" : "black",
-                                marginLeft: 5,
-                                color: isDark ? "white" : "black"
-                            }}
-                            tickIconStyle={{
-                                tintColor: "white",
-                            }}
-
-                            // styles the selected value
-                            labelStyle={{
-                                color: isDark? "white": "black",
-                            }}
-                        />
                     </View>
 
                     <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
