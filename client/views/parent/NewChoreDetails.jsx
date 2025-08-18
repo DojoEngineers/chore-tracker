@@ -26,13 +26,13 @@ const DEFAULT_FORM_VALUES = {
     details: "",
 }
 const weekdays = [
-    { id: 0, short: 'Mon', full: 'Monday' },
-    { id: 1, short: 'Tue', full: 'Tuesday' },
-    { id: 2, short: 'Wed', full: 'Wednesday' },
-    { id: 3, short: 'Thu', full: 'Thursday' },
-    { id: 4, short: 'Fri', full: 'Friday' },
-    { id: 5, short: 'Sat', full: 'Saturday' },
-    { id: 6, short: 'Sun', full: 'Sunday' },
+    { id: 1, short: 'Mon', full: 'Monday' },
+    { id: 2, short: 'Tue', full: 'Tuesday' },
+    { id: 3, short: 'Wed', full: 'Wednesday' },
+    { id: 4, short: 'Thu', full: 'Thursday' },
+    { id: 5, short: 'Fri', full: 'Friday' },
+    { id: 6, short: 'Sat', full: 'Saturday' },
+    { id: 0, short: 'Sun', full: 'Sunday' },
 ];
 
 export const NewChoreDetails = ({ route }) => {
@@ -367,10 +367,10 @@ export const NewChoreDetails = ({ route }) => {
                                 {weekdays.map((day) => (
                                     <Pressable
                                         key={day.id}
-                                        className={`w-[42px] h-[42px] flex justify-center items-center m-1 rounded-full ${dayValue == day.short? isDark ? "bg-gray-100": "bg-gray-600": isDark? "bg-gray-700": "bg-red"}`}
-                                        onPress={() => setDayValue(day.short)}
+                                        className={`w-[42px] h-[42px] flex justify-center items-center m-1 rounded-full ${dayValue == day.id? isDark ? "bg-gray-100": "bg-gray-600": isDark? "bg-gray-700": "bg-red"}`}
+                                        onPress={() => setDayValue(day.id)}
                                     >
-                                        <BrandBoldText className={`${ dayValue == day.short? " text-white dark:text-black": "text-black dark:text-white" }`
+                                        <BrandBoldText className={`${ dayValue == day.id? " text-white dark:text-black": "text-black dark:text-white" }`
                                         }>
                                             {day.short}
                                         </BrandBoldText>

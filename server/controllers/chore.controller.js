@@ -1,4 +1,15 @@
 import Chore from "../models/chore.model.js"
+import ChoreTemplate from "../models/choreTemplate.js"
+
+export const getTemplates = async (req, res) => {
+    console.log("getting temps...")
+    try {
+        const temps = await ChoreTemplate.find()
+        res.status(200).json(temps)
+    } catch (error) {
+        console.log("error", error)
+    }
+}
 
 // for testing only. I use postman to reset db.
 export const deleteAllChores = async (req, res) => {
@@ -70,22 +81,77 @@ export const addChore = async (req, res) => {
             res.status(201).json(CHORE)
         }
         else if (req.body.repeat == "daily") {
-            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, })
-            console.log("running cron job. Daily.")
-            res.status(201).json(CHORE)
-        }
-        else if (req.body.repeat == "daily") {
-            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, })
-            console.log("running cron job. Daily.")
-            res.status(201).json(CHORE)
+            console.log("dueDate", req.body.dueDate)
+            const dueDate = new Date(req.body.dueDate);
+            const hours = dueDate.getHours();
+            const minutes = dueDate.getMinutes();
+            const today = new Date()
+            today.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+            const tomorrow = today
+            tomorrow.setDate(tomorrow.getDate() + 1)
+            tomorrow.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+            console.log("tommorrow", tomorrow)
+            const in2days = new Date(tomorrow)
+            in2days.setDate(in2days.getDate() + 1);
+            const in3days = new Date(in2days)
+            in3days.setDate(in3days.getDate() + 1);
+            const in4days = new Date(in3days)
+            in4days.setDate(in4days.getDate() + 1);
+            const in5days = new Date(in4days)
+            in5days.setDate(in5days.getDate() + 1);
+            const in6days = new Date(in5days)
+            in6days.setDate(in6days.getDate() + 1);
+            const in7days = new Date(in6days)
+            in7days.setDate(in7days.getDate() + 1);
+
+            const CHORE1 = await Chore.create({ ...req.body, dueDate: today, stage: "incomplete", isActive: true, })
+            const CHORE2 = await Chore.create({ ...req.body, dueDate: tomorrow, stage: "incomplete", isActive: true, })
+            const CHORE3 = await Chore.create({ ...req.body, dueDate: in2days, stage: "incomplete", isActive: true, })
+            const CHORE4 = await Chore.create({ ...req.body, dueDate: in3days, stage: "incomplete", isActive: true, })
+            const CHORE5 = await Chore.create({ ...req.body, dueDate: in4days, stage: "incomplete", isActive: true, })
+            const CHORE6 = await Chore.create({ ...req.body, dueDate: in5days, stage: "incomplete", isActive: true, })
+            const CHORE7 = await Chore.create({ ...req.body, dueDate: in6days, stage: "incomplete", isActive: true, })
+            const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
+            console.log(`running cron job. ${req.body.repeat}.`)
+            res.status(201).json(CHORE1)
         }
         else if (req.body.repeat == "weekly") {
-            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, })
+            console.log("day", req.body.day)
+            const today = new Date();
+            const todayDay = today.getDay();
+            const target = req.body.day
+            let diff = target - todayDay;
+
+            const dueDate = new Date(req.body.dueDate);
+            const hours = dueDate.getHours();
+            const minutes = dueDate.getMinutes();
+            // If targetDay is earlier in the week, wrap to next week
+            if (diff < 0) {
+                diff += 7;
+            }
+            
+            let hourDue = dueDate.getHours()
+            let currentHour = today.getHours()
+            console.log("current", currentHour, "hourDue", hourDue, "diff", diff)
+            //makes dueDay next week instead of today
+            if (diff === 0 && currentHour > hourDue) {
+                console.log("wrapping")
+                diff = 7;}
+
+            const newDueDate = new Date(today);
+            newDueDate.setDate(today.getDate() + diff);
+            newDueDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+            console.log("duedate", newDueDate.toLocaleDateString())
+
+            const CHORE = await Chore.create({ ...req.body, dueDate: newDueDate, stage: "incomplete", isActive: true, })
+
+            const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
             console.log("running cron job. Weekly.")
             res.status(201).json(CHORE)
         }
         else if (req.body.repeat == "monthly") {
             const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, })
+            const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
             console.log("running cron job. Monthly.")
             res.status(201).json(CHORE)
         }

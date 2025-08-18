@@ -27,8 +27,7 @@ const choreSchema = new mongoose.Schema({
         required: [true, "Please assign a due date."],
     },
     day: {
-        type: String,
-        enum: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        type:Number,
         required: false
     },
     dateCompleted: {
@@ -62,6 +61,10 @@ const choreSchema = new mongoose.Schema({
     afterPic: {
         type: String,
         required: false
+    },
+    templateId: {
+        type: String,
+        required:false
     },
     isActive: {
         type: Boolean,

@@ -1,48 +1,68 @@
 import Agenda from 'agenda';
-import Chore from './models/Chore.js';
-import ChoreInstance from './models/ChoreInstance.js';
+import mongoose from 'mongoose';
+import { dbConnect } from './config/mongoose.config.js';
+import ChoreTemplate from './models/choreTemplate.js';
+import Chore from './models/chore.model.js';
 
-const agenda = new Agenda({
-  db: { address: 'mongodb://localhost:27017/yourDB', collection: 'agendaJobs' }
-});
-
-agenda.define('create chore instance', async (job) => {
-  const { choreId, choreData } = job.attrs.data;
-
-  const chore = await Chore.findById(choreId);
-  if (!chore) {
-    console.log(`[Agenda] Chore not found for ID: ${choreId}`);
-    return;
-  }
-
-  const now = new Date();
-  let dueDate = new Date(now);
-
-  if (chore.repeat === 'weekly') {
-    dueDate.setDate(now.getDate() + 7);
-  } else if (chore.repeat === 'daily') {
-    dueDate.setDate(now.getDate() + 1);
-  }
-
-  // If user specified a due time (HH:mm), set it
-  if (chore.dueTime) {
-    const [hours, minutes] = chore.dueTime.split(':').map(Number);
-    dueDate.setHours(hours, minutes, 0, 0);
-  }
-
-  await ChoreInstance.create({
-    choreId,
-    name: choreData.name,
-    createdAt: now,
-    dueDate
-  });
-
-  console.log(`[Agenda] Created chore instance: ${choreData.name}, due: ${dueDate}`);
-});
+let agenda;
 
 (async function () {
+  // connect to Mongo using your config (with key)
+  await dbConnect();
+
+  // reuse mongoose’s native connection
+  agenda = new Agenda().mongo(mongoose.connection.db, 'agendaJobs');
+
+// Define job
+agenda.define('generate recurring chores', async () => {
+  const now = new Date();
+  const twoWeeksFromNow = new Date();
+  twoWeeksFromNow.setDate(now.getDate() + 14);
+
+  // Clear time to avoid mismatches
+  twoWeeksFromNow.setHours(0, 0, 0, 0);
+
+  const templates = await ChoreTemplate.find({ isActive: true});
+
+  for (const template of templates) {
+    let dueDate = new Date(twoWeeksFromNow);
+
+    // For weekly, you might want the dueDate to align with a specific weekday
+    if (template.repeat === 'weekly' && template.day) {
+      // Day: 0=Sunday, 1=Monday, etc.
+      const diff = (template.day + 7 - dueDate.getDay()) % 7;
+      dueDate.setDate(dueDate.getDate() + diff);
+    }
+
+    // Apply dueTime from template if exists
+    if (template.dueTime) {
+      const [hours, minutes] = template.dueTime.split(':').map(Number);
+      dueDate.setHours(hours, minutes, 0, 0);
+    }
+
+    // Create chore instance with due date exactly 2 weeks after now
+    await Chore.create({
+      templateId: template._id,
+      title: template.title + " (gen)",
+      details: template.details,
+      creator: template.creator,
+      worker: template.worker,
+      needsPics: template.needsPics,
+      stage:"incomplete",
+      isActive:"true",
+      repeat: template.repeat,
+      dueDate
+    });
+
+    console.log(`[Agenda] Created ${template.name} due ${dueDate}`);
+  }
+});
+
+
   await agenda.start();
-  console.log('[Agenda] Scheduler started');
+  await agenda.now('generate recurring chores');
+  // Run every day at midnight
+  await agenda.every('* * * * *', 'generate recurring chores');
 })();
 
-module.exports = agenda;
+export default agenda;
