@@ -1,19 +1,39 @@
 import mongoose from 'mongoose';
 
-const ChoreTemplate = new mongoose.Schema({
-  choreId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chore', required: true },
-  name: { type: String, required: true },
+const choreTemplateSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  details: { type: String, required: false },
   repeat: {
     type: String,
     enum: ["daily", "weekly", "monthly"]
   },
   day: {
-    type: String,
-    enum: ["mon", "tue", "weds", "thurs", "fri", "sat", "sun"],
+    type: Number,
     required: false
   },
-  createdAt: { type: Date, default: Date.now },
-  dueDate: { type: Date, required: true }
-});
+  creator: {
+    type: String,
+    required: true
+  },
+  worker: {
+    type: String,
+    required: true
+  },
+  needsPics: {
+    type: Boolean,
+    required: true
+  },
+  isActive: {
+    type: Boolean,
+    required: true
+  },
+  dueDate: { type: Date, required: false }
+}, { timestamps: true });
 
-export default mongoose.model('ChoreTemplate', ChoreTemplate);
+
+// Create the Chore model from the schema
+const ChoreTemplate = mongoose.model('ChoreTemplate', choreTemplateSchema);
+
+// Export it so other files (controllers, routes) can use it
+export default ChoreTemplate;
+
