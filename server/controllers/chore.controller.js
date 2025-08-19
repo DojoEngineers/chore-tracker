@@ -1,6 +1,8 @@
 import Chore from "../models/chore.model.js"
 import ChoreTemplate from "../models/choreTemplate.js"
 
+
+// templates are used to generate an instance of a reoccuring chore.
 export const getTemplates = async (req, res) => {
     console.log("getting temps...")
     try {
@@ -15,7 +17,7 @@ export const getTemplates = async (req, res) => {
 export const deleteAllChores = async (req, res) => {
     console.log("delting all chores in controller")
     try {
-        const del = await Chore.delete()
+        const del = await Chore.deleteMany()
         res.status(200).json(del)
     } catch (error) {
         console.log("error", error)
@@ -45,6 +47,20 @@ export const getAllChores = async (req, res) => {
     }
 }
 
+// query contains _id string
+export async function getChoreById(req, res) {
+    console.log("controller get chore by id")
+    console.log("req.query", req.query)
+    try {
+        const one = await Chore.findById(req.query)
+        console.log("one", one)
+        res.status(200).json(one);
+    } catch (error) {
+        console.log("can't get chore");
+        res.status(400).json(error);
+    }
+}
+
 // gets all the chores whose worker id matches the id in the req.
 // req.query is used for get requests (other requests use req.body)
 export async function getChoresByWorker(req, res) {
@@ -60,11 +76,13 @@ export async function getChoresByWorker(req, res) {
     }
 }
 
-export async function getChoresByCreator(req, res) {
+// query needs to be array of family ids to work
+// The frontend sends: params: { parents } 
+export async function getChoresByParent(req, res) {
     console.log("controller get creator chores")
-    console.log("req.query", req.query)
+    console.log("req.query", req.query.parents)
     try {
-        const some = await Chore.find({ creator: req.query.id });
+        const some = await Chore.find({ $in: req.query.parents });
         console.log("some", some)
         res.status(200).json(some);
     } catch (error) {
