@@ -43,7 +43,7 @@ export const DeleteAccount = () => {
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
             <View className="px-[16px]">
-                <View className="flex-row mt-[150px] mb-[60px] items-center ps-2 mb-4">
+                <View className="flex-row mt-[150px] mb-[60px] items-center ps-2">
                     <Pressable
                         hitSlop={20}
                         onPress={() => navigation.goBack()}

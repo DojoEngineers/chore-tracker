@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, View } from "react-native"
+import { Pressable, ScrollView, useColorScheme, View } from "react-native"
 import { useLogin } from "../../context/UserContext"
 import { useNavigation } from "@react-navigation/native"
 import { Header } from "../../components/Header"
@@ -11,13 +11,14 @@ export const Kids = () => {
 
     const {loggedInData} = useLogin()
     const navigation = useNavigation()
+    const colorScheme = useColorScheme()
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
             <View>
                 <Header />
                 <BrandBoldText
-                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px] mb-[25px]"
+                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
                 >
                     Kids
                 </BrandBoldText>
@@ -38,23 +39,30 @@ export const Kids = () => {
 
                     :
                         <ScrollView
-                            contentContainerStyle={{ alignItems: 'center' }}
+                            contentContainerClassName="items-center"
                             showsVerticalScrollIndicator={true}
-                            style={{ height: 425 }}
+                            className="h-[490px]"
                         >
-                            {loggedInData.family.children.map((kid, index) => (
-                                <Pressable
-                                    key={index}
-                                    onPress={() => {navigation.navigate("KidDetails", {kid})}}
-                                    className="w-[207px] h-[207px] rounded-full border-lightPrimaryText
-                                    dark:border-darkPrimaryText items-center justify-center mb-10 border-2"
-                                >
-                                    <BrandBoldText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px]"
+                            {loggedInData.family.children.map((kid) => (
+                                <View>
+                                    <Pressable
+                                        key={kid.id}
+                                        onPress={() => {navigation.navigate("KidDetails", {kid})}}
+                                        className="w-[207px] h-[207px] rounded-full border-lightPrimaryText
+                                        dark:border-darkPrimaryText items-center justify-center mb-2 border-2"
                                     >
-                                        {kid.name}
-                                    </BrandBoldText>
-                                </Pressable>
+                                        <BrandBoldText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[40px]"
+                                        >
+                                            {kid.name[0]}
+                                        </BrandBoldText>
+                                    </Pressable>
+                                    <BrandBoldText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center mb-8"
+                                        >
+                                            {kid.name}
+                                        </BrandBoldText>
+                                </View>
                             ))}
                         </ScrollView>
                 }

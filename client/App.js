@@ -30,6 +30,7 @@ import { Terms } from "./views/settings/Terms";
 import { Privacy } from "./views/settings/Privacy";
 import { Kids } from "./views/parent/Kids";
 import { KidDetails } from "./views/parent/KidDetails";
+import { ViewChore } from "./views/parent/ViewChore";
 
 export default function App() {
 
@@ -76,6 +77,7 @@ export default function App() {
             <Stack.Screen name="Privacy" component={Privacy}></Stack.Screen>
             <Stack.Screen name="Kids" component={Kids} options={chooseAnimation}></Stack.Screen>
             <Stack.Screen name="KidDetails" component={KidDetails} options={chooseAnimation}></Stack.Screen>
+            <Stack.Screen name="ViewChore" component={ViewChore}></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
       </GlobalStyling>

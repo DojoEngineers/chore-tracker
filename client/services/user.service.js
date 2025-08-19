@@ -27,14 +27,14 @@ USER_INSTANCE.interceptors.request.use(
 )
 
 // generate code, expiration date and send to the person via email or phone
-export const register = async data => {
+export const register = async (data) => {
     try {
         const RES = await USER_INSTANCE.post('/', data )
         return RES
     } catch( error ){ throw error.response.data.errors }
 }
 
-export const login = async data => {
+export const login = async (data) => {
     try {
         const RES = await USER_INSTANCE.post( '/login', data )
         return RES.data
@@ -55,7 +55,7 @@ export const getCurrentUser = async () => {
     } catch( error ){ throw error }
 }
 
-export const updateUser = async data => {
+export const updateUser = async (data) => {
     const options = {
         new: true,
         runValidators: true,

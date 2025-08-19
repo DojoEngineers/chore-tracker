@@ -5,8 +5,8 @@ const choreSchema = new mongoose.Schema({
     title: {
         type: String,
         required: [true, 'Title is required.'],
-        minLength: [5, `Description must be at least 5 characters.`],
-        maxLength: [30, `Description cannot exceed 30 characters.`]
+        minLength: [3, `Title must be at least 3 characters.`],
+        maxLength: [30, `Title cannot exceed 30 characters.`]
     },
     details: {
         type: String,
