@@ -115,6 +115,7 @@ export const addChore = async (req, res) => {
             console.log(`running cron job. ${req.body.repeat}.`)
             res.status(201).json(CHORE1)
         }
+
         else if (req.body.repeat == "weekly") {
             console.log("day", req.body.day)
             const today = new Date();
@@ -129,7 +130,6 @@ export const addChore = async (req, res) => {
             if (diff < 0) {
                 diff += 7;
             }
-            
             let hourDue = dueDate.getHours()
             let currentHour = today.getHours()
             console.log("current", currentHour, "hourDue", hourDue, "diff", diff)
@@ -144,7 +144,6 @@ export const addChore = async (req, res) => {
             console.log("duedate", newDueDate.toLocaleDateString())
 
             const CHORE = await Chore.create({ ...req.body, dueDate: newDueDate, stage: "incomplete", isActive: true, })
-
             const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
             console.log("running cron job. Weekly.")
             res.status(201).json(CHORE)
