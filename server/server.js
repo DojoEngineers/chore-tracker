@@ -8,6 +8,8 @@ import uploadRouter from "./routes/upload.js";
 import path from 'path'
 import { fileURLToPath } from 'url';
 import emailjs from "@emailjs/nodejs"
+import { startJobs } from "./agenda.js";
+import agenda from "./agenda.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,6 +41,9 @@ const PORT = process.env.PORT;
 
 dbConnect();
 
-app.listen(PORT, '0.0.0.0', () => {
+
+app.listen(PORT, '0.0.0.0', async () => {
     console.log("port:", PORT);
+    await startJobs();
+    
 });
