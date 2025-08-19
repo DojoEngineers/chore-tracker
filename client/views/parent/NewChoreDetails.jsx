@@ -429,7 +429,7 @@ export const NewChoreDetails = ({ route }) => {
                         <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-2 mt-4">
                             Notes
                         </BrandText>
-                        <View className="border-[1px] dark:border-black dark:border-white dark:bg-transparent bg-white rounded-lg shadow-md h-[100px] w-[70%] mt-4">
+                        <View className="border-[1px] border-black dark:border-white dark:bg-transparent bg-white rounded-lg shadow-md h-[100px] w-[70%] mt-4">
                             <TextInput
                                 multiline={true}
                                 numberOfLines={3}

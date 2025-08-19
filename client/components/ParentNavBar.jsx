@@ -17,7 +17,7 @@ export const ParentNavBar = () => {
     const navigation = useNavigation()
     const route = useRoute()
     const homeRoutes = ['ParentDashboard']
-    const kidsRoutes = ['Kids']
+    const kidsRoutes = ['Kids', 'KidDetails']
     const isOnHome = homeRoutes.includes(route.name)
     const isOnKids = kidsRoutes.includes(route.name)
 
