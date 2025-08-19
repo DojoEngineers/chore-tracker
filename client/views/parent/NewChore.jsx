@@ -11,7 +11,7 @@ import Toast from "react-native-toast-message"
 
 export const NewChore = () => {
 
-    const [selected, setSelected] = useState('preset')
+    const [selected, setSelected] = useState('custom')
     const [title, setTitle] = useState('')
     const [formErrors, setFormErrors] = useState({})
 
@@ -27,8 +27,8 @@ export const NewChore = () => {
     const validateData = (name, value) => {
         const validations = {
             title: value => (
-                value.length < 5 ? "Description must be at least 5 characters."
-                : value.length > 30 ? "Description cannot exceed 30 characters."
+                value.length < 3 ? "Title must be at least 3 characters."
+                : value.length > 30 ? "Title cannot exceed 30 characters."
                 : false
             ),
         }
@@ -82,6 +82,19 @@ export const NewChore = () => {
 
                     <View className="flex-row items-center justify-evenly">
                         <Pressable
+                            onPress={() => setSelected('custom')}
+                            className={`p-[10px] rounded-full items-center justify-center w-[156px] h-[38px] ${
+                                selected === 'custom'
+                                    ? 'dark:bg-[#B3EAD3] bg-[#B4684E]'
+                                    : 'dark:bg-[#444955] bg-[#DFAE9D]'
+                            }`}
+                        >
+                            <BrandBoldText className={selected === 'custom' ? 'text-white dark:text-black text-[16px]' : 'text-black dark:text-white text-[16px]'}>
+                                Custom
+                            </BrandBoldText>
+                        </Pressable>
+
+                        <Pressable
                             onPress={() => setSelected('preset')}
                             className={`p-[10px] rounded-full items-center justify-center w-[156px] h-[38px] ${
                                 selected === 'preset'
@@ -93,22 +106,9 @@ export const NewChore = () => {
                                 Preset
                             </BrandBoldText>
                         </Pressable>
-
-                        <Pressable
-                            onPress={() => setSelected('personalized')}
-                            className={`p-[10px] rounded-full items-center justify-center w-[156px] h-[38px] ${
-                                selected === 'personalized'
-                                    ? 'dark:bg-[#B3EAD3] bg-[#B4684E]'
-                                    : 'dark:bg-[#444955] bg-[#DFAE9D]'
-                            }`}
-                        >
-                            <BrandBoldText className={selected === 'personalized' ? 'text-white dark:text-black text-[16px]' : 'text-black dark:text-white text-[16px]'}>
-                                Personalized
-                            </BrandBoldText>
-                        </Pressable>
                     </View>
 
-                    {selected === 'personalized'
+                    {selected === 'custom'
                         ?
                             <View>
                                 <BrandBoldText
@@ -120,7 +120,7 @@ export const NewChore = () => {
                                 <UserInput
                                     value={title}
                                     onChangeText={(text) => handleChange('title', text)}
-                                    placeholder="Add personalized chore"
+                                    placeholder="Add custom chore"
                                     error={formErrors.title}
                                 />
 
