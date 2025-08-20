@@ -67,7 +67,7 @@ export async function getChoresByWorker(req, res) {
     console.log("controller get worker chores")
     console.log("req.query", req.query)
     try {
-        const some = await Chore.find({ worker: req.query });
+        const some = await Chore.find({ worker: req.query.id });
         console.log("some", some)
         res.status(200).json(some);
     } catch (error) {

@@ -26,9 +26,21 @@ CHORE_INSTANCE.interceptors.request.use(
     }
 )
 
-export const addChore = async data => {
+export const addChore = async (data) => {
     try {
         const RES = await CHORE_INSTANCE.post('/', data )
+        return RES
+    }
+    catch(error) {
+        throw error.response.data.errors
+    }
+}
+
+export const getChoresByWorker = async (id) => {
+    try {
+        const RES = await CHORE_INSTANCE.get('/', {
+            params: { id }
+        })
         return RES
     }
     catch(error) {
