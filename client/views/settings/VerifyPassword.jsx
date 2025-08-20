@@ -1,5 +1,4 @@
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { useNavigation } from "@react-navigation/native"
 import { verifyPassword } from "../../services/user.service"
@@ -52,70 +51,63 @@ export const VerifyPassword = ({route}) => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <KeyboardAwareScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                keyboardShouldPersistTaps="handled"
-                enableOnAndroid={true}
-                extraScrollHeight={20}
-            >
-                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
+            <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
 
-                    <View className="px-[16px]">
-        
-                        <View className="flex-row ps-2 mt-[150px] mb-10 items-center">
-                            <Pressable
-                                hitSlop={20}
-                                onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
-                            >
-                                <BackArrow/>
-                            </Pressable>
+                <View className="px-[16px]">
+    
+                    <View className="flex-row ps-2 mt-[150px] mb-10 items-center">
+                        <Pressable
+                            hitSlop={20}
+                            onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
+                        >
+                            <BackArrow/>
+                        </Pressable>
 
-                            <BrandBoldText className="text-[30px] text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] ps-6">
-                                Verify Password
-                            </BrandBoldText>
-                        </View>
-
-                        <View className="items-center mb-6 px-2">
-                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                                {deleteAccount
-                                ?
-                                    "Password verification is required before deleting your account."
-                                :
-                                    "To change your password, enter your current password below."
-                                }
-                            </BrandText>
-                        </View>
-
-                        {apiErrors.verifyPassword && (
-                            <BrandText className="text-red-500 text-center">
-                                {apiErrors.verifyPassword}
-                            </BrandText>
-                        )}
-
-                        <View className="mb-6">
-                            <PasswordInput
-                                value={password}
-                                placeholder="Password"
-                                onChangeText={setPassword}
-                            />
-                        </View>
-
-                        <View>
-                            <PrimaryButton onPress={handleSubmit} label="Submit" />
-                        </View>
+                        <BrandBoldText className="text-[30px] text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] ps-6">
+                            Verify Password
+                        </BrandBoldText>
                     </View>
 
-                    <View className="relative w-full">
-                        <View className="absolute bottom-0 right-0 z-0">
-                            <BottomSquiggle/>
-                        </View>
+                    <View className="items-center mb-6 px-2">
+                        <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
+                            {deleteAccount
+                            ?
+                                "Password verification is required before deleting your account."
+                            :
+                                "To change your password, enter your current password below."
+                            }
+                        </BrandText>
+                    </View>
 
-                        <View className="flex-row mb-20 justify-center">
-                            <BottomLink onPress={() => navigation.navigate('ForgotPassword')} text="Forgot Password? " link="Reset Now" />
-                        </View>
+                    {apiErrors.verifyPassword && (
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.verifyPassword}
+                        </BrandText>
+                    )}
+
+                    <View className="mb-6">
+                        <PasswordInput
+                            value={password}
+                            placeholder="Password"
+                            onChangeText={setPassword}
+                        />
+                    </View>
+
+                    <View>
+                        <PrimaryButton onPress={handleSubmit} label="Submit" />
                     </View>
                 </View>
-            </KeyboardAwareScrollView>
+
+                <View className="relative w-full">
+                    <View className="absolute bottom-0 right-0 z-0">
+                        <BottomSquiggle/>
+                    </View>
+
+                    <View className="flex-row mb-20 justify-center">
+                        <BottomLink onPress={() => navigation.navigate('ForgotPassword')} text="Forgot Password? " link="Reset Now" />
+                    </View>
+                </View>
+            </View>
         </TouchableWithoutFeedback>
     )
 }

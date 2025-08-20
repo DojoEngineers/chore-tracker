@@ -68,7 +68,7 @@ export default function App() {
             <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
             <Stack.Screen name="FamilySettings" component={FamilySettings} options={chooseAnimation}></Stack.Screen>
             <Stack.Screen name="AddFamilyMember" component={AddFamilyMember}></Stack.Screen>
-            <Stack.Screen name="NewChore" component={NewChore}></Stack.Screen>
+            <Stack.Screen name="NewChore" component={NewChore} options={chooseAnimation}></Stack.Screen>
             <Stack.Screen name="NewChoreDetails" component={NewChoreDetails}></Stack.Screen>
             <Stack.Screen name="DeleteAccount" component={DeleteAccount}></Stack.Screen>
             <Stack.Screen name="VerifyPassword" component={VerifyPassword}></Stack.Screen>

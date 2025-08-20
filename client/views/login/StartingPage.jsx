@@ -48,9 +48,7 @@ export const StartingPage = () => {
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
 
-            <View>
-                <LogoTopSquiggle />
-            </View>
+            <LogoTopSquiggle />
 
             <View className="items-center px-[16px]">
                 <BrandBoldText className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">

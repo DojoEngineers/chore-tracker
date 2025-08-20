@@ -1,5 +1,4 @@
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
@@ -115,70 +114,63 @@ export const AddFamilyMember = ({route}) => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <KeyboardAwareScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                keyboardShouldPersistTaps="handled"
-                enableOnAndroid={true}
-                extraScrollHeight={20}
-            >
-                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
-                    <View className="px-[16px]">
-                        <View className="flex-row mt-[100px]">
-                            <Pressable
-                                className="pt-4 ps-2"
-                                hitSlop={20}
-                                onPress={() => navigation.goBack()}
-                            >
-                                <BackArrow/>
-                            </Pressable>
+            <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
+                <View className="px-[16px]">
+                    <View className="flex-row mt-[100px]">
+                        <Pressable
+                            className="pt-4 ps-2"
+                            hitSlop={20}
+                            onPress={() => navigation.goBack()}
+                        >
+                            <BackArrow/>
+                        </Pressable>
 
-                            <View className="flex-1 mb-6 ms-[34px]">
-                                <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                                    {isParent ? "Add another parent" : "Add a kid"}
-                                </BrandBoldText>
-                            </View>
+                        <View className="flex-1 mb-6 ms-[34px]">
+                            <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
+                                {isParent ? "Add another parent" : "Add a kid"}
+                            </BrandBoldText>
                         </View>
-
-                        {apiErrors.register && (
-                            <BrandText className="text-red-500 text-center">
-                                {apiErrors.register}
-                            </BrandText>
-                        )}
-                        {apiErrors.checkUsername && (
-                            <BrandText className="text-red-500 text-center">
-                                {apiErrors.checkUsername}
-                            </BrandText>
-                        )}
-
-                        <View className="mb-6">
-                            <UserInput
-                                icon={FirstNameIcon}
-                                value={formData.name}
-                                onChangeText={(text) => handleChange('name', text)}
-                                placeholder="First name"
-                                error={formErrors.name}
-                            />
-                        </View>
-
-                        <View className="mb-12">
-                            <UserInput
-                                icon={EmailIcon}
-                                value={formData.username}
-                                onChangeText={(text) => handleChange('username', text)}
-                                placeholder="Email"
-                                error={formErrors.username}
-                            />
-                        </View>
-
-                        <PrimaryButton onPress={handleSubmit} label="Submit"/>
                     </View>
 
-                    <View className="items-end">
-                        <LogoBottomSquiggle />
+                    {apiErrors.register && (
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.register}
+                        </BrandText>
+                    )}
+                    {apiErrors.checkUsername && (
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.checkUsername}
+                        </BrandText>
+                    )}
+
+                    <View className="mb-6">
+                        <UserInput
+                            icon={FirstNameIcon}
+                            value={formData.name}
+                            onChangeText={(text) => handleChange('name', text)}
+                            placeholder="First name"
+                            error={formErrors.name}
+                        />
                     </View>
-                    
+
+                    <View className="mb-12">
+                        <UserInput
+                            icon={EmailIcon}
+                            value={formData.username}
+                            onChangeText={(text) => handleChange('username', text)}
+                            placeholder="Email"
+                            error={formErrors.username}
+                        />
+                    </View>
+
+                    <PrimaryButton onPress={handleSubmit} label="Submit"/>
                 </View>
-            </KeyboardAwareScrollView>
+
+                <View className="items-end">
+                    <LogoBottomSquiggle />
+                </View>
+                
+            </View>
         </TouchableWithoutFeedback>
     )
 }

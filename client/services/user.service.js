@@ -30,7 +30,7 @@ USER_INSTANCE.interceptors.request.use(
 export const register = async (data) => {
     try {
         const RES = await USER_INSTANCE.post('/', data )
-        return RES
+        return RES.data
     } catch( error ){ throw error.response.data.errors }
 }
 
@@ -44,7 +44,7 @@ export const login = async (data) => {
 export const logout = async () => {
     try {
         const RES = await USER_INSTANCE.post( '/logout' )
-        return RES
+        return RES.data
     } catch( error ){ throw error }
 }
 

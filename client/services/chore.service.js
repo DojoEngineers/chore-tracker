@@ -29,7 +29,7 @@ CHORE_INSTANCE.interceptors.request.use(
 export const addChore = async (data) => {
     try {
         const RES = await CHORE_INSTANCE.post('/', data )
-        return RES
+        return RES.data
     }
     catch(error) {
         throw error.response.data.errors
@@ -38,10 +38,10 @@ export const addChore = async (data) => {
 
 export const getChoresByWorker = async (id) => {
     try {
-        const RES = await CHORE_INSTANCE.get('/', {
+        const RES = await CHORE_INSTANCE.get('/worker', {
             params: { id }
         })
-        return RES
+        return RES.data
     }
     catch(error) {
         throw error.response.data.errors

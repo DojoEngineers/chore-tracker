@@ -3,7 +3,6 @@ import { useState } from "react"
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import Toast from 'react-native-toast-message'
 import { getUserByUsername } from "../../services/user.service"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { BrandText } from "../../components/text/BrandText"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
@@ -59,67 +58,60 @@ export const UsernameVerification = () => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <KeyboardAwareScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                keyboardShouldPersistTaps="handled"
-                enableOnAndroid={true}
-                extraScrollHeight={20}
-            >
-                <View className="flex-1 bg-lightBg dark:bg-darkBg items-center justify-between">
-                    <View className="px-[16px]">
+            <View className="flex-1 bg-lightBg dark:bg-darkBg items-center justify-between">
+                <View className="px-[16px]">
 
-                        <View className="flex-row mt-[150px] mb-4 items-center ps-2">
-                            <Pressable
-                                hitSlop={20}
-                                onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
-                            >
-                                <BackArrow/>
-                            </Pressable>
-                            
-                            <BrandBoldText className="text-[30px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] ml-10">
-                                Verify Account
-                            </BrandBoldText>
-                        </View>
-
-                        <View className="items-center mb-8">
-                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                                Please enter the email linked to your account to continue.
-                            </BrandText>
-                        </View>
-
-                        {apiErrors.getUserByUsername && (
-                            <BrandText className="text-red-500 text-center">
-                                {apiErrors.getUserByUsername}
-                            </BrandText>
-                        )}
-
-                        <View className="mb-12">
-                            <UserInput
-                                icon={EmailIcon}
-                                value={username}
-                                onChangeText={setUsername}
-                                placeholder="Email"
-                            />
-                        </View>
-
-                            <View>
-                                <PrimaryButton onPress={handleSubmit} label="Submit" />
-                            </View>
-
+                    <View className="flex-row mt-[150px] mb-4 items-center ps-2">
+                        <Pressable
+                            hitSlop={20}
+                            onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
+                        >
+                            <BackArrow/>
+                        </Pressable>
+                        
+                        <BrandBoldText className="text-[30px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] ml-10">
+                            Verify Account
+                        </BrandBoldText>
                     </View>
 
-                    <View className="relative w-full">
-                        <View className="absolute bottom-0 right-0 z-0">
-                            <BottomSquiggle/>
-                        </View>
-
-                        <View className="flex-row mb-20 justify-center">
-                            <BottomLink onPress={() => navigation.navigate('Login')} text="Already have an account? " link="Login Now" />
-                        </View>
+                    <View className="items-center mb-8">
+                        <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
+                            Please enter the email linked to your account to continue.
+                        </BrandText>
                     </View>
+
+                    {apiErrors.getUserByUsername && (
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.getUserByUsername}
+                        </BrandText>
+                    )}
+
+                    <View className="mb-12">
+                        <UserInput
+                            icon={EmailIcon}
+                            value={username}
+                            onChangeText={setUsername}
+                            placeholder="Email"
+                        />
+                    </View>
+
+                        <View>
+                            <PrimaryButton onPress={handleSubmit} label="Submit" />
+                        </View>
 
                 </View>
-            </KeyboardAwareScrollView>
+
+                <View className="relative w-full">
+                    <View className="absolute bottom-0 right-0 z-0">
+                        <BottomSquiggle/>
+                    </View>
+
+                    <View className="flex-row mb-20 justify-center">
+                        <BottomLink onPress={() => navigation.navigate('Login')} text="Already have an account? " link="Login Now" />
+                    </View>
+                </View>
+
+            </View>
         </TouchableWithoutFeedback>
     )
 }
