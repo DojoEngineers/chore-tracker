@@ -74,7 +74,7 @@ export const Settings = () => {
                     <Switch
                         value={notifications}
                         onValueChange={toggleNotifications}
-                        color="#ff8000ff"
+                        color="#FB943C"
                         style={{ transform: [{ scale: 1 }] }}
                     />
                 </View>

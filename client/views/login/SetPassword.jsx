@@ -4,7 +4,6 @@ import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-nativ
 import Toast from "react-native-toast-message"
 import { changePassword, getCurrentUser } from "../../services/user.service"
 import { useLogin } from "../../context/UserContext"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
 import { BottomSquiggle } from "../../components/squiggles/BottomSquiggle"
@@ -124,69 +123,62 @@ export const SetPassword = ({route}) => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <KeyboardAwareScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                keyboardShouldPersistTaps="handled"
-                enableOnAndroid={true}
-                extraScrollHeight={20}
-            >
-                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
+            <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
 
-                    <View className="px-[16px]">
-        
-                        <View className="flex-row ps-2 mt-[150px] mb-10 items-center">
-                            <Pressable
-                                hitSlop={20}
-                                onPress={() => navigation.goBack()}
-                            >
-                                <BackArrow/>
-                            </Pressable>
-                            
-                            <BrandBoldText className="text-[30px] text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] ps-6">
-                                Create New Password
-                            </BrandBoldText>
-                        </View>
-
-                        <View className="items-center mb-6 px-2">
-                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                                Create a strong password with at least 8 characters.
-                            </BrandText>
-                        </View>
-
-                        {apiErrors.changePassword && (
-                            <BrandText className="text-red-500 text-center">
-                                {apiErrors.changePassword}
-                            </BrandText>
-                        )}
-
-                        <View className="mb-6">
-                            <PasswordInput
-                                value={formData.password}
-                                onChangeText={(text) => handleChange('password', text)}
-                                placeholder="New password"
-                                error={formErrors.password}
-                            />
-                        </View>
-
-                        <View className="mb-[50px]">
-                            <PasswordInput
-                                value={formData.confirmPassword}
-                                onChangeText={(text) => handleChange('confirmPassword', text)}
-                                placeholder="Confirm password"
-                                error={formErrors.confirmPassword}
-                            />
-                        </View>
-
-                        <View>
-                            <PrimaryButton onPress={handleSubmit} label="Submit" />
-                        </View>
+                <View className="px-[16px]">
+    
+                    <View className="flex-row ps-2 mt-[150px] mb-10 items-center">
+                        <Pressable
+                            hitSlop={20}
+                            onPress={() => navigation.goBack()}
+                        >
+                            <BackArrow/>
+                        </Pressable>
+                        
+                        <BrandBoldText className="text-[30px] text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] ps-6">
+                            Create New Password
+                        </BrandBoldText>
                     </View>
 
-                    <View className="items-end">
-                        <BottomSquiggle/>
+                    <View className="items-center mb-6 px-2">
+                        <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
+                            Create a strong password with at least 8 characters.
+                        </BrandText>
+                    </View>
+
+                    {apiErrors.changePassword && (
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.changePassword}
+                        </BrandText>
+                    )}
+
+                    <View className="mb-6">
+                        <PasswordInput
+                            value={formData.password}
+                            onChangeText={(text) => handleChange('password', text)}
+                            placeholder="New password"
+                            error={formErrors.password}
+                        />
+                    </View>
+
+                    <View className="mb-[50px]">
+                        <PasswordInput
+                            value={formData.confirmPassword}
+                            onChangeText={(text) => handleChange('confirmPassword', text)}
+                            placeholder="Confirm password"
+                            error={formErrors.confirmPassword}
+                        />
+                    </View>
+
+                    <View>
+                        <PrimaryButton onPress={handleSubmit} label="Submit" />
                     </View>
                 </View>
-            </KeyboardAwareScrollView>
+
+                <View className="items-end">
+                    <BottomSquiggle/>
+                </View>
+            </View>
         </TouchableWithoutFeedback>
     )
 }

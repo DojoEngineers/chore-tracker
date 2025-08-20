@@ -2,7 +2,7 @@
 
 export const ViewChore = ({route}) => {
 
-    const {id} = route.params()
+    const {id} = route.params
     
     return (
         <></>

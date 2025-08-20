@@ -118,7 +118,7 @@ export const ParentNavBar = () => {
             <Pressable
                 className="absolute left-1/2 -translate-x-1/2 [top:-33px] w-[66px] h-[66px] rounded-full
                     justify-center items-center border-[5px] border-white bg-lightButton dark:bg-darkButton shadow-md"
-                onPress={() => {navigation.navigate("NewChore")}}
+                onPress={() => {navigation.navigate("NewChore", {animationType: "fade"})}}
             >
                     <PlusIcon />
             </Pressable>
