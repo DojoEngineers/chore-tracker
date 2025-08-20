@@ -9,7 +9,6 @@ import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
 import { FirstNameIcon } from "../../components/icons/FirstNameIcon"
 import { EmailIcon } from "../../components/icons/EmailIcon"
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { UserInput } from "../../components/UserInput"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { BottomLink } from "../../components/BottomLink"
@@ -114,88 +113,81 @@ export const ParentRegistration = () => {
     
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <KeyboardAwareScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                keyboardShouldPersistTaps="handled"
-                enableOnAndroid={true}
-                extraScrollHeight={20}
-            >
-                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
+            <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
 
+                <View>
                     <View>
-                        <View>
-                            <TopSquiggle />
-                        </View>
+                        <TopSquiggle />
+                    </View>
 
-                        <View className="flex-row p-[17px]">
-                            <Pressable
-                                hitSlop={20}
-                                className="pt-4 ps-2"
-                                onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
-                            >
-                                <BackArrow/>
-                            </Pressable>
+                    <View className="flex-row p-[17px]">
+                        <Pressable
+                            hitSlop={20}
+                            className="pt-4 ps-2"
+                            onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
+                        >
+                            <BackArrow/>
+                        </Pressable>
 
-                            <View className="flex-1 mb-6 ms-[34px]">
-                                <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                                    Create a parent profile to get started
-                                </BrandBoldText>
-                            </View>
-                        </View>
-
-                        {apiErrors.register && (
-                            <BrandText className="text-red-500 text-center">
-                                {apiErrors.register}
-                            </BrandText>
-                        )}
-                        {apiErrors.checkUsername && (
-                            <BrandText className="text-red-500 text-center">
-                                {apiErrors.checkUsername}
-                            </BrandText>
-                        )}
-
-                        <View className="px-[16px]">
-                            <View className="mb-6">
-                                <UserInput
-                                    icon={FirstNameIcon}
-                                    value={formData.name}
-                                    onChangeText={(text) => handleChange('name', text)}
-                                    placeholder="First name"
-                                    error={formErrors.name}
-                                />
-                            </View>
-
-                            <View className="mb-12">
-                                <UserInput
-                                    icon={EmailIcon}
-                                    value={formData.username}
-                                    onChangeText={(text) => handleChange('username', text)}
-                                    placeholder="Email"
-                                    error={formErrors.username}
-                                />
-                            </View>
-
-                            <PrimaryButton onPress={handleSubmit} label="Register"/>
+                        <View className="flex-1 mb-6 ms-[34px]">
+                            <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
+                                Create a parent profile to get started
+                            </BrandBoldText>
                         </View>
                     </View>
 
-                    <View className="mb-20 items-center">
-                        <View className="mb-2">
-                            <BottomLink
-                                onPress={() => navigation.navigate('UsernameVerification')}
-                                text="Already Registerd? "
-                                link="Verify Here"
+                    {apiErrors.register && (
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.register}
+                        </BrandText>
+                    )}
+                    {apiErrors.checkUsername && (
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.checkUsername}
+                        </BrandText>
+                    )}
+
+                    <View className="px-[16px]">
+                        <View className="mb-6">
+                            <UserInput
+                                icon={FirstNameIcon}
+                                value={formData.name}
+                                onChangeText={(text) => handleChange('name', text)}
+                                placeholder="First name"
+                                error={formErrors.name}
                             />
                         </View>
 
-                            <BottomLink
-                                onPress={() => navigation.navigate('Login')}
-                                text="Already have an account? "
-                                link="Login Now"
+                        <View className="mb-12">
+                            <UserInput
+                                icon={EmailIcon}
+                                value={formData.username}
+                                onChangeText={(text) => handleChange('username', text)}
+                                placeholder="Email"
+                                error={formErrors.username}
                             />
+                        </View>
+
+                        <PrimaryButton onPress={handleSubmit} label="Register"/>
                     </View>
                 </View>
-            </KeyboardAwareScrollView>
+
+                <View className="mb-20 items-center">
+                    <View className="mb-2">
+                        <BottomLink
+                            onPress={() => navigation.navigate('UsernameVerification')}
+                            text="Already Registerd? "
+                            link="Verify Here"
+                        />
+                    </View>
+
+                        <BottomLink
+                            onPress={() => navigation.navigate('Login')}
+                            text="Already have an account? "
+                            link="Login Now"
+                        />
+                </View>
+            </View>
         </TouchableWithoutFeedback>
     )
 }

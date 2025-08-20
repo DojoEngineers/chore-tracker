@@ -19,11 +19,14 @@ export const Header = () => {
 
             <View className="flex-row mt-[60px] mb-6 justify-between ps-[16px] pe-[35px] items-center">
                 <View className="flex-row items-center">
-                    <View className="border border-lightPrimaryText dark:border-darkPrimaryText rounded-full me-3 aspect-square h-[50px] justify-center">
+                    <Pressable
+                        onPress={() => navigation.navigate(loggedInData.isParent ? "ParentDashboard" : "KidDashboard", {animationType: "fade"})}
+                        className="border border-lightPrimaryText dark:border-darkPrimaryText rounded-full me-3 aspect-square h-[50px] justify-center"
+                    >
                         <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[18px] text-center">
                             {loggedInData.name[0]}
                         </BrandBoldText>
-                    </View>
+                    </Pressable>
 
                     <View>
                         <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[18px]">

@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native'
 import { getCurrentUser, getUserByUsername, login } from "../../services/user.service"
 import { useState } from "react"
 import { BrandText } from "../../components/text/BrandText"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { TopSquiggle } from "../../components/squiggles/TopSquiggle"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
@@ -106,90 +105,83 @@ export const Login = () => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <KeyboardAwareScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                keyboardShouldPersistTaps="handled"
-                enableOnAndroid={true}
-                extraScrollHeight={20}
-            >
-                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
+            <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
 
+                <View>
                     <View>
-                        <View>
-                            <TopSquiggle />
-                        </View>
-
-                        <View className="px-[16px] mt-[75px]">
-
-                            <View className="flex-row items-center ps-2">
-                                <Pressable
-                                    className="pe-[66px]"
-                                    hitSlop={20}
-                                    onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
-                                >
-                                    <BackArrow/>
-                                </Pressable>
-
-                                <View className="">
-                                    <BrandBoldText className="text-[32px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[37px]">
-                                        Hi, welcome.
-                                    </BrandBoldText>
-                                </View>
-                            </View>
-
-                            <View className="items-center mb-10">
-                                <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[18px]">
-                                    Sign in to your account
-                                </BrandText>
-                            </View>
-
-                            {apiErrors.login && (
-                                <BrandText className="text-red-500 text-center">
-                                    {apiErrors.login}
-                                </BrandText>
-                            )}
-                            {apiErrors.getUserByUsername && (
-                                <BrandText className="text-red-500 text-center">
-                                    {apiErrors.getUserByUsername}
-                                </BrandText>
-                            )}
-
-                            <View className="mb-6">
-                                <UserInput
-                                    icon={EmailIcon}
-                                    value={formData.username}
-                                    onChangeText={(text) => handleChange('username', text)}
-                                    placeholder="Email"
-                                />
-                            </View>
-
-                            <View className="mb-8">
-                                <PasswordInput
-                                    value={formData.password}
-                                    onChangeText={(text) => handleChange('password', text)}
-                                    placeholder="Password"
-                                />
-                            </View>
-
-                            <View className="items-end mb-8 pe-2">
-                                <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
-                                    <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[14px]">
-                                        Forgot your password?
-                                    </BrandText>
-                                </Pressable>
-                            </View>
-
-                            <View>
-                                <PrimaryButton onPress={handleLogin} label="Sign in" />
-                            </View>
-                        </View>
+                        <TopSquiggle />
                     </View>
 
-                    <View className="mb-20 items-center">
-                        <BottomLink onPress={() => navigation.navigate('ParentRegistration')} text="Starting a family? " link="Set up Your Account Here" />
+                    <View className="px-[16px] mt-[75px]">
+
+                        <View className="flex-row items-center ps-2">
+                            <Pressable
+                                className="pe-[66px]"
+                                hitSlop={20}
+                                onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
+                            >
+                                <BackArrow/>
+                            </Pressable>
+
+                            <View className="">
+                                <BrandBoldText className="text-[32px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[37px]">
+                                    Hi, welcome.
+                                </BrandBoldText>
+                            </View>
+                        </View>
+
+                        <View className="items-center mb-10">
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[18px]">
+                                Sign in to your account
+                            </BrandText>
+                        </View>
+
+                        {apiErrors.login && (
+                            <BrandText className="text-red-500 text-center">
+                                {apiErrors.login}
+                            </BrandText>
+                        )}
+                        {apiErrors.getUserByUsername && (
+                            <BrandText className="text-red-500 text-center">
+                                {apiErrors.getUserByUsername}
+                            </BrandText>
+                        )}
+
+                        <View className="mb-6">
+                            <UserInput
+                                icon={EmailIcon}
+                                value={formData.username}
+                                onChangeText={(text) => handleChange('username', text)}
+                                placeholder="Email"
+                            />
+                        </View>
+
+                        <View className="mb-8">
+                            <PasswordInput
+                                value={formData.password}
+                                onChangeText={(text) => handleChange('password', text)}
+                                placeholder="Password"
+                            />
+                        </View>
+
+                        <View className="items-end mb-8 pe-2">
+                            <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
+                                <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[14px]">
+                                    Forgot your password?
+                                </BrandText>
+                            </Pressable>
+                        </View>
+
+                        <View>
+                            <PrimaryButton onPress={handleLogin} label="Sign in" />
+                        </View>
                     </View>
                 </View>
-            </KeyboardAwareScrollView>
+
+                <View className="mb-20 items-center">
+                    <BottomLink onPress={() => navigation.navigate('ParentRegistration')} text="Starting a family? " link="Set up Your Account Here" />
+                </View>
+            </View>
         </TouchableWithoutFeedback>
     )
 }

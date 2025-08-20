@@ -1,5 +1,4 @@
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
@@ -145,78 +144,71 @@ export const EditProfile = () => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <KeyboardAwareScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                keyboardShouldPersistTaps="handled"
-                enableOnAndroid={true}
-                extraScrollHeight={20}
-            >
-                <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
-                    <View className="px-[16px]">
-                        <View className="flex-row mt-[150px]">
-                            <Pressable
-                                className="pt-4 ps-2"
-                                hitSlop={20}
-                                onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
-                            >
-                                <BackArrow/>
-                            </Pressable>
+            <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
+                <View className="px-[16px]">
+                    <View className="flex-row mt-[150px]">
+                        <Pressable
+                            className="pt-4 ps-2"
+                            hitSlop={20}
+                            onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
+                        >
+                            <BackArrow/>
+                        </Pressable>
 
-                            <View className="flex-1 mb-8 ms-[34px]">
-                                <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                                    Edit Profile
-                                </BrandBoldText>
-                            </View>
-                        </View>
-
-                        {apiErrors.updateUser && (
-                            <BrandText className="text-red-500 text-center">
-                                {apiErrors.updateUser}
-                            </BrandText>
-                        )}
-                        {apiErrors.checkUsername && (
-                            <BrandText className="text-red-500 text-center">
-                                {apiErrors.checkUsername}
-                            </BrandText>
-                        )}
-
-                        <View className="mb-6">
-                            <UserInput
-                                icon={FirstNameIcon}
-                                value={formData.name}
-                                onChangeText={(text) => handleChange('name', text)}
-                                placeholder="First name"
-                                error={formErrors.name}
-                            />
-                        </View>
-
-                        <View className="mb-6">
-                            <UserInput
-                                icon={EmailIcon}
-                                value={formData.username}
-                                onChangeText={(text) => handleChange('username', text)}
-                                placeholder="Email"
-                                error={formErrors.username}
-                            />
-                        </View>
-
-                        <View className="items-center">
-                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                                Email verification is required upon updating your email.
-                            </BrandText>
+                        <View className="flex-1 mb-8 ms-[34px]">
+                            <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
+                                Edit Profile
+                            </BrandBoldText>
                         </View>
                     </View>
-                    
-                    <View className="items-end">
 
-                        <View className="px-[16px] w-full -mb-[60px] z-10">
-                            <PrimaryButton onPress={handleSubmit} label="Confirm"/>
-                        </View>
+                    {apiErrors.updateUser && (
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.updateUser}
+                        </BrandText>
+                    )}
+                    {apiErrors.checkUsername && (
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.checkUsername}
+                        </BrandText>
+                    )}
 
-                        <LogoBottomSquiggle />
+                    <View className="mb-6">
+                        <UserInput
+                            icon={FirstNameIcon}
+                            value={formData.name}
+                            onChangeText={(text) => handleChange('name', text)}
+                            placeholder="First name"
+                            error={formErrors.name}
+                        />
+                    </View>
+
+                    <View className="mb-6">
+                        <UserInput
+                            icon={EmailIcon}
+                            value={formData.username}
+                            onChangeText={(text) => handleChange('username', text)}
+                            placeholder="Email"
+                            error={formErrors.username}
+                        />
+                    </View>
+
+                    <View className="items-center">
+                        <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
+                            Email verification is required upon updating your email.
+                        </BrandText>
                     </View>
                 </View>
-            </KeyboardAwareScrollView>
+                
+                <View className="items-end">
+
+                    <View className="px-[16px] w-full -mb-[60px] z-10">
+                        <PrimaryButton onPress={handleSubmit} label="Confirm"/>
+                    </View>
+
+                    <LogoBottomSquiggle />
+                </View>
+            </View>
         </TouchableWithoutFeedback>
     )
 }

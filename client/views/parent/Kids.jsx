@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, useColorScheme, View } from "react-native"
+import { Pressable, ScrollView, View } from "react-native"
 import { useLogin } from "../../context/UserContext"
 import { useNavigation } from "@react-navigation/native"
 import { Header } from "../../components/Header"
@@ -11,7 +11,6 @@ export const Kids = () => {
 
     const {loggedInData} = useLogin()
     const navigation = useNavigation()
-    const colorScheme = useColorScheme()
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
@@ -44,9 +43,8 @@ export const Kids = () => {
                             className="h-[490px]"
                         >
                             {loggedInData.family.children.map((kid) => (
-                                <View>
+                                <View key={kid._id}>
                                     <Pressable
-                                        key={kid.id}
                                         onPress={() => {navigation.navigate("KidDetails", {kid})}}
                                         className="w-[207px] h-[207px] rounded-full border-lightPrimaryText
                                         dark:border-darkPrimaryText items-center justify-center mb-2 border-2"
@@ -61,7 +59,7 @@ export const Kids = () => {
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center mb-8"
                                         >
                                             {kid.name}
-                                        </BrandBoldText>
+                                    </BrandBoldText>
                                 </View>
                             ))}
                         </ScrollView>

@@ -10,8 +10,10 @@ import {CheckboxIcon} from "../../components/icons/CheckboxIcon"
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { ParentNavBar } from "../../components/ParentNavBar.jsx"
-dayjs.extend(isBetween);
+import utc from 'dayjs/plugin/utc';
 
+dayjs.extend(isBetween);
+dayjs.extend(utc);
 
 export const KidDetails = ({route}) => {
 
@@ -22,18 +24,18 @@ export const KidDetails = ({route}) => {
     const { kid } = route.params
 
     useEffect(() => {
-        getChoresByWorker(kid.id)
+        getChoresByWorker(kid._id)
             .then((res) => {
                 // Today's chores
                 const today = res.filter((chore) =>
-                    dayjs(chore.dueDate).isSame(dayjs(), 'day') &&
+                    dayjs(chore.dueDate).local().isSame(dayjs(), 'day') &&
                     ['incomplete', 'rejected'].includes(chore.stage)
                 )
                 .sort((a, b) => dayjs(b.dueDate).diff(dayjs(a.dueDate)))
 
                 // Rest of the week chores (excluding today)
                 const thisWeek = res.filter((chore) =>
-                    dayjs(chore.dueDate).isBetween(dayjs(), dayjs().endOf('week'), null, '(]') &&
+                    dayjs(chore.dueDate).local().isBetween(dayjs(), dayjs().endOf('week'), null, '(]') &&
                     ['incomplete', 'rejected'].includes(chore.stage)
                 )
                 .sort((a, b) => dayjs(b.dueDate).diff(dayjs(a.dueDate)))
@@ -45,7 +47,7 @@ export const KidDetails = ({route}) => {
                 // Set chores in state
                 setChores(prev => ({...prev, today, thisWeek, completed}))
             })
-            .catch (() => {
+            .catch ((error) => {
                 console.log("getChoresByWorker error:", error)
                 setApiErrors(prev => ({...prev, getChoresByWorker: "Unable to get chore information."}))
                 Toast.show({
@@ -83,17 +85,17 @@ export const KidDetails = ({route}) => {
             >
                 <View>
                     <BrandBoldText
-                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-10"
+                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-10 mb-2"
                     >
                         Due today
                     </BrandBoldText>
-                    {chores.today.length > 1
+                    {chores.today.length > 0
                         ?
                             chores.today.map((chore) => (
                                 <Pressable
-                                    onPress={() => navigation.navigate("ViewChore", {id: chore.id})}
-                                    className="flex-row w-full items-center ps-1 py-4"
-                                    key={chore.id}
+                                    onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
+                                    className="flex-row w-full items-center py-3"
+                                    key={chore._id}
                                 >
                                     <CheckboxIcon />
                                     <BrandText
@@ -116,17 +118,17 @@ export const KidDetails = ({route}) => {
 
                 <View>
                     <BrandBoldText
-                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-6"
+                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-6 mb-2"
                     >
                         Due this week
                     </BrandBoldText>
-                    {chores.thisWeek.length > 1
+                    {chores.thisWeek.length > 0
                         ?
                             chores.thisWeek.map((chore) => (
                                 <Pressable
-                                    onPress={() => navigation.navigate("ViewChore", {id: chore.id})}
-                                    className="flex-row w-full items-center ps-1 py-4"
-                                    key={chore.id}
+                                    onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
+                                    className="flex-row w-full items-center py-3"
+                                    key={chore._id}
                                 >
                                     <CheckboxIcon />
                                     <BrandText
@@ -147,18 +149,18 @@ export const KidDetails = ({route}) => {
 
                 <View>
                     <BrandBoldText
-                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-6"
+                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-6 mb-2"
                     >
                         Completed chore history
                     </BrandBoldText>
-                    {chores.completed.length > 1
+                    {chores.completed.length > 0
                         ?
                             chores.completed.map((chore) => (
                                 <Pressable
-                                    onPress={() => navigation.navigate("ViewChore", {id: chore.id})}
-                                    className="flex-row w-full items-center ps-1 py-4 dark:border rounded-full
+                                    onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
+                                    className="flex-row w-full items-center py-3 dark:border rounded-full
                                         dark:border-darkPrimaryText bg-[#ACE6CD] dark:bg-transparent m-1"
-                                    key={chore.id}
+                                    key={chore._id}
                                 >
                                     <View className="border border-lightPrimaryText dark:border-darkPrimaryText rounded-full me-3 aspect-square h-[30px] justify-center">
                                         <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] text-center">
