@@ -14,6 +14,12 @@ import { PrimaryButton } from "../../components/PrimaryButton"
 import { Switch } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
 import { TextInput } from "react-native"
+import { TodayIcon } from "../../components/icons/TodayIcon"
+import { FirstNameIcon } from "../../components/icons/FirstNameIcon"
+import {RepeatIcon} from "../../components/icons/RepeatIcon"
+import {CameraIcon} from "../../components/icons/CameraIcon"
+import {ClockIcon} from "../../components/icons/ClockIcon"
+import { WriteIcon } from "../../components/icons/WriteIcon"
 
 //NOTE: familyData in userContext is currently empty. Right now, I'm getting the data from inside of loggedInData.family
 
@@ -191,7 +197,7 @@ export const NewChoreDetails = ({ route }) => {
                 extraScrollHeight={100}
             >
                 <View className="flex-1 px-[16px]"
-                    style={{ backgroundColor: isDark ? "#22252B" : "white" }}>
+                    style={{ backgroundColor: isDark ? "#333740" : "white" }}>
                     {/* is there a reason we need 100px for marginTop? */}
                     <View className="flex-row w-full mt-[50px] items-center mb-8">
                         <Pressable
@@ -208,7 +214,10 @@ export const NewChoreDetails = ({ route }) => {
 
                     <View
                         style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                        <BrandBoldText className="text-black dark:text-white">Assign to</BrandBoldText>
+                        <View className="flex-row items-center gap-[10px]">
+                            <FirstNameIcon width={17}/>
+                            <BrandBoldText className="text-black dark:text-white">Assign to</BrandBoldText>
+                        </View>
                         <DropDownPicker
                             open={open}
                             value={childValue}
@@ -223,7 +232,7 @@ export const NewChoreDetails = ({ route }) => {
                             }}
                             style={{
                                 zIndex: 100,
-                                backgroundColor: isDark ? "black" : "white",
+                                backgroundColor: isDark ? "#22252B" : "white",
                                 border: 2,
                                 borderColor: isDark ? "white" : "black",
                             }}
@@ -265,7 +274,10 @@ export const NewChoreDetails = ({ route }) => {
                     <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
 
                     <View className="flex-row w-[100%] justify-between items-start mt-[20px]">
-                        <BrandBoldText className="text-black dark:text-white mt-[10px]">Repeat</BrandBoldText>
+                        <View className="flex-row items-center gap-[10px]">
+                            <RepeatIcon width={20}/>
+                            <BrandBoldText className="text-black dark:text-white mt-[10px]">Repeat</BrandBoldText>
+                        </View>
                         <DropDownPicker
                             open={openRepeat}
                             value={repeatValue}
@@ -279,7 +291,7 @@ export const NewChoreDetails = ({ route }) => {
                             }}
                             style={{
                                 zIndex: 10,
-                                backgroundColor: isDark ? "black" : "white",
+                                backgroundColor: isDark ? "#22252B" : "white",
                                 border: 2,
                                 borderColor: isDark ? "white" : "black",
                                 color: isDark ? "white" : "black"
@@ -298,7 +310,7 @@ export const NewChoreDetails = ({ route }) => {
                             dropDownContainerStyle=
                             {{
                                 zIndex: 10,
-                                backgroundColor: isDark ? "black" : "white",
+                                backgroundColor: isDark ? "#22252B" : "white",
                                 width: 150,
                             }}
 
@@ -323,15 +335,19 @@ export const NewChoreDetails = ({ route }) => {
                         <>
                             <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
                             <View className="w-[100%] flex-row items-start gap-20 justify-between">
-                                <BrandBoldText className="text-black dark:text-white" style={{ paddingVertical: 10 }}>Due Date</BrandBoldText>
+                                <View  className="flex-row items-center gap-[10px]">
+                                    <TodayIcon width={17}/>
+                                    <BrandBoldText className="text-black dark:text-white" style={{ paddingVertical: 10 }}>Due Date</BrandBoldText>
+                                </View>
                                 <View className="flex-col items-center z-1">
+                                    
                                     <BrandText className="text-black dark:text-white">Select date</BrandText>
                                     <Pressable onPress={() => { setOpenDate(true) }}
                                         style={{
                                             zIndex: 1,
                                             display: "flex",
                                             alignItems: "center",
-                                            backgroundColor: isDark ? "black" : "white",
+                                            backgroundColor: isDark ? "#22252B" : "white",
                                             borderWidth: 1,
                                             borderColor: isDark ? "white" : "black",
                                             borderRadius: 5,
@@ -381,14 +397,17 @@ export const NewChoreDetails = ({ route }) => {
                     }
                     <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
                     <View className="w-[100%] gap-20 flex-row items-start justify-between">
-                        <BrandBoldText className="text-black dark:text-white flex" style={{ paddingVertical: 10 }}>Time Due</BrandBoldText>
+                        <View className="flex-row items-center gap-[10px]">
+                                <ClockIcon/>
+                                <BrandBoldText className="text-black dark:text-white flex" style={{ paddingVertical: 10 }}>Time Due</BrandBoldText>
+                            </View>
                         <View className="flex-col items-center">
-                            <BrandText style={{ color: isDark ? "white" : "black" }}>Select time</BrandText>
+                                <BrandText style={{ color: isDark ? "white" : "black" }}>Select time</BrandText>
                             <Pressable onPress={() => { setOpenTime(true) }}
                                 style={{
                                     display: "flex",
                                     alignItems: "center",
-                                    backgroundColor: isDark ? "black" : "white",
+                                    backgroundColor: isDark ? "#22252B" : "white",
                                     borderWidth: 1,
                                     borderColor: isDark ? "white" : "black",
                                     borderRadius: 5,
@@ -412,7 +431,8 @@ export const NewChoreDetails = ({ route }) => {
                     <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
 
                     <View className="flex-row justify-between items-center w-[100%]">
-                        < View >
+                        < View className="flex-row items-center gap-[10px]">
+                        <CameraIcon width={20}/>
                             <BrandBoldText className="text-black dark:text-white">Require photos?</BrandBoldText>
                         </View>
                         <Switch
@@ -426,10 +446,13 @@ export const NewChoreDetails = ({ route }) => {
                     <View className="h-[1px] mt-6 mb-4 bg-black dark:bg-white"></View>
 
                     <View className="flex-row justify-between items-start">
-                        <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-2 mt-4">
-                            Notes
-                        </BrandText>
-                        <View className="border-[1px] dark:border-black dark:border-white dark:bg-transparent bg-white rounded-lg shadow-md h-[100px] w-[70%] mt-4">
+                        <View className="flex-row items-center gap-[10px] mt-4">
+                            <WriteIcon width={20}/>
+                            <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText">
+                                Notes
+                            </BrandBoldText>
+                        </View>
+                        <View className=" shadow-md h-[100px] w-[70%] mt-4">
                             <TextInput
                                 multiline={true}
                                 numberOfLines={3}
@@ -437,7 +460,13 @@ export const NewChoreDetails = ({ route }) => {
                                 onChangeText={(text) => handleChange('details', text)}
                                 placeholder="Add optional note"
                                 error={formErrors.details}
+                                // className styles weren't mixing well with textInput styles (borderRadius and height) so I removed some from classname.
                                 style={{
+                                    height: 100,
+                                    borderRadius: 10,
+                                    borderWidth: 1,
+                                    borderColor: "white",
+                                    backgroundColor: isDark? "#22252B": "white",
                                     textAlignVertical: 'top',
                                     fontSize: 15,
                                     color: isDark ? "white" : "black",
