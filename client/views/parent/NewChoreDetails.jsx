@@ -264,7 +264,7 @@ export const NewChoreDetails = ({ route }) => {
                             tickIconStyle={{
                                 tintColor: isDark ? "white" : "black",
                             }}
-                            // Additional styling
+                            // styles the selected value
                             labelStyle={{
                                 color: isDark ? "white" : "black",
                             }}
@@ -322,7 +322,7 @@ export const NewChoreDetails = ({ route }) => {
                                 color: isDark ? "white" : "black"
                             }}
                             tickIconStyle={{
-                                tintColor: "white",
+                                tintColor: isDark ? "white" : "black",
                             }}
 
                             // styles the selected value
