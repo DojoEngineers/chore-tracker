@@ -1,10 +1,14 @@
 import { useColorScheme } from 'react-native';
 import LightRepeatIcon from '../../assets/icons/LightRepeatIcon';
-const aspectRatio = 20 / 18
+import DarkRepeatIcon from '../../assets/icons/DarkRepeatIcon'
+const aspectRatio = 19 / 17
 
-export const RepeatIcon = ({width = 20}) => {
+export const RepeatIcon = ({width = 19}) => {
 
     const colorScheme = useColorScheme()
 
-    return <LightRepeatIcon width={width} height={width/aspectRatio} />
+    if (colorScheme === 'dark') {
+            return <DarkRepeatIcon width={width} height={width/aspectRatio} />
+        }
+        return <LightRepeatIcon width={width} height={width/aspectRatio} />
 }

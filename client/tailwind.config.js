@@ -18,6 +18,7 @@ module.exports = {
         lightLink: "#FB943C",
         lightButton: "#84A99D",
         darkBg: "#22252B",
+        grayBg: "#333740",
         darkPrimaryText: "#FFFFFF",
         darkSecondaryText: "#A1A4AA",
         darkLink: "#BAFF56",
