@@ -44,6 +44,7 @@ dbConnect();
 
 app.listen(PORT, '0.0.0.0', async () => {
     console.log("port:", PORT);
-    await startJobs();
+    // Line below generates a new instance of reoccuring chores (if chore's conditionas are met)
+    // await startJobs();
     
 });

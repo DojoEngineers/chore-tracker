@@ -13,7 +13,14 @@ import { PrimaryButton } from "../../components/PrimaryButton"
 import { Switch } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
 import { TextInput } from "react-native"
+import { TodayIcon } from "../../components/icons/TodayIcon"
+import { FirstNameIcon } from "../../components/icons/FirstNameIcon"
+import { RepeatIcon } from "../../components/icons/RepeatIcon"
+import { CameraIcon } from "../../components/icons/CameraIcon"
+import { ClockIcon } from "../../components/icons/ClockIcon"
+import { WriteIcon } from "../../components/icons/WriteIcon"
 import { BackArrow } from "../../components/icons/BackArrow"
+
 
 //NOTE: familyData in userContext is currently empty. Right now, I'm getting the data from inside of loggedInData.family
 
@@ -190,8 +197,9 @@ export const NewChoreDetails = ({ route }) => {
                 enableOnAndroid={true}
                 extraScrollHeight={100}
             >
-                <View className="flex-1 px-[16px] bg-lightBg dark:bg-darkBg">
+                <View className="flex-1 px-[16px] bg-lightBg dark:bg-grayBg">
                     <View className="flex-row w-full mt-[70px] items-center mb-8">
+
                         <Pressable
                             hitSlop={20}
                             className="ps-6 pe-8"
@@ -203,9 +211,11 @@ export const NewChoreDetails = ({ route }) => {
                             {title}
                         </BrandBoldText>
                     </View>
-
                     <View className="w-full flex-row justify-between items-center z-100 relative">
-                        <BrandBoldText className="text-black dark:text-white">Assign to</BrandBoldText>
+                        <View className="flex-row items-center gap-[10px]">
+                            <FirstNameIcon width={20} />
+                            <BrandBoldText className="text-black dark:text-white">Assign to</BrandBoldText>
+                        </View>
                         <DropDownPicker
                             open={open}
                             value={childValue}
@@ -220,8 +230,8 @@ export const NewChoreDetails = ({ route }) => {
                             }}
                             style={{
                                 zIndex: 100,
+                                backgroundColor: isDark ? "#22252B" : "white",
                                 elevation: 100,
-                                backgroundColor: isDark ? "black" : "white",
                                 border: 2,
                                 borderColor: isDark ? "white" : "black",
                             }}
@@ -254,7 +264,7 @@ export const NewChoreDetails = ({ route }) => {
                             tickIconStyle={{
                                 tintColor: isDark ? "white" : "black",
                             }}
-                            // Additional styling
+                            // styles the selected value
                             labelStyle={{
                                 color: isDark ? "white" : "black",
                             }}
@@ -262,9 +272,11 @@ export const NewChoreDetails = ({ route }) => {
                     </View>
 
                     <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
-
                     <View className="flex-row w-[100%] justify-between items-start mt-[20px] relative z-10">
-                        <BrandBoldText className="text-black dark:text-white mt-[10px]">Repeat</BrandBoldText>
+                        <View className="flex-row items-center gap-[10px]">
+                            <RepeatIcon width={20} />
+                            <BrandBoldText className="text-black dark:text-white">Repeat</BrandBoldText>
+                        </View>
                         <DropDownPicker
                             open={openRepeat}
                             value={repeatValue}
@@ -278,8 +290,8 @@ export const NewChoreDetails = ({ route }) => {
                             }}
                             style={{
                                 zIndex: 10,
+                                backgroundColor: isDark ? "#22252B" : "white",
                                 elevation: 10,
-                                backgroundColor: isDark ? "black" : "white",
                                 border: 2,
                                 borderColor: isDark ? "white" : "black",
                                 color: isDark ? "white" : "black"
@@ -298,8 +310,8 @@ export const NewChoreDetails = ({ route }) => {
                             dropDownContainerStyle=
                             {{
                                 zIndex: 10,
+                                backgroundColor: isDark ? "#22252B" : "white",
                                 elevation: 10,
-                                backgroundColor: isDark ? "black" : "white",
                                 width: 150,
                             }}
 
@@ -310,7 +322,7 @@ export const NewChoreDetails = ({ route }) => {
                                 color: isDark ? "white" : "black"
                             }}
                             tickIconStyle={{
-                                tintColor: "white",
+                                tintColor: isDark ? "white" : "black",
                             }}
 
                             // styles the selected value
@@ -324,11 +336,14 @@ export const NewChoreDetails = ({ route }) => {
                         <>
                             <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
                             <View className="w-[100%] flex-row items-start gap-20 justify-between">
-                                <BrandBoldText className="text-black dark:text-white pt-[10px]">Due Date</BrandBoldText>
+                                <View className="flex-row items-center gap-[10px]">
+                                    <TodayIcon width={17} />
+                                    <BrandBoldText className="text-black dark:text-white pt-[10px] pb-[10px]">Due Date</BrandBoldText>
+                                </View>
                                 <View className="flex-col items-center z-1">
                                     <BrandText className="text-black dark:text-white">Select date</BrandText>
                                     <Pressable onPress={() => { setOpenDate(true) }}
-                                        className="z-1 flex-1 items-center bg-white dark:bg-black border border-1 border-black
+                                        className="z-1 flex-1 items-center bg-white dark:bg-darkBg border border-1 border-black
                                             dark:border-white rounded-lg px-[20px] py-[10px]"
                                     >
                                         <BrandBoldText className="text-black dark:text-white flex justify-center">
@@ -359,11 +374,10 @@ export const NewChoreDetails = ({ route }) => {
                                 {weekdays.map((day) => (
                                     <Pressable
                                         key={day.id}
-                                        className={`w-[42px] h-[42px] flex justify-center items-center m-1 rounded-full ${dayValue == day.id? isDark ? "bg-gray-100": "bg-gray-600": isDark? "bg-gray-700": "bg-red"}`}
+                                        className={`w-[42px] h-[42px] flex justify-center items-center m-1 rounded-full ${dayValue == day.id ? isDark ? "bg-gray-100" : "bg-gray-600" : isDark ? "bg-gray-400" : "bg-gray-400"}`}
                                         onPress={() => setDayValue(day.id)}
                                     >
-                                        <BrandBoldText className={`${ dayValue == day.id? " text-white dark:text-black": "text-black dark:text-white" }`
-                                        }>
+                                        <BrandBoldText className={"text-white dark:text-black"}>
                                             {day.short}
                                         </BrandBoldText>
                                     </Pressable>
@@ -373,15 +387,19 @@ export const NewChoreDetails = ({ route }) => {
                     }
                     <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
                     <View className="w-[100%] gap-20 flex-row items-start justify-between">
-                        <BrandBoldText className="text-black dark:text-white flex" style={{ paddingVertical: 10 }}>Time Due</BrandBoldText>
+                        <View className="flex-row items-center gap-[10px]">
+                            <ClockIcon />
+                            <BrandBoldText className="text-black dark:text-white flex" style={{ paddingVertical: 10 }}>Time Due</BrandBoldText>
+                        </View>
                         <View className="flex-col items-center">
-                            <BrandText style={{ color: isDark ? "white" : "black" }}>Select time</BrandText>
+                            <BrandText className="text-black dark:text-white">Select time</BrandText>
                             <Pressable onPress={() => { setOpenTime(true) }}
-                                className="flex items-center bg-white dark:bg-black border border-black dark:border-white rounded-lg px-5 py-2"
-                            ><BrandBoldText className="text-black dark:text-white">{time.toLocaleTimeString('en-US', {
-                                hour: 'numeric',
-                                minute: '2-digit'
-                            })}</BrandBoldText></Pressable>
+                                className="flex items-center bg-white dark:bg-darkBg border border-black dark:border-white rounded-lg px-5 py-2"
+                            >
+                                <BrandBoldText className="text-black dark:text-white">{time.toLocaleTimeString('en-US', {
+                                    hour: 'numeric',
+                                    minute: '2-digit'
+                                })}</BrandBoldText></Pressable>
                             {openTime &&
                                 <DateTimePicker value={time} mode="time" display="default"
                                     onChange={(event, selectedTime) => {
@@ -393,15 +411,18 @@ export const NewChoreDetails = ({ route }) => {
                     </View>
 
                     <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
-
                     <View className="flex-row justify-between items-center pe-[16px]">
-                        < View >
+                        < View className="flex-row items-center gap-[10px]">
+                            <CameraIcon width={20} />
                             <BrandBoldText className="text-black dark:text-white">Require photos?</BrandBoldText>
                         </View>
                         <Switch
                             value={requirePhotos}
                             onValueChange={setRequirePhotos}
-                            color="#FB943C"
+                            trackColor={{ false: isDark ? "#6a6a6aff": '#a5a5a5ff', true: isDark? "#a75c1aff" : "#618479ff"}}
+                            thumbColor={requirePhotos ?
+                                isDark ? "#FB943C" : "#84A99D"
+                                :isDark ? "#d2d2d2ff" : "#979797ff"}
                             style={{ transform: [{ scale: 1.5 }] }}
                         />
                     </View>
@@ -409,10 +430,13 @@ export const NewChoreDetails = ({ route }) => {
                     <View className="h-[1px] mt-6 mb-4 bg-black dark:bg-white"></View>
 
                     <View className="flex-row justify-between items-start">
-                        <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-2 mt-4">
-                            Notes
-                        </BrandText>
-                        <View className="border-[1px] border-black dark:border-white dark:bg-transparent bg-white rounded-lg shadow-md h-[100px] w-[70%] mt-4">
+                        <View className="flex-row items-center gap-[10px] mt-4">
+                            <WriteIcon width={20} />
+                            <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText">
+                                Notes
+                            </BrandBoldText>
+                        </View>
+                        <View className=" shadow-md h-[100px] w-[70%] mt-4">
                             <TextInput
                                 multiline={true}
                                 numberOfLines={3}
@@ -420,7 +444,7 @@ export const NewChoreDetails = ({ route }) => {
                                 onChangeText={(text) => handleChange('details', text)}
                                 placeholder="Add optional note"
                                 error={formErrors.details}
-                                className="text-[15px] text-black dark:text-white px-[10px]"
+                                className="text-[15px] align-top h-[100px] border-[1px] borderblack dark:border-white rounded-lg bg-white dark:bg-darkBg text-black dark:text-white px-[10px]"
                                 placeholderTextColor={isDark ? "white" : "black"}
                             />
                         </View>
