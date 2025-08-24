@@ -13,14 +13,13 @@ import { PrimaryButton } from "../../components/PrimaryButton"
 import { Switch } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
 import { TextInput } from "react-native"
-import { TodayIcon } from "../../components/icons/TodayIcon"
-import { FirstNameIcon } from "../../components/icons/FirstNameIcon"
 import { RepeatIcon } from "../../components/icons/RepeatIcon"
 import { CameraIcon } from "../../components/icons/CameraIcon"
 import { ClockIcon } from "../../components/icons/ClockIcon"
 import { WriteIcon } from "../../components/icons/WriteIcon"
 import { BackArrow } from "../../components/icons/BackArrow"
-
+import { DateIcon } from "../../components/icons/DateIcon"
+import { AssignedToIcon } from "../../components/icons/AssignedToIcon"
 
 //NOTE: familyData in userContext is currently empty. Right now, I'm getting the data from inside of loggedInData.family
 
@@ -213,7 +212,7 @@ export const NewChoreDetails = ({ route }) => {
                     </View>
                     <View className="w-full flex-row justify-between items-center z-100 relative">
                         <View className="flex-row items-center gap-[10px]">
-                            <FirstNameIcon width={20} />
+                            <AssignedToIcon />
                             <BrandBoldText className="text-black dark:text-white">Assign to</BrandBoldText>
                         </View>
                         <DropDownPicker
@@ -337,7 +336,7 @@ export const NewChoreDetails = ({ route }) => {
                             <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
                             <View className="w-[100%] flex-row items-start gap-20 justify-between">
                                 <View className="flex-row items-center gap-[10px]">
-                                    <TodayIcon width={17} />
+                                    <DateIcon />
                                     <BrandBoldText className="text-black dark:text-white pt-[10px] pb-[10px]">Due Date</BrandBoldText>
                                 </View>
                                 <View className="flex-col items-center z-1">
