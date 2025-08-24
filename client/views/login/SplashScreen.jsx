@@ -24,7 +24,7 @@ export const SplashScreen = () => {
             </View>
 
             <View className="items-center p-16">
-                <BrandBoldText className="text-7xl text-lightPrimaryText dark:text-darkPrimaryText">
+                <BrandBoldText className="text-7xl text-lightPrimaryText dark:text-darkPrimaryText leading-[80px]">
                     Logo
                 </BrandBoldText>
             </View>

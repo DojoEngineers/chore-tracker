@@ -19,35 +19,21 @@ export const NewChore = () => {
     const navigation = useNavigation()
 
     // Dynamically set form data
-    const handleChange = (name, value) => {
+    const handleChange = (value) => {
         setTitle(value)
-        validateData(name, value)
-    }
-
-    // Validate form inputs dynamically
-    const validateData = (name, value) => {
-        const validations = {
-            title: value => (
-                value.length < 3 ? "Title must be at least 3 characters."
-                : value.length > 30 ? "Title cannot exceed 30 characters."
-                : false
-            ),
+        if (value.length < 3) {
+            setFormErrors(prev => ({...prev, title: "Title must be at least 3 characters."}))
         }
-        setFormErrors(prev => ({...prev, [name]: validations[name](value)}))
-    }
-
-    // Check for errors before submitting form
-    const isReadyToSubmit = () => {
-        for (let key in formErrors){
-            if (formErrors[key] != false || title == "") {
-                return false
-            }
+        else if (value.length > 30) {
+            setFormErrors(prev => ({...prev, title: "Title cannot exceed 30 characters."}))
         }
-        return true
+        else {
+            setFormErrors(prev => ({...prev, title: false}))
+        }
     }
 
     const handleSubmit = () => {
-        if (!isReadyToSubmit()){
+        if (!title || formErrors.title){
             Toast.show({
                 type: 'error',
                 text1: "Please make corrections to the form."
@@ -108,7 +94,7 @@ export const NewChore = () => {
                         <View className="mt-10">
                             <UserInput
                                 value={title}
-                                onChangeText={(text) => handleChange('title', text)}
+                                onChangeText={(text) => handleChange(text)}
                                 placeholder="Add custom chore here"
                                 error={formErrors.title}
                             />

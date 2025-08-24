@@ -14,10 +14,10 @@ import { LogoutIcon } from "../../components/icons/LogoutIcon"
 import { DeleteIcon } from "../../components/icons/DeleteIcon"
 import { NotificationsIcon } from "../../components/icons/NotificationsIcon"
 import { DarkModeIcon } from "../../components/icons/DarkModeIcon"
-import { Switch } from "react-native-paper"
 import { useState } from "react"
 import DropDownPicker from "react-native-dropdown-picker"
 import { MaterialIcons } from '@expo/vector-icons'
+import { NotificationsSwitch } from "../../components/NotificationsSwitch"
 
 export const Settings = () => {
 
@@ -29,7 +29,7 @@ export const Settings = () => {
     ])
 
     const navigation = useNavigation()
-    const {loggedInData, logout, notifications, toggleNotifications, theme, setAppTheme} = useLogin()
+    const {loggedInData, logout, theme, setAppTheme} = useLogin()
     const colorScheme = useColorScheme()
 
     const handleLogout = () => {
@@ -71,12 +71,7 @@ export const Settings = () => {
                         </BrandBoldText>
                     </View>
 
-                    <Switch
-                        value={notifications}
-                        onValueChange={toggleNotifications}
-                        color="#FB943C"
-                        style={{ transform: [{ scale: 1 }] }}
-                    />
+                    <NotificationsSwitch />
                 </View>
 
                 <View
