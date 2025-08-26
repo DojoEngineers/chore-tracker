@@ -131,15 +131,18 @@ export const KidDetails = ({route}) => {
                             chores.thisWeek.map((chore) => (
                                 <Pressable
                                     onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-row w-full items-center py-3"
+                                    className="flex-row w-full items-center py-3 justify-between"
                                     key={chore._id}
                                 >
-                                    <CheckboxIcon />
-                                    <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
-                                    >
-                                        {chore.title}
-                                    </BrandText>
+                                    <View className="flex-row items-center">
+                                        <CheckboxIcon />
+                                        <BrandText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
+                                        >
+                                            {chore.title}
+                                        </BrandText>
+                                    </View>
+                                    <ForwardArrow />
                                 </Pressable>
                             ))
                         :
