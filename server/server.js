@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import emailjs from "@emailjs/nodejs"
 import { startJobs } from "./agenda.js";
 import agenda from "./agenda.js";
+import { Expo } from 'expo-server-sdk'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,6 +41,63 @@ config(); // instead of dotenv.config
 const PORT = process.env.PORT;
 
 dbConnect();
+
+//EXPO PUSH NOTIFICATIONS
+// Create a new Expo SDK client
+const expo = new Expo();
+// Store push tokens (use a database in production)
+let pushTokens = [];
+// Endpoint to save push tokens
+app.post('/api/save-push-token', (req, res) => {
+  const { token, userId } = req.body;
+  // Validate the token
+  if (!Expo.isExpoPushToken(token)) {
+    return res.status(400).json({ error: 'Invalid push token' });
+  }
+  // Save token (use database in production)
+  pushTokens.push({ token, userId });
+  
+  res.json({ success: true });
+});
+
+// Endpoint to send notification
+app.post('/api/send-notification', async (req, res) => {
+  const { title, body, data, userId } = req.body;
+  
+  // Find user's tokens
+  const userTokens = pushTokens
+    .filter(item => item.userId === userId)
+    .map(item => item.token);
+  
+  if (userTokens.length === 0) {
+    return res.status(404).json({ error: 'No tokens found for user' });
+  }
+  
+  // Create messages
+  const messages = userTokens.map(token => ({
+    to: token,
+    sound: 'default',
+    title,
+    body,
+    data,
+  }));
+  
+  // Send notifications
+  try {
+    const chunks = expo.chunkPushNotifications(messages);
+    const tickets = [];
+    
+    for (const chunk of chunks) {
+      const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+      tickets.push(...ticketChunk);
+    }
+    
+    res.json({ success: true, tickets });
+  } catch (error) {
+    console.error('Error sending notifications:', error);
+    res.status(500).json({ error: 'Failed to send notifications' });
+  }
+});
 
 
 app.listen(PORT, '0.0.0.0', async () => {
