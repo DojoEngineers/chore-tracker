@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native"
-import { useLogin } from "../../context/UserContext"
+import { useLogin, useNotifications } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
@@ -18,8 +18,10 @@ import { CameraIcon } from "../../components/icons/CameraIcon"
 import { ClockIcon } from "../../components/icons/ClockIcon"
 import { WriteIcon } from "../../components/icons/WriteIcon"
 import { BackArrow } from "../../components/icons/BackArrow"
+
 import { DateIcon } from "../../components/icons/DateIcon"
 import { AssignedToIcon } from "../../components/icons/AssignedToIcon"
+
 
 //NOTE: familyData in userContext is currently empty. Right now, I'm getting the data from inside of loggedInData.family
 
@@ -42,6 +44,14 @@ const weekdays = [
 ];
 
 export const NewChoreDetails = ({ route }) => {
+
+    const {
+        expoPushToken,
+        sendTestNotification,
+        sendPushNotification,
+        isLoading
+    } = useNotifications();
+
     const { title } = route.params
 
     // for checking dark/light mode inside inputs that dont support nativewind's classname.
@@ -91,6 +101,51 @@ export const NewChoreDetails = ({ route }) => {
     // controls when date/time modals are open/closed
     const [openTime, setOpenTime] = useState(false)
     const [openDate, setOpenDate] = useState("")
+
+
+    //  send test 
+    const handleSendTest = async () => {
+        const result = await sendTestNotification();
+        if (result?.success) {
+            Alert.alert('Success', 'Test notification sent!');
+        }
+    };
+
+    // Send chore reminder
+    const handleSendChoreReminder = async () => {
+        if (!expoPushToken) {
+            Alert.alert('Error', 'Push token not available');
+            return;
+        }
+
+        const result = await NotificationService.sendChoreReminder(
+            expoPushToken,
+            'Take out trash',
+            'today at 6 PM'
+        );
+
+        if (result?.success) {
+            Alert.alert('Success', 'Chore reminder sent!');
+        }
+    };
+
+    // Send chore completed notification
+    const handleSendChoreCompleted = async () => {
+        if (!expoPushToken) {
+            Alert.alert('Error', 'Push token not available');
+            return;
+        }
+
+        const result = await NotificationService.sendChoreCompleted(
+            expoPushToken,
+            'Kitchen cleaning',
+            'John'
+        );
+
+        if (result?.success) {
+            Alert.alert('Success', 'Chore completed notification sent!');
+        }
+    };
 
 
     useEffect(() => {
@@ -156,6 +211,7 @@ export const NewChoreDetails = ({ route }) => {
         }
         else {
             console.log("submitting...")
+            HandleSendTest()
             // combining date and time in the frontend (best practice)
             const dateTime = new Date(date);
             dateTime.setHours(
@@ -418,10 +474,10 @@ export const NewChoreDetails = ({ route }) => {
                         <Switch
                             value={requirePhotos}
                             onValueChange={setRequirePhotos}
-                            trackColor={{ false: isDark ? "#6a6a6aff": '#a5a5a5ff', true: isDark? "#a75c1aff" : "#618479ff"}}
+                            trackColor={{ false: isDark ? "#6a6a6aff" : '#a5a5a5ff', true: isDark ? "#a75c1aff" : "#618479ff" }}
                             thumbColor={requirePhotos ?
                                 isDark ? "#FB943C" : "#84A99D"
-                                :isDark ? "#d2d2d2ff" : "#979797ff"}
+                                : isDark ? "#d2d2d2ff" : "#979797ff"}
                             style={{ transform: [{ scale: 1.5 }] }}
                         />
                     </View>
@@ -450,7 +506,7 @@ export const NewChoreDetails = ({ route }) => {
 
                     </View>
                     <View className="mt-8 mb-14">
-                        <PrimaryButton onPress={handleSubmit} label="Add" />
+                        <PrimaryButton onPress={handleSubmit} disabled={!expoPushToken} label="Add" />
                     </View>
 
                 </View>

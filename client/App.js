@@ -3,6 +3,7 @@ import Toast from 'react-native-toast-message'
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from './context/UserContext';
+// import { NotificationProvider } from './contexts/UserContext';
 import { useFonts, Nunito_400Regular, Nunito_700Bold } from '@expo-google-fonts/nunito';
 import { GlobalStyling } from "./components/GlobalStyling";
 import { SplashScreen } from "./views/login/SplashScreen";
@@ -41,50 +42,52 @@ export default function App() {
   })
   if (!fontsLoaded) return null
 
-  const chooseAnimation = ({route}) => {
+  const chooseAnimation = ({ route }) => {
     const animationType = route.params?.animationType || 'slide_from_right';
-    return {animation: animationType}
+    return { animation: animationType }
   }
 
   const Stack = createStackNavigator()
 
   return (
-    <UserContextProvider>
-      <GlobalStyling>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="SplashScreen" component={SplashScreen}></Stack.Screen>
-            <Stack.Screen name="StartingPage" component={StartingPage} options={chooseAnimation}></Stack.Screen>
-            <Stack.Screen name="ParentRegistration" component={ParentRegistration}></Stack.Screen>
-            <Stack.Screen name="PasscodeVerification" component={PasscodeVerification}></Stack.Screen>
-            <Stack.Screen name="UsernameVerification" component={UsernameVerification}></Stack.Screen>
-            <Stack.Screen name="TutorialAssign" component={TutorialAssign}></Stack.Screen>
-            <Stack.Screen name="TutorialTrack" component={TutorialTrack}></Stack.Screen>
-            <Stack.Screen name="TutorialResults" component={TutorialResults}></Stack.Screen>
-            <Stack.Screen name="ParentDashboard" component={ParentDashboard} options={chooseAnimation}></Stack.Screen>
-            <Stack.Screen name="Login" component={Login} options={chooseAnimation}></Stack.Screen>
-            <Stack.Screen name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
-            <Stack.Screen name="SetPassword" component={SetPassword}></Stack.Screen>
-            <Stack.Screen name="Settings" component={Settings} options={chooseAnimation}></Stack.Screen>
-            <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
-            <Stack.Screen name="FamilySettings" component={FamilySettings} options={chooseAnimation}></Stack.Screen>
-            <Stack.Screen name="AddFamilyMember" component={AddFamilyMember}></Stack.Screen>
-            <Stack.Screen name="NewChore" component={NewChore} options={chooseAnimation}></Stack.Screen>
-            <Stack.Screen name="NewChoreDetails" component={NewChoreDetails}></Stack.Screen>
-            <Stack.Screen name="DeleteAccount" component={DeleteAccount}></Stack.Screen>
-            <Stack.Screen name="VerifyPassword" component={VerifyPassword}></Stack.Screen>
-            <Stack.Screen name="Help" component={Help}></Stack.Screen>
-            <Stack.Screen name="Terms" component={Terms}></Stack.Screen>
-            <Stack.Screen name="Privacy" component={Privacy}></Stack.Screen>
-            <Stack.Screen name="Kids" component={Kids} options={chooseAnimation}></Stack.Screen>
-            <Stack.Screen name="KidDetails" component={KidDetails} options={chooseAnimation}></Stack.Screen>
-            <Stack.Screen name="ViewChore" component={ViewChore}></Stack.Screen>
-            <Stack.Screen name="Today" component={Today} options={chooseAnimation}></Stack.Screen>
-          </Stack.Navigator>
-        </NavigationContainer>
-      </GlobalStyling>
-      <Toast />
-    </UserContextProvider>
+    // <NotificationProvider>
+      <UserContextProvider>
+        <GlobalStyling>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="SplashScreen" component={SplashScreen}></Stack.Screen>
+              <Stack.Screen name="StartingPage" component={StartingPage} options={chooseAnimation}></Stack.Screen>
+              <Stack.Screen name="ParentRegistration" component={ParentRegistration}></Stack.Screen>
+              <Stack.Screen name="PasscodeVerification" component={PasscodeVerification}></Stack.Screen>
+              <Stack.Screen name="UsernameVerification" component={UsernameVerification}></Stack.Screen>
+              <Stack.Screen name="TutorialAssign" component={TutorialAssign}></Stack.Screen>
+              <Stack.Screen name="TutorialTrack" component={TutorialTrack}></Stack.Screen>
+              <Stack.Screen name="TutorialResults" component={TutorialResults}></Stack.Screen>
+              <Stack.Screen name="ParentDashboard" component={ParentDashboard} options={chooseAnimation}></Stack.Screen>
+              <Stack.Screen name="Login" component={Login} options={chooseAnimation}></Stack.Screen>
+              <Stack.Screen name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
+              <Stack.Screen name="SetPassword" component={SetPassword}></Stack.Screen>
+              <Stack.Screen name="Settings" component={Settings} options={chooseAnimation}></Stack.Screen>
+              <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
+              <Stack.Screen name="FamilySettings" component={FamilySettings} options={chooseAnimation}></Stack.Screen>
+              <Stack.Screen name="AddFamilyMember" component={AddFamilyMember}></Stack.Screen>
+              <Stack.Screen name="NewChore" component={NewChore} options={chooseAnimation}></Stack.Screen>
+              <Stack.Screen name="NewChoreDetails" component={NewChoreDetails}></Stack.Screen>
+              <Stack.Screen name="DeleteAccount" component={DeleteAccount}></Stack.Screen>
+              <Stack.Screen name="VerifyPassword" component={VerifyPassword}></Stack.Screen>
+              <Stack.Screen name="Help" component={Help}></Stack.Screen>
+              <Stack.Screen name="Terms" component={Terms}></Stack.Screen>
+              <Stack.Screen name="Privacy" component={Privacy}></Stack.Screen>
+              <Stack.Screen name="Kids" component={Kids} options={chooseAnimation}></Stack.Screen>
+              <Stack.Screen name="KidDetails" component={KidDetails} options={chooseAnimation}></Stack.Screen>
+              <Stack.Screen name="ViewChore" component={ViewChore}></Stack.Screen>
+              <Stack.Screen name="Today" component={Today} options={chooseAnimation}></Stack.Screen>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </GlobalStyling>
+        <Toast />
+      </UserContextProvider>
+    // </NotificationProvider>
   )
-  
+
 }

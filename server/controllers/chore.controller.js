@@ -2,6 +2,27 @@ import Chore from "../models/chore.model.js"
 import ChoreTemplate from "../models/choreTemplate.js"
 
 
+export const seedDB = async (req,res) => {
+    try {
+        const seed = await Chore.create({
+    "creator": "689039957f119be3786358cc",
+    "worker": "68903c317f119be3786358da",
+    "title":"help work",
+    "details":"1hr",
+    "repeat": "never",
+    "dueDate": "2025-08-04T04:50:57.579Z",
+    "needsPics": false,
+    "isActive": true,
+    "stage": "incomplete"
+})
+    res.status(200).json(seed)
+    }
+    catch (error) {
+        console.log("error", error)
+        res.status(400).json(error)
+    }
+}
+
 // templates are used to generate an instance of a reoccuring chore.
 export const getTemplates = async (req, res) => {
     console.log("getting temps...")
@@ -50,9 +71,12 @@ export const getAllChores = async (req, res) => {
 // query contains _id string
 export async function getChoreById(req, res) {
     console.log("controller get chore by id")
-    console.log("req.query", req.query)
+    console.log("req.query.id", req.query.id)
     try {
-        const one = await Chore.findById(req.query)
+        const one = await Chore.findById(req.query.id).populate(
+            [{ path: 'creator', model: "User" },
+            { path: 'worker', model: "User", select: "name _id" }
+            ])
         console.log("one", one)
         res.status(200).json(one);
     } catch (error) {

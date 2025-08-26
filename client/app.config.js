@@ -7,6 +7,9 @@ export default {
     slug: "chore-tracker", 
     extra: {
       BACKEND_API_URL: process.env.BACKEND_API_URL,
+      eas: {
+        projectId: "6d7a9599-3889-436c-b230-9f8afa020ed1"
+      }
     },
 
     // From your app.json
