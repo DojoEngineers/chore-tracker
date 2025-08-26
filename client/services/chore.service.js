@@ -59,3 +59,15 @@ export const getChoresByParents = async (parents) => {
         throw error.response.data.errors
     }
 }
+
+export const getChoreById = async (id) => {
+    try {
+        const RES = await CHORE_INSTANCE.get('/', {
+            params: { id }
+        })
+        return RES.data
+    }
+    catch(error) {
+        throw error.response.data.errors
+    }
+}

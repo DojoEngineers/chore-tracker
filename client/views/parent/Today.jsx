@@ -87,12 +87,12 @@ export const Today = () => {
                                     <BrandText
                                         className="text-lightPrimaryText dark:text-darkPrimaryText text-[12px] mb-2"
                                     >
-                                        {chore.worker}
+                                        {chore.worker?.name}
                                     </BrandText>
                                     <BrandText
                                         className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
                                     >
-                                        Due before {dayjs(chore.dueDate).format("h:mma")}
+                                        Due by {dayjs(chore.dueDate).format("h:mma")}
                                     </BrandText>
                                 </View>
                                 <View className="justify-center">
