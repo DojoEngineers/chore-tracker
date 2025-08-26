@@ -21,9 +21,9 @@ export const Header = () => {
                 <View className="flex-row items-center">
                     <Pressable
                         onPress={() => navigation.navigate(loggedInData.isParent ? "ParentDashboard" : "KidDashboard", {animationType: "fade"})}
-                        className="border border-lightPrimaryText dark:border-darkPrimaryText rounded-full me-3 aspect-square h-[50px] justify-center"
+                        className="shadow rounded-full me-3 aspect-square h-[50px] justify-center dark:bg-[#333740]"
                     >
-                        <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[18px] text-center">
+                        <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[36px] text-center">
                             {loggedInData.name[0]}
                         </BrandBoldText>
                     </Pressable>

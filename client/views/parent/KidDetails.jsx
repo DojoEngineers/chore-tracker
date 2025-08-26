@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { ParentNavBar } from "../../components/ParentNavBar.jsx"
 import utc from 'dayjs/plugin/utc';
+import { ForwardArrow } from "../../components/icons/ForwardArrow.jsx"
 
 dayjs.extend(isBetween);
 dayjs.extend(utc);
@@ -35,7 +36,7 @@ export const KidDetails = ({route}) => {
 
                 // Rest of the week chores (excluding today)
                 const thisWeek = res.filter((chore) =>
-                    dayjs(chore.dueDate).local().isBetween(dayjs(), dayjs().endOf('week'), null, '(]') &&
+                    dayjs(chore.dueDate).local().isBetween(dayjs().add(1, 'day').startOf('day'), dayjs().endOf('week'), null, '[]') &&
                     ['incomplete', 'rejected'].includes(chore.stage)
                 )
                 .sort((a, b) => dayjs(b.dueDate).diff(dayjs(a.dueDate)))
@@ -85,7 +86,7 @@ export const KidDetails = ({route}) => {
             >
                 <View>
                     <BrandBoldText
-                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-10 mb-2"
+                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-8 mb-2"
                     >
                         Due today
                     </BrandBoldText>
@@ -94,15 +95,18 @@ export const KidDetails = ({route}) => {
                             chores.today.map((chore) => (
                                 <Pressable
                                     onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-row w-full items-center py-3"
+                                    className="flex-row w-full items-center py-3 justify-between"
                                     key={chore._id}
                                 >
-                                    <CheckboxIcon />
-                                    <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
-                                    >
-                                        {chore.title}
-                                    </BrandText>
+                                    <View className="flex-row items-center">
+                                        <CheckboxIcon />
+                                        <BrandText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
+                                        >
+                                            {chore.title}
+                                        </BrandText>
+                                    </View>
+                                    <ForwardArrow />
                                 </Pressable>
                             ))
                         :
@@ -197,13 +201,14 @@ export const KidDetails = ({route}) => {
                             ))
                         :
                             <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
+                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3 pb-3"
                             >
                                 No completed chores
                             </BrandText>
                     }
                 </View>
             </ScrollView>
+
             <ParentNavBar />
         </View>
     )
