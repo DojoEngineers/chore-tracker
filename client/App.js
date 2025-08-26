@@ -31,6 +31,7 @@ import { Privacy } from "./views/settings/Privacy";
 import { Kids } from "./views/parent/Kids";
 import { KidDetails } from "./views/parent/KidDetails";
 import { ViewChore } from "./views/parent/ViewChore";
+import { Today } from "./views/parent/Today";
 
 export default function App() {
 
@@ -78,6 +79,7 @@ export default function App() {
             <Stack.Screen name="Kids" component={Kids} options={chooseAnimation}></Stack.Screen>
             <Stack.Screen name="KidDetails" component={KidDetails} options={chooseAnimation}></Stack.Screen>
             <Stack.Screen name="ViewChore" component={ViewChore}></Stack.Screen>
+            <Stack.Screen name="Today" component={Today} options={chooseAnimation}></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
       </GlobalStyling>

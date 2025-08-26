@@ -47,14 +47,13 @@ export const Kids = () => {
                         <View key={kid._id} className="mb-8 items-center">
                             <Pressable
                                 onPress={() => {navigation.navigate("KidDetails", {kid})}}
-                                className="w-[207px] h-[207px] rounded-full border-lightPrimaryText
-                                dark:border-darkPrimaryText items-center justify-center mb-2 border-2"
+                                className="w-[207px] h-[207px] rounded-full items-center justify-center mb-2 dark:bg-[#333740] shadow"
                             >
-                                <BrandBoldText
-                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[40px]"
+                                <BrandText
+                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[128px]"
                                 >
                                     {kid.name[0]}
-                                </BrandBoldText>
+                                </BrandText>
                             </Pressable>
                             <BrandBoldText
                                     className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center"
