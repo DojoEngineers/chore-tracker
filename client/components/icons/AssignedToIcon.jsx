@@ -1,15 +1,15 @@
 import { useColorScheme } from 'react-native';
 import DarkFirstNameIcon from '../../assets/icons/DarkFirstNameIcon';
-import LightFirstNameIcon from '../../assets/icons/LightFirstNameIcon';
+import LightAssignedToIcon from '../../assets/icons/LightAssignedToIcon';
 
-const aspectRatio = 14 / 13
+const aspectRatio = 18 / 18
 
-export const FirstNameIcon = ({width = 14}) => {
+export const AssignedToIcon = ({width = 18}) => {
 
     const colorScheme = useColorScheme()
 
     if (colorScheme === 'dark') {
         return <DarkFirstNameIcon width={width} height={width/aspectRatio} />
     }
-    return <LightFirstNameIcon width={width} height={width/aspectRatio} />
+    return <LightAssignedToIcon width={width} height={width/aspectRatio} />
 }
