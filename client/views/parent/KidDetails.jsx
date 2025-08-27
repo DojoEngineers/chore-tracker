@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native"
-import { Pressable, ScrollView, View } from "react-native"
+import { Pressable, ScrollView, Text, View } from "react-native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { useEffect, useState } from "react"
@@ -43,7 +43,7 @@ export const KidDetails = ({route}) => {
                 .sort((a, b) => dayjs(b.dueDate).diff(dayjs(a.dueDate)))
 
                 // Completed chores
-                const completed = res.filter(chore => chore.stage === 'completed')
+                const completed = res.filter(chore => chore.stage === 'complete')
                 .sort((a, b) => dayjs(b.dateCompleted).diff(dayjs(a.dateCompleted)))
 
                 // Set chores in state
@@ -176,7 +176,7 @@ export const KidDetails = ({route}) => {
 
                 <View>
                     <BrandBoldText
-                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-6 mb-2"
+                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-6 mb-4"
                     >
                         Completed chore history
                     </BrandBoldText>
@@ -186,30 +186,31 @@ export const KidDetails = ({route}) => {
                             chores.completed.map((chore) => (
                                 <Pressable
                                     onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-row w-full items-center py-3 dark:border rounded-full
-                                        dark:border-darkPrimaryText bg-[#ACE6CD] dark:bg-transparent m-1"
+                                    className="flex-row w-full items-center py-3 px-5 dark:border rounded-3xl
+                                        dark:border-darkPrimaryText bg-[#ACE6CD] dark:bg-transparent my-2"
                                     key={chore._id}
                                 >
-                                    <View className="border border-lightPrimaryText dark:border-darkPrimaryText rounded-full me-3 aspect-square h-[30px] justify-center">
+                                    <View className="rounded-full bg-lightBg
+                                        me-3 aspect-square h-[30px] justify-center dark:bg-[#FB943C]">
                                         <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] text-center">
                                             {kid.name[0]}
                                         </BrandBoldText>
                                     </View>
 
-                                    <View>
-                                        <View className="flex-row">
+                                    <View className="flex-1">
+                                        <View className="flex-row flex-wrap">
                                             <BrandBoldText
                                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
                                             >
-                                                {kid.name} 
+                                                {kid.name}{" "}
                                             </BrandBoldText>
                                             <BrandText
                                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
                                             >
-                                                completed 
+                                                completed{" "}
                                             </BrandText>
                                             <BrandBoldText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
+                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] flex-shrink"
                                             >
                                                 {chore.title}
                                             </BrandBoldText>
