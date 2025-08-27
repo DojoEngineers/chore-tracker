@@ -18,6 +18,7 @@ export const Today = () => {
 
     const [apiErrors, setApiErrors] = useState({})
     const [chores, setChores] = useState([])
+    const [loading, setLoading] = useState("Loading chores...")
 
     const navigation = useNavigation()
     const {loggedInData} = useLogin()
@@ -40,6 +41,7 @@ export const Today = () => {
                     text1: "Unable to get chore information."
                 })
             })
+            .finally(() => setLoading(false))
     }, [])
 
     return (
@@ -100,14 +102,20 @@ export const Today = () => {
                                 </View>
                             </Pressable>
                         ))
+
+                    : loading ?
+                        <BrandText
+                            className="text-lightPrimaryText dark:text-darkPrimaryText"
+                        >
+                            {loading}
+                        </BrandText>
+
                     :
-                        <View>
-                            <BrandText
-                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                                >
-                                    No chores due today
-                                </BrandText>
-                        </View>
+                        <BrandText
+                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
+                        >
+                            No chores due today
+                        </BrandText>
                 }
             </ScrollView>
             

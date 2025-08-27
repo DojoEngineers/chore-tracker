@@ -20,6 +20,7 @@ export const KidDetails = ({route}) => {
 
     const [apiErrors, setApiErrors] = useState({})
     const [chores, setChores] = useState({today: [], thisWeek: [], completed: []})
+    const [loading, setLoading] = useState("loading chores...")
 
     const navigation = useNavigation()
     const { kid } = route.params
@@ -56,6 +57,7 @@ export const KidDetails = ({route}) => {
                     text1: "Unable to get chore information."
                 })
             })
+            .finally(() => setLoading(false))
     }, [])
 
     return (
@@ -90,6 +92,7 @@ export const KidDetails = ({route}) => {
                     >
                         Due today
                     </BrandBoldText>
+
                     {chores.today.length > 0
                         ?
                             chores.today.map((chore) => (
@@ -109,6 +112,14 @@ export const KidDetails = ({route}) => {
                                     <ForwardArrow />
                                 </Pressable>
                             ))
+
+                        : loading ?
+                            <BrandText
+                                className="text-lightPrimaryText dark:text-darkPrimaryText"
+                            >
+                                {loading}
+                            </BrandText>
+
                         :
                             <View>
                                 <BrandText
@@ -126,6 +137,7 @@ export const KidDetails = ({route}) => {
                     >
                         Due this week
                     </BrandBoldText>
+
                     {chores.thisWeek.length > 0
                         ?
                             chores.thisWeek.map((chore) => (
@@ -145,6 +157,14 @@ export const KidDetails = ({route}) => {
                                     <ForwardArrow />
                                 </Pressable>
                             ))
+
+                        : loading ?
+                            <BrandText
+                                className="text-lightPrimaryText dark:text-darkPrimaryText"
+                            >
+                                {loading}
+                            </BrandText>
+
                         :
                             <BrandText
                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
@@ -160,6 +180,7 @@ export const KidDetails = ({route}) => {
                     >
                         Completed chore history
                     </BrandBoldText>
+
                     {chores.completed.length > 0
                         ?
                             chores.completed.map((chore) => (
@@ -202,6 +223,14 @@ export const KidDetails = ({route}) => {
                                     </View>
                                 </Pressable>
                             ))
+                            
+                        : loading ?
+                            <BrandText
+                                className="text-lightPrimaryText dark:text-darkPrimaryText"
+                            >
+                                {loading}
+                            </BrandText>
+
                         :
                             <BrandText
                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3 pb-3"
