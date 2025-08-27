@@ -46,7 +46,7 @@ export const Settings = () => {
                 <View className="flex-row mt-[75px] items-center ps-2 mb-4">
                     <Pressable
                         hitSlop={20}
-                        onPress={() => navigation.navigate(loggedInData.isParent ? "ParentDashboard" : "KidDashboard", {animationType: "slide_from_left"})}
+                        onPress={() => navigation.navigate(loggedInData.isParent ? "ParentDashboard" : "KidDashboard", {animationType: "fade_from_bottom"})}
                     >
                         <BackArrow/>
                     </Pressable>

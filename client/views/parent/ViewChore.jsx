@@ -6,12 +6,14 @@ import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { useNavigation } from "@react-navigation/native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import dayjs from "dayjs"
+import { BrandText } from "../../components/text/BrandText"
 
 
 export const ViewChore = ({route}) => {
 
     const [apiErrors, setApiErrors] = useState({})
     const [chore, setChore] = useState({})
+    const [loading, setLoading] = useState("Loading chore...")
 
     const navigation = useNavigation()
 
@@ -31,6 +33,7 @@ export const ViewChore = ({route}) => {
                     text1: "Unable to get chore information."
                 })
             })
+            .finally(() => setLoading(false))
     }, [])
     
     return (
@@ -53,6 +56,12 @@ export const ViewChore = ({route}) => {
             {apiErrors.getChoreById && (
                 <BrandText className="text-red-500 text-center">
                     {apiErrors.getChoreById}
+                </BrandText>
+            )}
+
+            {loading && (
+                <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText">
+                    {loading}
                 </BrandText>
             )}
 

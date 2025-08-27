@@ -40,7 +40,7 @@ export const ParentNavBar = () => {
                     :
                         <Pressable
                             className="justify-center items-center"
-                            onPress={() => navigation.navigate("ParentDashboard", {animationType: "fade"})}
+                            onPress={() => navigation.navigate("ParentDashboard", {animationType: "fade_from_bottom"})}
                         >
                             <HomeIcon width={26} />
                             <BrandText className="text-[#D0D1D4] mt-1 text-[14px]">
@@ -52,7 +52,7 @@ export const ParentNavBar = () => {
                     ?
                         <Pressable
                             className="justify-center items-center"
-                            onPress={() => navigation.navigate("Today", {animationType: "fade"})}
+                            onPress={() => navigation.navigate("Today", {animationType: "fade_from_bottom"})}
                         >
                             <HighlightedTodayIcon width={26} />
                             <BrandText className="text-lightButton dark:text-darkButton mt-1 text-[14px]">
@@ -62,7 +62,7 @@ export const ParentNavBar = () => {
                     :
                         <Pressable
                             className="justify-center items-center"
-                            onPress={() => navigation.navigate("Today", {animationType: "fade"})}
+                            onPress={() => navigation.navigate("Today", {animationType: "fade_from_bottom"})}
                         >
                             <TodayIcon width={26} />
                             <BrandText className="text-[#D0D1D4] mt-1 text-[14px]">
@@ -97,7 +97,7 @@ export const ParentNavBar = () => {
                     ?
                         <Pressable
                             className="justify-center items-center"
-                            onPress={() => navigation.navigate("Kids", {animationType: "fade"})}
+                            onPress={() => navigation.navigate("Kids", {animationType: "fade_from_bottom"})}
                         >
                             <HighlightedKidsIcon width={26} />
                             <BrandText className="text-lightButton dark:text-darkButton mt-1 text-[14px]">
@@ -107,7 +107,7 @@ export const ParentNavBar = () => {
                     :
                         <Pressable
                             className="justify-center items-center"
-                            onPress={() => navigation.navigate("Kids", {animationType: "fade"})}
+                            onPress={() => navigation.navigate("Kids", {animationType: "fade_from_bottom"})}
                         >
                             <KidsIcon width={26} />
                             <BrandText className="text-[#D0D1D4] mt-1 text-[14px]">
@@ -120,7 +120,7 @@ export const ParentNavBar = () => {
             <Pressable
                 className="absolute left-1/2 -translate-x-1/2 [top:-33px] w-[66px] h-[66px] rounded-full
                     justify-center items-center border-[5px] border-white bg-lightButton dark:bg-darkButton shadow"
-                onPress={() => {navigation.navigate("NewChore", {animationType: "fade"})}}
+                onPress={() => {navigation.navigate("NewChore", {animationType: "slide_from_bottom"})}}
             >
                     <PlusIcon />
             </Pressable>
