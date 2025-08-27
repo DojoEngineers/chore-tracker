@@ -11,6 +11,7 @@ import { ForwardArrow } from "../../components/icons/ForwardArrow"
 import { useEffect, useState } from "react"
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import {SquareIcon} from "../../components/icons/SquareIcon"
 
 dayjs.extend(utc);
 
@@ -77,15 +78,18 @@ export const Today = () => {
                             <Pressable
                                 onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
                                 className="flex-row w-full my-3 border border-lightPrimaryText 
-                                    dark:border-darkPrimaryText rounded-lg p-4"
+                                    dark:bg-[#2F3339] rounded-xl p-4"
                                 key={chore._id}
                             >
                                 <View className="flex-1">
-                                    <BrandBoldText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mb-2"
-                                    >
-                                        {chore.title}
-                                    </BrandBoldText>
+                                    <View className="flex-row">
+                                        <SquareIcon />
+                                        <BrandBoldText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mb-2 ms-3"
+                                        >
+                                            {chore.title}
+                                        </BrandBoldText>
+                                    </View>
                                     <BrandText
                                         className="text-lightPrimaryText dark:text-darkPrimaryText text-[12px] mb-2"
                                     >
