@@ -191,30 +191,19 @@ export const KidDetails = ({route}) => {
                                     key={chore._id}
                                 >
                                     <View className="rounded-full bg-lightBg
-                                        me-3 aspect-square h-[30px] justify-center dark:bg-[#FB943C]">
+                                        me-3 aspect-square h-[30px] justify-center dark:bg-darkButton">
                                         <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] text-center">
                                             {kid.name[0]}
                                         </BrandBoldText>
                                     </View>
 
                                     <View className="flex-1">
-                                        <View className="flex-row flex-wrap">
-                                            <BrandBoldText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                                            >
-                                                {kid.name}{" "}
-                                            </BrandBoldText>
-                                            <BrandText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                                            >
-                                                completed{" "}
-                                            </BrandText>
-                                            <BrandBoldText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] flex-shrink"
-                                            >
-                                                {chore.title}
-                                            </BrandBoldText>
-                                        </View>
+
+                                        <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]">
+                                            <BrandBoldText>{kid.name} </BrandBoldText>
+                                            completed{" "}
+                                            <BrandBoldText>{chore.title}</BrandBoldText>
+                                        </BrandText>
 
                                         <BrandText
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
