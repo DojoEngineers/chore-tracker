@@ -31,7 +31,7 @@ export const Today = () => {
                     dayjs(chore.dueDate).local().isSame(dayjs(), 'day') &&
                     ['incomplete', 'rejected'].includes(chore.stage)
                 )
-                .sort((a, b) => dayjs(b.dueDate).diff(dayjs(a.dueDate)))
+                .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
                 setChores(choresDueToday)
             })
             .catch ((error) => {

@@ -6,11 +6,13 @@ import { ParentNavBar } from "../../components/ParentNavBar"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
 import { PrimaryButton } from "../../components/PrimaryButton"
+import { useEffect } from "react"
 
 export const Kids = () => {
 
     const {loggedInData} = useLogin()
     const navigation = useNavigation()
+    const kids = loggedInData.family.children.filter(kid => kid.isActive)
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
@@ -21,7 +23,7 @@ export const Kids = () => {
                 >
                     Kids
                 </BrandBoldText>
-                {loggedInData.family.children.length == 0 &&
+                {kids.length == 0 &&
                     <View>
                         <View className="flex-row">
                             <View className="flex-1">
@@ -37,7 +39,7 @@ export const Kids = () => {
                 }
             </View>
 
-            {loggedInData.family.children.length > 0 &&
+            {kids.length > 0 &&
                 <ScrollView
                     contentContainerClassName="items-center flex-grow"
                     showsVerticalScrollIndicator={true}

@@ -33,18 +33,18 @@ export const KidDetails = ({route}) => {
                     dayjs(chore.dueDate).local().isSame(dayjs(), 'day') &&
                     ['incomplete', 'rejected'].includes(chore.stage)
                 )
-                .sort((a, b) => dayjs(b.dueDate).diff(dayjs(a.dueDate)))
+                .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
 
                 // Rest of the week chores (excluding today)
                 const thisWeek = res.filter((chore) =>
                     dayjs(chore.dueDate).local().isBetween(dayjs().add(1, 'day').startOf('day'), dayjs().endOf('week'), null, '[]') &&
                     ['incomplete', 'rejected'].includes(chore.stage)
                 )
-                .sort((a, b) => dayjs(b.dueDate).diff(dayjs(a.dueDate)))
+                .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
 
                 // Completed chores
                 const completed = res.filter(chore => chore.stage === 'complete')
-                .sort((a, b) => dayjs(b.dateCompleted).diff(dayjs(a.dateCompleted)))
+                .sort((a, b) => dayjs(a.dateCompleted).valueOf() - dayjs(b.dateCompleted).valueOf())
 
                 // Set chores in state
                 setChores(prev => ({...prev, today, thisWeek, completed}))
