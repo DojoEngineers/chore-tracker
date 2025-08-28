@@ -45,10 +45,10 @@ export const deleteAllChores = async (req, res) => {
         res.status(400).json(error)
     }
 }
-// for testing only
+
 export async function deleteChore(req, res) {
     try {
-        const deleted = await Chore.findByIdAndDelete(req.body);
+        const deleted = await Chore.findByIdAndUpdate(req.body._id, {isActive: false}, {new:true});
         res.status(200).json(deleted);
     } catch (error) {
         res.status(400).json(error);
@@ -73,9 +73,10 @@ export async function getChoreById(req, res) {
     console.log("controller get chore by id")
     console.log("req.query.id", req.query.id)
     try {
-        const one = await Chore.findById(req.query.id)
-            .populate('creator', "name _id" )
-            .populate("worker", "name _id")
+        const one = await Chore.findOne({_id: req.query.id, isActive: true}).populate(
+            [{ path: 'creator', model: "User" },
+            { path: 'worker', model: "User", select: "name _id" }
+            ])
         console.log("one", one)
         res.status(200).json(one);
     } catch (error) {
@@ -90,7 +91,7 @@ export async function getChoresByWorker(req, res) {
     console.log("controller get worker chores")
     console.log("req.query", req.query)
     try {
-        const some = await Chore.find({ worker: req.query.id });
+        const some = await Chore.find({ worker: req.query.id, isActive: true });
         console.log("some", some)
         res.status(200).json(some);
     } catch (error) {
@@ -105,8 +106,7 @@ export async function getChoresByParent(req, res) {
     console.log("controller get creator chores")
     console.log("req.query", req.query["parents[]"])
     try {
-        const some = await Chore.find({creator: {$in: req.query["parents[]"]}})
-            .populate('worker', "name _id")
+        const some = await Chore.find({ creator: {$in: req.query.parents}, isActive: true });
         console.log("some", some)
         res.status(200).json(some);
     } catch (error) {
