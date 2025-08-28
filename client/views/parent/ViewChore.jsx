@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { getChoreById, updateChore } from "../../services/chore.service"
 import Toast from "react-native-toast-message"
-import { Modal, Pressable, Text, useColorScheme, View } from "react-native"
+import { Modal, Pressable, View } from "react-native"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { useNavigation } from "@react-navigation/native"
 import { BackArrow } from "../../components/icons/BackArrow"
@@ -28,7 +28,6 @@ export const ViewChore = ({route}) => {
     const [modalVisible, setModalVisible] = useState(false)
 
     const navigation = useNavigation()
-    const scheme = useColorScheme()
     const {id} = route.params
 
     useEffect(() => {
