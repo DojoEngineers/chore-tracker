@@ -13,7 +13,7 @@ choreRouter.route('/')
     // add protect after done testing
     .post(addChore)
     .get(getChoreById)
-    .put(protect, updateChore)
+    .put(updateChore) // I removed protect here for testing - Katie
     .delete(deleteChore)
 
     

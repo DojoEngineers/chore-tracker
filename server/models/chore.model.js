@@ -14,13 +14,13 @@ const choreSchema = new mongoose.Schema({
         maxLength: [100, `Details cannot exceed 100 characters.`]
     },
     creator: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: [true, "Error! No creator."],
         maxLength: [150, `Creator cannot exceed 150 characters.`]
     },
     worker: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: [true, "Please assign chore to a worker."]
     },

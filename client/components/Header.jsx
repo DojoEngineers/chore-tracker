@@ -20,10 +20,10 @@ export const Header = () => {
             <View className="flex-row mt-[60px] mb-6 justify-between ps-[16px] pe-[35px] items-center">
                 <View className="flex-row items-center">
                     <Pressable
-                        onPress={() => navigation.navigate(loggedInData.isParent ? "ParentDashboard" : "KidDashboard", {animationType: "fade"})}
-                        className="border border-lightPrimaryText dark:border-darkPrimaryText rounded-full me-3 aspect-square h-[50px] justify-center"
+                        onPress={() => navigation.navigate(loggedInData.isParent ? "ParentDashboard" : "KidDashboard", {animationType: "fade_from_bottom"})}
+                        className="shadow rounded-full me-3 aspect-square h-[50px] justify-center dark:bg-[#333740]"
                     >
-                        <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[18px] text-center">
+                        <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[36px] text-center">
                             {loggedInData.name[0]}
                         </BrandBoldText>
                     </Pressable>
@@ -40,7 +40,7 @@ export const Header = () => {
 
                 <Pressable
                     hitSlop={20}
-                    onPress={() => navigation.navigate("Settings")}
+                    onPress={() => navigation.navigate("Settings", {animationType: "slide_from_bottom"})}
                 >
                     <SettingsIcon />
                 </Pressable>

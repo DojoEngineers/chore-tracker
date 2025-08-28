@@ -211,7 +211,7 @@ export const NewChoreDetails = ({ route }) => {
         }
         else {
             console.log("submitting...")
-            HandleSendTest()
+            handleSendTest()
             // combining date and time in the frontend (best practice)
             const dateTime = new Date(date);
             dateTime.setHours(
