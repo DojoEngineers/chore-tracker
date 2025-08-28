@@ -6,11 +6,13 @@ import { ParentNavBar } from "../../components/ParentNavBar"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
 import { PrimaryButton } from "../../components/PrimaryButton"
+import { useEffect } from "react"
 
 export const Kids = () => {
 
     const {loggedInData} = useLogin()
     const navigation = useNavigation()
+    const kids = loggedInData.family.children.filter(kid => kid.isActive)
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
@@ -21,7 +23,7 @@ export const Kids = () => {
                 >
                     Kids
                 </BrandBoldText>
-                {loggedInData.family.children.length == 0 &&
+                {kids.length == 0 &&
                     <View>
                         <View className="flex-row">
                             <View className="flex-1">
@@ -37,7 +39,7 @@ export const Kids = () => {
                 }
             </View>
 
-            {loggedInData.family.children.length > 0 &&
+            {kids.length > 0 &&
                 <ScrollView
                     contentContainerClassName="items-center flex-grow"
                     showsVerticalScrollIndicator={true}
@@ -47,14 +49,13 @@ export const Kids = () => {
                         <View key={kid._id} className="mb-8 items-center">
                             <Pressable
                                 onPress={() => {navigation.navigate("KidDetails", {kid})}}
-                                className="w-[207px] h-[207px] rounded-full border-lightPrimaryText
-                                dark:border-darkPrimaryText items-center justify-center mb-2 border-2"
+                                className="w-[207px] h-[207px] rounded-full items-center justify-center mb-2 dark:bg-[#333740] shadow"
                             >
-                                <BrandBoldText
-                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[40px]"
+                                <BrandText
+                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[128px]"
                                 >
                                     {kid.name[0]}
-                                </BrandBoldText>
+                                </BrandText>
                             </Pressable>
                             <BrandBoldText
                                     className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center"

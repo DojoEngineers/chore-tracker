@@ -73,10 +73,9 @@ export async function getChoreById(req, res) {
     console.log("controller get chore by id")
     console.log("req.query.id", req.query.id)
     try {
-        const one = await Chore.findById(req.query.id).populate(
-            [{ path: 'creator', model: "User" },
-            { path: 'worker', model: "User", select: "name _id" }
-            ])
+        const one = await Chore.findById(req.query.id)
+            .populate('creator', "name _id" )
+            .populate("worker", "name _id")
         console.log("one", one)
         res.status(200).json(one);
     } catch (error) {
@@ -104,9 +103,10 @@ export async function getChoresByWorker(req, res) {
 // The frontend sends: params: { parents } 
 export async function getChoresByParent(req, res) {
     console.log("controller get creator chores")
-    console.log("req.query", req.query.parents)
+    console.log("req.query", req.query["parents[]"])
     try {
-        const some = await Chore.find({ $in: req.query.parents });
+        const some = await Chore.find({creator: {$in: req.query["parents[]"]}})
+            .populate('worker', "name _id")
         console.log("some", some)
         res.status(200).json(some);
     } catch (error) {
@@ -209,7 +209,7 @@ export const updateChore = async (req, res) => {
     console.log("edit Chore controller. req.body:", req.body)
     try {
         // can't change id or creator
-        const allowedUpdates = ['title', "details", 'status', "worker", "dueDate", "dateCompleted", "beforePic", "afterPic", "isActive", "needsPics"]; // Define what can be updated
+        const allowedUpdates = ['title', "details", 'stage', "worker", "dueDate", "dateCompleted", "beforePic", "afterPic", "isActive", "needsPics"]; // Define what can be updated
         const updateData = {};
         // Only include allowed fields that exist in req.body
         // Not sure if line 74 works

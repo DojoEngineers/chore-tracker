@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native"
-import { Pressable, ScrollView, View } from "react-native"
+import { Pressable, ScrollView, Text, View } from "react-native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { useEffect, useState } from "react"
@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { ParentNavBar } from "../../components/ParentNavBar.jsx"
 import utc from 'dayjs/plugin/utc';
+import { ForwardArrow } from "../../components/icons/ForwardArrow.jsx"
 
 dayjs.extend(isBetween);
 dayjs.extend(utc);
@@ -19,6 +20,7 @@ export const KidDetails = ({route}) => {
 
     const [apiErrors, setApiErrors] = useState({})
     const [chores, setChores] = useState({today: [], thisWeek: [], completed: []})
+    const [loading, setLoading] = useState("loading chores...")
 
     const navigation = useNavigation()
     const { kid } = route.params
@@ -31,18 +33,18 @@ export const KidDetails = ({route}) => {
                     dayjs(chore.dueDate).local().isSame(dayjs(), 'day') &&
                     ['incomplete', 'rejected'].includes(chore.stage)
                 )
-                .sort((a, b) => dayjs(b.dueDate).diff(dayjs(a.dueDate)))
+                .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
 
                 // Rest of the week chores (excluding today)
                 const thisWeek = res.filter((chore) =>
-                    dayjs(chore.dueDate).local().isBetween(dayjs(), dayjs().endOf('week'), null, '(]') &&
+                    dayjs(chore.dueDate).local().isBetween(dayjs().add(1, 'day').startOf('day'), dayjs().endOf('week'), null, '[]') &&
                     ['incomplete', 'rejected'].includes(chore.stage)
                 )
-                .sort((a, b) => dayjs(b.dueDate).diff(dayjs(a.dueDate)))
+                .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
 
                 // Completed chores
-                const completed = res.filter(chore => chore.stage === 'completed')
-                .sort((a, b) => dayjs(b.dateCompleted).diff(dayjs(a.dateCompleted)))
+                const completed = res.filter(chore => chore.stage === 'complete')
+                .sort((a, b) => dayjs(a.dateCompleted).valueOf() - dayjs(b.dateCompleted).valueOf())
 
                 // Set chores in state
                 setChores(prev => ({...prev, today, thisWeek, completed}))
@@ -55,6 +57,7 @@ export const KidDetails = ({route}) => {
                     text1: "Unable to get chore information."
                 })
             })
+            .finally(() => setLoading(false))
     }, [])
 
     return (
@@ -85,26 +88,38 @@ export const KidDetails = ({route}) => {
             >
                 <View>
                     <BrandBoldText
-                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-10 mb-2"
+                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-8 mb-2"
                     >
                         Due today
                     </BrandBoldText>
+
                     {chores.today.length > 0
                         ?
                             chores.today.map((chore) => (
                                 <Pressable
                                     onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-row w-full items-center py-3"
+                                    className="flex-row w-full items-center py-3 justify-between"
                                     key={chore._id}
                                 >
-                                    <CheckboxIcon />
-                                    <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
-                                    >
-                                        {chore.title}
-                                    </BrandText>
+                                    <View className="flex-row items-center">
+                                        <CheckboxIcon />
+                                        <BrandText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
+                                        >
+                                            {chore.title}
+                                        </BrandText>
+                                    </View>
+                                    <ForwardArrow />
                                 </Pressable>
                             ))
+
+                        : loading ?
+                            <BrandText
+                                className="text-lightPrimaryText dark:text-darkPrimaryText"
+                            >
+                                {loading}
+                            </BrandText>
+
                         :
                             <View>
                                 <BrandText
@@ -122,22 +137,34 @@ export const KidDetails = ({route}) => {
                     >
                         Due this week
                     </BrandBoldText>
+
                     {chores.thisWeek.length > 0
                         ?
                             chores.thisWeek.map((chore) => (
                                 <Pressable
                                     onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-row w-full items-center py-3"
+                                    className="flex-row w-full items-center py-3 justify-between"
                                     key={chore._id}
                                 >
-                                    <CheckboxIcon />
-                                    <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
-                                    >
-                                        {chore.title}
-                                    </BrandText>
+                                    <View className="flex-row items-center">
+                                        <CheckboxIcon />
+                                        <BrandText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
+                                        >
+                                            {chore.title}
+                                        </BrandText>
+                                    </View>
+                                    <ForwardArrow />
                                 </Pressable>
                             ))
+
+                        : loading ?
+                            <BrandText
+                                className="text-lightPrimaryText dark:text-darkPrimaryText"
+                            >
+                                {loading}
+                            </BrandText>
+
                         :
                             <BrandText
                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
@@ -149,43 +176,34 @@ export const KidDetails = ({route}) => {
 
                 <View>
                     <BrandBoldText
-                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-6 mb-2"
+                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-6 mb-4"
                     >
                         Completed chore history
                     </BrandBoldText>
+
                     {chores.completed.length > 0
                         ?
                             chores.completed.map((chore) => (
                                 <Pressable
                                     onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-row w-full items-center py-3 dark:border rounded-full
-                                        dark:border-darkPrimaryText bg-[#ACE6CD] dark:bg-transparent m-1"
+                                    className="flex-row w-full items-center py-3 px-5 dark:border rounded-3xl
+                                        dark:border-darkPrimaryText bg-[#ACE6CD] dark:bg-transparent my-2"
                                     key={chore._id}
                                 >
-                                    <View className="border border-lightPrimaryText dark:border-darkPrimaryText rounded-full me-3 aspect-square h-[30px] justify-center">
+                                    <View className="rounded-full bg-lightBg
+                                        me-3 aspect-square h-[30px] justify-center dark:bg-darkButton">
                                         <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] text-center">
                                             {kid.name[0]}
                                         </BrandBoldText>
                                     </View>
 
-                                    <View>
-                                        <View className="flex-row">
-                                            <BrandBoldText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                                            >
-                                                {kid.name} 
-                                            </BrandBoldText>
-                                            <BrandText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                                            >
-                                                completed 
-                                            </BrandText>
-                                            <BrandBoldText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                                            >
-                                                {chore.title}
-                                            </BrandBoldText>
-                                        </View>
+                                    <View className="flex-1">
+
+                                        <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]">
+                                            <BrandBoldText>{kid.name} </BrandBoldText>
+                                            completed{" "}
+                                            <BrandBoldText>{chore.title}</BrandBoldText>
+                                        </BrandText>
 
                                         <BrandText
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
@@ -195,15 +213,24 @@ export const KidDetails = ({route}) => {
                                     </View>
                                 </Pressable>
                             ))
+                            
+                        : loading ?
+                            <BrandText
+                                className="text-lightPrimaryText dark:text-darkPrimaryText"
+                            >
+                                {loading}
+                            </BrandText>
+
                         :
                             <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
+                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3 pb-3"
                             >
                                 No completed chores
                             </BrandText>
                     }
                 </View>
             </ScrollView>
+
             <ParentNavBar />
         </View>
     )

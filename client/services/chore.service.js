@@ -47,3 +47,39 @@ export const getChoresByWorker = async (id) => {
         throw error.response.data.errors
     }
 }
+
+export const getChoresByParents = async (parents) => {
+    try {
+        const RES = await CHORE_INSTANCE.get('/parents', {
+            params: { parents }
+        })
+        return RES.data
+    }
+    catch(error) {
+        throw error.response.data.errors
+    }
+}
+
+export const getChoreById = async (id) => {
+    try {
+        const RES = await CHORE_INSTANCE.get('/', {
+            params: { id }
+        })
+        return RES.data
+    }
+    catch(error) {
+        throw error.response.data.errors
+    }
+}
+
+export const updateChore = async (data) => {
+    const options = {
+        new: true,
+        runValidators: true,
+    }
+    try {
+        const RES = await CHORE_INSTANCE.put( '/', data )
+        return RES.data
+    } 
+    catch( error ){ throw error.response.data.errors }
+}
