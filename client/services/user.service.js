@@ -1,10 +1,12 @@
 import axios from 'axios'
 import Constants from 'expo-constants'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+// const BACKEND_API_URL = Constants.expoConfig.extra.backendUrl;
 
 const USER_INSTANCE = axios.create({
     baseURL: `${Constants.expoConfig.extra.BACKEND_API_URL}/user`
 })
+
 
 USER_INSTANCE.interceptors.request.use(
     async (config) => {

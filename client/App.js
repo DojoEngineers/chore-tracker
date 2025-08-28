@@ -34,6 +34,8 @@ import { KidDetails } from "./views/parent/KidDetails";
 import { ViewChore } from "./views/parent/ViewChore";
 import { Today } from "./views/parent/Today";
 
+// https://expo.dev/artifacts/eas/asVKRXiujdTuHdwi1K4yzF.aab
+
 export default function App() {
 
   const [fontsLoaded] = useFonts({

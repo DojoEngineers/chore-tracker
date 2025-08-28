@@ -1,12 +1,12 @@
-const { getDefaultConfig } = require("expo/metro-config");
+//This file is being read as a module (to match package.json). If you really want to keep the require() statements, you can change file type to .cjs)
+
 const { withNativeWind } = require('nativewind/metro');
-const path = require("path");
+const { getDefaultConfig } = require('expo/metro-config');
 
 const config = getDefaultConfig(__dirname);
 
 config.resolver.assetExts = config.resolver.assetExts.filter(ext => ext !== "svg");
 config.resolver.sourceExts.push("svg");
-
 
 config.transformer = {
     ...config.transformer,
