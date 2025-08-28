@@ -1,7 +1,7 @@
 import Chore from "../models/chore.model.js"
 import ChoreTemplate from "../models/choreTemplate.js"
 
-
+//testing
 export const seedDB = async (req,res) => {
     try {
         const seed = await Chore.create({
