@@ -71,3 +71,15 @@ export const getChoreById = async (id) => {
         throw error.response.data.errors
     }
 }
+
+export const updateChore = async (data) => {
+    const options = {
+        new: true,
+        runValidators: true,
+    }
+    try {
+        const RES = await CHORE_INSTANCE.put( '/', data )
+        return RES.data
+    } 
+    catch( error ){ throw error.response.data.errors }
+}
