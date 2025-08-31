@@ -29,6 +29,7 @@ export const useNotifications = () => {
 export const UserContextProvider = ({ children }) => {
 
     const [user, setUser] = useState(null);
+    const [pushToken, setPushToken] = useState(null)
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [isLoggingOut, setIsLoggingOut] = useState(false)
     const [loggedInData, setLoggedInData] = useState({})
@@ -72,6 +73,7 @@ export const UserContextProvider = ({ children }) => {
         };
     }, []);
 
+    // get permission to send notifications and set default settings
     const registerForPushNotifications = async () => {
         try {
             // Android notification channel setup
@@ -113,10 +115,9 @@ export const UserContextProvider = ({ children }) => {
 
             // Get push token
             const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+            setPushToken(token);
             console.log('📱 Expo Push Token:', token);
 
-            // TODO: Send token to your backend
-            // await sendTokenToBackend(token);
 
             return token;
         } catch (error) {
@@ -126,7 +127,7 @@ export const UserContextProvider = ({ children }) => {
         }
     };
 
-    // Send notification via Expo's push service
+    
     const sendPushNotification = async (token, title, body, data = {}) => {
         if (!token) {
             Alert.alert('Error', 'No push token available');
@@ -168,31 +169,17 @@ export const UserContextProvider = ({ children }) => {
         }
     };
 
-
-    // Send test notification to self
-    const sendTestNotification = async () => {
-        if (!expoPushToken) {
-            Alert.alert('Error', 'No push token available');
-            return;
-        }
-
-        return await sendPushNotification(
-            expoPushToken,
-            'Test Notification! 🎉',
-            'This is a test from your app!',
-            {
-                screen: 'ChoreList',
-                testData: true
-            }
-        );
-    };
-
     useEffect(() => {
-        // Initialize notifications on mount
+        // Initialize notifications on mount and save pushToken
         const initializeNotifications = async () => {
             setIsLoading(true);
             const token = await registerForPushNotifications();
             setExpoPushToken(token || '');
+            const pushToken = await AsyncStorage.setItem('pushToken', token);
+                if (pushToken) {
+                    console.log("have token")
+                    setPushToken(pushToken);
+                }
             setIsLoading(false);
         };
 
@@ -230,7 +217,6 @@ export const UserContextProvider = ({ children }) => {
         notification,
         isLoading,
         sendPushNotification,
-        sendTestNotification,
         registerForPushNotifications,
     };
 
@@ -321,7 +307,7 @@ export const UserContextProvider = ({ children }) => {
     return (
         <UserContext.Provider
             value={{
-                user, setUser, isLoggedIn, loggedInData, familyData, setFamilyData, setLoggedInData,
+                pushToken, user, setUser, isLoggedIn, loggedInData, familyData, setFamilyData, setLoggedInData,
                 login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications, theme, setAppTheme
             }}
         >

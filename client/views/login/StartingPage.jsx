@@ -7,12 +7,16 @@ import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggl
 import { useLogin } from "../../context/UserContext"
 import { getCurrentUser } from "../../services/user.service"
 import Toast from "react-native-toast-message"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import Constants from 'expo-constants';
+import axios from "axios"
 
 export const StartingPage = () => {
 
     const navigation = useNavigation()
-    const {user, isLoggingOut, isLoggedIn, setLoggedInData} = useLogin()
+    const { user, isLoggingOut, isLoggedIn, setLoggedInData } = useLogin()
+
+    const [status, setStatus] = useState("none")
 
     const checkUserToken = async () => {
         console.log("user already logged in:", user)
@@ -45,6 +49,13 @@ export const StartingPage = () => {
         return () => clearTimeout(timer)
     }, [])
 
+        useEffect(() => {
+            console.log("Backend URL:", Constants.expoConfig.extra.BACKEND_API_URL);
+            axios.get(`${Constants.expoConfig.extra.BACKEND_API_URL}/ping`)
+                .then(res => setStatus("✅ Server says: " + res.data))
+                .catch(err => setStatus("❌ Error: " + err.message));
+        }, []);
+
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
 
@@ -57,6 +68,10 @@ export const StartingPage = () => {
             </View>
 
             <View className="items-center px-[16px]">
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    <Text>Backend URL:{Constants.expoConfig.extra.BACKEND_API_URL}</Text>
+                    <Text>{status}</Text>
+                </View>
                 <Pressable
                     className="p-[10px] mb-6 rounded-full items-center justify-center bg-[#84A99D] w-full h-[56px]"
                     onPress={() => navigation.navigate('Login')}
@@ -67,7 +82,7 @@ export const StartingPage = () => {
                 <Pressable
                     className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px]"
                     onPress={() => navigation.navigate('ParentRegistration')}
-                    >
+                >
                     <BrandBoldText className="text-white text-[20px]">Start a family account</BrandBoldText>
                 </Pressable>
             </View>
@@ -81,7 +96,7 @@ export const StartingPage = () => {
                 </View>
 
                 <View className="items-end">
-                    <LogoBottomSquiggle/>
+                    <LogoBottomSquiggle />
                 </View>
             </View>
 

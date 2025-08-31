@@ -29,6 +29,17 @@ export const getAllUsers = async (req, res) => {
     }
 }
 
+export const savePushtoken = async (req, res) => {
+    console.log("push token", req.body.token, "user", req.body._id)
+    try {
+        const USER = await User.findByIdAndUpdate(req.body._id, {pushToken: req.body.token})
+        res.status(200).json(USER)
+    } catch (error) {
+        console.log("token error", error)
+        res.status(400).json(error)
+    }
+}
+
 // when logging in, creates token and saves it (along with id) in async storage. 
 export const loginUser = async (req, res) => {
     console.log("in login server controller")

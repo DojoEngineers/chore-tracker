@@ -5,6 +5,7 @@ import { dbConnect } from "./config/mongoose.config.js";
 import userRouter from "./routes/user.route.js"
 import choreRouter from "./routes/chore.route.js"
 import uploadRouter from "./routes/upload.js";
+import NotificationRouter from "./routes/notifications.route.js";
 import path from 'path'
 import { fileURLToPath } from 'url';
 import emailjs from "@emailjs/nodejs"
@@ -25,11 +26,13 @@ const app = express();
 
 app.use(express.json()); 
 // allows front-end requests coming from the origin (no dubious sources).
-cors({ origin: process.env.FRONTEND_API_URL, credentials:true })
+// replace * with process.env.FRONTEND_API_URL
+cors({ origin: "*", credentials:true })
 // 'http://localhost:5173', credentials: true
 app.use(express.json())
 app.use("/user", userRouter);
 app.use("/chore", choreRouter);
+app.use("/notify", NotificationRouter);
 app.use("/upload", uploadRouter);
 
 

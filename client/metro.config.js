@@ -1,7 +1,7 @@
 //This file is being read as a module (to match package.json). If you really want to keep the require() statements, you can change file type to .cjs)
 
-const { withNativeWind } = require('nativewind/metro');
 const { getDefaultConfig } = require('expo/metro-config');
+const { withNativeWind } = require('nativewind/metro');
 
 const config = getDefaultConfig(__dirname);
 

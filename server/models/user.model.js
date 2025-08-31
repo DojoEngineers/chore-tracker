@@ -61,6 +61,10 @@ const userSchema = new mongoose.Schema({
     codeExpirationDate: {
         type: Date,
         required: [true, "No code expiration date."]
+    },
+    pushCode: {
+        type: Array,
+        required: false
     }
 }, { timestamps: true });
 
