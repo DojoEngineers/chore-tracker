@@ -56,17 +56,17 @@ export const ParentDashboard = () => {
         // this runs when the button is pressed
         console.log("in testpush")
         console.log("push", pushToken)
-        try {
-            await fetch(`${Constants.expoConfig.extra.BACKEND_API_URL}/notify`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ pushToken, choreName: "Dishes" }),
-            });
-        }
-        catch (error) {
-            console.log("view error", error)
+        // try {
+        //     await fetch(`${Constants.expoConfig.extra.BACKEND_API_URL}/notify`, {
+        //         method: "POST",
+        //         headers: { "Content-Type": "application/json" },
+        //         body: JSON.stringify({ pushToken, choreName: "Dishes" }),
+        //     });
+        // }
+        // catch (error) {
+        //     console.log("view error", error)
 
-        }
+        // }
     };
 
     return (

@@ -49,12 +49,12 @@ export const StartingPage = () => {
         return () => clearTimeout(timer)
     }, [])
 
-        useEffect(() => {
-            console.log("Backend URL:", Constants.expoConfig.extra.BACKEND_API_URL);
-            axios.get(`${Constants.expoConfig.extra.BACKEND_API_URL}/ping`)
-                .then(res => setStatus("✅ Server says: " + res.data))
-                .catch(err => setStatus("❌ Error: " + err.message));
-        }, []);
+        // useEffect(() => {
+        //     console.log("Backend URL:", Constants.expoConfig.extra.BACKEND_API_URL);
+        //     axios.get(`${Constants.expoConfig.extra.BACKEND_API_URL}/user/all`)
+        //         .then(res => setStatus("✅ Server says: " + res.data))
+        //         .catch(err => setStatus("❌ Error: " + err.message));
+        // }, []);
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
@@ -69,7 +69,7 @@ export const StartingPage = () => {
 
             <View className="items-center px-[16px]">
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text>Backend URL:{Constants.expoConfig.extra.BACKEND_API_URL}</Text>
+                    <Text>Backend URL:</Text>
                     <Text>{status}</Text>
                 </View>
                 <Pressable
