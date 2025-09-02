@@ -12,10 +12,14 @@ import dayjs from "dayjs"
 import { useLogin } from "../../context/UserContext"
 import { ForwardArrow } from "../../components/icons/ForwardArrow"
 import { SquareIcon } from "../../components/icons/SquareIcon"
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 export const ParentDashboard = () => {
 
     const [viewChores, setViewChores] = useState(false)
+    const [viewCalendar, setViewCalendar] = useState(true)
     const [date, setDate] = useState(new Date())
     const [apiErrors, setApiErrors] = useState({})
     const [chores, setChores] = useState([])
@@ -27,6 +31,7 @@ export const ParentDashboard = () => {
         if (!selectedDate) return
         setDate(selectedDate)
         setViewChores(true)
+        setViewCalendar(false)
 
         getChoresByParents(loggedInData.family.parents.map(p => p._id))
             .then((res) => {
@@ -62,9 +67,10 @@ export const ParentDashboard = () => {
                 showsVerticalScrollIndicator={true}
                 className="px-[16px]"
             >
-                <View
+                <Pressable
                     className="py-[20px] px-[20px] rounded-3xl items-center justify-between
                         bg-[#ECDBC7] dark:bg-[#2F3339] w-full my-3 flex-row"
+                    onPress={() => setViewCalendar(true)}
                 >
                     <View className="flex-row">
                         <HighlightedTodayIcon width={18}/>
@@ -72,15 +78,17 @@ export const ParentDashboard = () => {
                             View Calendar
                         </BrandBoldText>
                     </View>
-                    <DateTimePicker
-                        value={date}
-                        mode="date"
-                        display="default"
-                        minimumDate={dayjs().subtract(1, "month").toDate()}
-                        maximumDate={dayjs().add(1, "month").toDate()}
-                        onChange={(e, selectedDate) => {handleDateChange(selectedDate)}}
-                    />
-                </View>
+                    {viewCalendar &&
+                        <DateTimePicker
+                            value={date}
+                            mode="date"
+                            display="default"
+                            minimumDate={dayjs().subtract(1, "month").toDate()}
+                            maximumDate={dayjs().add(1, "month").toDate()}
+                            onChange={(e, selectedDate) => {handleDateChange(selectedDate)}}
+                        />
+                    }
+                </Pressable>
 
                 {apiErrors.getChoresByParents && (
                     <BrandText className="text-red-500 text-center">

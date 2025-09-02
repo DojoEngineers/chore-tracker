@@ -106,7 +106,7 @@ export async function getChoresByParent(req, res) {
     console.log("controller get creator chores")
     console.log("req.query", req.query["parents[]"])
     try {
-        const some = await Chore.find({ creator: {$in: req.query.parents}, isActive: true }).populate('worker', "name _id")
+        const some = await Chore.find({ creator: {$in: req.query["parents[]"]}, isActive: true }).populate('worker', "name _id")
         console.log("some", some)
         res.status(200).json(some);
     } catch (error) {
