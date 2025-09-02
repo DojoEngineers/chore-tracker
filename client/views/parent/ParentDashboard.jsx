@@ -19,7 +19,7 @@ dayjs.extend(utc);
 export const ParentDashboard = () => {
 
     const [viewChores, setViewChores] = useState(false)
-    const [viewCalendar, setViewCalendar] = useState(true)
+    const [viewCalendar, setViewCalendar] = useState(false)
     const [date, setDate] = useState(new Date())
     const [apiErrors, setApiErrors] = useState({})
     const [chores, setChores] = useState([])
