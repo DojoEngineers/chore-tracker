@@ -176,7 +176,7 @@ export const ParentRegistration = () => {
                     <View className="mb-2">
                         <BottomLink
                             onPress={() => navigation.navigate('UsernameVerification')}
-                            text="Already Registerd? "
+                            text="Already Registered? "
                             link="Verify Here"
                         />
                     </View>
