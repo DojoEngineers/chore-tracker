@@ -4,7 +4,7 @@ import { useLogin } from "../../context/UserContext"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { useNavigation } from "@react-navigation/native"
 import { BrandText } from "../../components/text/BrandText"
-import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle"
+import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottomRightSquiggle"
 
 export const FamilySettings = () => {
 
@@ -12,11 +12,11 @@ export const FamilySettings = () => {
     const {loggedInData} = useLogin()
 
     return (
-        <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
+        <View className="flex-1 bg-lightBg dark:bg-darkBg">
 
             <View className="flex-1 items-center px-[16px]">
 
-                <View className="flex-row mt-[150px]">
+                <View className="flex-row mt-[75px]">
 
                     <Pressable
                         className="pt-4 ps-2"
@@ -26,14 +26,14 @@ export const FamilySettings = () => {
                         <BackArrow/>
                     </Pressable>
 
-                    <View className="flex-1 mb-8 ms-[34px]">
+                    <View className="flex-1 ms-[34px]">
                         <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                            Family Settings
+                            Add Family Member
                         </BrandBoldText>
                     </View>
                 </View>
 
-                <View className="items-center mb-8">
+                <View className="items-center my-[70px]">
                     <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
                         After adding a family member, they will get an email with a verification code.
                         They can use the ‘Verify’ link on our home page to enter the code and create their account.
@@ -57,8 +57,8 @@ export const FamilySettings = () => {
                 }
             </View>
 
-            <View className="items-end">
-                <LogoBottomSquiggle />
+            <View className="absolute bottom-0 right-0 z-0">
+                <SmallBottomRightSquiggle />
             </View>
         </View>
     )

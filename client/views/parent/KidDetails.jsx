@@ -43,7 +43,7 @@ export const KidDetails = ({route}) => {
                 .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
 
                 // Completed chores
-                const completed = res.filter(chore => chore.stage === 'complete')
+                const completed = res.filter(chore => ['complete', 'approved'].includes(chore.stage))
                 .sort((a, b) => dayjs(a.dateCompleted).valueOf() - dayjs(b.dateCompleted).valueOf())
 
                 // Set chores in state
@@ -186,8 +186,8 @@ export const KidDetails = ({route}) => {
                             chores.completed.map((chore) => (
                                 <Pressable
                                     onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-row w-full items-center py-3 px-5 dark:border rounded-3xl
-                                        dark:border-darkPrimaryText bg-[#ACE6CD] dark:bg-transparent my-2"
+                                    className="flex-row w-full items-center py-3 px-5 border rounded-3xl border-[#9FB6AE]
+                                        dark:border-darkPrimaryText bg-[#DFE8E4] dark:bg-transparent my-2"
                                     key={chore._id}
                                 >
                                     <View className="rounded-full bg-lightBg

@@ -3,7 +3,7 @@ import { Pressable, View } from "react-native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
-import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle"
+import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottomRightSquiggle"
 
 export const Help = () => {
 
@@ -14,7 +14,7 @@ export const Help = () => {
 
             <View className="flex-1 items-center px-[16px]">
 
-                <View className="flex-row mt-[150px]">
+                <View className="flex-row mt-[75px]">
 
                     <Pressable
                         className="pt-4 ps-2"
@@ -39,7 +39,7 @@ export const Help = () => {
             </View>
 
             <View className="items-end">
-                <LogoBottomSquiggle />
+                <SmallBottomRightSquiggle />
             </View>
         </View>
     )

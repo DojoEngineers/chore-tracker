@@ -1,7 +1,15 @@
-import DeleteIconSvg from '../../assets/icons/DeleteIcon';
+import { useColorScheme } from 'react-native';
+import DarkDeleteIcon from '../../assets/icons/DarkDeleteIcon';
+import LightDeleteIcon from '../../assets/icons/LightDeleteIcon';
 
-const aspectRatio = 24 / 26
+const aspectRatio = 25 / 26
 
-export const DeleteIcon = ({width = 24}) => {
-    return <DeleteIconSvg width={width} height={width/aspectRatio} />
+export const DeleteIcon = ({width = 25}) => {
+
+    const colorScheme = useColorScheme()
+
+    if (colorScheme === 'dark') {
+        return <DarkDeleteIcon width={width} height={width/aspectRatio} />
+    }
+    return <LightDeleteIcon width={width} height={width/aspectRatio} />
 }

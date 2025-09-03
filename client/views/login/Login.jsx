@@ -52,7 +52,9 @@ export const Login = () => {
     }
 
     const handleLogin = () => {
-        getUserByUsername(formData.username)
+        const {password} = formData
+        const username = formData.username.toLowerCase()
+        getUserByUsername(username)
             .then(res => {
                 if (res && !res.isActive) {
                     Toast.show({
@@ -61,10 +63,10 @@ export const Login = () => {
                     })
                 }
                 else if (res && res.isVerified) {
-                    login(formData)
+                    login({username, password})
                         .then(res => {
                             if (res.passwordReset) {
-                                navigation.replace("SetPassword", {username: formData.username})
+                                navigation.replace("SetPassword", {username})
                             }
                             else {
                                 loginUser(res)
@@ -178,7 +180,7 @@ export const Login = () => {
                     </View>
                 </View>
 
-                <View className="mb-20 items-center">
+                <View className="mb-[50px] items-center">
                     <BottomLink onPress={() => navigation.navigate('ParentRegistration')} text="Starting a family? " link="Set up Your Account Here" />
                 </View>
             </View>

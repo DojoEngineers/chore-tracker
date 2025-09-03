@@ -11,7 +11,7 @@ import { checkUsername, register } from "../../services/user.service"
 import Toast from "react-native-toast-message"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { useLogin } from "../../context/UserContext"
-import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle"
+import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottomRightSquiggle"
 
 const DEFAULT_FORM_VALUES = {
     name: "",
@@ -31,13 +31,11 @@ export const AddFamilyMember = ({route}) => {
     const { isParent } = route.params
     const {loggedInData} = useLogin()
 
-    // Dynamically set form data
     const handleChange = (name, value) => {
         setFormData(prev => ({...prev, [name]: value}))
         validateData(name, value)
     }
 
-    // Validate form inputs dynamically
     const validateData = (name, value) => {
         const validations = {
             name: value => (
@@ -55,7 +53,6 @@ export const AddFamilyMember = ({route}) => {
         setFormErrors(prev => ({...prev, [name]: validations[name](value)}))
     }
 
-    // Check for errors before submitting form
     const isReadyToSubmit = () => {
         for (let key in formErrors){
             if (formErrors[key] != false || formData[key] == "") {
@@ -65,7 +62,6 @@ export const AddFamilyMember = ({route}) => {
         return true
     }
 
-    // Submit form
     const handleSubmit = () => {
         if (!isReadyToSubmit()){
             Toast.show({
@@ -116,7 +112,7 @@ export const AddFamilyMember = ({route}) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
                 <View className="px-[16px]">
-                    <View className="flex-row mt-[100px]">
+                    <View className="flex-row mt-[75px]">
                         <Pressable
                             className="pt-4 ps-2"
                             hitSlop={20}
@@ -125,7 +121,7 @@ export const AddFamilyMember = ({route}) => {
                             <BackArrow/>
                         </Pressable>
 
-                        <View className="flex-1 mb-6 ms-[34px]">
+                        <View className="flex-1 mb-10 ms-[34px]">
                             <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
                                 {isParent ? "Add another parent" : "Add a kid"}
                             </BrandBoldText>
@@ -143,7 +139,7 @@ export const AddFamilyMember = ({route}) => {
                         </BrandText>
                     )}
 
-                    <View className="mb-6">
+                    <View className="mb-10">
                         <UserInput
                             icon={FirstNameIcon}
                             value={formData.name}
@@ -153,7 +149,7 @@ export const AddFamilyMember = ({route}) => {
                         />
                     </View>
 
-                    <View className="mb-12">
+                    <View className="mb-[60px]">
                         <UserInput
                             icon={EmailIcon}
                             value={formData.username}
@@ -167,7 +163,7 @@ export const AddFamilyMember = ({route}) => {
                 </View>
 
                 <View className="items-end">
-                    <LogoBottomSquiggle />
+                    <SmallBottomRightSquiggle />
                 </View>
                 
             </View>

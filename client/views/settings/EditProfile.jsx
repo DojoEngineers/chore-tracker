@@ -11,7 +11,7 @@ import { checkUsername, resendCode, updateUser } from "../../services/user.servi
 import { useLogin } from "../../context/UserContext"
 import Toast from "react-native-toast-message"
 import { PrimaryButton } from "../../components/PrimaryButton"
-import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle"
+import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottomRightSquiggle"
 
 const DEFAULT_FORM_VALUES = {
     name: "",
@@ -30,13 +30,11 @@ export const EditProfile = () => {
     const navigation = useNavigation()
     const {logout, loggedInData, setLoggedInData} = useLogin()
 
-    // Dynamically set form data
     const handleChange = (name, value) => {
         setFormData(prev => ({...prev, [name]: value}))
         validateData(name, value)
     }
 
-    // Validate form inputs dynamically
     const validateData = (name, value) => {
         const validations = {
             name: value => (
@@ -54,7 +52,6 @@ export const EditProfile = () => {
         setFormErrors(prev => ({...prev, [name]: validations[name](value)}))
     }
 
-    // Check for errors before submitting form
     const isReadyToSubmit = () => {
         for (let key in formErrors){
             if (formErrors[key] != false || formData[key] == "") {
@@ -144,69 +141,75 @@ export const EditProfile = () => {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
-                <View className="px-[16px]">
-                    <View className="flex-row mt-[150px]">
-                        <Pressable
-                            className="pt-4 ps-2"
-                            hitSlop={20}
-                            onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
-                        >
-                            <BackArrow/>
-                        </Pressable>
-
-                        <View className="flex-1 mb-8 ms-[34px]">
-                            <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                                Edit Profile
-                            </BrandBoldText>
+            <View className="flex-1 bg-lightBg dark:bg-darkBg">
+                <View className="flex-1 justify-between">
+                    <View className="px-[16px]">
+                        <View className="flex-row mt-[75px]">
+                            <Pressable
+                                className="pt-4 ps-2"
+                                hitSlop={20}
+                                onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
+                            >
+                                <BackArrow/>
+                            </Pressable>
+                            <View className="flex-1 ms-[34px]">
+                                <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
+                                    Edit Profile
+                                </BrandBoldText>
+                            </View>
+                        </View>
+                        <View className="items-center">
+                            <View
+                                className="rounded-full me-3 aspect-square h-[85px] justify-center
+                                    dark:bg-[#333740] bg-[#A1A4AA] shadow my-10"
+                            >
+                                <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[65px] text-center">
+                                    {loggedInData.name[0]}
+                                </BrandText>
+                            </View>
+                        </View>
+                        {apiErrors.updateUser && (
+                            <BrandText className="text-red-500 text-center">
+                                {apiErrors.updateUser}
+                            </BrandText>
+                        )}
+                        {apiErrors.checkUsername && (
+                            <BrandText className="text-red-500 text-center">
+                                {apiErrors.checkUsername}
+                            </BrandText>
+                        )}
+                        <View className="mb-6">
+                            <UserInput
+                                icon={FirstNameIcon}
+                                value={formData.name}
+                                onChangeText={(text) => handleChange('name', text)}
+                                placeholder="First name"
+                                error={formErrors.name}
+                            />
+                        </View>
+                        <View className="mb-6">
+                            <UserInput
+                                icon={EmailIcon}
+                                value={formData.username}
+                                onChangeText={(text) => handleChange('username', text)}
+                                placeholder="Email"
+                                error={formErrors.username}
+                            />
+                        </View>
+                        <View className="items-center">
+                            <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px] px-2">
+                                Email verification is required upon updating your email.
+                            </BrandText>
                         </View>
                     </View>
 
-                    {apiErrors.updateUser && (
-                        <BrandText className="text-red-500 text-center">
-                            {apiErrors.updateUser}
-                        </BrandText>
-                    )}
-                    {apiErrors.checkUsername && (
-                        <BrandText className="text-red-500 text-center">
-                            {apiErrors.checkUsername}
-                        </BrandText>
-                    )}
-
-                    <View className="mb-6">
-                        <UserInput
-                            icon={FirstNameIcon}
-                            value={formData.name}
-                            onChangeText={(text) => handleChange('name', text)}
-                            placeholder="First name"
-                            error={formErrors.name}
-                        />
-                    </View>
-
-                    <View className="mb-6">
-                        <UserInput
-                            icon={EmailIcon}
-                            value={formData.username}
-                            onChangeText={(text) => handleChange('username', text)}
-                            placeholder="Email"
-                            error={formErrors.username}
-                        />
-                    </View>
-
-                    <View className="items-center">
-                        <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                            Email verification is required upon updating your email.
-                        </BrandText>
+                    <View className="px-[16px] w-full mb-[90px] z-10">
+                        <PrimaryButton onPress={handleSubmit} label="Confirm"/>
                     </View>
                 </View>
                 
-                <View className="items-end">
-
-                    <View className="px-[16px] w-full -mb-[60px] z-10">
-                        <PrimaryButton onPress={handleSubmit} label="Confirm"/>
-                    </View>
-
-                    <LogoBottomSquiggle />
+                <View className="absolute bottom-0 right-0 z-0">
+                    <SmallBottomRightSquiggle />
                 </View>
             </View>
         </TouchableWithoutFeedback>

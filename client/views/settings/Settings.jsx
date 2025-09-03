@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native"
-import { Pressable, useColorScheme, View } from "react-native"
+import { Pressable, View } from "react-native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { SettingsButton } from "../../components/SettingsButton"
@@ -14,23 +14,13 @@ import { LogoutIcon } from "../../components/icons/LogoutIcon"
 import { DeleteIcon } from "../../components/icons/DeleteIcon"
 import { NotificationsIcon } from "../../components/icons/NotificationsIcon"
 import { DarkModeIcon } from "../../components/icons/DarkModeIcon"
-import { useState } from "react"
-import DropDownPicker from "react-native-dropdown-picker"
-import { MaterialIcons } from '@expo/vector-icons'
 import { NotificationsSwitch } from "../../components/NotificationsSwitch"
+import { ThemeDropDown } from "../../components/ThemeDropDown"
 
 export const Settings = () => {
 
-    const [open, setOpen] = useState(false)
-    const [items, setItems] = useState([
-        { label: 'Auto', value: 'a' },
-        { label: 'Light', value: 'l' },
-        { label: 'Dark', value: 'd' },
-    ])
-
     const navigation = useNavigation()
-    const {loggedInData, logout, theme, setAppTheme} = useLogin()
-    const colorScheme = useColorScheme()
+    const {loggedInData, logout} = useLogin()
 
     const handleLogout = () => {
         logout()
@@ -59,7 +49,7 @@ export const Settings = () => {
                 {loggedInData?.isParent &&
                     <SettingsButton icon={FamilySettingsIcon} text="Add Family Member" onPress={() => navigation.navigate("FamilySettings")}/>
                 }
-                <SettingsButton icon={ChangePasswordIcon} text="Change Password" onPress={() => navigation.navigate("VerifyPassword", {changePassword: true})}/>
+                <SettingsButton icon={ChangePasswordIcon} text="Change Password" onPress={() => navigation.navigate("VerifyPassword", {deleteAccount: false})}/>
 
                 <View
                     className="flex-row items-center justify-between w-full py-5"
@@ -84,58 +74,7 @@ export const Settings = () => {
                         </BrandBoldText>
                     </View>
 
-                    <DropDownPicker
-                        open={open}
-                        value={theme}
-                        placeholder=''
-                        items={items}
-                        setOpen={setOpen}
-                        setValue={callback => {
-                            const newValue = callback(theme)
-                            setAppTheme(newValue)
-                        }}
-                        setItems={setItems}
-                        containerStyle={{ width: 90 }}
-                        style={{
-                            backgroundColor: colorScheme === 'dark' ? '#22252B' : '#F5F8F6',
-                            borderColor: colorScheme === 'dark' ? '#fff' : '#000',
-                        }}
-                        labelStyle={{
-                            fontFamily: 'Nunito',
-                            fontSize: 14,
-                            color: colorScheme === 'dark' ? '#fff' : '#000',
-                        }}
-                        listItemLabelStyle={{
-                            fontFamily: 'Nunito',
-                            color: colorScheme === 'dark' ? '#fff' : '#000',
-                            fontSize: 14,
-                        }}
-                        dropDownContainerStyle={{
-                            backgroundColor: colorScheme === 'dark' ? '#22252B' : '#F5F8F6',
-                            borderColor: colorScheme === 'dark' ? '#fff' : '#000',
-                        }}
-                        ArrowDownIconComponent={() => (
-                            <MaterialIcons
-                                name="keyboard-arrow-down"
-                                size={24}
-                                color={colorScheme === 'dark' ? '#fff' : '#000'}
-                            />
-                        )}
-                        ArrowUpIconComponent={() => (
-                            <MaterialIcons
-                                name="keyboard-arrow-up"
-                                size={24}
-                                color={colorScheme === 'dark' ? '#fff' : '#000'}
-                            />
-                        )}
-                        TickIconComponent={() => (
-                            <MaterialIcons
-                                name="check"
-                                size={18}
-                                color={colorScheme === 'dark' ? '#fff' : '#000'}
-                            />
-                        )}
-                    />
+                    <ThemeDropDown/>
                 </View>
                 
                 <SettingsButton icon={PrivacyIcon} text="Privacy" onPress={() => navigation.navigate("Privacy")}/>
@@ -160,11 +99,11 @@ export const Settings = () => {
                 
                 <Pressable
                     onPress={() => navigation.navigate("VerifyPassword", {deleteAccount: true})}
-                    className="p-[10px] rounded-full items-center justify-center bg-[#444955] w-full h-[56px]"
+                    className="p-[10px] rounded-full items-center justify-center bg-[#D0D1D4] dark:bg-[#444955] w-full h-[56px]"
                 >
                     <View className="flex-1 flex-row items-center">
                         <DeleteIcon />
-                        <BrandBoldText className="text-[#737780] text-[20px] ms-4">
+                        <BrandBoldText className="text-[#A1A4AA] dark:text-[#737780] text-[20px] ms-4">
                             Delete Account
                         </BrandBoldText>
                     </View>

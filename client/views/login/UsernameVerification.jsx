@@ -21,7 +21,7 @@ export const UsernameVerification = () => {
     const navigation = useNavigation()
 
     const handleSubmit = async () => {
-        getUserByUsername(username)
+        getUserByUsername(username.toLowerCase())
             .then ( res => {
                 if (res && !res.isActive) {
                     Toast.show({
@@ -37,7 +37,7 @@ export const UsernameVerification = () => {
                     })
                     navigation.replace("Login")
                 } else if (res) {
-                    navigation.navigate('PasscodeVerification', {username})
+                    navigation.navigate('PasscodeVerification', {username: username.toLowerCase()})
                 } else {
                     Toast.show({
                         type: 'error',
@@ -106,7 +106,7 @@ export const UsernameVerification = () => {
                         <BottomSquiggle/>
                     </View>
 
-                    <View className="flex-row mb-20 justify-center">
+                    <View className="flex-row mb-[50px] justify-center">
                         <BottomLink onPress={() => navigation.navigate('Login')} text="Already have an account? " link="Login Now" />
                     </View>
                 </View>
