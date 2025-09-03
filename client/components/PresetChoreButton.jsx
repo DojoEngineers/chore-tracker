@@ -10,9 +10,9 @@ export const PresetChoreButton = ({chore}) => {
     return (
         <Pressable
             onPress={() => navigation.navigate("NewChoreDetails", {title: chore})}
-            className="w-full h-[52px] my-2 dark:bg-[#444955] bg-[#DEDEDE] items-center justify-center rounded-xl"
+            className="w-full h-[52px] my-2 dark:bg-[#444955] bg-[#57756B] items-center justify-center rounded-3xl"
         >
-            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
+            <BrandText className="text-darkPrimaryText text-[16px]">
                 {chore}
             </BrandText>
         </Pressable>

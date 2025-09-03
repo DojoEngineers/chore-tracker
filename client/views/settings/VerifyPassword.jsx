@@ -8,9 +8,9 @@ import { useLogin } from "../../context/UserContext"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
 import { PrimaryButton } from "../../components/PrimaryButton"
-import { BottomSquiggle } from "../../components/squiggles/BottomSquiggle"
 import { BottomLink } from "../../components/BottomLink"
 import { PasswordInput } from "../../components/PasswordInput"
+import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottomRightSquiggle"
 
 export const VerifyPassword = ({route}) => {
 
@@ -19,7 +19,7 @@ export const VerifyPassword = ({route}) => {
 
     const navigation = useNavigation()
     const {loggedInData} = useLogin()
-    const {deleteAccount = false, changePassword = false} = route.params
+    const {deleteAccount = false} = route.params
 
     const handleSubmit = () => {
         const username = loggedInData.username
@@ -55,7 +55,7 @@ export const VerifyPassword = ({route}) => {
 
                 <View className="px-[16px]">
     
-                    <View className="flex-row ps-2 mt-[150px] mb-10 items-center">
+                    <View className="flex-row ps-2 mt-[75px] mb-10 items-center">
                         <Pressable
                             hitSlop={20}
                             onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
@@ -85,7 +85,7 @@ export const VerifyPassword = ({route}) => {
                         </BrandText>
                     )}
 
-                    <View className="mb-6">
+                    <View className="mb-[75px]">
                         <PasswordInput
                             value={password}
                             placeholder="Password"
@@ -100,10 +100,10 @@ export const VerifyPassword = ({route}) => {
 
                 <View className="relative w-full">
                     <View className="absolute bottom-0 right-0 z-0">
-                        <BottomSquiggle/>
+                        <SmallBottomRightSquiggle/>
                     </View>
 
-                    <View className="flex-row mb-20 justify-center">
+                    <View className="flex-row mb-[80px] justify-center">
                         <BottomLink onPress={() => navigation.navigate('ForgotPassword')} text="Forgot Password? " link="Reset Now" />
                     </View>
                 </View>

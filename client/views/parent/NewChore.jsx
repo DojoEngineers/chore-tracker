@@ -48,10 +48,10 @@ export const NewChore = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px]">
 
-                <View className="flex-row w-full mt-[70px] items-center mb-8">
+                <View className="flex-row w-full mt-[50px] items-center mb-8">
                     <Pressable
                         hitSlop={20}
-                        className="ps-6 pe-8"
+                        className="ps-2 pe-8"
                         onPress={() => navigation.navigate("ParentDashboard", {animationType: "fade_from_bottom"})}
                     >
                         <CloseIcon />
@@ -61,45 +61,60 @@ export const NewChore = () => {
                     </BrandBoldText>
                 </View>
 
-                <View className="flex-row items-center justify-between mb-6">
-                    <Pressable
-                        onPress={() => setSelected('custom')}
-                        className={`p-[10px] rounded-xl items-center justify-center w-[175px] h-[60px] ${
-                            selected === 'custom'
-                                ? 'dark:bg-[#B3EAD3] bg-[#B4684E]'
-                                : 'dark:bg-[#444955] bg-[#DFAE9D]'
-                        }`}
-                    >
-                        <BrandText className={selected === 'custom' ? 'text-white dark:text-black text-[16px]' : 'text-black dark:text-white text-[16px]'}>
-                            Custom
-                        </BrandText>
-                    </Pressable>
+                <View className="flex-row mb-6 gap-5">
+                    <View className="flex-1">
+                        <Pressable
+                            onPress={() => setSelected('custom')}
+                            className={`rounded-3xl items-center justify-center h-[60px] ${
+                                selected === 'custom'
+                                    ? 'dark:bg-[#B3EAD3] bg-[#394C46]'
+                                    : 'dark:bg-[#444955] bg-[#D0D1D4]'
+                            }`}
+                        >
+                            <BrandText className={`text-[16px] text-center ${
+                                    selected === 'custom'
+                                    ? 'text-white dark:text-black'
+                                    : 'text-black dark:text-white'
+                                }`}
+                            >
+                                Custom
+                            </BrandText>
+                        </Pressable>
+                    </View>
 
-                    <Pressable
-                        onPress={() => setSelected('preset')}
-                        className={`p-[10px] rounded-xl items-center justify-center w-[175px] h-[60px] ${
-                            selected === 'preset'
-                                ? 'dark:bg-[#B3EAD3] bg-[#B4684E]'
-                                : 'dark:bg-[#444955] bg-[#DFAE9D]'
-                        }`}
-                    >
-                        <BrandText className={selected === 'preset' ? 'text-white dark:text-black text-[16px]' : 'text-white text-[16px]'}>
-                            Preset
-                        </BrandText>
-                    </Pressable>
+                    <View className="flex-1">
+                        <Pressable
+                            onPress={() => setSelected('preset')}
+                            className={`rounded-3xl items-center justify-center h-[60px] ${
+                                selected === 'preset'
+                                    ? 'dark:bg-[#B3EAD3] bg-[#394C46]'
+                                    : 'dark:bg-[#444955] bg-[#D0D1D4]'
+                            }`}
+                        >
+                            <BrandText className={`text-[16px] text-center ${
+                                    selected === 'preset'
+                                    ? 'text-white dark:text-black'
+                                    : 'text-black dark:text-white'
+                                }`}
+                            >
+                                Preset
+                            </BrandText>
+                        </Pressable>
+                    </View>
                 </View>
 
                 {selected === 'custom'
                     ?
-                        <View className="mt-10">
-                            <UserInput
-                                value={title}
-                                onChangeText={(text) => handleChange(text)}
-                                placeholder="Add custom chore here"
-                                error={formErrors.title}
-                            />
-
+                        <View className="flex-1 justify-between">
                             <View className="mt-6">
+                                <UserInput
+                                    value={title}
+                                    onChangeText={(text) => handleChange(text)}
+                                    placeholder="Add custom chore here"
+                                    error={formErrors.title}
+                                />
+                            </View>
+                            <View className="mb-12">
                                 <PrimaryButton onPress={handleSubmit} label="Next"/>
                             </View>
                         </View>

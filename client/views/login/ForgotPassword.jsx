@@ -21,7 +21,7 @@ export const ForgotPassword = () => {
     const {logout} = useLogin()
 
     const resetPassword = () => {
-        getUserByUsername(username)
+        getUserByUsername(username.toLowerCase())
             .then(res => {
                 if (res && !res.isActive) {
                     Toast.show({
@@ -37,7 +37,7 @@ export const ForgotPassword = () => {
                     })
                 }
                 else if (res) {
-                    sendPassword(username)
+                    sendPassword(username.toLowerCase())
                         .then(() => {
                             Toast.show({
                                 type: 'success',

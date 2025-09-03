@@ -15,7 +15,7 @@ module.exports = {
         lightBg: "#F5F8F6",
         lightPrimaryText: "#262626",
         lightSecondaryText: "#737780",
-        lightLink: "#FB943C",
+        lightLink: "#488704",
         lightButton: "#84A99D",
         darkBg: "#22252B",
         grayBg: "#333740",

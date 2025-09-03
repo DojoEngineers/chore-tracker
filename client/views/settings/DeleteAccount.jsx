@@ -6,8 +6,8 @@ import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 import Toast from "react-native-toast-message"
 import { BrandText } from "../../components/text/BrandText"
-import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle"
 import { updateUser } from "../../services/user.service"
+import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottomRightSquiggle"
 
 
 export const DeleteAccount = () => {
@@ -43,7 +43,7 @@ export const DeleteAccount = () => {
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
             <View className="px-[16px]">
-                <View className="flex-row mt-[150px] mb-[60px] items-center ps-2">
+                <View className="flex-row mt-[75px] mb-[160px] items-center ps-2">
                     <Pressable
                         hitSlop={20}
                         onPress={() => navigation.goBack()}
@@ -56,10 +56,17 @@ export const DeleteAccount = () => {
                     </BrandBoldText>
                 </View>
 
-                <View className="items-center mb-[60px] px-2">
-                    <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] text-center">
-                        WARNING!{"\n"}{"\n"}Are you sure you want to delete your account?{"\n"}{"\n"}This cannot be undone.
+                <View className="items-center mb-[60px]">
+                    <BrandBoldText
+                        className="text-[#22252B] dark:text-[#D0D1D4] text-[16px] text-center mb-6"
+                    >
+                        WARNING!
                     </BrandBoldText>
+                    <BrandText className="text-[#22252B] dark:text-[#D0D1D4] text-[16px] text-center">
+                        Are you sure you want to
+                        <BrandBoldText> delete </BrandBoldText>
+                        your account?{"\n"}{"\n"}This cannot be undone.
+                    </BrandText>
                 </View>
 
                 {apiErrors.updateUser && (
@@ -81,7 +88,7 @@ export const DeleteAccount = () => {
             </View>
 
             <View className="items-end">
-                <LogoBottomSquiggle />
+                <SmallBottomRightSquiggle />
             </View>
         </View>
     )

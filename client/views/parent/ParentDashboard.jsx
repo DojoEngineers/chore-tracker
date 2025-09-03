@@ -2,7 +2,6 @@ import { Pressable, ScrollView, View } from "react-native"
 import { Header } from "../../components/Header"
 import { ParentNavBar } from "../../components/ParentNavBar"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
-import { HighlightedTodayIcon } from "../../components/icons/HighlightedTodayIcon"
 import { BrandText } from "../../components/text/BrandText"
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { useState } from "react"
@@ -13,6 +12,8 @@ import { useLogin } from "../../context/UserContext"
 import { ForwardArrow } from "../../components/icons/ForwardArrow"
 import { SquareIcon } from "../../components/icons/SquareIcon"
 import utc from 'dayjs/plugin/utc';
+import { ViewCalendarIcon } from "../../components/icons/ViewCalendarIcon"
+import { useNavigation } from "@react-navigation/native"
 
 dayjs.extend(utc);
 
@@ -26,6 +27,7 @@ export const ParentDashboard = () => {
     const [loading, setLoading] = useState("Loading chores...")
 
     const {loggedInData} = useLogin()
+    const navigation = useNavigation()
 
     const handleDateChange = (selectedDate) => {
         if (!selectedDate) return
@@ -36,7 +38,7 @@ export const ParentDashboard = () => {
         getChoresByParents(loggedInData.family.parents.map(p => p._id))
             .then((res) => {
                 const filteredChores = res.filter(chore =>
-                    chore.stage === "complete"
+                    ['complete', 'approved'].includes(chore.stage)
                     ? dayjs(chore.dateCompleted).local().isSame(dayjs(selectedDate).local(), "day")
                     : dayjs(chore.dueDate).local().isSame(dayjs(selectedDate).local(), "day")
                 )
@@ -68,12 +70,12 @@ export const ParentDashboard = () => {
                 className="px-[16px]"
             >
                 <Pressable
-                    className="py-[20px] px-[20px] rounded-3xl items-center justify-between
-                        bg-[#ECDBC7] dark:bg-[#2F3339] w-full my-3 flex-row"
+                    className="py-[25px] px-[25px] rounded-3xl items-center justify-between
+                        bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-row"
                     onPress={() => setViewCalendar(true)}
                 >
                     <View className="flex-row">
-                        <HighlightedTodayIcon width={18}/>
+                        <ViewCalendarIcon/>
                         <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
                             View Calendar
                         </BrandBoldText>
@@ -120,8 +122,8 @@ export const ParentDashboard = () => {
                         chores.map((chore) => (
                             <Pressable
                                 onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                className="flex-row w-full my-3 border border-lightPrimaryText 
-                                    dark:bg-[#2F3339] rounded-xl p-4"
+                                className="flex-row w-full my-3 bg-[#9FB6AE]
+                                    dark:bg-[#2F3339] rounded-3xl p-4"
                                 key={chore._id}
                             >
                                 <View className="flex-1">

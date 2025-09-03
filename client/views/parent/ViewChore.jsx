@@ -14,9 +14,8 @@ import {DateIcon} from "../../components/icons/DateIcon"
 import {ClockIcon} from "../../components/icons/ClockIcon"
 import {WriteIcon} from "../../components/icons/WriteIcon"
 import {CameraIcon} from "../../components/icons/CameraIcon"
-import {PrimaryButton} from "../../components/PrimaryButton"
-import { DeleteIcon } from "../../components/icons/DeleteIcon"
 import { CloseIcon } from "../../components/icons/CloseIcon"
+import { StageIcon } from "../../components/icons/StageIcon"
 
 dayjs.extend(utc)
 
@@ -99,7 +98,7 @@ export const ViewChore = ({route}) => {
                     <View className="flex-row items-center my-6 mx-2">
                         <AssignedToIcon />
                         <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                            Created by:{" "}
+                            Created by{" "}
                         </BrandText>
                         <BrandText className="text-[16px] text-darkButton">
                             {chore.creator?.name}
@@ -111,7 +110,7 @@ export const ViewChore = ({route}) => {
                     <View className="flex-row items-center my-6 mx-2">
                         <AssignedToIcon />
                         <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                            Assigned to:{" "}
+                            Assigned to{" "}
                         </BrandText>
                         <BrandText className="text-[16px] text-darkButton">
                             {chore.worker?.name}
@@ -124,6 +123,15 @@ export const ViewChore = ({route}) => {
                         <RepeatIcon />
                         <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
                             {chore.repeat?.charAt(0).toUpperCase() + chore.repeat?.slice(1)}
+                        </BrandText>
+                    </View>
+
+                    <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+
+                    <View className="flex-row items-center my-6 mx-2">
+                        <StageIcon />
+                        <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
+                            {chore.stage?.charAt(0).toUpperCase() + chore.stage?.slice(1)}
                         </BrandText>
                     </View>
 
@@ -174,18 +182,23 @@ export const ViewChore = ({route}) => {
 
             {chore.stage === "incomplete" && 
                 <View className="mb-12">
-                    <PrimaryButton label="Edit" onPress={() => navigation.navigate("NewChore")}/>
+
+                    <Pressable
+                        onPress={() => navigation.navigate("NewChore")}
+                        className="p-[10px] rounded-full items-center justify-center bg-[#9FB6AE] dark:bg-darkButton w-full h-[56px] mt-4"
+                    >
+                            <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
+                                Edit chore
+                            </BrandBoldText>
+                    </Pressable>
                     
                     <Pressable
                         onPress={() => setModalVisible(true)}
-                        className="p-[10px] rounded-full items-center justify-center bg-[#444955] w-full h-[56px] mt-4"
+                        className="p-[10px] rounded-full items-center justify-center bg-[#737780] w-full h-[56px] mt-5"
                     >
-                        <View className="flex-1 flex-row items-center">
-                            <DeleteIcon />
-                            <BrandBoldText className="text-[#737780] text-[20px] ms-4">
-                                Delete Chore
-                            </BrandBoldText>
-                        </View>
+                        <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
+                            Delete chore
+                        </BrandBoldText>
                     </Pressable>
                 </View>
             }
@@ -200,7 +213,7 @@ export const ViewChore = ({route}) => {
                         className="flex-1 justify-center items-center"
                         style={{backgroundColor:  'rgba(68, 73, 85, 0.5)'}}
                     >
-                        <View className="bg-[#ECDBC7] dark:bg-[#444955] p-[16px] rounded-xl w-[250px]">
+                        <View className="bg-[#ECEDEE] dark:bg-[#454954] p-[16px] rounded-xl w-[250px]">
                             <View className="flex-row items-center">
                                 <Pressable
                                     hitSlop={20}
@@ -209,12 +222,12 @@ export const ViewChore = ({route}) => {
                                 >
                                     <CloseIcon />
                                 </Pressable>
-                                <BrandBoldText className="dark:text-darkPrimaryText text-lightPrimaryText text-[16px]">
+                                <BrandBoldText className="dark:text-darkPrimaryText text-[#111215] text-[16px]">
                                     Confirm Delete
                                 </BrandBoldText>
                             </View>
 
-                            <BrandText className="dark:text-darkSecondaryText text-lightSecondaryText text-[16px] my-4">
+                            <BrandText className="dark:text-darkPrimaryText text-[#111215] text-[16px] my-4">
                                 Are you sure you want to delete this chore?
                             </BrandText>
 
