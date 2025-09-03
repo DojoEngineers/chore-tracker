@@ -11,7 +11,7 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "BACKEND_API_URL": "http://192.168.1.29:8000"
+        "BACKEND_API_URL": "http://192.168.1.217:8000"
       },
       "android":{
         "buildType":"apk"

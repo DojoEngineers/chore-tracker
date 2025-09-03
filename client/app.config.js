@@ -37,6 +37,7 @@ export default {
     },
 
     android: {
+      package:"com.ariella.rollins.choretracker",
       userInterfaceStyle: "automatic",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
