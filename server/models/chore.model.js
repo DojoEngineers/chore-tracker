@@ -68,6 +68,10 @@ const choreSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    comments: {
+        type: String,
+        required: false
+    },
     templateId: {
         type: String,
         required:false

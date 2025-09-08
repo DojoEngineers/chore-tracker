@@ -83,10 +83,9 @@ export const ParentDashboard = () => {
                         dayjs(a.date).isAfter(dayjs(b.date)) ? a : b
                     )
 
-                    return { ...chore, recentStage: mostRecent.stage, recentDate: mostRecent.date };
+                    return {...chore, recentStage: mostRecent.stage, recentDate: mostRecent.date}
                 })
                 setRecentActivityChores(filteredChores)
-                console.log("recent activity chores", filteredChores)
             })
             .catch((error) => {
                 console.log("recentActivityChores error:", error)
@@ -99,19 +98,23 @@ export const ParentDashboard = () => {
             .finally(() => setLoading(prev => ({ ...prev, recentActivityChores: false })))
     }, [])
 
-    const handleRecentActivityLink = (chore) => {
-        return
+    const handleChoreLink = (chore) => {
+        if (chore.stage === "complete") {
+            navigation.navigate("ApproveChore", {id: chore._id})
+        } else {
+            navigation.navigate("ViewChore", {id: chore._id})
+        }
     }
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
             <Header />
 
-                <BrandBoldText
-                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
-                >
-                    Dashboard
-                </BrandBoldText>
+            <BrandBoldText
+                className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
+            >
+                Dashboard
+            </BrandBoldText>
 
             <ScrollView
                 showsVerticalScrollIndicator={true}
@@ -169,7 +172,7 @@ export const ParentDashboard = () => {
                     ?
                         calendarChores.map((chore) => (
                             <Pressable
-                                onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
+                                onPress={() => handleChoreLink(chore)}
                                 className="flex-row w-full my-3 bg-[#9FB6AE]
                                     dark:bg-[#2F3339] rounded-3xl p-4"
                                 key={chore._id}
@@ -227,7 +230,7 @@ export const ParentDashboard = () => {
                         </BrandText>
                 }
 
-                <View className="py-[25px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-1">
+                <View className="py-[25px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-1 mb-[150px]">
                     <View className="flex-row items-center justify-between w-full">
                         <View className="items-center flex-row">
                             <RecentActivityIcon/>
@@ -247,7 +250,7 @@ export const ParentDashboard = () => {
                             recentActivityChores.map(chore => (
                                 <Pressable
                                     className="flex-1 w-full rounded-2xl bg-lightBg dark:bg-darkBg p-3 mt-4"
-                                    onPress={() => handleRecentActivityLink(chore)}
+                                    onPress={() => handleChoreLink(chore)}
                                     key={chore._id}
                                 >
                                     <View className="flex-row justify-between items-center">
@@ -278,14 +281,10 @@ export const ParentDashboard = () => {
                                         <BrandText
                                             className={`
                                                 text-[12px] 
-                                                ${chore.recentStage === "Assigned" && "text-[#455C56]"}
-                                                ${chore.recentStage === "Awaiting review" && "text-[#FB943C]"}
-                                                ${chore.recentStage === "Approved" && "text-[#455C56]"}
-                                                ${chore.recentStage === "Rejected" && "text-red-500"}
-                                                dark:${chore.recentStage === "Assigned" && "text-[#B3EAD3]"}
-                                                dark:${chore.recentStage === "Awaiting review" && "text-[#FEDBB1]"}
-                                                dark:${chore.recentStage === "Approved" && "text-[#B3EAD3]"}
-                                                dark:${chore.recentStage === "Rejected" && "text-red-500"}
+                                                ${chore.recentStage === "Assigned" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
+                                                ${chore.recentStage === "Awaiting review" ? "text-[#FB943C] dark:text-[#FEDBB1]" : ""}
+                                                ${chore.recentStage === "Approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
+                                                ${chore.recentStage === "Rejected" ? "text-[#FF5757]" : ""}
                                             `}
                                         >
                                             {chore.recentStage}
