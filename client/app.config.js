@@ -2,12 +2,11 @@ import 'dotenv/config'
 
 export default {
   expo: {
-    // From your app.config.js
     name: "ChoreTracker",
     slug: "chore-tracker",
-    runtimeVersion: "1.0.0", // Add this 
+    runtimeVersion: "1.0.0", 
     updates: {
-      url: "https://u.expo.dev/6d7a9599-3889-436c-b230-9f8afa020ed1" // EAS will tell you the exact URL
+      enabled: false,
     },
     
     extra: {
@@ -16,8 +15,7 @@ export default {
         projectId: "6d7a9599-3889-436c-b230-9f8afa020ed1"
       }
     },
-
-    // From your app.json
+    
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",

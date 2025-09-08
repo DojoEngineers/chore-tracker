@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { BrandBoldText } from '../../components/text/BrandBoldText'
 import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle";
 import { LogoTopSquiggle } from "../../components/squiggles/LogoTopSquiggle";

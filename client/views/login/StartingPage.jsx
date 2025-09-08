@@ -81,7 +81,7 @@ export const StartingPage = () => {
 
                 <Pressable
                     className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px]"
-                    onPress={() => navigation.navigate('ParentRegistration')}
+                    // onPress={() => navigation.navigate('ParentRegistration')}
                 >
                     <BrandBoldText className="text-white text-[20px]">Start a family account</BrandBoldText>
                 </Pressable>
@@ -90,7 +90,9 @@ export const StartingPage = () => {
             <View>
                 <View className="flex-row px-[16px] justify-center">
                     <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">Added by a parent? </BrandText>
-                    <Pressable hitSlop={20} onPress={() => navigation.navigate('UsernameVerification')}>
+                    <Pressable hitSlop={20} 
+                    // onPress={() => navigation.navigate('UsernameVerification')}
+                    >
                         <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">Verify Here</BrandBoldText>
                     </Pressable>
                 </View>
