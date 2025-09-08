@@ -32,7 +32,6 @@ export const ViewChore = ({route}) => {
     useEffect(() => {
         getChoreById(id)
         .then((res) => {
-            console.log("res console.log", res.creator, res.creator.name)
             setChore(res)
         })
         .catch((error) => {
@@ -43,7 +42,7 @@ export const ViewChore = ({route}) => {
                 text1: "Unable to get chore information."
                 })
             })
-            .finally(() => setLoading(false))
+        .finally(() => setLoading(false))
     }, [])
 
     const handleDelete = () => {
