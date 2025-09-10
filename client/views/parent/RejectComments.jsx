@@ -1,4 +1,4 @@
-import { Pressable, TextInput, View } from "react-native"
+import { Pressable, TextInput, useColorScheme, View } from "react-native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { PrimaryButton } from "../../components/PrimaryButton"
@@ -7,6 +7,8 @@ import { useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
 import utc from 'dayjs/plugin/utc'
 import dayjs from "dayjs"
+import { updateChore } from "../../services/chore.service"
+import {ParentNavBar} from "../../components/ParentNavBar"
 
 dayjs.extend(utc)
 
@@ -15,11 +17,14 @@ export const RejectComments = ({route}) => {
     const [comments, setComments] = useState("")
     const [apiErrors, setApiErrors] = useState({})
 
-    const {_id, kid, title} = route.params
+    const {_id, title} = route.params
     const navigation = useNavigation()
 
+    const colorScheme = useColorScheme();
+    const placeholderColor = colorScheme === 'dark' ? '#D0D1D4' : '#737780';
+
     const handleReject = () => {
-        updateChore({_id, stage: "rejected", dateRejected: dayjs().toISOString()})
+        updateChore({_id, stage: "rejected", dateRejected: dayjs().toISOString()}, comments)
             .then(() => {
                 Toast.show({
                     type: 'success',
@@ -38,45 +43,49 @@ export const RejectComments = ({route}) => {
     }
 
     return (
-        <View className="flex-1 bg-[#D0D1D4] dark:bg-[#333740] px-[16px]">
+        <View className="flex-1 bg-[#D0D1D4] dark:bg-darkBg">
 
-            <View className="flex-row w-full items-center mb-4 mt-[75px]">
-                <Pressable
-                    hitSlop={20}
-                    className="ps-2 pe-8"
-                    onPress={() => navigation.goBack()}
+            <View className="flex-1 px-[16px]">
+                <View className="flex-row w-full items-center mt-[75px]">
+                    <Pressable
+                        hitSlop={20}
+                        className="ps-2 pe-8"
+                        onPress={() => navigation.goBack()}
+                    >
+                        <BackArrow />
+                    </Pressable>
+                    <BrandBoldText className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText">
+                        Reject
+                    </BrandBoldText>
+                </View>
+
+                {apiErrors.updateChore && (
+                    <BrandText className="text-red-500 text-center">
+                        {apiErrors.updateChore}
+                    </BrandText>
+                )}
+
+                <BrandBoldText
+                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] my-[40px]"
                 >
-                    <BackArrow />
-                </Pressable>
-                <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText">
-                    Reject
+                    {title}
                 </BrandBoldText>
-            </View>
 
-            {apiErrors.updateChore && (
-                <BrandText className="text-red-500 text-center">
-                    {apiErrors.updateChore}
-                </BrandText>
-            )}
-
-            <BrandBoldText
-                className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] my-[30px]"
-            >
-                {title + "\n" + "Add comments for " + kid}
-            </BrandBoldText>
-
-            <View className="my-4">
                 <TextInput
-                    className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-black dark:text-white h-[120px]"
+                    className="dark:border dark:border-[#D0D1D4] rounded-lg p-3 bg-[#ECEDEE] dark:bg-transparent
+                        text-lightPrimaryText dark:text-darkPrimaryText h-[103px] mb-[40px] font-nunito text-[15px]"
                     value={comments}
                     onChangeText={setComments}
                     placeholder="Add comments here"
-                    placeholderTextColor="#888"
+                    placeholderTextColor={placeholderColor}
                     multiline={true}
+                    textAlignVertical="top"
                 />
+
+                <PrimaryButton label="Submit" onPress={() => handleReject()} />
             </View>
 
-            <PrimaryButton label="Done" onPress={() => handleReject()} />
+            <ParentNavBar />
 
         </View>
     )

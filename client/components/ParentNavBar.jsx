@@ -19,7 +19,7 @@ export const ParentNavBar = () => {
     const homeRoutes = ['ParentDashboard']
     const kidsRoutes = ['Kids', 'KidDetails']
     const todayRoutes = ['Today']
-    const approveRoutes = ['ApproveDashboard', 'ApproveChore']
+    const approveRoutes = ['ApproveDashboard', 'RejectComments']
     const isOnHome = homeRoutes.includes(route.name)
     const isOnKids = kidsRoutes.includes(route.name)
     const isOnToday = todayRoutes.includes(route.name)

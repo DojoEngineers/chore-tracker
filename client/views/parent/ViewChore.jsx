@@ -55,11 +55,30 @@ export const ViewChore = ({route}) => {
                 navigation.goBack()
             })
             .catch( error => {
-                console.log("updateChore error:", error)
-                setApiErrors(prev => ({...prev, updateChore: "Unable to delete chore."}))
+                console.log("deleteChore error:", error)
+                setApiErrors(prev => ({...prev, deleteChore: "Unable to delete chore."}))
                 Toast.show({
                     type: 'error',
                     text1: "Unable to delete chore."
+                })
+            })
+    }
+
+    const handleApprove = (_id) => {
+        updateChore({_id, stage: "approved", dateApproved: dayjs().toISOString()})
+            .then(() => {
+                Toast.show({
+                    type: 'success',
+                    text1: "Chore approved!"
+                })
+                navigation.goBack()
+            })
+            .catch((error) => {
+                console.log("approveChore error:", error)
+                setApiErrors(prev => ({...prev, approveChore: "Unable to approve chore."}))
+                Toast.show({
+                    type: 'error',
+                    text1: "Unable to approve chore."
                 })
             })
     }
@@ -84,6 +103,16 @@ export const ViewChore = ({route}) => {
                 {apiErrors.getChoreById && (
                     <BrandText className="text-red-500 text-center">
                         {apiErrors.getChoreById}
+                    </BrandText>
+                )}
+                {apiErrors.deleteChore && (
+                    <BrandText className="text-red-500 text-center">
+                        {apiErrors.deleteChore}
+                    </BrandText>
+                )}
+                {apiErrors.approveChore && (
+                    <BrandText className="text-red-500 text-center">
+                        {apiErrors.approveChore}
                     </BrandText>
                 )}
 
@@ -127,10 +156,24 @@ export const ViewChore = ({route}) => {
 
                     <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
 
-                    <View className="flex-row items-center my-6 mx-2">
+                    <View className="flex-row items-center my-6 ms-2 me-[24px]">
                         <StageIcon />
-                        <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                            {chore.stage?.charAt(0).toUpperCase() + chore.stage?.slice(1)}
+                        <BrandText
+                            className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4"
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            adjustsFontSizeToFit={true}
+                            minimumFontScale={0.5}
+                        >
+                            {chore.stage === "incomplete" ?
+                                    "Incomplete"
+                                : chore.stage === "complete" ?
+                                    "Completed on " + dayjs(chore.dateCompleted).local().format("dddd, MMMM D [at] h:mma")
+                                : chore.stage === "approved" ?
+                                    "Approved on " + dayjs(chore.dateApproved).local().format("dddd, MMMM D [at] h:mma")
+                                :
+                                    "Rejected on " + dayjs(chore.dateRejected).local().format("dddd, MMMM D [at] h:mma")
+                            }
                         </BrandText>
                     </View>
 
@@ -202,45 +245,68 @@ export const ViewChore = ({route}) => {
                 </View>
             }
 
-                <Modal
-                    animationType="fade"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => setModalVisible(false)}
-                >
-                    <View
-                        className="flex-1 justify-center items-center"
-                        style={{backgroundColor:  'rgba(68, 73, 85, 0.5)'}}
+            {chore.stage === "complete" && 
+                <View className="mb-12">
+
+                    <Pressable
+                        onPress={() => handleApprove(chore._id)}
+                        className="p-[10px] rounded-full items-center justify-center dark:bg-[#B3EAD3] bg-[#84A99D] w-full h-[56px] mt-5"
                     >
-                        <View className="bg-[#ECEDEE] dark:bg-[#454954] p-[16px] rounded-xl w-[250px]">
-                            <View className="flex-row items-center">
-                                <Pressable
-                                    hitSlop={20}
-                                    className="pe-4 me-6"
-                                    onPress={() => setModalVisible(false)}
-                                >
-                                    <CloseIcon />
-                                </Pressable>
-                                <BrandBoldText className="dark:text-darkPrimaryText text-[#111215] text-[16px]">
-                                    Confirm Delete
-                                </BrandBoldText>
-                            </View>
+                        <BrandBoldText className="text-darkPrimaryText dark:text-lightPrimaryText text-[20px] ms-4">
+                            Approve
+                        </BrandBoldText>
+                    </Pressable>
 
-                            <BrandText className="dark:text-darkPrimaryText text-[#111215] text-[16px] my-4">
-                                Are you sure you want to delete this chore?
-                            </BrandText>
+                    <Pressable
+                        onPress={() => navigation.navigate("RejectComments", {_id: chore._id, title: chore.title})}
+                        className="p-[10px] rounded-full items-center justify-center bg-[#F40000] w-full h-[56px] mt-4"
+                    >
+                        <BrandBoldText className="text-darkPrimaryText text-[20px] ms-4">
+                            Reject
+                        </BrandBoldText>
+                    </Pressable>
+                </View>
+            }
 
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View
+                    className="flex-1 justify-center items-center"
+                    style={{backgroundColor:  'rgba(68, 73, 85, 0.5)'}}
+                >
+                    <View className="bg-[#ECEDEE] dark:bg-[#454954] p-[16px] rounded-xl w-[250px]">
+                        <View className="flex-row items-center">
                             <Pressable
-                                className="p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full"
-                                onPress={handleDelete}
+                                hitSlop={20}
+                                className="pe-4 me-6"
+                                onPress={() => setModalVisible(false)}
                             >
-                                <BrandBoldText className="text-darkPrimaryText text-[16px]">
-                                    Delete
-                                </BrandBoldText>
+                                <CloseIcon />
                             </Pressable>
+                            <BrandBoldText className="dark:text-darkPrimaryText text-[#111215] text-[16px]">
+                                Confirm Delete
+                            </BrandBoldText>
                         </View>
+
+                        <BrandText className="dark:text-darkPrimaryText text-[#111215] text-[16px] my-4">
+                            Are you sure you want to delete this chore?
+                        </BrandText>
+
+                        <Pressable
+                            className="p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full"
+                            onPress={handleDelete}
+                        >
+                            <BrandBoldText className="text-darkPrimaryText text-[16px]">
+                                Delete
+                            </BrandBoldText>
+                        </Pressable>
                     </View>
-                </Modal>
+                </View>
+            </Modal>
 
         </View>
     )

@@ -10,7 +10,6 @@ export const UserInput = ({
     error = false,
     }) => {
 
-    // Text input placeholder color
     const colorScheme = useColorScheme();
     const placeholderColor = colorScheme === 'dark' ? '#FFFFFF' : '#737780';
 

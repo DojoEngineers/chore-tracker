@@ -84,7 +84,7 @@ export const KidDetails = ({route}) => {
 
             <ScrollView
                 showsVerticalScrollIndicator={true}
-                className="px-[16px]"
+                className="px-[16px] flex-1"
             >
                 <View>
                     <BrandBoldText
