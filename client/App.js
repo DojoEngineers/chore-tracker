@@ -33,7 +33,6 @@ import { Kids } from "./views/parent/Kids";
 import { KidDetails } from "./views/parent/KidDetails";
 import { ViewChore } from "./views/parent/ViewChore";
 import { Today } from "./views/parent/Today";
-import { ApproveChore } from "./views/parent/ApproveChore";
 import { ApproveDashboard } from "./views/parent/ApproveDashboard";
 import { RejectComments } from "./views/parent/RejectComments";
 
@@ -85,7 +84,6 @@ export default function App() {
               <Stack.Screen name="KidDetails" component={KidDetails} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="ViewChore" component={ViewChore}></Stack.Screen>
               <Stack.Screen name="Today" component={Today} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="ApproveChore" component={ApproveChore}></Stack.Screen>
               <Stack.Screen name="ApproveDashboard" component={ApproveDashboard} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="RejectComments" component={RejectComments}></Stack.Screen>
             </Stack.Navigator>

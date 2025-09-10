@@ -66,37 +66,37 @@ export const ApproveDashboard = () => {
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
-            <View>
-                <Header />
-                <BrandBoldText
-                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
-                >
-                    Approve
-                </BrandBoldText>
-                <BrandBoldText
-                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] px-[16px] mt-[30px]"
-                >
-                    Pending Reviews
-                </BrandBoldText>
+            <Header />
+            <BrandBoldText
+                className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
+            >
+                Approve
+            </BrandBoldText>
+            <BrandBoldText
+                className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] px-[16px] mt-[30px]"
+            >
+                Pending Reviews
+            </BrandBoldText>
 
-                {apiErrors.getChoresByParents && (
-                    <BrandText className="text-red-500 text-center">
-                        {apiErrors.getChoresByParents}
-                    </BrandText>
-                )}
-                
-                <ScrollView
-                    horizontal
-                    className="px-[16px] my-4"
-                    showsVerticalScrollIndicator={true}
-                >
-                    {pendingChores.length > 0
-                        ?
-                            pendingChores.map(chore => (
+            {apiErrors.getChoresByParents && (
+                <BrandText className="text-red-500 text-center">
+                    {apiErrors.getChoresByParents}
+                </BrandText>
+            )}
+            
+            {pendingChores.length > 0
+                ?
+                    <View>
+                        <ScrollView
+                            horizontal
+                            className="px-[16px] my-4"
+                            showsVerticalScrollIndicator={true}
+                        >
+                            {pendingChores.map(chore => (
                                 <Pressable
                                     key={chore._id}
                                     className="w-[96px] h-[123px] rounded-3xl dark:bg-[#2F3339] bg-[#9FB6AE] mr-3 justify-between"
-                                    onPress={() => navigation.navigate("ApproveChore", {id: chore._id})}
+                                    onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
                                 >
                                     <View
                                         className="bg-[#FEDBB1] w-[49px] h-[14px] items-center justify-center rounded-r mt-[20px] px-1"
@@ -128,48 +128,49 @@ export const ApproveDashboard = () => {
                                         </BrandBoldText>
                                     </View>
                                 </Pressable>
-                            ))
-                
-                        : loading ?
-                            <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
-                            >
-                                {loading}
-                            </BrandText>
-                        :
-                            <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
-                            >
-                                No pending chores
-                            </BrandText>
-                    }
-                </ScrollView>
-
-                <View className="py-[25px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] my-3 mx-[16px]">
-                    <View className="flex-row items-center justify-between w-full">
-                        <View className="items-center flex-row">
-                            <ApproveAndRejectIcon/>
-                            <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
-                                Approvals and rejections
-                            </BrandBoldText>
-                        </View>
-                        <BrandText
-                            className="text-[12px] dark:text-[#ECEDEE] text-lightPrimaryText"
-                            >
-                            Last 24hr
-                        </BrandText>
+                            ))}
+                        </ScrollView>
                     </View>
 
-                    {recentActivityChores.length > 0
-                        ?
-                            <ScrollView
-                                style={{ maxHeight: 300 }} // change this after you have list of recent approvals
-                                showsVerticalScrollIndicator={true}
-                            >
-                                {recentActivityChores.map(chore => (
+                : loading ?
+                    <BrandText
+                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] my-4 px-[16px]"
+                    >
+                        {loading}
+                    </BrandText>
+                :
+                    <BrandText
+                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] my-4 px-[16px]"
+                    >
+                        No pending chores
+                    </BrandText>
+            }
+
+            <View className="flex-1">
+                <ScrollView
+                    showsVerticalScrollIndicator={true}
+                    className="flex-1"
+                >
+                    <View className="py-[25px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] my-3 mx-[16px]">
+                        <View className="flex-row items-center justify-between w-full">
+                            <View className="items-center flex-row">
+                                <ApproveAndRejectIcon/>
+                                <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
+                                    Approvals and rejections
+                                </BrandBoldText>
+                            </View>
+                            <BrandText
+                                className="text-[12px] dark:text-[#ECEDEE] text-lightPrimaryText"
+                                >
+                                Last 24hr
+                            </BrandText>
+                        </View>
+                        {recentActivityChores.length > 0
+                            ?
+                                recentActivityChores.map(chore => (
                                     <Pressable
                                         className="w-full rounded-2xl bg-lightBg dark:bg-darkBg p-3 mt-4"
-                                        onPress={() => navigation.navigate("ViewChore", {id: chore_id})}
+                                        onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
                                         key={chore._id}
                                     >
                                         <View className="flex-row justify-between items-center">
@@ -184,7 +185,6 @@ export const ApproveDashboard = () => {
                                                 {dayjs(chore.recentDate).fromNow()}
                                             </BrandText>
                                         </View>
-
                                         <View className="flex-row items-center mt-2">
                                             <View className="rounded-full bg-[#84A99D]
                                                 me-3 aspect-square h-[20px] justify-center dark:bg-darkButton">
@@ -208,29 +208,26 @@ export const ApproveDashboard = () => {
                                             </BrandText>
                                         </View>
                                     </Pressable>
-                                ))}
-                            </ScrollView>
-
-                        : loading ?
-                            <BrandText
+                                ))
+                
+                            : loading ?
+                                <BrandText
                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
-                            >
-                                {loading}
-                            </BrandText>
-
-                        :
-                            <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
-                            >
-                                No recent activity
-                            </BrandText>
-                    }
-                </View>
+                                >
+                                    {loading}
+                                </BrandText>
+                            :
+                                <BrandText
+                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
+                                    >
+                                    No recent activity
+                                </BrandText>
+                        }
+                    </View>
+                </ScrollView>
             </View>
 
-            <View className="absolute bottom-0 left-0 right-0">
-                <ParentNavBar />
-            </View>
+            <ParentNavBar />
         </View>
     )
 }

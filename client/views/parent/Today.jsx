@@ -68,16 +68,16 @@ export const Today = () => {
                 </BrandText>
             )}
 
-            <ScrollView
-                showsVerticalScrollIndicator={true}
-                className="px-[16px] mt-4"
-            >
-                {chores.length > 0
-                    ?
-                        chores.map((chore) => (
+            {chores.length > 0
+                ?
+                    <ScrollView
+                        showsVerticalScrollIndicator={true}
+                        className="px-[16px] mt-4 flex-1"
+                    >
+                        {chores.map((chore) => (
                             <Pressable
                                 onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                className="flex-row w-full my-3 border border-lightPrimaryText 
+                                className="flex-row w-full my-3 border border-lightPrimaryText
                                     dark:bg-[#2F3339] rounded-xl p-4"
                                 key={chore._id}
                             >
@@ -105,23 +105,23 @@ export const Today = () => {
                                     <ForwardArrow />
                                 </View>
                             </Pressable>
-                        ))
+                        ))}
+                    </ScrollView>
 
-                    : loading ?
-                        <BrandText
-                            className="text-lightPrimaryText dark:text-darkPrimaryText"
-                        >
-                            {loading}
-                        </BrandText>
+                : loading ?
+                    <BrandText
+                        className="text-lightPrimaryText dark:text-darkPrimaryText my-4 px-[16px] flex-1"
+                    >
+                        {loading}
+                    </BrandText>
 
-                    :
-                        <BrandText
-                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                        >
-                            No chores due today
-                        </BrandText>
-                }
-            </ScrollView>
+                :
+                    <BrandText
+                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] my-4 px-[16px] flex-1"
+                    >
+                        No chores due today
+                    </BrandText>
+            }
             
             <ParentNavBar />
         </View>

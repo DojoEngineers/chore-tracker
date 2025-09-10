@@ -98,14 +98,6 @@ export const ParentDashboard = () => {
             .finally(() => setLoading(prev => ({ ...prev, recentActivityChores: false })))
     }, [])
 
-    const handleChoreLink = (chore) => {
-        if (chore.stage === "complete") {
-            navigation.navigate("ApproveChore", {id: chore._id})
-        } else {
-            navigation.navigate("ViewChore", {id: chore._id})
-        }
-    }
-
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
             <Header />
@@ -118,7 +110,7 @@ export const ParentDashboard = () => {
 
             <ScrollView
                 showsVerticalScrollIndicator={true}
-                className="px-[16px]"
+                className="px-[16px] flex-1"
             >
                 <Pressable
                     className="py-[25px] px-[25px] rounded-3xl items-center justify-between
@@ -172,7 +164,7 @@ export const ParentDashboard = () => {
                     ?
                         calendarChores.map((chore) => (
                             <Pressable
-                                onPress={() => handleChoreLink(chore)}
+                                onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
                                 className="flex-row w-full my-3 bg-[#9FB6AE]
                                     dark:bg-[#2F3339] rounded-3xl p-4"
                                 key={chore._id}
@@ -193,7 +185,7 @@ export const ParentDashboard = () => {
                                         {chore.worker?.name}
                                     </BrandText>
 
-                                    {chore.stage === "complete"
+                                    {chore.stage === "complete" || chore.stage === "approved"
                                         ?
                                             <BrandText
                                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
@@ -250,7 +242,7 @@ export const ParentDashboard = () => {
                             recentActivityChores.map(chore => (
                                 <Pressable
                                     className="flex-1 w-full rounded-2xl bg-lightBg dark:bg-darkBg p-3 mt-4"
-                                    onPress={() => handleChoreLink(chore)}
+                                    onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
                                     key={chore._id}
                                 >
                                     <View className="flex-row justify-between items-center">
@@ -281,7 +273,7 @@ export const ParentDashboard = () => {
                                         <BrandText
                                             className={`
                                                 text-[12px] 
-                                                ${chore.recentStage === "Assigned" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
+                                                ${chore.recentStage === "Assigned" ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
                                                 ${chore.recentStage === "Awaiting review" ? "text-[#FB943C] dark:text-[#FEDBB1]" : ""}
                                                 ${chore.recentStage === "Approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
                                                 ${chore.recentStage === "Rejected" ? "text-[#FF5757]" : ""}
@@ -313,9 +305,7 @@ export const ParentDashboard = () => {
 
             </ScrollView>
 
-            <View className="absolute bottom-0 left-0 right-0">
-                <ParentNavBar />
-            </View>
+            <ParentNavBar />
         </View>
     )
 }
