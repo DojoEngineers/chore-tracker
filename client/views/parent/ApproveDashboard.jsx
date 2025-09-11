@@ -51,6 +51,7 @@ export const ApproveDashboard = () => {
 
                     return {...chore, recentStage: mostRecent.stage, recentDate: mostRecent.date}
                 })
+                .sort((a, b) => dayjs(b.recentDate).valueOf() - dayjs(a.recentDate).valueOf())
                 setRecentActivityChores(filteredRecentActivityChores)
             })
             .catch((error) => {

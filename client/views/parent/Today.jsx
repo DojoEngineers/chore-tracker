@@ -77,8 +77,8 @@ export const Today = () => {
                         {chores.map((chore) => (
                             <Pressable
                                 onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                className="flex-row w-full my-3 border border-lightPrimaryText
-                                    dark:bg-[#2F3339] rounded-xl p-4"
+                                className="flex-row w-full my-3 bg-[#9FB6AE]
+                                    dark:bg-[#2F3339] rounded-3xl py-4 px-6"
                                 key={chore._id}
                             >
                                 <View className="flex-1">

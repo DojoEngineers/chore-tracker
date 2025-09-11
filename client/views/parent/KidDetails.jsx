@@ -6,12 +6,12 @@ import { useEffect, useState } from "react"
 import {getChoresByWorker} from "../../services/chore.service.js"
 import Toast from "react-native-toast-message"
 import { BrandText } from "../../components/text/BrandText"
-import {CheckboxIcon} from "../../components/icons/CheckboxIcon"
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { ParentNavBar } from "../../components/ParentNavBar.jsx"
 import utc from 'dayjs/plugin/utc';
-import { ForwardArrow } from "../../components/icons/ForwardArrow.jsx"
+import {DueTodayIcon} from "../../components/icons/DueTodayIcon"
+import {CheckIcon} from "../../components/icons/CheckIcon"
 
 dayjs.extend(isBetween);
 dayjs.extend(utc);
@@ -44,7 +44,7 @@ export const KidDetails = ({route}) => {
 
                 // Completed chores
                 const completed = res.filter(chore => ['complete', 'approved'].includes(chore.stage))
-                .sort((a, b) => dayjs(a.dateCompleted).valueOf() - dayjs(b.dateCompleted).valueOf())
+                .sort((a, b) => dayjs(b.dateCompleted).valueOf() - dayjs(a.dateCompleted).valueOf())
 
                 // Set chores in state
                 setChores(prev => ({...prev, today, thisWeek, completed}))
@@ -63,7 +63,7 @@ export const KidDetails = ({route}) => {
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
 
-            <View className="flex-row mt-[75px] items-center ps-[20px]">
+            <View className="flex-row mt-[75px] items-center ps-[20px] mb-2">
                 <Pressable
                     hitSlop={20}
                     onPress={() => navigation.goBack()}
@@ -86,36 +86,65 @@ export const KidDetails = ({route}) => {
                 showsVerticalScrollIndicator={true}
                 className="px-[16px] flex-1"
             >
-                <View>
-                    <BrandBoldText
-                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-8 mb-2"
-                    >
-                        Due today
-                    </BrandBoldText>
+                <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
+                    <View className="flex-row items-center w-full">
+                        <DueTodayIcon/>
+                        <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
+                            Due Today
+                        </BrandBoldText>
+                    </View>
 
                     {chores.today.length > 0
                         ?
                             chores.today.map((chore) => (
                                 <Pressable
                                     onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-row w-full items-center py-3 justify-between"
+                                    className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-3 mt-4"
                                     key={chore._id}
                                 >
-                                    <View className="flex-row items-center">
-                                        <CheckboxIcon />
+                                    <View className="flex-row items-center justify-between">
                                         <BrandText
-                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
                                         >
                                             {chore.title}
                                         </BrandText>
+                                        <BrandText
+                                            className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
+                                        >
+                                            Due by {dayjs(chore.dueDate).local().format("h:mma")}
+                                        </BrandText>
                                     </View>
-                                    <ForwardArrow />
+
+                                    <View className="flex-row items-center mt-2">
+                                        <View className="rounded-full bg-[#84A99D]
+                                            me-3 aspect-square h-[20px] justify-center dark:bg-darkButton">
+                                            <BrandBoldText className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px] text-center">
+                                                {kid.name[0]}
+                                            </BrandBoldText>
+                                        </View>
+                                        <BrandText
+                                            className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
+                                        >
+                                            {` ${kid.name} • `}
+                                        </BrandText>
+                                        <BrandText
+                                            className={`
+                                                text-[12px] 
+                                                ${chore.stage === "incomplete" ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
+                                                ${chore.stage === "rejected" ? "text-[#FF5757]" : ""}
+                                            `}
+                                        >
+                                            {chore.stage === "incomplete" ? "Incomplete" : "Rejected"}
+                                        </BrandText>
+
+                                    </View>
+                                    
                                 </Pressable>
                             ))
 
                         : loading ?
                             <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText"
+                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
                             >
                                 {loading}
                             </BrandText>
@@ -123,7 +152,7 @@ export const KidDetails = ({route}) => {
                         :
                             <View>
                                 <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
+                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
                                     >
                                         No chores due today
                                     </BrandText>
@@ -131,99 +160,149 @@ export const KidDetails = ({route}) => {
                     }
                 </View>
 
-                <View>
-                    <BrandBoldText
-                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-6 mb-2"
-                    >
-                        Due this week
-                    </BrandBoldText>
+                <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
+                    <View className="flex-row items-center w-full">
+                        <DueTodayIcon/>
+                        <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
+                            Due by end of week
+                        </BrandBoldText>
+                    </View>
 
                     {chores.thisWeek.length > 0
                         ?
                             chores.thisWeek.map((chore) => (
                                 <Pressable
                                     onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-row w-full items-center py-3 justify-between"
+                                    className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-3 mt-4"
                                     key={chore._id}
                                 >
-                                    <View className="flex-row items-center">
-                                        <CheckboxIcon />
+                                    <View className="flex-row items-center justify-between">
                                         <BrandText
-                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
                                         >
                                             {chore.title}
                                         </BrandText>
+                                        <BrandText
+                                            className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
+                                        >
+                                            Due on {dayjs(chore.dueDate).local().format("dddd")}
+                                        </BrandText>
                                     </View>
-                                    <ForwardArrow />
+
+                                    <View className="flex-row items-center mt-2">
+                                        <View className="rounded-full bg-[#84A99D]
+                                            me-3 aspect-square h-[20px] justify-center dark:bg-darkButton">
+                                            <BrandBoldText className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px] text-center">
+                                                {kid.name[0]}
+                                            </BrandBoldText>
+                                        </View>
+                                        <BrandText
+                                            className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
+                                        >
+                                            {` ${kid.name} • `}
+                                        </BrandText>
+                                        <BrandText
+                                            className={`
+                                                text-[12px] 
+                                                ${chore.stage === "incomplete" ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
+                                                ${chore.stage === "rejected" ? "text-[#FF5757]" : ""}
+                                            `}
+                                        >
+                                            {chore.stage === "incomplete" ? "Incomplete" : "Rejected"}
+                                        </BrandText>
+
+                                    </View>
+                                    
                                 </Pressable>
                             ))
 
                         : loading ?
                             <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText"
+                                className="text-lightPrimaryText dark:text-darkPrimaryText  text-[14px] mt-4"
                             >
                                 {loading}
                             </BrandText>
 
                         :
                             <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3"
+                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
                             >
-                                No chores due this week
+                                No chores due by end of week
                             </BrandText>
                     }
                 </View>
 
-                <View>
-                    <BrandBoldText
-                        className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText mt-6 mb-4"
-                    >
-                        Completed chore history
-                    </BrandBoldText>
+                <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
+                    <View className="flex-row items-center w-full">
+                        <CheckIcon/>
+                        <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
+                            Completed chore history
+                        </BrandBoldText>
+                    </View>
 
                     {chores.completed.length > 0
                         ?
                             chores.completed.map((chore) => (
                                 <Pressable
                                     onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-row w-full items-center py-3 px-5 border rounded-3xl border-[#9FB6AE]
-                                        dark:border-darkPrimaryText bg-[#DFE8E4] dark:bg-transparent my-2"
+                                    className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-3 mt-4"
                                     key={chore._id}
                                 >
-                                    <View className="rounded-full bg-lightBg
-                                        me-3 aspect-square h-[30px] justify-center dark:bg-darkButton">
-                                        <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] text-center">
-                                            {kid.name[0]}
-                                        </BrandBoldText>
-                                    </View>
-
-                                    <View className="flex-1">
-
-                                        <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]">
-                                            <BrandBoldText>{kid.name} </BrandBoldText>
-                                            completed{" "}
-                                            <BrandBoldText>{chore.title}</BrandBoldText>
-                                        </BrandText>
-
+                                    <View className="flex-row items-center justify-between">
                                         <BrandText
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
                                         >
-                                            {dayjs(chore.dateCompleted).format('MMMM D, h:mmA')}
+                                            {chore.title}
+                                        </BrandText>
+                                        <BrandText
+                                            className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
+                                        >
+                                            { chore.stage === "complete"
+                                                ?
+                                                    dayjs(chore.dateCompleted).local().format("MMMM D")
+                                                :
+                                                    dayjs(chore.dateApproved).local().format("MMMM D")
+                                            }
                                         </BrandText>
                                     </View>
+
+                                    <View className="flex-row items-center mt-2">
+                                        <View className="rounded-full bg-[#84A99D]
+                                            me-3 aspect-square h-[20px] justify-center dark:bg-darkButton">
+                                            <BrandBoldText className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px] text-center">
+                                                {kid.name[0]}
+                                            </BrandBoldText>
+                                        </View>
+                                        <BrandText
+                                            className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
+                                        >
+                                            {` ${kid.name} • `}
+                                        </BrandText>
+                                        <BrandText
+                                            className={`
+                                                text-[12px] 
+                                                ${chore.stage === "complete" ? "text-[#FB943C] dark:text-[#FEDBB1]" : ""}
+                                                ${chore.stage === "approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
+                                            `}
+                                        >
+                                            {chore.stage === "complete" ? "Awaiting Review" : "Approved"}
+                                        </BrandText>
+
+                                    </View>
+                                    
                                 </Pressable>
                             ))
                             
                         : loading ?
                             <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText"
+                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
                             >
                                 {loading}
                             </BrandText>
 
                         :
                             <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] ps-3 pb-3"
+                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
                             >
                                 No completed chores
                             </BrandText>
