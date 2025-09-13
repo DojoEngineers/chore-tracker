@@ -46,13 +46,13 @@ export const ViewChore = ({route}) => {
     }, [])
 
     const handleDelete = () => {
-        updateChore({isActive: false})
+        updateChore({_id: id, isActive: false})
             .then( () => { 
                 Toast.show({
                     type: 'success',
                     text1: "Chore successfully deleted!"
                 })
-                navigation.goBack()
+                navigation.replace("ParentDashboard", {animationType: "slide_from_left"})
             })
             .catch( error => {
                 console.log("deleteChore error:", error)
@@ -174,6 +174,7 @@ export const ViewChore = ({route}) => {
                                 :
                                     "Rejected on " + dayjs(chore.dateRejected).local().format("dddd, MMMM D [at] h:mma")
                             }
+                            {dayjs(chore.dueDate).isBefore(dayjs()) && " • Overdue"}
                         </BrandText>
                     </View>
 

@@ -36,7 +36,7 @@ export const getTemplates = async (req, res) => {
 
 // for testing only. I use postman to reset db.
 export const deleteAllChores = async (req, res) => {
-    console.log("delting all chores in controller")
+    console.log("deleting all chores in controller")
     try {
         const del = await Chore.deleteMany()
         res.status(200).json(del)
@@ -209,8 +209,8 @@ export const updateChore = async (req, res) => {
     console.log("edit Chore controller. req.body:", req.body)
     try {
         // can't change id or creator
-        const allowedUpdates = ['title', "details", 'stage', "worker", "dueDate", "dateCompleted",
-            "beforePic", "afterPic", "isActive", "needsPics", "dateApproved", "dateRejected"]; // Define what can be updated
+        const allowedUpdates = ['title', "details", 'stage', "worker", "dueDate", "dateCompleted", "beforePic",
+            "afterPic", "isActive", "needsPics", "dateApproved", "dateRejected", "parentComments", "kidComments"]; // Define what can be updated
         const updateData = {};
         // Only include allowed fields that exist in req.body
         // Not sure if line 74 works

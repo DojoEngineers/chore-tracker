@@ -12,9 +12,11 @@ import { ParentNavBar } from "../../components/ParentNavBar.jsx"
 import utc from 'dayjs/plugin/utc';
 import {DueTodayIcon} from "../../components/icons/DueTodayIcon"
 import {CheckIcon} from "../../components/icons/CheckIcon"
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 
-dayjs.extend(isBetween);
-dayjs.extend(utc);
+dayjs.extend(isBetween)
+dayjs.extend(utc)
+dayjs.extend(isSameOrBefore)
 
 export const KidDetails = ({route}) => {
 
@@ -30,8 +32,8 @@ export const KidDetails = ({route}) => {
             .then((res) => {
                 // Today's chores
                 const today = res.filter((chore) =>
-                    dayjs(chore.dueDate).local().isSame(dayjs(), 'day') &&
-                    ['incomplete', 'rejected'].includes(chore.stage)
+                    ['incomplete', 'rejected'].includes(chore.stage) &&
+                    dayjs(chore.dueDate).local().isSameOrBefore(dayjs().local(), 'day')
                 )
                 .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
 
@@ -86,7 +88,7 @@ export const KidDetails = ({route}) => {
                 showsVerticalScrollIndicator={true}
                 className="px-[16px] flex-1"
             >
-                <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
+                <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-1">
                     <View className="flex-row items-center w-full">
                         <DueTodayIcon/>
                         <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
@@ -108,11 +110,21 @@ export const KidDetails = ({route}) => {
                                         >
                                             {chore.title}
                                         </BrandText>
-                                        <BrandText
-                                            className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
-                                        >
-                                            Due by {dayjs(chore.dueDate).local().format("h:mma")}
-                                        </BrandText>
+
+                                        {dayjs(chore.dueDate).isBefore(dayjs())
+                                            ?
+                                                <BrandText
+                                                    className="text-[#FF5757] text-[12px]"
+                                                >
+                                                    Overdue!
+                                                </BrandText>
+                                            :
+                                                <BrandText
+                                                    className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
+                                                >
+                                                    Due by {dayjs(chore.dueDate).local().format("h:mma")}
+                                                </BrandText>
+                                        }
                                     </View>
 
                                     <View className="flex-row items-center mt-2">
@@ -160,7 +172,7 @@ export const KidDetails = ({route}) => {
                     }
                 </View>
 
-                <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
+                <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-1">
                     <View className="flex-row items-center w-full">
                         <DueTodayIcon/>
                         <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
@@ -232,7 +244,7 @@ export const KidDetails = ({route}) => {
                     }
                 </View>
 
-                <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
+                <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-1">
                     <View className="flex-row items-center w-full">
                         <CheckIcon/>
                         <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">

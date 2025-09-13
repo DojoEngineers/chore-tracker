@@ -12,8 +12,10 @@ import { useEffect, useState } from "react"
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {SquareIcon} from "../../components/icons/SquareIcon"
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 
-dayjs.extend(utc);
+dayjs.extend(utc)
+dayjs.extend(isSameOrBefore)
 
 export const Today = () => {
 
@@ -27,12 +29,12 @@ export const Today = () => {
     useEffect(() => {
         getChoresByParents(loggedInData.family.parents.map(p => p._id))
             .then((res) => {
-                const choresDueToday = res.filter((chore) =>
-                    dayjs(chore.dueDate).local().isSame(dayjs(), 'day') &&
-                    ['incomplete', 'rejected'].includes(chore.stage)
+                const filteredChores = res.filter(chore =>
+                    ['incomplete', 'rejected'].includes(chore.stage) &&
+                    dayjs(chore.dueDate).local().isSameOrBefore(dayjs().local(), 'day')
                 )
-                .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
-                setChores(choresDueToday)
+                .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf());
+                setChores(filteredChores)
             })
             .catch ((error) => {
                 console.log("getChoresByParents error:", error)
@@ -95,11 +97,22 @@ export const Today = () => {
                                     >
                                         {chore.worker?.name}
                                     </BrandText>
-                                    <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
-                                    >
-                                        Due by {dayjs(chore.dueDate).format("h:mma")}
-                                    </BrandText>
+
+                                    {dayjs(chore.dueDate).isBefore(dayjs())
+                                        ?
+                                            <BrandText
+                                                className="text-[#FF5757] text-[10px]"
+                                            >
+                                                Overdue! Due by {dayjs(chore.dueDate).format("MMMM D [at] h:mma")}
+                                            </BrandText>
+                                        :
+                                            <BrandText
+                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
+                                            >
+                                                Due by {dayjs(chore.dueDate).format("h:mma")}
+                                            </BrandText>
+                                    }
+
                                 </View>
                                 <View className="justify-center">
                                     <ForwardArrow />

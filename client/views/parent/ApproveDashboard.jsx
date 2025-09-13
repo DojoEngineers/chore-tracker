@@ -152,7 +152,7 @@ export const ApproveDashboard = () => {
                     showsVerticalScrollIndicator={true}
                     className="flex-1"
                 >
-                    <View className="py-[25px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] my-3 mx-[16px]">
+                    <View className="py-[25px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] my-3 mx-[16px] flex-1">
                         <View className="flex-row items-center justify-between w-full">
                             <View className="items-center flex-row">
                                 <ApproveAndRejectIcon/>

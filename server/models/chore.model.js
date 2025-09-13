@@ -44,6 +44,10 @@ const choreSchema = new mongoose.Schema({
         type: Date,
         required: false
     },
+    dateEdited: {
+        type: Date,
+        required: false
+    },
     stage: {
         type: String,
         enum: ["incomplete", "complete", "approved", "rejected"],
@@ -68,7 +72,11 @@ const choreSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    comments: {
+    parentComments: {
+        type: String,
+        required: false
+    },
+    kidComments: {
         type: String,
         required: false
     },
