@@ -1,7 +1,7 @@
-import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
+import { Keyboard, Modal, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { useNavigation } from "@react-navigation/native"
-import { verifyPassword } from "../../services/user.service"
+import { updateUser, verifyPassword } from "../../services/user.service"
 import Toast from "react-native-toast-message"
 import { useState } from "react"
 import { useLogin } from "../../context/UserContext"
@@ -11,14 +11,16 @@ import { PrimaryButton } from "../../components/PrimaryButton"
 import { BottomLink } from "../../components/BottomLink"
 import { PasswordInput } from "../../components/PasswordInput"
 import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottomRightSquiggle"
+import { CloseIcon } from "../../components/icons/CloseIcon"
 
 export const VerifyPassword = ({route}) => {
 
     const [password, setPassword] = useState()
     const [ apiErrors, setApiErrors ] = useState({})
+    const [modalVisible, setModalVisible] = useState(false)
 
     const navigation = useNavigation()
-    const {loggedInData} = useLogin()
+    const {loggedInData, logout} = useLogin()
     const {deleteAccount = false} = route.params
 
     const handleSubmit = () => {
@@ -27,7 +29,7 @@ export const VerifyPassword = ({route}) => {
             .then(res => {
                 if (res) {
                     if (deleteAccount) {
-                        navigation.navigate("DeleteAccount")
+                        setModalVisible(true)
                     }
                     else {
                         navigation.navigate("SetPassword", {username})
@@ -45,6 +47,29 @@ export const VerifyPassword = ({route}) => {
                 Toast.show({
                     type: 'error',
                     text1: "Unable to verify password."
+                })
+            })
+    }
+
+    const handleDelete = () => {
+        updateUser({isActive: false})
+            .then( () => { 
+                Toast.show({
+                    type: 'success',
+                    text1: "Account successfully deleted!"
+                })
+                logout()
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'StartingPage', params: {animationType: "slide_from_left"}}]
+                })
+            })
+            .catch( error => {
+                console.log("updateUser error:", error)
+                setApiErrors(prev => ({...prev, updateUser: "Unable to delete account."}))
+                Toast.show({
+                    type: 'error',
+                    text1: "Unable to delete account."
                 })
             })
     }
@@ -69,10 +94,10 @@ export const VerifyPassword = ({route}) => {
                     </View>
 
                     <View className="items-center mb-6 px-2">
-                        <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
+                        <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px] text-center">
                             {deleteAccount
                             ?
-                                "Password verification is required before deleting your account."
+                                "Password verification is required before deleting your account.\n WARNING! This cannot be undone."
                             :
                                 "To change your password, enter your current password below."
                             }
@@ -82,6 +107,12 @@ export const VerifyPassword = ({route}) => {
                     {apiErrors.verifyPassword && (
                         <BrandText className="text-red-500 text-center">
                             {apiErrors.verifyPassword}
+                        </BrandText>
+                    )}
+
+                    {apiErrors.updateUser && (
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.updateUser}
                         </BrandText>
                     )}
 
@@ -107,6 +138,47 @@ export const VerifyPassword = ({route}) => {
                         <BottomLink onPress={() => navigation.navigate('ForgotPassword')} text="Forgot Password? " link="Reset Now" />
                     </View>
                 </View>
+
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View
+                        className="flex-1 justify-center items-center"
+                        style={{backgroundColor:  'rgba(68, 73, 85, 0.5)'}}
+                    >
+                        <View className="bg-[#ECEDEE] dark:bg-[#454954] p-[16px] rounded-xl w-[250px]">
+                            <View className="flex-row items-center">
+                                <Pressable
+                                    hitSlop={20}
+                                    className="pe-4 me-6"
+                                    onPress={() => setModalVisible(false)}
+                                >
+                                    <CloseIcon />
+                                </Pressable>
+                                <BrandBoldText className="dark:text-darkPrimaryText text-[#111215] text-[16px]">
+                                    Confirm Delete
+                                </BrandBoldText>
+                            </View>
+    
+                            <BrandText className="dark:text-darkPrimaryText text-[#111215] text-[16px] my-4">
+                                Are you sure you want to delete your account?
+                            </BrandText>
+    
+                            <Pressable
+                                className="p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full"
+                                onPress={handleDelete}
+                            >
+                                <BrandBoldText className="text-darkPrimaryText text-[16px]">
+                                    Delete
+                                </BrandBoldText>
+                            </Pressable>
+                        </View>
+                    </View>
+                </Modal>
+
             </View>
         </TouchableWithoutFeedback>
     )

@@ -69,7 +69,7 @@ export const Kids = () => {
                                 showsVerticalScrollIndicator={true}
                                 className="flex-1"
                             >
-                                {loggedInData.family.children.map((kid) => (
+                                {kids.map((kid) => (
                                     <View key={kid._id} className="mb-8 items-center">
                                         <Pressable
                                             onPress={() => {navigation.navigate("KidDetails", {kid})}}

@@ -154,7 +154,7 @@ export const registerUser = async (req, res) => {
             console.log("updated family", updatedFamily)
         }
         sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
-        res.json({ success: true, message: 'Email sent!' });
+        res.json({ success: true, message: 'Email sent!', user });
     }
     catch (error) {
         console.log("register error", error)
@@ -370,8 +370,10 @@ export const updateUser = async (req, res) => {
     console.log("In user controller")
     console.log("user REQ.body", req.body)
     try {
+        const id = req.body.id || req.user.id
+
         const editedUser = await User.findByIdAndUpdate(
-            req.user.id,
+            id,
             req.body,
             { new: true, runValidators: true }
         );

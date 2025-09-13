@@ -14,7 +14,7 @@ dayjs.extend(utc)
 
 export const RejectComments = ({route}) => {
 
-    const [comments, setComments] = useState("")
+    const [parentComments, setParentComments] = useState("")
     const [apiErrors, setApiErrors] = useState({})
 
     const {_id, title} = route.params
@@ -24,7 +24,7 @@ export const RejectComments = ({route}) => {
     const placeholderColor = colorScheme === 'dark' ? '#D0D1D4' : '#737780';
 
     const handleReject = () => {
-        updateChore({_id, stage: "rejected", dateRejected: dayjs().toISOString()}, comments)
+        updateChore({_id, stage: "rejected", dateRejected: dayjs().toISOString(), parentComments})
             .then(() => {
                 Toast.show({
                     type: 'success',
@@ -75,8 +75,8 @@ export const RejectComments = ({route}) => {
                     <TextInput
                         className="dark:border dark:border-[#D0D1D4] rounded-lg p-3 bg-[#ECEDEE] dark:bg-transparent
                             text-lightPrimaryText dark:text-darkPrimaryText h-[103px] mb-[40px] font-nunito text-[15px]"
-                        value={comments}
-                        onChangeText={setComments}
+                        value={parentComments}
+                        onChangeText={setParentComments}
                         placeholder="Add comments here"
                         placeholderTextColor={placeholderColor}
                         multiline={true}

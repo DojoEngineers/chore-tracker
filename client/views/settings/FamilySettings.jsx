@@ -11,6 +11,9 @@ export const FamilySettings = () => {
     const navigation = useNavigation()
     const {loggedInData} = useLogin()
 
+    const parents = loggedInData.family.parents.filter(parent => parent.isActive)
+    const kids = loggedInData.family.children.filter(kid => kid.isActive)
+
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
 
@@ -28,7 +31,7 @@ export const FamilySettings = () => {
 
                     <View className="flex-1 ms-[34px]">
                         <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                            Add Family Member
+                            Manage Family
                         </BrandBoldText>
                     </View>
                 </View>
@@ -47,12 +50,21 @@ export const FamilySettings = () => {
                     <BrandBoldText className="text-white text-[20px]">Add a kid</BrandBoldText>
                 </Pressable>
 
-                {loggedInData.family.parents.length <= 2 &&
+                {parents.length <= 2 &&
                     <Pressable
-                        className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px]"
+                        className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px] mb-6"
                         onPress={() => navigation.navigate('AddFamilyMember', {isParent:true})}
                     >
                         <BrandBoldText className="text-white text-[20px]">Add a second parent</BrandBoldText>
+                    </Pressable>
+                }
+
+                {kids.length >= 1 &&
+                    <Pressable
+                        className="p-[10px] rounded-full items-center justify-center bg-[#F40000] w-full h-[56px]"
+                        onPress={() => navigation.navigate('DeleteKid', {kids})}
+                    >
+                        <BrandBoldText className="text-white text-[20px]">Delete a kid</BrandBoldText>
                     </Pressable>
                 }
             </View>

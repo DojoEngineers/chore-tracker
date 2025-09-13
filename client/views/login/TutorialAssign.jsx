@@ -41,11 +41,7 @@ export const TutorialAssign = () => {
                 </BrandBoldText>
             </View>
 
-            <View className="relative w-full">
-                <View className="absolute bottom-0 left-0 z-0">
-                    <BottomLeftSquiggle/>
-                </View>
-
+            <View className="w-full">
                 <View className="px-[16px] w-full mb-[75px] items-center">
                     <PrimaryButton onPress={() => navigation.navigate('TutorialTrack')} label="Continue" />
                     

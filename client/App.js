@@ -35,6 +35,7 @@ import { ViewChore } from "./views/parent/ViewChore";
 import { Today } from "./views/parent/Today";
 import { ApproveDashboard } from "./views/parent/ApproveDashboard";
 import { RejectComments } from "./views/parent/RejectComments";
+import { DeleteKid } from "./views/settings/DeleteKid";
 
 export default function App() {
 
@@ -86,6 +87,7 @@ export default function App() {
               <Stack.Screen name="Today" component={Today} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="ApproveDashboard" component={ApproveDashboard} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="RejectComments" component={RejectComments}></Stack.Screen>
+              <Stack.Screen name="DeleteKid" component={DeleteKid}></Stack.Screen>
             </Stack.Navigator>
           </NavigationContainer>
         </GlobalStyling>

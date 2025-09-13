@@ -29,7 +29,7 @@ export const AddFamilyMember = ({route}) => {
 
     const navigation = useNavigation()
     const { isParent } = route.params
-    const {loggedInData} = useLogin()
+    const {loggedInData, setLoggedInData} = useLogin()
 
     const handleChange = (name, value) => {
         setFormData(prev => ({...prev, [name]: value}))
@@ -81,10 +81,18 @@ export const AddFamilyMember = ({route}) => {
                     })
                 } else {
                     register({name, username, isParent, family: loggedInData.family})
-                        .then( () => { 
+                        .then( (res) => { 
                             Toast.show({
                                 type: 'success',
                                 text1: "Account created successfully!"
+                            })
+                            setLoggedInData(prev => {
+                                const currentFamily = prev.family || { parents: [], children: [] }
+                                if (isParent) {
+                                    return {...prev, family: {...currentFamily, parents: [...currentFamily.parents, res.user]}}
+                                } else {
+                                    return {...prev, family: {...currentFamily, children: [...currentFamily.children, res.user]}}
+                                }
                             })
                             navigation.navigate('ParentDashboard', {animationType: "slide_from_left"})
                         })

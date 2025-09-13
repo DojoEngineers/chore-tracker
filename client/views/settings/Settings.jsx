@@ -36,7 +36,7 @@ export const Settings = () => {
                 <View className="flex-row mt-[75px] items-center ps-2 mb-4">
                     <Pressable
                         hitSlop={20}
-                        onPress={() => navigation.navigate(loggedInData.isParent ? "ParentDashboard" : "KidDashboard", {animationType: "fade_from_bottom"})}
+                        onPress={() => navigation.replace(loggedInData.isParent ? "ParentDashboard" : "KidDashboard", {animationType: "fade_from_bottom"})}
                     >
                         <BackArrow/>
                     </Pressable>
@@ -47,7 +47,7 @@ export const Settings = () => {
                 </View>
                 <SettingsButton icon={EditProfileIcon} text="Edit Profile" onPress={() => navigation.navigate("EditProfile")}/>
                 {loggedInData?.isParent &&
-                    <SettingsButton icon={FamilySettingsIcon} text="Add Family Member" onPress={() => navigation.navigate("FamilySettings")}/>
+                    <SettingsButton icon={FamilySettingsIcon} text="Manage Family" onPress={() => navigation.navigate("FamilySettings")}/>
                 }
                 <SettingsButton icon={ChangePasswordIcon} text="Change Password" onPress={() => navigation.navigate("VerifyPassword", {deleteAccount: false})}/>
 
