@@ -65,13 +65,13 @@ export const ViewChore = ({route}) => {
     }
 
     const handleApprove = (_id) => {
-        updateChore({_id, stage: "approved", dateApproved: dayjs().toISOString()})
+        updateChore({_id, stage: "approved", stageDate: dayjs().toISOString()})
             .then(() => {
                 Toast.show({
                     type: 'success',
                     text1: "Chore approved!"
                 })
-                navigation.goBack()
+                navigation.replace("ParentDashboard", {animationType: "slide_from_left"})
             })
             .catch((error) => {
                 console.log("approveChore error:", error)
@@ -165,18 +165,17 @@ export const ViewChore = ({route}) => {
                             adjustsFontSizeToFit={true}
                             minimumFontScale={0.5}
                         >
-                            {chore.stage === "incomplete" ?
-                                    "Incomplete"
-                                : chore.stage === "complete" ?
-                                    "Completed on " + dayjs(chore.dateCompleted).local().format("dddd, MMMM D [at] h:mma")
-                                : chore.stage === "approved" ?
-                                    "Approved on " + dayjs(chore.dateApproved).local().format("dddd, MMMM D [at] h:mma")
-                                : chore.stage === "rejectedReassigned" ?
-                                    "Rejected and reassigned on " + dayjs(chore.dateRejected).local().format("dddd, MMMM D [at] h:mma")
-                                :
-                                    "Rejected on " + dayjs(chore.dateRejected).local().format("dddd, MMMM D [at] h:mma")
+                            {chore.stage === "incomplete" ? "Incomplete"
+                                : chore.stage === "complete" ? "Completed on "
+                                : chore.stage === "approved" ? "Approved on "
+                                : chore.stage === "rejectedReassigned" ? "Rejected and reassigned on "
+                                : "Rejected on "
                             }
-                            {dayjs(chore.dueDate).isBefore(dayjs()) && " • Overdue"}
+                            {chore.stage !== "incomplete"
+                                ? dayjs(chore.stageDate).local().format("MMMM D [at] h:mma")
+                                : dayjs(chore.dueDate).isBefore(dayjs()) ? " • Overdue"
+                                : ""
+                            }
                         </BrandText>
                     </View>
 
@@ -225,7 +224,7 @@ export const ViewChore = ({route}) => {
                 </View>
             </View>
 
-            {chore.stage === "incomplete" || chore.stage === "rejectedReassigned" && 
+            {(chore.stage === "incomplete" || chore.stage === "rejectedReassigned") && 
                 <View className="mb-12">
 
                     <Pressable

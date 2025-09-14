@@ -47,12 +47,7 @@ export const KidDetails = ({route}) => {
                 // Completed chores
                 const completed = res
                 .filter(chore => ['complete', 'approved'].includes(chore.stage))
-                .sort((a, b) => {
-                    const aDate = a.dateApproved || a.dateCompleted
-                    const bDate = b.dateApproved || b.dateCompleted
-
-                    return dayjs(bDate).valueOf() - dayjs(aDate).valueOf()
-                })
+                .sort((a, b) => dayjs(b.stageDate).valueOf() - dayjs(a.stageDate).valueOf())
 
                 // Set chores in state
                 setChores(prev => ({...prev, today, thisWeek, completed}))
@@ -275,12 +270,7 @@ export const KidDetails = ({route}) => {
                                         <BrandText
                                             className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
                                         >
-                                            { chore.stage === "complete"
-                                                ?
-                                                    dayjs(chore.dateCompleted).local().format("MMMM D")
-                                                :
-                                                    dayjs(chore.dateApproved).local().format("MMMM D")
-                                            }
+                                            {dayjs(chore.stageDate).local().format("MMMM D")}
                                         </BrandText>
                                     </View>
 

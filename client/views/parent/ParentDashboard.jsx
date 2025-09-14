@@ -59,10 +59,7 @@ export const ParentDashboard = () => {
                 const twentyFourHoursAgo = now.subtract(24, "hour")
                 
                 const recentChores = res.filter((chore) =>
-                    (chore.createdAt && dayjs(chore.createdAt).local().isAfter(twentyFourHoursAgo)) ||
-                    (chore.dateCompleted && dayjs(chore.dateCompleted).local().isAfter(twentyFourHoursAgo)) ||
-                    (chore.dateRejected && dayjs(chore.dateRejected).local().isAfter(twentyFourHoursAgo)) ||
-                    (chore.dateApproved && dayjs(chore.dateApproved).local().isAfter(twentyFourHoursAgo)) ||
+                    dayjs(chore.stageDate).local().isAfter(twentyFourHoursAgo) ||
                     (chore.dateEdited && dayjs(chore.dateEdited).local().isAfter(twentyFourHoursAgo)) ||
                     (chore.dueDate && dayjs(chore.dueDate).local().isBefore(now) && dayjs(chore.dueDate).local().isAfter(twentyFourHoursAgo))
                 )
@@ -70,13 +67,16 @@ export const ParentDashboard = () => {
                 const filteredChores = recentChores.map((chore) => {
                     const due = dayjs(chore.dueDate).local()
                     const stages = [
-                        chore.createdAt ? { stage: "Assigned", date: dayjs(chore.createdAt).local() } : null,
-                        chore.dateCompleted ? { stage: "Awaiting review", date: dayjs(chore.dateCompleted).local() } : null,
-                        chore.dateApproved ? { stage: "Approved", date: dayjs(chore.dateApproved).local() } : null,
-                        chore.dateRejected && chore.stage === "rejectedUnassigned" ? { stage: "Rejected", date: dayjs(chore.dateRejected).local() } : null,
-                        chore.dateRejected && chore.stage === "rejectedReassigned" ? { stage: "Rejected and reassigned", date: dayjs(chore.dateRejected).local() } : null,
+                        chore.stage === "incomplete" ? { stage: "Assigned", date: dayjs(chore.stageDate).local() } : null,
+                        chore.stage === "complete" ? { stage: "Awaiting review", date: dayjs(chore.stageDate).local() } : null,
+                        chore.stage === "approved" ? { stage: "Approved", date: dayjs(chore.stageDate).local() } : null,
+                        chore.stage === "rejectedUnassigned" ? { stage: "Rejected", date: dayjs(chore.stageDate).local() } : null,
+                        chore.stage === "rejectedReassigned" ? { stage: "Rejected and reassigned", date: dayjs(chore.stageDate).local() } : null,
                         chore.dateEdited ? { stage: "Edited", date: dayjs(chore.dateEdited).local() } : null,
-                        (due.isBefore(now) && due.isAfter(twentyFourHoursAgo)) ? { stage: "Became overdue", date: due } : null
+                        (["incomplete","rejectedUnassigned","rejectedReassigned"].includes(chore.stage)
+                            && due.isBefore(now) && due.isAfter(twentyFourHoursAgo))
+                            ? { stage: "Became overdue", date: due }
+                            : null
                     ].filter(item => item && item.date)
 
                     const mostRecent = stages.reduce((a, b) => (a.date.isAfter(b.date) ? a : b));
@@ -201,11 +201,20 @@ export const ParentDashboard = () => {
                                         </BrandText>
                                     </BrandText>
 
-                                    <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
-                                    >
-                                        Due by {dayjs(chore.dueDate).format("h:mma")}
-                                    </BrandText>
+                                    {dayjs(chore.dueDate).isBefore(dayjs())
+                                        ?
+                                            <BrandText
+                                                className="text-[#FF5757] text-[10px]"
+                                            >
+                                                Overdue! Due by {dayjs(chore.dueDate).format("h:mma")}
+                                            </BrandText>
+                                        :
+                                            <BrandText
+                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
+                                            >
+                                                Due by {dayjs(chore.dueDate).format("h:mma")}
+                                            </BrandText>
+                                    }
                                     
                                 </View>
 
