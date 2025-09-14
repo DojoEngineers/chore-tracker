@@ -32,25 +32,17 @@ const choreSchema = new mongoose.Schema({
         type:Number,
         required: false
     },
-    dateCompleted: {
-        type: Date,
-        required: false
-    },
-    dateApproved: {
-        type: Date,
-        required: false
-    },
-    dateRejected: {
-        type: Date,
-        required: false
-    },
     dateEdited: {
+        type: Date,
+        required: false
+    },
+    stageDate: {
         type: Date,
         required: false
     },
     stage: {
         type: String,
-        enum: ["incomplete", "complete", "approved", "rejected"],
+        enum: ["incomplete", "complete", "approved", "rejectedUnassigned", "rejectedReassigned"],
         default: "incomplete",
         required: [true, "must have stage."]
     },
@@ -74,11 +66,13 @@ const choreSchema = new mongoose.Schema({
     },
     parentComments: {
         type: String,
-        required: false
+        required: false,
+        maxLength: [100, `Comments cannot exceed 100 characters.`]
     },
     kidComments: {
         type: String,
-        required: false
+        required: false,
+        maxLength: [100, `Comments cannot exceed 100 characters.`]
     },
     templateId: {
         type: String,

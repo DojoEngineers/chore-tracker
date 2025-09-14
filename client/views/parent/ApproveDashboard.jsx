@@ -34,25 +34,11 @@ export const ApproveDashboard = () => {
                 const twentyFourHoursAgo = dayjs().subtract(24, "hour")
 
                 const recentChores = res.filter(chore =>
-                    ['rejected', 'approved'].includes(chore.stage) &&
-                    (chore.dateRejected && dayjs(chore.dateRejected).isAfter(twentyFourHoursAgo)) ||
-                    (chore.dateApproved && dayjs(chore.dateApproved).isAfter(twentyFourHoursAgo))
+                    ['rejectedReassigned', 'rejectedUnassigned', 'approved'].includes(chore.stage) &&
+                    dayjs(chore.stageDate).isAfter(twentyFourHoursAgo)
                 )
-
-                const filteredRecentActivityChores = recentChores.map((chore) => {
-                    const stages = [
-                        { stage: "Approved", date: chore.dateApproved },
-                        { stage: "Rejected", date: chore.dateRejected },
-                    ].filter(item => item.date && dayjs(item.date).isAfter(twentyFourHoursAgo))
-
-                    const mostRecent = stages.reduce((a, b) =>
-                        dayjs(a.date).isAfter(dayjs(b.date)) ? a : b
-                    )
-
-                    return {...chore, recentStage: mostRecent.stage, recentDate: mostRecent.date}
-                })
-                .sort((a, b) => dayjs(b.recentDate).valueOf() - dayjs(a.recentDate).valueOf())
-                setRecentActivityChores(filteredRecentActivityChores)
+                .sort((a, b) => dayjs(b.stageDate).valueOf() - dayjs(a.stageDate).valueOf())
+                setRecentActivityChores(recentChores)
             })
             .catch((error) => {
                 console.log("getChoresByParents error:", error)
@@ -183,7 +169,7 @@ export const ApproveDashboard = () => {
                                             <BrandText
                                                 className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
                                             >
-                                                {dayjs(chore.recentDate).fromNow()}
+                                                {dayjs(chore.stageDate).fromNow()}
                                             </BrandText>
                                         </View>
                                         <View className="flex-row items-center mt-2">
@@ -201,11 +187,12 @@ export const ApproveDashboard = () => {
                                             <BrandText
                                                 className={`
                                                     text-[12px]
-                                                    ${chore.recentStage === "Approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
-                                                    ${chore.recentStage === "Rejected" ? "text-[#FF5757]" : ""}
+                                                    ${chore.stage === "approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : "text-[#FF5757]"}
                                                 `}
                                             >
-                                                {chore.recentStage}
+                                                {chore.stage === "approved" ? "Approved"
+                                                    : chore.stage === "rejectedReassigned" ? "Rejected and reassigned"
+                                                    : "Rejected"}
                                             </BrandText>
                                         </View>
                                     </Pressable>

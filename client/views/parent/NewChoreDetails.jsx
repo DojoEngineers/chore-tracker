@@ -18,9 +18,9 @@ import { CameraIcon } from "../../components/icons/CameraIcon"
 import { ClockIcon } from "../../components/icons/ClockIcon"
 import { WriteIcon } from "../../components/icons/WriteIcon"
 import { BackArrow } from "../../components/icons/BackArrow"
-
 import { DateIcon } from "../../components/icons/DateIcon"
 import { AssignedToIcon } from "../../components/icons/AssignedToIcon"
+import dayjs from "dayjs"
 
 
 //NOTE: familyData in userContext is currently empty. Right now, I'm getting the data from inside of loggedInData.family
@@ -221,7 +221,7 @@ export const NewChoreDetails = ({ route }) => {
             );
             console.log("day", dayValue)
             const allData = {
-                title: title, details: formData.details, creator: loggedInData._id,
+                title: title, details: formData.details, creator: loggedInData._id, stageDate: dayjs().toISOString(),
                 worker: childValue, dueDate: dateTime, needsPics: requirePhotos, repeat: repeatValue, day: dayValue
             }
             addChore(allData)
