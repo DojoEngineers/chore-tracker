@@ -50,7 +50,7 @@ const choreSchema = new mongoose.Schema({
     },
     stage: {
         type: String,
-        enum: ["incomplete", "complete", "approved", "rejected"],
+        enum: ["incomplete", "complete", "approved", "rejectedUnassigned", "rejectedReassigned"],
         default: "incomplete",
         required: [true, "must have stage."]
     },
