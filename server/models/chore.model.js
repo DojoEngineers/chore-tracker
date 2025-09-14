@@ -66,11 +66,13 @@ const choreSchema = new mongoose.Schema({
     },
     parentComments: {
         type: String,
-        required: false
+        required: false,
+        maxLength: [100, `Comments cannot exceed 100 characters.`]
     },
     kidComments: {
         type: String,
-        required: false
+        required: false,
+        maxLength: [100, `Comments cannot exceed 100 characters.`]
     },
     templateId: {
         type: String,

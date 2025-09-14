@@ -124,7 +124,7 @@ export const DeleteKid = ({route}) => {
                     className="flex-1 justify-center items-center"
                     style={{backgroundColor:  'rgba(68, 73, 85, 0.5)'}}
                 >
-                    <View className="bg-[#ECEDEE] dark:bg-[#454954] p-[16px] rounded-xl w-[250px]">
+                    <View className="bg-[#ECEDEE] dark:bg-[#454954] p-[16px] rounded-3xl w-[250px]">
                         <View className="flex-row items-center">
                             <Pressable
                                 hitSlop={20}

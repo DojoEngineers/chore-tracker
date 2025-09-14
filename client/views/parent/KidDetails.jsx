@@ -46,7 +46,7 @@ export const KidDetails = ({route}) => {
 
                 // Completed chores
                 const completed = res
-                .filter(chore => ['complete', 'approved'].includes(chore.stage))
+                .filter(chore => ['complete', 'approved', 'rejectedUnassigned'].includes(chore.stage))
                 .sort((a, b) => dayjs(b.stageDate).valueOf() - dayjs(a.stageDate).valueOf())
 
                 // Set chores in state
@@ -249,7 +249,7 @@ export const KidDetails = ({route}) => {
                     <View className="flex-row items-center w-full">
                         <CheckIcon/>
                         <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
-                            Completed chore history
+                            Chore history
                         </BrandBoldText>
                     </View>
 
@@ -291,9 +291,12 @@ export const KidDetails = ({route}) => {
                                                 text-[12px] 
                                                 ${chore.stage === "complete" ? "text-[#FB943C] dark:text-[#FEDBB1]" : ""}
                                                 ${chore.stage === "approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
+                                                ${chore.stage === "rejectedUnassigned" ? "text-[#F40000]" : ""}
                                             `}
                                         >
-                                            {chore.stage === "complete" ? "Awaiting Review" : "Approved"}
+                                            {chore.stage === "complete" ? "Awaiting Review"
+                                            : chore.stage === "approved" ? "Approved"
+                                            : "Rejected"}
                                         </BrandText>
 
                                     </View>
