@@ -305,13 +305,6 @@ export const ParentDashboard = () => {
                                         </Pressable>
                                     ))
 
-                                : loading ?
-                                    <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
-                                    >
-                                        {loading}
-                                    </BrandText>
-
                                 :
                                     <BrandText
                                         className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
@@ -328,7 +321,7 @@ export const ParentDashboard = () => {
                             {loading}
                         </BrandText>
 
-                    :
+                    : !apiErrors.getChoresByParents ?
                         <View className="flex-1 mt-4">
                             <View className="p-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
                                 <View className="flex-row">
@@ -362,6 +355,8 @@ export const ParentDashboard = () => {
                                 </BrandText>
                             </View>
                         </View>
+                    
+                    : <View></View>
                 }
 
             </ScrollView>
