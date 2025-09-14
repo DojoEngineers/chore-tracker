@@ -32,19 +32,11 @@ const choreSchema = new mongoose.Schema({
         type:Number,
         required: false
     },
-    dateCompleted: {
-        type: Date,
-        required: false
-    },
-    dateApproved: {
-        type: Date,
-        required: false
-    },
-    dateRejected: {
-        type: Date,
-        required: false
-    },
     dateEdited: {
+        type: Date,
+        required: false
+    },
+    stageDate: {
         type: Date,
         required: false
     },

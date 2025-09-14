@@ -24,7 +24,6 @@ import { FamilySettings } from "./views/settings/FamilySettings";
 import { AddFamilyMember } from "./views/settings/AddFamilyMember";
 import { NewChore } from "./views/parent/NewChore";
 import { NewChoreDetails } from "./views/parent/NewChoreDetails";
-import { DeleteAccount } from "./views/settings/DeleteAccount";
 import { VerifyPassword } from "./views/settings/VerifyPassword";
 import { Help } from "./views/settings/Help";
 import { Terms } from "./views/settings/Terms";
@@ -76,7 +75,6 @@ export default function App() {
               <Stack.Screen name="AddFamilyMember" component={AddFamilyMember}></Stack.Screen>
               <Stack.Screen name="NewChore" component={NewChore} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="NewChoreDetails" component={NewChoreDetails}></Stack.Screen>
-              <Stack.Screen name="DeleteAccount" component={DeleteAccount}></Stack.Screen>
               <Stack.Screen name="VerifyPassword" component={VerifyPassword}></Stack.Screen>
               <Stack.Screen name="Help" component={Help}></Stack.Screen>
               <Stack.Screen name="Terms" component={Terms}></Stack.Screen>

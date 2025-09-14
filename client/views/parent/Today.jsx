@@ -30,7 +30,7 @@ export const Today = () => {
         getChoresByParents(loggedInData.family.parents.map(p => p._id))
             .then((res) => {
                 const filteredChores = res.filter(chore =>
-                    ['incomplete', 'rejected'].includes(chore.stage) &&
+                    ['incomplete', 'rejectedReassigned'].includes(chore.stage) &&
                     dayjs(chore.dueDate).local().isSameOrBefore(dayjs().local(), 'day')
                 )
                 .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf());

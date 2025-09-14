@@ -171,6 +171,8 @@ export const ViewChore = ({route}) => {
                                     "Completed on " + dayjs(chore.dateCompleted).local().format("dddd, MMMM D [at] h:mma")
                                 : chore.stage === "approved" ?
                                     "Approved on " + dayjs(chore.dateApproved).local().format("dddd, MMMM D [at] h:mma")
+                                : chore.stage === "rejectedReassigned" ?
+                                    "Rejected and reassigned on " + dayjs(chore.dateRejected).local().format("dddd, MMMM D [at] h:mma")
                                 :
                                     "Rejected on " + dayjs(chore.dateRejected).local().format("dddd, MMMM D [at] h:mma")
                             }
@@ -223,7 +225,7 @@ export const ViewChore = ({route}) => {
                 </View>
             </View>
 
-            {chore.stage === "incomplete" && 
+            {chore.stage === "incomplete" || chore.stage === "rejectedReassigned" && 
                 <View className="mb-12">
 
                     <Pressable

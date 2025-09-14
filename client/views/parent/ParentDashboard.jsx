@@ -73,9 +73,10 @@ export const ParentDashboard = () => {
                         chore.createdAt ? { stage: "Assigned", date: dayjs(chore.createdAt).local() } : null,
                         chore.dateCompleted ? { stage: "Awaiting review", date: dayjs(chore.dateCompleted).local() } : null,
                         chore.dateApproved ? { stage: "Approved", date: dayjs(chore.dateApproved).local() } : null,
-                        chore.dateRejected ? { stage: "Rejected", date: dayjs(chore.dateRejected).local() } : null,
+                        chore.dateRejected && chore.stage === "rejectedUnassigned" ? { stage: "Rejected", date: dayjs(chore.dateRejected).local() } : null,
+                        chore.dateRejected && chore.stage === "rejectedReassigned" ? { stage: "Rejected and reassigned", date: dayjs(chore.dateRejected).local() } : null,
                         chore.dateEdited ? { stage: "Edited", date: dayjs(chore.dateEdited).local() } : null,
-                        (due.isBefore(now) && due.isAfter(twentyFourHoursAgo)) ? { stage: "Became overdue", date: due } : null,
+                        (due.isBefore(now) && due.isAfter(twentyFourHoursAgo)) ? { stage: "Became overdue", date: due } : null
                     ].filter(item => item && item.date)
 
                     const mostRecent = stages.reduce((a, b) => (a.date.isAfter(b.date) ? a : b));
@@ -188,12 +189,13 @@ export const ParentDashboard = () => {
                                                 ${chore.stage === "incomplete" ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
                                                 ${chore.stage === "complete" ? "text-[#FB943C] dark:text-[#FEDBB1]" : ""}
                                                 ${chore.stage === "approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
-                                                ${chore.stage === "rejected" ? "text-[#FF5757]" : ""}
+                                                ${chore.stage === "rejectedUnassigned" || chore.stage === "rejectedReassigned" ? "text-[#FF5757]" : ""}
                                             `}
                                         >
                                             {chore.stage === "incomplete" ? "Incomplete"
                                                 : chore.stage === "complete" ? "Awaiting Review"
                                                 : chore.stage === "approved" ? "Approved"
+                                                : chore.stage === "rejectedReassigned" ? "Rejected and reassigned"
                                                 : "Rejected"
                                             }
                                         </BrandText>
@@ -274,12 +276,16 @@ export const ParentDashboard = () => {
                                                 <BrandText
                                                     className={`
                                                         text-[12px] 
-                                                        ${chore.recentStage === "Assigned" ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
-                                                        ${chore.recentStage === "Edited" ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
+                                                        ${chore.recentStage === "Assigned" 
+                                                            || chore.recentStage === "Edited"
+                                                            ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
                                                         ${chore.recentStage === "Awaiting review" ? "text-[#FB943C] dark:text-[#FEDBB1]" : ""}
                                                         ${chore.recentStage === "Approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
-                                                        ${chore.recentStage === "Rejected" ? "text-[#FF5757]" : ""}
-                                                        ${chore.recentStage === "Became overdue" ? "text-[#FF5757]" : ""}
+                                                        ${chore.recentStage === "Rejected"
+                                                            || chore.recentStage === "Rejected and reassigned"
+                                                            || chore.recentStage === "Became overdue"
+                                                            ? "text-[#FF5757]" : ""}
+
                                                     `}
                                                 >
                                                     {chore.recentStage}

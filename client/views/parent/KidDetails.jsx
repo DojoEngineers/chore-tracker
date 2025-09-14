@@ -32,7 +32,7 @@ export const KidDetails = ({route}) => {
             .then((res) => {
                 // Today's chores
                 const today = res.filter((chore) =>
-                    ['incomplete', 'rejected'].includes(chore.stage) &&
+                    ['incomplete', 'rejectedReassigned'].includes(chore.stage) &&
                     dayjs(chore.dueDate).local().isSameOrBefore(dayjs().local(), 'day')
                 )
                 .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
@@ -40,13 +40,19 @@ export const KidDetails = ({route}) => {
                 // Rest of the week chores (excluding today)
                 const thisWeek = res.filter((chore) =>
                     dayjs(chore.dueDate).local().isBetween(dayjs().add(1, 'day').startOf('day'), dayjs().endOf('week'), null, '[]') &&
-                    ['incomplete', 'rejected'].includes(chore.stage)
+                    ['incomplete', 'rejectedReassigned'].includes(chore.stage)
                 )
                 .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
 
                 // Completed chores
-                const completed = res.filter(chore => ['complete', 'approved'].includes(chore.stage))
-                .sort((a, b) => dayjs(b.dateCompleted).valueOf() - dayjs(a.dateCompleted).valueOf())
+                const completed = res
+                .filter(chore => ['complete', 'approved'].includes(chore.stage))
+                .sort((a, b) => {
+                    const aDate = a.dateApproved || a.dateCompleted
+                    const bDate = b.dateApproved || b.dateCompleted
+
+                    return dayjs(bDate).valueOf() - dayjs(aDate).valueOf()
+                })
 
                 // Set chores in state
                 setChores(prev => ({...prev, today, thisWeek, completed}))
@@ -143,10 +149,10 @@ export const KidDetails = ({route}) => {
                                             className={`
                                                 text-[12px] 
                                                 ${chore.stage === "incomplete" ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
-                                                ${chore.stage === "rejected" ? "text-[#FF5757]" : ""}
+                                                ${chore.stage === "rejectedReassigned" ? "text-[#FF5757]" : ""}
                                             `}
                                         >
-                                            {chore.stage === "incomplete" ? "Incomplete" : "Rejected"}
+                                            {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
                                         </BrandText>
 
                                     </View>
@@ -217,10 +223,10 @@ export const KidDetails = ({route}) => {
                                             className={`
                                                 text-[12px] 
                                                 ${chore.stage === "incomplete" ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
-                                                ${chore.stage === "rejected" ? "text-[#FF5757]" : ""}
+                                                ${chore.stage === "rejectedReassigned" ? "text-[#FF5757]" : ""}
                                             `}
                                         >
-                                            {chore.stage === "incomplete" ? "Incomplete" : "Rejected"}
+                                            {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
                                         </BrandText>
 
                                     </View>

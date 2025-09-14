@@ -34,15 +34,16 @@ export const ApproveDashboard = () => {
                 const twentyFourHoursAgo = dayjs().subtract(24, "hour")
 
                 const recentChores = res.filter(chore =>
-                    ['rejected', 'approved'].includes(chore.stage) &&
+                    ['rejectedReassigned', 'rejectedUnassigned', 'approved'].includes(chore.stage) &&
                     (chore.dateRejected && dayjs(chore.dateRejected).isAfter(twentyFourHoursAgo)) ||
                     (chore.dateApproved && dayjs(chore.dateApproved).isAfter(twentyFourHoursAgo))
                 )
 
                 const filteredRecentActivityChores = recentChores.map((chore) => {
                     const stages = [
-                        { stage: "Approved", date: chore.dateApproved },
-                        { stage: "Rejected", date: chore.dateRejected },
+                        chore.dateApproved ? { stage: "Approved", date: dayjs(chore.dateApproved).local() } : null,
+                        chore.dateRejected && chore.stage === "rejectedUnassigned" ? { stage: "Rejected", date: dayjs(chore.dateRejected).local() } : null,
+                        chore.dateRejected && chore.stage === "rejectedReassigned" ? { stage: "Rejected and reassigned", date: dayjs(chore.dateRejected).local() } : null
                     ].filter(item => item.date && dayjs(item.date).isAfter(twentyFourHoursAgo))
 
                     const mostRecent = stages.reduce((a, b) =>
@@ -202,7 +203,9 @@ export const ApproveDashboard = () => {
                                                 className={`
                                                     text-[12px]
                                                     ${chore.recentStage === "Approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
-                                                    ${chore.recentStage === "Rejected" ? "text-[#FF5757]" : ""}
+                                                    ${chore.recentStage === "rejectedUnassigned"
+                                                        || chore.recentStage === "rejectedReassigned"
+                                                        ? "text-[#FF5757]" : ""}
                                                 `}
                                             >
                                                 {chore.recentStage}
