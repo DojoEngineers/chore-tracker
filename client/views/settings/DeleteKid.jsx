@@ -103,6 +103,11 @@ export const DeleteKid = ({route}) => {
                                     >
                                         {kid.name}
                                 </BrandBoldText>
+                                <BrandText
+                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] text-center"
+                                >
+                                    {kid.username}
+                                </BrandText>
                             </View>
                         ))}
                     </ScrollView>

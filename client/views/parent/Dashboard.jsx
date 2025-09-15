@@ -18,12 +18,13 @@ import { RecentActivityIcon } from "../../components/icons/RecentActivityIcon"
 import relativeTime from "dayjs/plugin/relativeTime";
 import { LargeSquareIcon } from "../../components/icons/LargeSquareIcon"
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import { KidNavBar } from "../../components/KidNavBar"
 
-dayjs.extend(utc);
+dayjs.extend(utc)
 dayjs.extend(relativeTime)
 dayjs.extend(isSameOrBefore)
 
-export const ParentDashboard = () => {
+export const Dashboard = () => {
 
     const [viewCalendarChores, setViewCalendarChores] = useState(false)
     const [viewCalendar, setViewCalendar] = useState(false)
@@ -53,6 +54,7 @@ export const ParentDashboard = () => {
     useEffect(() => {
         getChoresByParents(loggedInData.family.parents.map(p => p._id))
             .then((res) => {
+
                 setAllChoresByParents(res)
 
                 const now = dayjs().local()
@@ -232,8 +234,16 @@ export const ParentDashboard = () => {
                         </BrandText>
                 }
 
-                {allChoresByParents.length > 0
+                {loading
                     ?
+                        <BrandText
+                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
+                        >
+                            {loading}
+                        </BrandText>
+                
+                
+                    : (allChoresByParents.length > 0 || apiErrors.getChoresByParents || !loggedInData.isParent) ?
                         <View className="p-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-1">
                             <View className="flex-row items-center justify-between w-full">
                                 <View className="items-center flex-row">
@@ -314,14 +324,7 @@ export const ParentDashboard = () => {
                             }
                         </View>
 
-                    : loading ?
-                        <BrandText
-                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
-                        >
-                            {loading}
-                        </BrandText>
-
-                    : !apiErrors.getChoresByParents ?
+                    :
                         <View className="flex-1 mt-4">
                             <View className="p-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
                                 <View className="flex-row">
@@ -342,8 +345,11 @@ export const ParentDashboard = () => {
 
                                 <View className="bg-[#DFE8E4] dark:bg-darkBg rounded-3xl py-4 px-5 ms-11">
                                     <BrandBoldText className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText">
-                                        Next step: 
-                                        <BrandText> Follow the prompts to add details to your chore. Once submitted, your kid will receive a notification with the chore details.</BrandText>
+                                        Next step:{" "}
+                                        <BrandText>
+                                            Follow the prompts to add details to your chore. Once submitted,
+                                            your kid will receive a notification with the chore details.
+                                        </BrandText>
                                     </BrandBoldText>
                                 </View>
                             </View>
@@ -355,13 +361,11 @@ export const ParentDashboard = () => {
                                 </BrandText>
                             </View>
                         </View>
-                    
-                    : <View></View>
                 }
 
             </ScrollView>
 
-            <ParentNavBar />
+            {loggedInData.isParent ? <ParentNavBar /> : <KidNavBar />}
         </View>
     )
 }

@@ -54,7 +54,7 @@ export const ViewChore = ({route}) => {
                     type: 'success',
                     text1: "Chore approved!"
                 })
-                navigation.replace("ParentDashboard", {animationType: "slide_from_left"})
+                navigation.replace("Dashboard", {animationType: "slide_from_left"})
             })
             .catch((error) => {
                 console.log("approveChore error:", error)

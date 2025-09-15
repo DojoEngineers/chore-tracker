@@ -13,23 +13,18 @@ import Toast from "react-native-toast-message"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottomRightSquiggle"
 
-const DEFAULT_FORM_VALUES = {
-    name: "",
-    username: ""
-}
-
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const NO_EMOJI_REGEX = /^[\p{L}\p{N}\p{P}\p{Zs}]*$/u
 
 export const EditProfile = () => {
 
-    const [ apiErrors, setApiErrors ] = useState({})
-    const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
-    const [formErrors, setFormErrors] = useState({})
-
     const navigation = useNavigation()
     const {logout, loggedInData, setLoggedInData} = useLogin()
-
+    
+    const [ apiErrors, setApiErrors ] = useState({})
+    const [formData, setFormData] = useState({name: loggedInData.name, username: loggedInData.username})
+    const [formErrors, setFormErrors] = useState({})
+    
     const handleChange = (name, value) => {
         setFormData(prev => ({...prev, [name]: value}))
         validateData(name, value)

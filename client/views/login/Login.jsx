@@ -35,12 +35,10 @@ export const Login = () => {
                 text1: "Login Successful!"
             })
             if (data.firstLogin) {
-                navigation.replace('TutorialAssign')
+                navigation.replace('TutorialPage1')
             }
-            if (data.isParent) {
-                navigation.replace('ParentDashboard')
-            } else {
-                navigation.replace('KidDashboard')
+            else {
+                navigation.replace('Dashboard')
             }
         } catch (error) {
             console.log('Failed to fetch user data', error)

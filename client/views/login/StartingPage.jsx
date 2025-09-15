@@ -23,11 +23,7 @@ export const StartingPage = () => {
                 type: 'success',
                 text1: "Login Successful!"
             })
-            if (data.isParent) {
-                navigation.replace('ParentDashboard')
-            } else {
-                navigation.replace('KidDashboard')
-            }
+            navigation.replace('Dashboard')
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }

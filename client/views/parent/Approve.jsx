@@ -11,7 +11,7 @@ import Toast from "react-native-toast-message"
 import dayjs from "dayjs"
 import {ApproveAndRejectIcon} from "../../components/icons/ApproveAndRejectIcon"
 
-export const ApproveDashboard = () => {
+export const Approve = () => {
 
     const [apiErrors, setApiErrors] = useState({})
     const [loading, setLoading] = useState("Loading chores...")
