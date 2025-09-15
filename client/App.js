@@ -11,16 +11,16 @@ import { StartingPage } from "./views/login/StartingPage";
 import { ParentRegistration } from "./views/login/ParentRegistration";
 import { UsernameVerification } from "./views/login/UsernameVerification";
 import { PasscodeVerification } from "./views/login/PasscodeVerification";
-import { TutorialAssign } from "./views/login/TutorialAssign";
-import { TutorialTrack } from "./views/login/TutorialTrack";
-import { TutorialResults } from "./views/login/TutorialResults";
+import { TutorialPage1 } from "./views/login/TutorialPage1";
+import { TutorialPage2 } from "./views/login/TutorialPage2";
+import { TutorialPage3 } from "./views/login/TutorialPage3";
 import { ForgotPassword } from "./views/login/ForgotPassword";
 import { SetPassword } from "./views/login/SetPassword";
 import { Login } from "./views/login/Login";
-import { ParentDashboard } from "./views/parent/ParentDashboard";
+import { Dashboard } from "./views/parent/Dashboard";
 import { Settings } from "./views/settings/Settings";
 import { EditProfile } from "./views/settings/EditProfile";
-import { FamilySettings } from "./views/settings/FamilySettings";
+import { ManageFamily } from "./views/settings/ManageFamily";
 import { AddFamilyMember } from "./views/settings/AddFamilyMember";
 import { NewChore } from "./views/parent/NewChore";
 import { NewChoreDetails } from "./views/parent/NewChoreDetails";
@@ -32,9 +32,9 @@ import { Kids } from "./views/parent/Kids";
 import { KidDetails } from "./views/parent/KidDetails";
 import { ViewChore } from "./views/parent/ViewChore";
 import { Today } from "./views/parent/Today";
-import { ApproveDashboard } from "./views/parent/ApproveDashboard";
-import { RejectComments } from "./views/parent/RejectComments";
+import { Approve } from "./views/parent/Approve";
 import { DeleteKid } from "./views/settings/DeleteKid";
+import { Completed } from "./views/kid/Completed";
 
 export default function App() {
 
@@ -62,16 +62,16 @@ export default function App() {
               <Stack.Screen name="ParentRegistration" component={ParentRegistration}></Stack.Screen>
               <Stack.Screen name="PasscodeVerification" component={PasscodeVerification}></Stack.Screen>
               <Stack.Screen name="UsernameVerification" component={UsernameVerification}></Stack.Screen>
-              <Stack.Screen name="TutorialAssign" component={TutorialAssign}></Stack.Screen>
-              <Stack.Screen name="TutorialTrack" component={TutorialTrack}></Stack.Screen>
-              <Stack.Screen name="TutorialResults" component={TutorialResults}></Stack.Screen>
-              <Stack.Screen name="ParentDashboard" component={ParentDashboard} options={chooseAnimation}></Stack.Screen>
+              <Stack.Screen name="TutorialPage1" component={TutorialPage1}></Stack.Screen>
+              <Stack.Screen name="TutorialPage2" component={TutorialPage2}></Stack.Screen>
+              <Stack.Screen name="TutorialPage3" component={TutorialPage3}></Stack.Screen>
+              <Stack.Screen name="Dashboard" component={Dashboard} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="Login" component={Login} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
               <Stack.Screen name="SetPassword" component={SetPassword}></Stack.Screen>
               <Stack.Screen name="Settings" component={Settings} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
-              <Stack.Screen name="FamilySettings" component={FamilySettings} options={chooseAnimation}></Stack.Screen>
+              <Stack.Screen name="ManageFamily" component={ManageFamily} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="AddFamilyMember" component={AddFamilyMember}></Stack.Screen>
               <Stack.Screen name="NewChore" component={NewChore} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="NewChoreDetails" component={NewChoreDetails}></Stack.Screen>
@@ -83,9 +83,9 @@ export default function App() {
               <Stack.Screen name="KidDetails" component={KidDetails} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="ViewChore" component={ViewChore}></Stack.Screen>
               <Stack.Screen name="Today" component={Today} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="ApproveDashboard" component={ApproveDashboard} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="RejectComments" component={RejectComments}></Stack.Screen>
+              <Stack.Screen name="Approve" component={Approve} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="DeleteKid" component={DeleteKid}></Stack.Screen>
+              <Stack.Screen name="Completed" component={Completed} options={chooseAnimation}></Stack.Screen>
             </Stack.Navigator>
           </NavigationContainer>
         </GlobalStyling>

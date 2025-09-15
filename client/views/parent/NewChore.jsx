@@ -52,7 +52,7 @@ export const NewChore = () => {
                     <Pressable
                         hitSlop={20}
                         className="ps-2 pe-8"
-                        onPress={() => navigation.replace("ParentDashboard", {animationType: "fade_from_bottom"})}
+                        onPress={() => navigation.replace("Dashboard", {animationType: "fade_from_bottom"})}
                     >
                         <CloseIcon />
                     </Pressable>

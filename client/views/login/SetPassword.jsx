@@ -81,14 +81,10 @@ export const SetPassword = ({route}) => {
                 text1: "New password set!"
             })
             if (data.firstLogin) {
-                navigation.replace('TutorialAssign')
-            }
-            else if (data.isParent) {
-                console.log("Navigating to parent dashboard")
-                navigation.replace('ParentDashboard')
+                navigation.replace('TutorialPage1')
             }
             else {
-                navigation.replace('KidDashboard')
+                navigation.replace('Dashboard')
             }
         } catch (error) {
             console.log('Failed to fetch user data', error)

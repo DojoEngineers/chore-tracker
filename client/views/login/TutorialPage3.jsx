@@ -1,26 +1,17 @@
 import { useNavigation } from "@react-navigation/native"
 import { Dimensions, Pressable, View } from "react-native"
-import { useLogin } from "../../context/UserContext"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { Tutorial3Photo } from "../../components/Tutorial3Photo"
 import { Frame3Icon } from "../../components/icons/Frame3Icon"
 import { PrimaryButton } from "../../components/PrimaryButton"
-import { BottomLeftSquiggle } from "../../components/squiggles/BottomLeftSquiggle"
 import LightBackArrow from "../../assets/icons/LightBackArrow"
+import { useLogin } from "../../context/UserContext"
 
-export const TutorialResults = () => {
+export const TutorialPage3 = () => {
 
     const navigation = useNavigation()
     const {loggedInData} = useLogin()
     const screenWidth = Dimensions.get('window').width
-    
-    const handleSubmit = () => {
-        if (loggedInData.isParent) {
-            navigation.navigate('ParentDashboard')
-        } else {
-            navigation.navigate('KidDashboard')
-        }
-    }
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg items-center justify-between">
@@ -43,17 +34,20 @@ export const TutorialResults = () => {
                 </View>
 
                 <BrandBoldText className="text-[30px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[35px] my-10">
-                    Results
+                    {loggedInData.isParent ? "Results" : "Take after photo"}
                 </BrandBoldText>
 
                 <BrandBoldText className="text-center text-lightPrimaryText dark:text-darkPrimaryText text-[18px]">
-                    Visible results.
+                    {loggedInData.isParent
+                        ? "Visible results."
+                        : "Text goes here."
+                    }
                 </BrandBoldText>
             </View>
 
             <View className="w-full">
                 <View className="px-[16px] w-full mb-[125px] items-center">
-                    <PrimaryButton onPress={handleSubmit} label="Continue" />
+                    <PrimaryButton onPress={() => navigation.navigate('Dashboard')} label="Continue" />
                 </View>
             </View>
         </View>

@@ -17,7 +17,7 @@ export const DeleteModal = ({visible, setVisible, setApiErrors, id}) => {
                     type: 'success',
                     text1: "Chore successfully deleted!"
                 })
-                navigation.replace("ParentDashboard", {animationType: "slide_from_left"})
+                navigation.replace("Dashboard", {animationType: "slide_from_left"})
             })
             .catch( error => {
                 console.log("deleteChore error:", error)

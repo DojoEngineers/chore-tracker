@@ -94,7 +94,7 @@ export const AddFamilyMember = ({route}) => {
                                     return {...prev, family: {...currentFamily, children: [...currentFamily.children, res.user]}}
                                 }
                             })
-                            navigation.navigate('ParentDashboard', {animationType: "slide_from_left"})
+                            navigation.navigate('Dashboard', {animationType: "slide_from_left"})
                         })
                         .catch( error => {
                             console.log("register error:", error)

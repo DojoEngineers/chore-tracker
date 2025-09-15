@@ -11,19 +11,11 @@ import {HighlightedKidsIcon} from "./icons/HighlightedKidsIcon.jsx"
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { BrandText } from "./text/BrandText";
 
-
 export const ParentNavBar = () => {
 
     const navigation = useNavigation()
     const route = useRoute()
-    const homeRoutes = ['ParentDashboard']
-    const kidsRoutes = ['Kids', 'KidDetails']
-    const todayRoutes = ['Today']
-    const approveRoutes = ['ApproveDashboard', 'RejectComments']
-    const isOnHome = homeRoutes.includes(route.name)
-    const isOnKids = kidsRoutes.includes(route.name)
-    const isOnToday = todayRoutes.includes(route.name)
-    const isOnApprove = approveRoutes.includes(route.name)
+    const isOnKids = route.name === "Kids" || route.name === "KidDetails"
 
     return (
         <View className="relative">
@@ -32,11 +24,11 @@ export const ParentNavBar = () => {
                 
                 <Pressable
                     className="justify-center items-center"
-                    onPress={() => navigation.navigate("ParentDashboard", {animationType: "fade_from_bottom"})}
+                    onPress={() => navigation.navigate("Dashboard", {animationType: "fade_from_bottom"})}
                 >
-                    {isOnHome ? <HighlightedHomeIcon width={26} /> : <HomeIcon width={26} />}
+                    {route.name === "Dashboard" ? <HighlightedHomeIcon width={26} /> : <HomeIcon width={26} />}
                     <BrandText
-                        className={`mt-1 text-[14px] ${isOnHome ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
+                        className={`mt-1 text-[14px] ${route.name === "Dashboard" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
                     >
                         Home
                     </BrandText>
@@ -46,9 +38,9 @@ export const ParentNavBar = () => {
                     className="justify-center items-center"
                     onPress={() => navigation.navigate("Today", {animationType: "fade_from_bottom"})}
                 >
-                    {isOnToday ? <HighlightedTodayIcon width={26} /> : <TodayIcon width={26} />}
+                    {route.name === "Today" ? <HighlightedTodayIcon width={26} /> : <TodayIcon width={26} />}
                     <BrandText
-                        className={`mt-1 text-[14px] ${isOnToday ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
+                        className={`mt-1 text-[14px] ${route.name === "Today" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
                     >
                         Today
                     </BrandText>
@@ -58,11 +50,11 @@ export const ParentNavBar = () => {
 
                 <Pressable
                     className="justify-center items-center"
-                    onPress={() => navigation.navigate("ApproveDashboard", {animationType: "fade_from_bottom"})}
+                    onPress={() => navigation.navigate("Approve", {animationType: "fade_from_bottom"})}
                 >
-                    {isOnApprove ? <HighlightedApproveIcon width={26} /> : <ApproveIcon width={26} />}
+                    {route.name === "Approve" ? <HighlightedApproveIcon width={26} /> : <ApproveIcon width={26} />}
                     <BrandText
-                        className={`mt-1 text-[14px] ${isOnApprove ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
+                        className={`mt-1 text-[14px] ${route.name === "Approve" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
                     >
                         Approve
                     </BrandText>

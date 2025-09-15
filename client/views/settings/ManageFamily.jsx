@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native"
 import { BrandText } from "../../components/text/BrandText"
 import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottomRightSquiggle"
 
-export const FamilySettings = () => {
+export const ManageFamily = () => {
 
     const navigation = useNavigation()
     const {loggedInData} = useLogin()
