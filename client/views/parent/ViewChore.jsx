@@ -17,6 +17,8 @@ import {CameraIcon} from "../../components/icons/CameraIcon"
 import { StageIcon } from "../../components/icons/StageIcon"
 import { DeleteModal } from "../../components/DeleteModal"
 import { RejectModal } from "../../components/RejectModal"
+import { useLogin } from "../../context/UserContext"
+import { CompleteModal } from "../../components/CompleteModal"
 
 dayjs.extend(utc)
 
@@ -27,9 +29,11 @@ export const ViewChore = ({route}) => {
     const [loading, setLoading] = useState("Loading chore...")
     const [deleteModalVisible, setDeleteModalVisible] = useState(false)
     const [rejectModalVisible, setRejectModalVisible] = useState(false)
+    const [completeModalVisible, setCompleteModalVisible] = useState(false)
 
     const navigation = useNavigation()
     const {id} = route.params
+    const {loggedInData} = useLogin()
 
     useEffect(() => {
         getChoreById(id)
@@ -100,6 +104,11 @@ export const ViewChore = ({route}) => {
             {apiErrors.rejectChore && (
                 <BrandText className="text-red-500 text-center">
                     {apiErrors.rejectChore}
+                </BrandText>
+            )}
+            {apiErrors.completeChore && (
+                <BrandText className="text-red-500 text-center">
+                    {apiErrors.completeChore}
                 </BrandText>
             )}
 
@@ -262,30 +271,54 @@ export const ViewChore = ({route}) => {
                 }
             </ScrollView>
 
-            {(chore.stage === "incomplete" || chore.stage === "rejectedReassigned") && 
-                <View className="mb-12">
+            {(chore.stage === "incomplete" || chore.stage === "rejectedReassigned")
+                ?
+                    loggedInData.isParent
+                        ?
+                            <View className="mb-12">
+                                <Pressable
+                                    onPress={() => navigation.navigate("NewChore")}
+                                    className="p-[10px] rounded-full items-center justify-center bg-[#9FB6AE] dark:bg-darkButton w-full h-[56px] mt-4"
+                                >
+                                        <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
+                                            Edit chore
+                                        </BrandBoldText>
+                                </Pressable>
+                                
+                                <Pressable
+                                    onPress={() => setDeleteModalVisible(true)}
+                                    className="p-[10px] rounded-full items-center justify-center bg-[#737780] w-full h-[56px] mt-5"
+                                >
+                                    <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
+                                        Delete chore
+                                    </BrandBoldText>
+                                </Pressable>
+                            </View>
 
-                    <Pressable
-                        onPress={() => navigation.navigate("NewChore")}
-                        className="p-[10px] rounded-full items-center justify-center bg-[#9FB6AE] dark:bg-darkButton w-full h-[56px] mt-4"
-                    >
-                            <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
-                                Edit chore
-                            </BrandBoldText>
-                    </Pressable>
-                    
-                    <Pressable
-                        onPress={() => setDeleteModalVisible(true)}
-                        className="p-[10px] rounded-full items-center justify-center bg-[#737780] w-full h-[56px] mt-5"
-                    >
-                        <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
-                            Delete chore
-                        </BrandBoldText>
-                    </Pressable>
-                </View>
+                        :
+                            <View className="mb-12">
+                                <Pressable
+                                    onPress={[]}
+                                    className="p-[10px] rounded-full items-center justify-center bg-[#84A99D] w-full h-[56px] mt-4"
+                                >
+                                        <BrandBoldText className="text-[#ECEDEE] text-[20px] ms-4">
+                                            {chore.beforePic ? "Resubmit" : "Submit"} before photo
+                                        </BrandBoldText>
+                                </Pressable>
+                                
+                                <Pressable
+                                    onPress={() => setCompleteModalVisible(true)}
+                                    className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px] mt-5"
+                                >
+                                    <BrandBoldText className="text-[#ECEDEE] text-[20px] ms-4">
+                                        Complete chore
+                                    </BrandBoldText>
+                                </Pressable>
+                            </View>
+                : null
             }
 
-            {chore.stage === "complete" && 
+            {(chore.stage === "complete" && loggedInData.isParent) && 
                 <View className="mb-12">
 
                     <Pressable
@@ -320,6 +353,14 @@ export const ViewChore = ({route}) => {
                 setVisible={setRejectModalVisible}
                 setApiErrors={setApiErrors}
                 id={id}
+            />
+
+            <CompleteModal
+                visible={completeModalVisible}
+                setVisible={setCompleteModalVisible}
+                setApiErrors={setApiErrors}
+                id={id}
+                needsPics={chore.needsPics}
             />
 
         </View>

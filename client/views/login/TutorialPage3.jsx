@@ -6,12 +6,31 @@ import { Frame3Icon } from "../../components/icons/Frame3Icon"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import LightBackArrow from "../../assets/icons/LightBackArrow"
 import { useLogin } from "../../context/UserContext"
+import { updateUser } from "../../services/user.service"
+import { useState } from "react"
+import Toast from "react-native-toast-message"
 
 export const TutorialPage3 = () => {
 
+    const [apiErrors, setApiErrors] = useState({})
     const navigation = useNavigation()
     const {loggedInData} = useLogin()
     const screenWidth = Dimensions.get('window').width
+
+    const handleContinue = () => {
+        updateUser({id: loggedInData._id, firstLogin: false})
+            .then( () => { 
+                navigation.replace("Dashboard")
+            })
+            .catch( error => {
+                console.log("updateUser error:", error)
+                setApiErrors(prev => ({...prev, updateUser: "Unable to update user."}))
+                Toast.show({
+                    type: 'error',
+                    text1: "Unable to update user."
+                })
+            })
+    }
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg items-center justify-between">
@@ -37,6 +56,12 @@ export const TutorialPage3 = () => {
                     {loggedInData.isParent ? "Results" : "Take after photo"}
                 </BrandBoldText>
 
+                {apiErrors.updateUser && (
+                    <BrandText className="text-red-500 text-center">
+                        {apiErrors.updateUser}
+                    </BrandText>
+                )}
+
                 <BrandBoldText className="text-center text-lightPrimaryText dark:text-darkPrimaryText text-[18px]">
                     {loggedInData.isParent
                         ? "Visible results."
@@ -47,7 +72,7 @@ export const TutorialPage3 = () => {
 
             <View className="w-full">
                 <View className="px-[16px] w-full mb-[125px] items-center">
-                    <PrimaryButton onPress={() => navigation.navigate('Dashboard')} label="Continue" />
+                    <PrimaryButton onPress={handleContinue} label="Continue" />
                 </View>
             </View>
         </View>

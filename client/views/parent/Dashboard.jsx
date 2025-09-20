@@ -137,12 +137,6 @@ export const Dashboard = () => {
                     }
                 </Pressable>
 
-                {apiErrors.getChoresByParents && (
-                    <BrandText className="text-red-500 text-center">
-                        {apiErrors.getChoresByParents}
-                    </BrandText>
-                )}
-
                 {viewCalendarChores &&
                     <View className="flex-row justify-between items-center">
                         <BrandBoldText
@@ -181,35 +175,43 @@ export const Dashboard = () => {
                                         </BrandBoldText>
                                     </View>
 
-                                    <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[12px] mb-2"
-                                    >
-                                        {` ${chore.worker.name} • `}
+                                    <View className="flex-row items-center mb-2">
                                         <BrandText
-                                            className={`
-                                                text-[12px] 
-                                                ${chore.stage === "incomplete" ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
-                                                ${chore.stage === "complete" ? "text-[#FB943C] dark:text-[#FEDBB1]" : ""}
-                                                ${chore.stage === "approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
-                                                ${chore.stage === "rejectedUnassigned" || chore.stage === "rejectedReassigned" ? "text-[#FF5757]" : ""}
-                                            `}
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[12px]"
                                         >
-                                            {chore.stage === "incomplete" ? "Incomplete"
-                                                : chore.stage === "complete" ? "Awaiting Review"
-                                                : chore.stage === "approved" ? "Approved"
-                                                : chore.stage === "rejectedReassigned" ? "Rejected and reassigned"
-                                                : "Rejected"
-                                            }
+                                            {`${chore.worker.name} • `}
                                         </BrandText>
-                                    </BrandText>
+                                        
+                                        <View className={`rounded-full py-1 px-3
+                                            ${chore.stage === "approved"
+                                                ? "bg-[#9FB6AE] dark:bg-[#B3EAD3]" : ""}
+                                            ${chore.stage === "complete"
+                                                || chore.stage === "incomplete"
+                                                ? "bg-[#FDBB74]" : ""}
+                                            ${chore.stage === "rejectedUnassigned"
+                                                || chore.stage === "rejectedReassigned"
+                                                ? "bg-[#FF5757]" : ""}`}
+                                        >
+                                            <BrandBoldText
+                                                className="text-[12px] text-[#111215]"
+                                            >
+                                                {chore.stage === "incomplete" ? "Incomplete"
+                                                    : chore.stage === "complete" ? "Awaiting Review"
+                                                    : chore.stage === "approved" ? "Approved"
+                                                    : chore.stage === "rejectedReassigned" ? "Rejected and reassigned"
+                                                    : "Rejected"
+                                                }
+                                            </BrandBoldText>
+                                        </View>
+                                    </View>
 
                                     {dayjs(chore.dueDate).isBefore(dayjs())
                                         ?
-                                            <BrandText
-                                                className="text-[#FF5757] text-[10px]"
+                                            <BrandBoldText
+                                                className="text-[#F40000] text-[10px]"
                                             >
                                                 Overdue! Due by {dayjs(chore.dueDate).format("h:mma")}
-                                            </BrandText>
+                                            </BrandBoldText>
                                         :
                                             <BrandText
                                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
@@ -226,24 +228,23 @@ export const Dashboard = () => {
                             </Pressable>
                         ))
 
+                    : viewCalendarChores && apiErrors.getChoresByParents ?
+                        <BrandText
+                            className="text-red-500 text-[16px] m-2"
+                        >
+                            {apiErrors.getChoresByParents}
+                        </BrandText>
+
                     : viewCalendarChores &&
                         <BrandText
                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] m-2"
                         >
-                            No chore data on this day
+                            No chores due on this day
                         </BrandText>
                 }
 
-                {loading
+                {(allChoresByParents.length > 0 || !loggedInData.isParent)
                     ?
-                        <BrandText
-                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
-                        >
-                            {loading}
-                        </BrandText>
-                
-                
-                    : (allChoresByParents.length > 0 || apiErrors.getChoresByParents || !loggedInData.isParent) ?
                         <View className="p-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-1">
                             <View className="flex-row items-center justify-between w-full">
                                 <View className="items-center flex-row">
@@ -292,23 +293,25 @@ export const Dashboard = () => {
                                                 >
                                                     {` ${chore.worker.name} • `}
                                                 </BrandText>
-                                                <BrandText
-                                                    className={`
-                                                        text-[12px] 
-                                                        ${chore.recentStage === "Assigned" 
-                                                            || chore.recentStage === "Edited"
-                                                            ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
-                                                        ${chore.recentStage === "Awaiting review" ? "text-[#FB943C] dark:text-[#FEDBB1]" : ""}
-                                                        ${chore.recentStage === "Approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
-                                                        ${chore.recentStage === "Rejected"
-                                                            || chore.recentStage === "Rejected and reassigned"
-                                                            || chore.recentStage === "Became overdue"
-                                                            ? "text-[#FF5757]" : ""}
 
-                                                    `}
+                                                <View className={`rounded-full py-1 px-3
+                                                    ${chore.recentStage === "Assigned"
+                                                        || chore.recentStage === "Edited"
+                                                        || chore.recentStage === "Approved"
+                                                        ? "bg-[#9FB6AE] dark:bg-[#B3EAD3]" : ""}
+                                                    ${chore.recentStage === "Awaiting review"
+                                                        ? "bg-[#FDBB74]" : ""}
+                                                    ${chore.recentStage === "Rejected"
+                                                        || chore.recentStage === "Rejected and reassigned"
+                                                        || chore.recentStage === "Became overdue"
+                                                        ? "bg-[#FF5757]" : ""}`}
                                                 >
-                                                    {chore.recentStage}
-                                                </BrandText>
+                                                    <BrandBoldText
+                                                        className="text-[12px] text-[#111215]"
+                                                    >
+                                                        {chore.recentStage}
+                                                    </BrandBoldText>
+                                                </View>
 
                                             </View>
 
@@ -323,6 +326,20 @@ export const Dashboard = () => {
                                     </BrandText>
                             }
                         </View>
+                    
+                    : loading ?
+                        <BrandText
+                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
+                        >
+                            {loading}
+                        </BrandText>
+
+                    : apiErrors.getChoresByParents ?
+                        <BrandText
+                            className="text-red-500 text-[16px] mt-6"
+                        >
+                            {apiErrors.getChoresByParents}
+                        </BrandText>
 
                     :
                         <View className="flex-1 mt-4">
@@ -356,7 +373,7 @@ export const Dashboard = () => {
 
                             <View className="flex-1 items-center w-full mt-[50px]">
                                 <LargeSquareIcon />
-                                <BrandText className="text-[16px] text-[#A1A4AA] dark:text-[#444955] mt-[30px]">
+                                <BrandText className="text-[16px] text-[#737780] dark:text-[#A1A4AA] mt-[30px]">
                                     No chores added yet
                                 </BrandText>
                             </View>

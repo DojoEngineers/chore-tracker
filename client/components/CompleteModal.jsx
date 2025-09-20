@@ -12,10 +12,9 @@ import { Checkbox } from "react-native-paper"
 
 dayjs.extend(utc)
 
-export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
+export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics}) => {
 
-    const [parentComments, setParentComments] = useState("")
-    const [stage, setStage] = useState("rejectedUnassigned")
+    const [kidComments, setKidComments] = useState("")
     const [commentsError, setCommentsError] = useState("")
 
     const navigation = useNavigation()
@@ -23,7 +22,7 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
     const placeholderColor = colorScheme === 'dark' ? '#D0D1D4' : '#262626'
 
     const handleChange = (comments) => {
-        setParentComments(comments)
+        setKidComments(comments)
         if (comments.length > 100) {
             setCommentsError("Comments cannot exceed 100 characters.")
         } else {
@@ -31,7 +30,7 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
         }
     }
 
-    const handleReject = () => {
+    const handleComplete = () => {
         if (commentsError) {
             Toast.show({
                 type: 'error',
@@ -40,30 +39,26 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
             return
         }
 
-        updateChore({_id: id, stage, stageDate: dayjs().toISOString(), parentComments})
+        updateChore({_id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments})
             .then(() => {
                 Toast.show({
                     type: 'success',
-                    text1: "Chore rejected!"
+                    text1: "Chore completed!"
                 })
                 navigation.replace("Dashboard", {animationType: "slide_from_left"})
             })
             .catch((error) => {
-                console.log("rejectChore error:", error)
-                setApiErrors(prev => ({...prev, rejectChore: "Unable to reject chore."}))
+                console.log("completeChore error:", error)
+                setApiErrors(prev => ({...prev, completeChore: "Unable to complete chore."}))
                 Toast.show({
                     type: 'error',
-                    text1: "Unable to reject chore."
+                    text1: "Unable to complete chore."
                 })
             })
     }
 
-    const handleCheckbox = () => {
-        if (stage === "rejectedUnassigned") {
-            setStage("rejectedReassigned")
-        } else {
-            setStage("rejectedUnassigned")
-        }
+    const submitAfterPhoto = () => {
+        return
     }
 
     return (
@@ -80,25 +75,17 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
                 >
                     <View className="bg-[#ECEDEE] dark:bg-[#454954] p-[16px] rounded-3xl w-[90%]">
 
-                        <Pressable
-                            hitSlop={20}
-                            className="mb-6"
-                            onPress={() => setVisible(false)}
-                        >
-                            <CloseIcon />
-                        </Pressable>
+                        <View className="flex-row items-center mb-6">
+                            <Pressable
+                                hitSlop={20}
+                                onPress={() => setVisible(false)}
+                            >
+                                <CloseIcon />
+                            </Pressable>
 
-                        <View className="flex-row items-center space-x-2 mb-6">
-                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] me-2 ms-1">
-                                Reassign this chore?
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ms-6">
+                                Complete Chore
                             </BrandText>
-                            
-                            <Checkbox.Android
-                                status={stage === "rejectedReassigned" ? "checked" : "unchecked"}
-                                onPress={handleCheckbox}
-                                color="#34D399"
-                                uncheckedColor="#34D399"
-                            />
                         </View>
 
                         {commentsError &&
@@ -112,7 +99,7 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
                         <TextInput
                             className="border border-[#A1A4AA] dark:border-[#D0D1D4] rounded-2xl p-3 bg-[#D0D1D4] dark:bg-transparent
                                 text-lightPrimaryText dark:text-darkPrimaryText h-[80px] mb-8 font-nunito text-[15px]"
-                            value={parentComments}
+                            value={kidComments}
                             onChangeText={(comments) => handleChange(comments)}
                             placeholder="Add comments here"
                             placeholderTextColor={placeholderColor}
@@ -121,13 +108,24 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
                         />
                         
                         <Pressable
-                            className="p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full"
-                            onPress={handleReject}
+                            className="p-[10px] items-center justify-center bg-[#84A99D] rounded-full w-full"
+                            onPress={submitAfterPhoto}
                         >
                             <BrandBoldText className="text-darkPrimaryText text-[16px]">
-                                Reject
+                                Submit After Photo
                             </BrandBoldText>
                         </Pressable>
+
+                        {!needsPics &&
+                            <Pressable
+                                className="p-[10px] items-center justify-center bg-[#455C56] rounded-full w-full mt-4"
+                                onPress={handleComplete}
+                            >
+                                <BrandBoldText className="text-darkPrimaryText text-[16px]">
+                                    Complete without photo
+                                </BrandBoldText>
+                            </Pressable>
+                        }
                     </View>
                 </View>
             </TouchableWithoutFeedback>
