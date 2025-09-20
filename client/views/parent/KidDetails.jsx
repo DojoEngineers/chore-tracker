@@ -169,9 +169,9 @@ export const KidDetails = ({route}) => {
                             </BrandText>
 
                         :
-                            <View>
+                            <View className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-6 mt-4">
                                 <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
+                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
                                     >
                                         No chores due today
                                     </BrandText>
@@ -255,11 +255,13 @@ export const KidDetails = ({route}) => {
                             </BrandText>
 
                         :
-                            <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
-                            >
-                                No chores due by end of week
-                            </BrandText>
+                            <View className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-6 mt-4">
+                                <BrandText
+                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
+                                >
+                                    No chores due by end of week
+                                </BrandText>
+                            </View>
                     }
                 </View>
 
@@ -319,7 +321,7 @@ export const KidDetails = ({route}) => {
                                             >
                                                 {chore.stage === "approved" ? "Approved"
                                                     : chore.stage === "rejectedUnassigned" ? "Rejected"
-                                                    : "Awaiting Review"}
+                                                    : "Awaiting review"}
                                             </BrandBoldText>
                                         </View>
 
@@ -343,11 +345,13 @@ export const KidDetails = ({route}) => {
                             </BrandText>
 
                         :
-                            <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
-                            >
-                                No completed chores
-                            </BrandText>
+                            <View className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-6 mt-4">
+                                <BrandText
+                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
+                                >
+                                    No chore history
+                                </BrandText>
+                            </View>
                     }
                 </View>
             </ScrollView>

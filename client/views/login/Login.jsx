@@ -114,22 +114,18 @@ export const Login = () => {
 
                     <View className="px-[16px] mt-[75px]">
 
-                        <View className="flex-row items-center ps-2">
-                            <Pressable
-                                className="pe-[66px]"
-                                hitSlop={20}
-                                onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
-                            >
-                                <BackArrow/>
-                            </Pressable>
+                        <Pressable
+                            className="ps-2"
+                            hitSlop={20}
+                            onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
+                        >
+                            <BackArrow/>
+                        </Pressable>
 
-                            <View className="">
-                                <BrandBoldText className="text-[32px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[37px]">
-                                    Hi, welcome.
-                                </BrandBoldText>
-                            </View>
-                        </View>
-
+                        <BrandBoldText className="text-[32px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[37px]">
+                            Hi, welcome.
+                        </BrandBoldText>
+                        
                         <View className="items-center mb-10">
                             <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[18px]">
                                 Sign in to your account
