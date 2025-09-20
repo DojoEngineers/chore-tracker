@@ -295,7 +295,7 @@ export const ViewChore = ({route}) => {
                                 </Pressable>
                             </View>
 
-                        :
+                        : chore.worker._id === loggedInUser._id ?
                             <View className="mb-12">
                                 <Pressable
                                     onPress={[]}
@@ -315,6 +315,8 @@ export const ViewChore = ({route}) => {
                                     </BrandBoldText>
                                 </Pressable>
                             </View>
+                            
+                        : null
                 : null
             }
 
