@@ -79,12 +79,6 @@ export const KidDetails = ({route}) => {
                 </BrandBoldText>
             </View>
 
-            {apiErrors.getChoresByWorker && (
-                <BrandText className="text-red-500 text-center">
-                    {apiErrors.getChoresByWorker}
-                </BrandText>
-            )}
-
             <ScrollView
                 showsVerticalScrollIndicator={true}
                 className="px-[16px] flex-1"
@@ -114,11 +108,11 @@ export const KidDetails = ({route}) => {
 
                                         {dayjs(chore.dueDate).isBefore(dayjs())
                                             ?
-                                                <BrandText
-                                                    className="text-[#FF5757] text-[12px]"
+                                                <BrandBoldText
+                                                    className="text-[#F40000] text-[12px]"
                                                 >
                                                     Overdue!
-                                                </BrandText>
+                                                </BrandBoldText>
                                             :
                                                 <BrandText
                                                     className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
@@ -135,20 +129,25 @@ export const KidDetails = ({route}) => {
                                                 {kid.name[0]}
                                             </BrandBoldText>
                                         </View>
+
                                         <BrandText
                                             className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
                                         >
-                                            {` ${kid.name} • `}
+                                            {`${kid.name} • `}
                                         </BrandText>
-                                        <BrandText
-                                            className={`
-                                                text-[12px] 
-                                                ${chore.stage === "incomplete" ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
-                                                ${chore.stage === "rejectedReassigned" ? "text-[#FF5757]" : ""}
-                                            `}
+
+                                        <View className={`rounded-full py-1 px-3
+                                            ${chore.stage === "incomplete"
+                                                ? "bg-[#FDBB74]" : ""}
+                                            ${chore.stage === "rejectedReassigned"
+                                                ? "bg-[#FF5757]" : ""}`}
                                         >
-                                            {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
-                                        </BrandText>
+                                            <BrandBoldText
+                                                className="text-[12px] text-[#111215]"
+                                            >
+                                                {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
+                                            </BrandBoldText>
+                                        </View>
 
                                     </View>
                                     
@@ -160,6 +159,13 @@ export const KidDetails = ({route}) => {
                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
                             >
                                 {loading}
+                            </BrandText>
+                        
+                        : apiErrors.getChoresByWorker ?
+                            <BrandText
+                                className="text-red-500 text-[14px] mt-4"
+                            >
+                                {apiErrors.getChoresByWorker}
                             </BrandText>
 
                         :
@@ -209,20 +215,25 @@ export const KidDetails = ({route}) => {
                                                 {kid.name[0]}
                                             </BrandBoldText>
                                         </View>
+
                                         <BrandText
                                             className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
                                         >
-                                            {` ${kid.name} • `}
+                                            {`${kid.name} • `}
                                         </BrandText>
-                                        <BrandText
-                                            className={`
-                                                text-[12px] 
-                                                ${chore.stage === "incomplete" ? "text-lightPrimaryText dark:text-[#ECEDEE]" : ""}
-                                                ${chore.stage === "rejectedReassigned" ? "text-[#FF5757]" : ""}
-                                            `}
+
+                                        <View className={`rounded-full py-1 px-3
+                                            ${chore.stage === "incomplete"
+                                                ? "bg-[#FDBB74]" : ""}
+                                            ${chore.stage === "rejectedReassigned"
+                                                ? "bg-[#FF5757]" : ""}`}
                                         >
-                                            {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
-                                        </BrandText>
+                                            <BrandBoldText
+                                                className="text-[12px] text-[#111215]"
+                                            >
+                                                {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
+                                            </BrandBoldText>
+                                        </View>
 
                                     </View>
                                     
@@ -231,9 +242,16 @@ export const KidDetails = ({route}) => {
 
                         : loading ?
                             <BrandText
-                                className="text-lightPrimaryText dark:text-darkPrimaryText  text-[14px] mt-4"
+                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
                             >
                                 {loading}
+                            </BrandText>
+
+                        : apiErrors.getChoresByWorker ?
+                            <BrandText
+                                className="text-red-500 text-[14px] mt-4"
+                            >
+                                {apiErrors.getChoresByWorker}
                             </BrandText>
 
                         :
@@ -281,23 +299,29 @@ export const KidDetails = ({route}) => {
                                                 {kid.name[0]}
                                             </BrandBoldText>
                                         </View>
+
                                         <BrandText
                                             className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
                                         >
-                                            {` ${kid.name} • `}
+                                            {`${kid.name} • `}
                                         </BrandText>
-                                        <BrandText
-                                            className={`
-                                                text-[12px] 
-                                                ${chore.stage === "complete" ? "text-[#FB943C] dark:text-[#FEDBB1]" : ""}
-                                                ${chore.stage === "approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : ""}
-                                                ${chore.stage === "rejectedUnassigned" ? "text-[#F40000]" : ""}
-                                            `}
+
+                                        <View className={`rounded-full py-1 px-3
+                                            ${chore.stage === "approved"
+                                                ? "bg-[#9FB6AE] dark:bg-[#B3EAD3]" : ""}
+                                            ${chore.stage === "rejectedUnassigned"
+                                                ? "bg-[#FF5757]" : ""}
+                                            ${chore.stage === "complete"
+                                                ? "bg-[#FDBB74]" : ""}`}
                                         >
-                                            {chore.stage === "complete" ? "Awaiting Review"
-                                            : chore.stage === "approved" ? "Approved"
-                                            : "Rejected"}
-                                        </BrandText>
+                                            <BrandBoldText
+                                                className="text-[12px] text-[#111215]"
+                                            >
+                                                {chore.stage === "approved" ? "Approved"
+                                                    : chore.stage === "rejectedUnassigned" ? "Rejected"
+                                                    : "Awaiting Review"}
+                                            </BrandBoldText>
+                                        </View>
 
                                     </View>
                                     
@@ -309,6 +333,13 @@ export const KidDetails = ({route}) => {
                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
                             >
                                 {loading}
+                            </BrandText>
+
+                        : apiErrors.getChoresByWorker ?
+                            <BrandText
+                                className="text-red-500 text-[14px] mt-4"
+                            >
+                                {apiErrors.getChoresByWorker}
                             </BrandText>
 
                         :

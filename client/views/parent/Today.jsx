@@ -50,25 +50,19 @@ export const Today = () => {
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
 
-            <View>
-                <Header />
-                <BrandBoldText
-                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[36px] px-[16px]"
-                >
-                    Today's overview
-                </BrandBoldText>
-                <BrandText
-                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] px-[16px]"
-                >
-                    Check out what's due today
-                </BrandText>
-            </View>
+            <Header />
 
-            {apiErrors.getChoresByParents && (
-                <BrandText className="text-red-500 text-center">
-                    {apiErrors.getChoresByParents}
-                </BrandText>
-            )}
+            <BrandBoldText
+                className="text-lightPrimaryText dark:text-darkPrimaryText text-[36px] px-[16px]"
+            >
+                Today's overview
+            </BrandBoldText>
+
+            <BrandText
+                className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-6 mt-3"
+            >
+                Check out what's due today
+            </BrandText>
 
             {chores.length > 0
                 ?
@@ -92,19 +86,35 @@ export const Today = () => {
                                             {chore.title}
                                         </BrandBoldText>
                                     </View>
-                                    <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[12px] mb-2"
-                                    >
-                                        {chore.worker?.name}
-                                    </BrandText>
+
+                                    <View className="flex-row items-center mb-2">
+                                        <BrandText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[12px]"
+                                        >
+                                            {`${chore.worker.name} • `}
+                                        </BrandText>
+                                        
+                                        <View className={`rounded-full py-1 px-3
+                                            ${chore.stage === "incomplete"
+                                                ? "bg-[#FDBB74]" : ""}
+                                            ${chore.stage === "rejectedReassigned"
+                                                ? "bg-[#FF5757]" : ""}`}
+                                        >
+                                            <BrandBoldText
+                                                className="text-[12px] text-[#111215]"
+                                            >
+                                                {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
+                                            </BrandBoldText>
+                                        </View>
+                                    </View>
 
                                     {dayjs(chore.dueDate).isBefore(dayjs())
                                         ?
-                                            <BrandText
-                                                className="text-[#FF5757] text-[10px]"
+                                            <BrandBoldText
+                                                className="text-[#F40000] text-[10px]"
                                             >
-                                                Overdue! Due by {dayjs(chore.dueDate).format("MMMM D [at] h:mma")}
-                                            </BrandText>
+                                                Overdue!
+                                            </BrandBoldText>
                                         :
                                             <BrandText
                                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
@@ -114,6 +124,7 @@ export const Today = () => {
                                     }
 
                                 </View>
+
                                 <View className="justify-center">
                                     <ForwardArrow />
                                 </View>
@@ -126,6 +137,13 @@ export const Today = () => {
                         className="text-lightPrimaryText dark:text-darkPrimaryText my-4 px-[16px] flex-1"
                     >
                         {loading}
+                    </BrandText>
+
+                : apiErrors.getChoresByParents ?
+                    <BrandText
+                        className="text-red-500 my-4 px-[16px] flex-1"
+                    >
+                        {apiErrors.getChoresByParents}
                     </BrandText>
 
                 :

@@ -10,6 +10,7 @@ import { useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
 import dayjs from "dayjs"
 import {ApproveAndRejectIcon} from "../../components/icons/ApproveAndRejectIcon"
+import { HorizontalChoreScroll } from "../../components/HorizontalChoreScroll"
 
 export const Approve = () => {
 
@@ -54,84 +55,21 @@ export const Approve = () => {
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
             <Header />
+
             <BrandBoldText
                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
             >
                 Approve
             </BrandBoldText>
+
             <BrandBoldText
-                className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] px-[16px] mt-[30px]"
+                className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] px-[16px] mt-4"
             >
                 Pending Reviews
             </BrandBoldText>
 
-            {apiErrors.getChoresByParents && (
-                <BrandText className="text-red-500 text-center">
-                    {apiErrors.getChoresByParents}
-                </BrandText>
-            )}
-            
-            {pendingChores.length > 0
-                ?
-                    <View>
-                        <ScrollView
-                            horizontal
-                            className="px-[16px] my-4"
-                            showsVerticalScrollIndicator={true}
-                        >
-                            {pendingChores.map(chore => (
-                                <Pressable
-                                    key={chore._id}
-                                    className="w-[96px] h-[123px] rounded-3xl dark:bg-[#2F3339] bg-[#9FB6AE] mr-3 justify-between"
-                                    onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                >
-                                    <View
-                                        className="bg-[#FEDBB1] w-[49px] h-[14px] items-center justify-center rounded-r mt-[20px] px-1"
-                                    >
-                                        <BrandBoldText
-                                            className="text-[#431507] text-[10px]"
-                                            numberOfLines={1}
-                                            adjustsFontSizeToFit={true}
-                                            minimumFontScale={0.5}
-                                        >
-                                            {chore.worker.name}
-                                        </BrandBoldText>
-                                    </View>
-                                    <BrandBoldText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[12px] text-center px-1"
-                                        numberOfLines={3}
-                                        ellipsizeMode="tail"
-                                    >
-                                        {chore.title}
-                                    </BrandBoldText>
-                                    <View
-                                        className="border-t-2 border-[#FEDBB1] h-[28px] justify-center items-center
-                                            bg-[#C2430C] dark:bg-[#EA5A0C] rounded-b-3xl"
-                                    >
-                                        <BrandBoldText
-                                            className="text-[#FFF7ED] text-[12px]"
-                                        >
-                                            Review
-                                        </BrandBoldText>
-                                    </View>
-                                </Pressable>
-                            ))}
-                        </ScrollView>
-                    </View>
-
-                : loading ?
-                    <BrandText
-                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] my-4 px-[16px]"
-                    >
-                        {loading}
-                    </BrandText>
-                :
-                    <BrandText
-                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] my-4 px-[16px]"
-                    >
-                        No pending chores
-                    </BrandText>
-            }
+            <HorizontalChoreScroll chores={pendingChores} apiError={apiErrors.getChoresByParents}
+                loading={loading} noChoreMessage="No pending chores"/>
 
             <View className="flex-1">
                 <ScrollView
@@ -141,17 +79,21 @@ export const Approve = () => {
                     <View className="py-[25px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] my-3 mx-[16px] flex-1">
                         <View className="flex-row items-center justify-between w-full">
                             <View className="items-center flex-row">
+
                                 <ApproveAndRejectIcon/>
+
                                 <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
                                     Approvals and rejections
                                 </BrandBoldText>
                             </View>
+
                             <BrandText
                                 className="text-[12px] dark:text-[#ECEDEE] text-lightPrimaryText"
                                 >
                                 Last 24hr
                             </BrandText>
                         </View>
+
                         {recentActivityChores.length > 0
                             ?
                                 recentActivityChores.map(chore => (
@@ -166,12 +108,14 @@ export const Approve = () => {
                                             >
                                                 {chore.title}
                                             </BrandBoldText>
+
                                             <BrandText
                                                 className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
                                             >
                                                 {dayjs(chore.stageDate).fromNow()}
                                             </BrandText>
                                         </View>
+
                                         <View className="flex-row items-center mt-2">
                                             <View className="rounded-full bg-[#84A99D]
                                                 me-3 aspect-square h-[20px] justify-center dark:bg-darkButton">
@@ -179,21 +123,28 @@ export const Approve = () => {
                                                     {chore.worker.name[0]}
                                                 </BrandBoldText>
                                             </View>
+
                                             <BrandText
                                                 className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
                                             >
                                                 {` ${chore.worker.name} • `}
                                             </BrandText>
-                                            <BrandText
-                                                className={`
-                                                    text-[12px]
-                                                    ${chore.stage === "approved" ? "text-[#455C56] dark:text-[#B3EAD3]" : "text-[#FF5757]"}
-                                                `}
+
+                                            <View className={`rounded-full py-1 px-3
+                                                ${chore.stage === "approved"
+                                                    ? "bg-[#9FB6AE] dark:bg-[#B3EAD3]" : ""}
+                                                ${chore.stage === "rejectedUnassigned"
+                                                    || chore.stage === "rejectedReassigned"
+                                                    ? "bg-[#FF5757]" : ""}`}
                                             >
-                                                {chore.stage === "approved" ? "Approved"
-                                                    : chore.stage === "rejectedReassigned" ? "Rejected and reassigned"
-                                                    : "Rejected"}
-                                            </BrandText>
+                                                <BrandBoldText
+                                                    className="text-[12px] text-[#111215]"
+                                                >
+                                                    {chore.stage === "approved" ? "Approved"
+                                                        : chore.stage === "rejectedReassigned" ? "Rejected and reassigned"
+                                                        : "Rejected"}
+                                                </BrandBoldText>
+                                            </View>
                                         </View>
                                     </Pressable>
                                 ))
@@ -204,6 +155,14 @@ export const Approve = () => {
                                 >
                                     {loading}
                                 </BrandText>
+
+                            : apiErrors.getChoresByParents ?
+                                <BrandText
+                                    className="text-red-500 text-[16px] my-4 px-[16px]"
+                                >
+                                    {apiErrors.getChoresByParents}
+                                </BrandText>
+
                             :
                                 <BrandText
                                     className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"

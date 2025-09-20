@@ -56,7 +56,7 @@ export const Kids = () => {
 
                             <View className="flex-1 items-center w-full mt-[50px]">
                                 <LargeKidsIcon />
-                                <BrandText className="text-[16px] text-[#A1A4AA] dark:text-[#444955] mt-[30px]">
+                                <BrandText className="text-[16px] text-[#737780] dark:text-[#A1A4AA] mt-[30px]">
                                     No kids added yet
                                 </BrandText>
                             </View>

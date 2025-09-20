@@ -71,7 +71,6 @@ export const SetPassword = ({route}) => {
 
     // Set logged in data with token
     const checkUserToken = async () => {
-        console.log("user already logged in:", user)
         try {
             const data = await getCurrentUser()
             setLoggedInData(data)
