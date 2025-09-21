@@ -40,6 +40,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "babel-preset-expo": "^54.0.2",
+    "metro-react-native-babel-transformer": "^0.77.0",
     "react-native-svg-transformer": "^1.5.1"
   },
   "private": true

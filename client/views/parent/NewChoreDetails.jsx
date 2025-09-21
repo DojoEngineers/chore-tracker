@@ -1,12 +1,11 @@
 import { useNavigation } from "@react-navigation/native"
 import { useLogin, useNotifications } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
-import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
+import { Keyboard, Platform, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { useState } from "react"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
-import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { addChore } from "../../services/chore.service"
 import { PrimaryButton } from "../../components/PrimaryButton"
@@ -103,11 +102,7 @@ export const NewChoreDetails = ({ route }) => {
     const [openDate, setOpenDate] = useState(false)
     const [date, setDate] = useState(dayjs().add(1, 'day').toDate())
     const [weekday, setWeekday] = useState(null)
-    const [time, setTime] = useState(() => {
-  const t = dayjs().hour(18).minute(0).second(0).millisecond(0);
-  return new Date(t.year(), t.month(), t.date(), t.hour(), t.minute());
-});
-
+    const [time, setTime] = useState(dayjs().hour(18).minute(0).second(0).millisecond(0).toDate())
     const [openTime, setOpenTime] = useState(false)
     const [details, setDetails] = useState("")
     const [detailsError, setDetailsError] = useState("")
@@ -122,6 +117,18 @@ export const NewChoreDetails = ({ route }) => {
     const kids = loggedInData.family.children
         .filter(kid => kid.isActive)
         .map(kid => ({label: kid.name, value: kid._id}))
+
+    const handleTimeChange = (event, selectedTime) => {
+        if (Platform.OS === 'ios') {
+            selectedTime && setTime(selectedTime)
+            if (event.type === 'dismissed') {
+                setOpenTime(false)
+            }
+        } else {
+            selectedTime && setTime(selectedTime)
+            setOpenTime(false)
+        }
+    }
     
     const handleDetailsChange = (formDetails) => {
         setDetails(formDetails)
@@ -330,11 +337,7 @@ export const NewChoreDetails = ({ route }) => {
                                     value={time}
                                     mode="time"
                                     display="default"
-                                    onChange={(event, selectedTime) => {
-                                        setOpenTime(false)
-                                        if (selectedTime) setTime(selectedTime)
-                                    }}
-                                    
+                                    onChange={handleTimeChange}
                                 />
                         }
                     </View>
