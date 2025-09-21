@@ -121,10 +121,12 @@ export const Dashboard = () => {
                 >
                     <View className="flex-row">
                         <ViewCalendarIcon/>
+
                         <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
                             View chores by due date
                         </BrandBoldText>
                     </View>
+
                     {viewCalendar &&
                         <DateTimePicker
                             value={date}
@@ -144,6 +146,7 @@ export const Dashboard = () => {
                         >
                             Due {dayjs(date).local().format("dddd, MMMM D")}
                         </BrandBoldText>
+
                         <Pressable
                             hitSlop={20}
                             onPress={() => setViewCalendarChores(false)}
@@ -168,6 +171,7 @@ export const Dashboard = () => {
                                 <View className="flex-1">
                                     <View className="flex-row">
                                         <SquareIcon />
+
                                         <BrandBoldText
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mb-2 ms-3"
                                         >
@@ -212,6 +216,7 @@ export const Dashboard = () => {
                                             >
                                                 Overdue! Due by {dayjs(chore.dueDate).format("h:mma")}
                                             </BrandBoldText>
+
                                         :
                                             <BrandText
                                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
@@ -249,10 +254,12 @@ export const Dashboard = () => {
                             <View className="flex-row items-center justify-between w-full">
                                 <View className="items-center flex-row">
                                     <RecentActivityIcon/>
+
                                     <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
                                         Recent Activity
                                     </BrandBoldText>
                                 </View>
+
                                 <BrandText
                                     className="text-[12px] dark:text-[#ECEDEE] text-lightPrimaryText"
                                     >
@@ -274,6 +281,7 @@ export const Dashboard = () => {
                                                 >
                                                     {chore.title}
                                                 </BrandBoldText>
+
                                                 <BrandText
                                                     className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
                                                 >
@@ -283,11 +291,13 @@ export const Dashboard = () => {
 
                                             <View className="flex-row items-center mt-2">
                                                 <View className="rounded-full bg-[#84A99D]
-                                                    me-3 aspect-square h-[20px] justify-center dark:bg-darkButton">
+                                                    me-3 aspect-square h-[20px] justify-center dark:bg-darkButton"
+                                                >
                                                     <BrandBoldText className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px] text-center">
                                                         {chore.worker.name[0]}
                                                     </BrandBoldText>
                                                 </View>
+
                                                 <BrandText
                                                     className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
                                                 >
@@ -355,6 +365,7 @@ export const Dashboard = () => {
                             <View className="p-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
                                 <View className="flex-row">
                                     <SquareIcon width={21} />
+
                                     <BrandBoldText className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText ms-6">
                                         How to add a new chore
                                     </BrandBoldText>
@@ -382,6 +393,7 @@ export const Dashboard = () => {
 
                             <View className="flex-1 items-center w-full mt-[50px]">
                                 <LargeSquareIcon />
+                                
                                 <BrandText className="text-[16px] text-[#737780] dark:text-[#A1A4AA] mt-[30px]">
                                     No chores added yet
                                 </BrandText>

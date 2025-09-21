@@ -58,6 +58,7 @@ export const NewChore = () => {
                     >
                         <CloseIcon />
                     </Pressable>
+
                     <BrandBoldText className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText">
                         New Chore
                     </BrandBoldText>
@@ -75,6 +76,7 @@ export const NewChore = () => {
                             <View className="p-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
                                 <View className="flex-row">
                                     <AddKidIcon />
+
                                     <BrandBoldText className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText ms-6">
                                         How to add a kid
                                     </BrandBoldText>
@@ -98,6 +100,7 @@ export const NewChore = () => {
 
                             <View className="flex-1 items-center w-full mt-[50px]">
                                 <LargeKidsIcon />
+
                                 <BrandText className="text-[16px] text-[#737780] dark:text-[#A1A4AA] mt-[30px]">
                                     No kids added yet
                                 </BrandText>
@@ -155,6 +158,7 @@ export const NewChore = () => {
                                                 error={formErrors.title}
                                             />
                                         </View>
+                                        
                                         <View className="mb-[50px]">
                                             <PrimaryButton onPress={handleSubmit} label="Next"/>
                                         </View>

@@ -46,9 +46,7 @@ export const DeleteKid = ({route}) => {
     return(
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
             <View className="flex-1 items-center px-[16px]">
-            
                 <View className="flex-row mt-[75px]">
-
                     <Pressable
                         className="pt-4 ps-2"
                         hitSlop={20}
@@ -98,11 +96,13 @@ export const DeleteKid = ({route}) => {
                                         {kid.name[0]}
                                     </BrandText>
                                 </Pressable>
+
                                 <BrandBoldText
                                         className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center"
                                     >
                                         {kid.name}
                                 </BrandBoldText>
+
                                 <BrandText
                                     className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] text-center"
                                 >
@@ -138,6 +138,7 @@ export const DeleteKid = ({route}) => {
                             >
                                 <CloseIcon />
                             </Pressable>
+
                             <BrandBoldText className="dark:text-darkPrimaryText text-[#111215] text-[16px]">
                                 Confirm Delete
                             </BrandBoldText>
@@ -158,7 +159,6 @@ export const DeleteKid = ({route}) => {
                     </View>
                 </View>
             </Modal>
-
         </View>
     )
 }

@@ -19,6 +19,7 @@ export const Kids = () => {
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
             <View>
                 <Header />
+                
                 <BrandBoldText
                     className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
                 >
@@ -33,6 +34,7 @@ export const Kids = () => {
                             <View className="p-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
                                 <View className="flex-row">
                                     <AddKidIcon />
+
                                     <BrandBoldText className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText ms-6">
                                         How to add a kid
                                     </BrandBoldText>
@@ -56,6 +58,7 @@ export const Kids = () => {
 
                             <View className="flex-1 items-center w-full mt-[50px]">
                                 <LargeKidsIcon />
+
                                 <BrandText className="text-[16px] text-[#737780] dark:text-[#A1A4AA] mt-[30px]">
                                     No kids added yet
                                 </BrandText>
@@ -81,11 +84,13 @@ export const Kids = () => {
                                                 {kid.name[0]}
                                             </BrandText>
                                         </Pressable>
+
                                         <BrandBoldText
                                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center"
                                             >
                                                 {kid.name}
                                         </BrandBoldText>
+
                                         <BrandText
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] text-center"
                                         >
@@ -94,6 +99,7 @@ export const Kids = () => {
                                     </View>
                                 ))}
                             </ScrollView>
+
                             <View className="w-full mb-[50px]">
                                 <PrimaryButton onPress={() => navigation.navigate("AddFamilyMember", {isParent:false})} label="Add a kid" />
                             </View>

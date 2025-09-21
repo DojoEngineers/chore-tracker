@@ -81,6 +81,7 @@ export const ViewChore = ({route}) => {
                 >
                     <BackArrow />
                 </Pressable>
+
                 <BrandBoldText className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText">
                     {chore.title}
                 </BrandBoldText>
@@ -125,9 +126,11 @@ export const ViewChore = ({route}) => {
             >
                 <View className="flex-row items-center my-6 mx-2">
                     <AssignedToIcon />
+
                     <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
                         Created by{" "}
                     </BrandText>
+
                     <BrandText className="text-[16px] text-darkButton">
                         {chore.creator?.name}
                     </BrandText>
@@ -137,9 +140,11 @@ export const ViewChore = ({route}) => {
 
                 <View className="flex-row items-center my-6 mx-2">
                     <AssignedToIcon />
+
                     <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
                         Assigned to{" "}
                     </BrandText>
+
                     <BrandText className="text-[16px] text-darkButton">
                         {chore.worker?.name}
                     </BrandText>
@@ -149,6 +154,7 @@ export const ViewChore = ({route}) => {
 
                 <View className="flex-row items-center my-6 mx-2">
                     <RepeatIcon />
+
                     <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
                         {chore.repeat?.charAt(0).toUpperCase() + chore.repeat?.slice(1)}
                     </BrandText>
@@ -158,33 +164,33 @@ export const ViewChore = ({route}) => {
 
                 <View className="flex-row items-center my-6 ms-2 me-[24px]">
                     <StageIcon />
-                    <View className="">
-                        <BrandText
-                            className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4"
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
-                            adjustsFontSizeToFit={true}
-                            minimumFontScale={0.5}
-                        >
-                            {chore.stage === "incomplete" ? "Incomplete"
-                                : chore.stage === "complete" ? "Completed on "
-                                : chore.stage === "approved" ? "Approved on "
-                                : chore.stage === "rejectedReassigned" ? "Rejected and reassigned on "
-                                : "Rejected on "
-                            }
-                            {chore.stage !== "incomplete"
-                                ? dayjs(chore.stageDate).local().format("MMMM D [at] h:mma")
-                                : dayjs(chore.dueDate).isBefore(dayjs()) ? " • Overdue"
-                                : ""
-                            }
-                        </BrandText>
-                    </View>
+
+                    <BrandText
+                        className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        adjustsFontSizeToFit={true}
+                        minimumFontScale={0.5}
+                    >
+                        {chore.stage === "incomplete" ? "Incomplete"
+                            : chore.stage === "complete" ? "Completed on "
+                            : chore.stage === "approved" ? "Approved on "
+                            : chore.stage === "rejectedReassigned" ? "Rejected and reassigned on "
+                            : "Rejected on "
+                        }
+                        {chore.stage !== "incomplete"
+                            ? dayjs(chore.stageDate).local().format("MMMM D [at] h:mma")
+                            : dayjs(chore.dueDate).isBefore(dayjs()) ? " • Overdue"
+                            : ""
+                        }
+                    </BrandText>
                 </View>
 
                 <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
 
                 <View className="flex-row items-center my-6 mx-2">
                     <DateIcon />
+
                     <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
                         Due {dayjs(chore.dueDate).local().format("dddd, MMMM D")}
                     </BrandText>
@@ -194,6 +200,7 @@ export const ViewChore = ({route}) => {
 
                 <View className="flex-row items-center my-6 mx-2">
                     <ClockIcon />
+
                     <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
                         at {dayjs(chore.dueDate).local().format("h:mma")}
                     </BrandText>
@@ -203,6 +210,7 @@ export const ViewChore = ({route}) => {
 
                 <View className="flex-row items-center my-6 mx-2">
                     <CameraIcon />
+
                     <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
                         {chore.needsPics ? "Photo required" : "Photo not required"}
                     </BrandText>
@@ -215,10 +223,12 @@ export const ViewChore = ({route}) => {
                         <View className="flex-row items-start my-6 mx-2">
                             <View className="flex-row items-center">
                                 <WriteIcon />
+
                                 <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
                                     Notes
                                 </BrandText>
                             </View>
+
                             <View className="flex-1 ms-[56px]">
                                 <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE]">
                                     {chore.details}
@@ -235,10 +245,12 @@ export const ViewChore = ({route}) => {
                         <View className="flex-row items-start my-6 mx-2">
                             <View className="flex-row items-start">
                                 <WriteIcon />
+
                                 <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
                                     Parent{"\n"}Comments
                                 </BrandText>
                             </View>
+
                             <View className="flex-1 ms-6">
                                 <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE]">
                                     {chore.parentComments}
@@ -255,10 +267,12 @@ export const ViewChore = ({route}) => {
                         <View className="flex-row items-start my-6 mx-2">
                             <View className="flex-row items-start">
                                 <WriteIcon />
+
                                 <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
                                     Kid{"\n"}Comments
                                 </BrandText>
                             </View>
+
                             <View className="flex-1 ms-6">
                                 <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE]">
                                     {chore.kidComments}
@@ -280,9 +294,9 @@ export const ViewChore = ({route}) => {
                                     onPress={() => navigation.navigate("NewChore")}
                                     className="p-[10px] rounded-full items-center justify-center bg-[#9FB6AE] dark:bg-darkButton w-full h-[56px] mt-4"
                                 >
-                                        <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
-                                            Edit chore
-                                        </BrandBoldText>
+                                    <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
+                                        Edit chore
+                                    </BrandBoldText>
                                 </Pressable>
                                 
                                 <Pressable
@@ -301,9 +315,9 @@ export const ViewChore = ({route}) => {
                                     onPress={[]}
                                     className="p-[10px] rounded-full items-center justify-center bg-[#84A99D] w-full h-[56px] mt-4"
                                 >
-                                        <BrandBoldText className="text-[#ECEDEE] text-[20px] ms-4">
-                                            {chore.beforePic ? "Resubmit" : "Submit"} before photo
-                                        </BrandBoldText>
+                                    <BrandBoldText className="text-[#ECEDEE] text-[20px] ms-4">
+                                        {chore.beforePic ? "Resubmit" : "Submit"} before photo
+                                    </BrandBoldText>
                                 </Pressable>
                                 
                                 <Pressable

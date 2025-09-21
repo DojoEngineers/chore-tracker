@@ -3,7 +3,7 @@ import { useLogin, useNotifications } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -21,16 +21,24 @@ import { BackArrow } from "../../components/icons/BackArrow"
 import { DateIcon } from "../../components/icons/DateIcon"
 import { AssignedToIcon } from "../../components/icons/AssignedToIcon"
 import dayjs from "dayjs"
+import { NewChoreDropDown } from "../../components/NewChoreDropDown"
 
 const weekdays = [
-    { id: 1, short: 'Mon', full: 'Monday' },
-    { id: 2, short: 'Tue', full: 'Tuesday' },
-    { id: 3, short: 'Wed', full: 'Wednesday' },
-    { id: 4, short: 'Thu', full: 'Thursday' },
-    { id: 5, short: 'Fri', full: 'Friday' },
-    { id: 6, short: 'Sat', full: 'Saturday' },
-    { id: 0, short: 'Sun', full: 'Sunday' },
-];
+    { id: 0, short: 'S', full: 'Sunday' },
+    { id: 1, short: 'M', full: 'Monday' },
+    { id: 2, short: 'T', full: 'Tuesday' },
+    { id: 3, short: 'W', full: 'Wednesday' },
+    { id: 4, short: 'T', full: 'Thursday' },
+    { id: 5, short: 'F', full: 'Friday' },
+    { id: 6, short: 'S', full: 'Saturday' }
+]
+
+const repeatOptions = [
+    { label: "Never", value: "never" },
+    { label: "Daily", value: "daily" },
+    { label: "Weekly", value: "weekly" },
+    { label: "Monthly", value: "monthly" }
+]
 
 export const NewChoreDetails = ({ route }) => {
 
@@ -86,28 +94,24 @@ export const NewChoreDetails = ({ route }) => {
     };
 
     // Notification code ends here
-
-    const today = dayjs().toDate()
-    const aMonthFromNow = dayjs().add(1, 'month').toDate()
-    const tomorrow = dayjs().add(1, 'day').toDate()
-    const aWeekFromNow = dayjs().add(7, 'day')
-    const sixPM = dayjs().hour(18).minute(0).second(0).millisecond(0).toDate()
     
-    const [repeat, setRepeat] = useState([{ label: "never", value: "never" }, { label: "daily", value: "daily" },
-        { label: "weekly", value: "weekly" }, { label: "monthly", value: "monthly" }])
-    const [openRepeat, setOpenRepeat] = useState(false)
-    const [repeatValue, setRepeatValue] = useState(repeat[0].value)
     const [apiErrors, setApiErrors] = useState({})
+    const [openKids, setOpenKids] = useState(false)
+    const [kid, setKid] = useState({})
+    const [openRepeat, setOpenRepeat] = useState(false)
+    const [repeat, setRepeat] = useState(repeatOptions[0].value)
+    const [openDate, setOpenDate] = useState(false)
+    const [date, setDate] = useState(dayjs().add(1, 'day').toDate())
+    const [weekday, setWeekday] = useState(null)
+    const [time, setTime] = useState(() => {
+  const t = dayjs().hour(18).minute(0).second(0).millisecond(0);
+  return new Date(t.year(), t.month(), t.date(), t.hour(), t.minute());
+});
+
+    const [openTime, setOpenTime] = useState(false)
     const [details, setDetails] = useState("")
     const [detailsError, setDetailsError] = useState("")
-    const [kid, setKid] = useState(null)
     const [requirePhotos, setRequirePhotos] = useState(false)
-    const [date, setDate] = useState(tomorrow)
-    const [time, setTime] = useState(sixPM)
-    const [dayValue, setDayValue] = useState(null)
-    const [openKids, setOpenKids] = useState(false)
-    const [openTime, setOpenTime] = useState(false)
-    const [openDate, setOpenDate] = useState(false)
     
     const { title } = route.params
     const navigation = useNavigation()
@@ -118,7 +122,7 @@ export const NewChoreDetails = ({ route }) => {
     const kids = loggedInData.family.children
         .filter(kid => kid.isActive)
         .map(kid => ({label: kid.name, value: kid._id}))
-
+    
     const handleDetailsChange = (formDetails) => {
         setDetails(formDetails)
         if (formDetails.length >= 100) {
@@ -150,7 +154,7 @@ export const NewChoreDetails = ({ route }) => {
                 .millisecond(0)
             const allData = {
                 title, details, creator: loggedInData._id, stageDate: dayjs().toISOString(),
-                worker: kid, dueDate: dateTime.toISOString(), needsPics: requirePhotos, repeat: repeatValue, day: dayValue
+                worker: kid, dueDate: dateTime.toISOString(), needsPics: requirePhotos, repeat: repeat, day: weekday
             }
 
             addChore(allData)
@@ -182,208 +186,157 @@ export const NewChoreDetails = ({ route }) => {
             >
                 <View className="flex-1 px-[16px] bg-lightBg dark:bg-grayBg">
 
-                    <View className="flex-row w-full mt-[70px] items-center mb-8">
+                    <View className="flex-row w-full mt-[70px] items-center mb-4">
                         <Pressable
                             hitSlop={20}
-                            className="ps-6 pe-8"
+                            className="ps-1 pe-6"
                             onPress={() => navigation.goBack()}
                         >
                             <BackArrow />
                         </Pressable>
+
                         <BrandBoldText className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText">
                             {title}
                         </BrandBoldText>
                     </View>
 
-                    <View className="w-full flex-row justify-between items-center z-100 relative">
+                    {apiErrors.addChore && (
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.addChore}
+                        </BrandText>
+                    )}
 
+                    <View className="flex-row justify-between items-center z-100 relative">
                         <View className="flex-row items-center gap-[10px]">
                             <AssignedToIcon />
-                            <BrandBoldText className="text-black dark:text-white">Assign to</BrandBoldText>
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
+                                Assign to
+                            </BrandText>
                         </View>
 
-                        <DropDownPicker
-                            open={openKids}
-                            setOpen={setOpenKids}
-                            items={kids}
-                            value={kid}
-                            setValue={setKid}
-                            placeholder="Pick one"
-                            listMode="SCROLLVIEW"
-                            containerStyle={{
-                                width: 150
-                            }}
-                            style={{
-                                zIndex: 100,
-                                backgroundColor: isDark ? "#22252B" : "white",
-                                elevation: 100,
-                                border: 2,
-                                borderColor: isDark ? "white" : "black",
-                            }}
-                            arrowIconContainerStyle={{
-                                marginRight: 10
-                            }}
-                            textStyle={{
-                                color: isDark ? "white" : "black",
-                                paddingLeft: 10,
-                                fontFamily: "nunito"
-                            }}
-                            placeholderStyle={{
-                                color: isDark ? "white" : "black",
-                                fontFamily: "nunito"
-                            }}
-                            dropDownContainerStyle={{
-                                zIndex: 100,
-                                elevation: 100,
-                                backgroundColor: isDark ? "#22252B" : "white",
-                                width: 150
-                            }}
-                            arrowIconStyle={{
-                                tintColor: isDark ? "white" : "black",
-                                marginLeft: 5,
-                                color: isDark ? "white" : "black"
-                            }}
-                            tickIconStyle={{
-                                tintColor: isDark ? "white" : "black",
-                            }}
-                            labelStyle={{
-                                color: isDark ? "white" : "black",
-                            }}
+                        <NewChoreDropDown
+                            open={openKids} setOpen={setOpenKids} value={kid} setValue={setKid}
+                            items={kids} isDark={isDark} placeholder="Pick one" zIndex={100}
                         />
                     </View>
 
-                    <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
-                    <View className="flex-row w-[100%] justify-between items-start mt-[20px] relative z-10">
+                    <View className="h-[1px] my-6 bg-[#737780]"></View>
+
+                    <View className="flex-row justify-between items-center relative z-10">
                         <View className="flex-row items-center gap-[10px]">
-                            <RepeatIcon width={20} />
-                            <BrandBoldText className="text-black dark:text-white">Repeat</BrandBoldText>
+                            <RepeatIcon />
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
+                                Repeat
+                            </BrandText>
                         </View>
-                        <DropDownPicker
-                            open={openRepeat}
-                            value={repeatValue}
-                            items={repeat}
-                            setOpen={setOpenRepeat}
-                            setValue={setRepeatValue}
-                            setItems={setRepeat}
-                            listMode="SCROLLVIEW"
-                            containerStyle={{
-                                width: 150, // This controls the overall container
-                            }}
-                            style={{
-                                zIndex: 10,
-                                backgroundColor: isDark ? "#22252B" : "white",
-                                elevation: 10,
-                                border: 2,
-                                borderColor: isDark ? "white" : "black",
-                                color: isDark ? "white" : "black"
-                            }}
 
-                            arrowIconContainerStyle={{
-                                marginRight: 10, // Moves arrow away from right edge
-                            }}
-                            textStyle={{
-                                color: isDark ? "white" : "black",
-                                paddingLeft: 10,
-                                fontFamily: "nunito"
-                            }}
-
-                            // Open state styling
-                            dropDownContainerStyle=
-                            {{
-                                zIndex: 10,
-                                backgroundColor: isDark ? "#22252B" : "white",
-                                elevation: 10,
-                                width: 150,
-                            }}
-
-                            // Arrow styling
-                            arrowIconStyle={{
-                                tintColor: isDark ? "white" : "black",
-                                marginLeft: 5,
-                                color: isDark ? "white" : "black"
-                            }}
-                            tickIconStyle={{
-                                tintColor: isDark ? "white" : "black",
-                            }}
-
-                            // styles the selected value
-                            labelStyle={{
-                                color: isDark ? "white" : "black",
-                            }}
+                        <NewChoreDropDown
+                            open={openRepeat} setOpen={setOpenRepeat} value={repeat}
+                            setValue={setRepeat} items={repeatOptions} isDark={isDark} zIndex={10}
                         />
                     </View>
 
-                    {(repeatValue == "never" || repeatValue == "monthly") &&
-                        <>
-                            <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
-                            <View className="w-[100%] flex-row items-start gap-20 justify-between">
-                                <View className="flex-row items-center gap-[10px]">
-                                    <DateIcon />
-                                    <BrandBoldText className="text-black dark:text-white pt-[10px] pb-[10px]">Due Date</BrandBoldText>
-                                </View>
-                                <View className="flex-col items-center z-1">
-                                    <BrandText className="text-black dark:text-white">Select date</BrandText>
-                                    <Pressable onPress={() => { setOpenDate(true) }}
-                                        className="z-1 flex-1 items-center bg-white dark:bg-darkBg border border-1 border-black
-                                            dark:border-white rounded-lg px-[20px] py-[10px]"
-                                    >
-                                        <BrandBoldText className="text-black dark:text-white flex justify-center">
-                                            {repeatValue == "never" ? dayjs(date).format('ddd MMM D YYYY') :
-                                                dayjs(date).format('MMM D')} </BrandBoldText>
-                                    </Pressable>
-                                    {openDate &&
-                                        <DateTimePicker value={date} mode="date" display="default"
-                                            onChange={(event, selectedDate) => {
-                                                setOpenDate(false);
-                                                if (selectedDate) { setDate(selectedDate) };
-                                            }}
-                                            minimumDate={today}
-                                            maximumDate={aMonthFromNow}
-                                        />
+                    {(repeat === "never" || repeat === "monthly")
+                        ?
+                            <View>
+                                <View className="h-[1px] my-6 bg-[#737780]"></View>
+
+                                <View className="flex-row items-center justify-between">
+                                    <View className="flex-row items-center gap-[10px]">
+                                        <DateIcon />
+                                        <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
+                                            Due date
+                                        </BrandText>
+                                    </View>
+
+                                    {!openDate
+                                        ?
+                                            <Pressable onPress={() => { setOpenDate(true) }}
+                                                className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
+                                                border-[#9FB6AE] dark:border-[#D0D1D4] rounded-xl p-3"
+                                            >
+                                                <BrandText
+                                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]"
+                                                >
+                                                    {dayjs(date).format('MMM D, YYYY')}
+                                                </BrandText>
+                                            </Pressable>
+
+                                        :
+                                            <DateTimePicker
+                                                value={date}
+                                                mode="date"
+                                                display="default"
+                                                onChange={(event, selectedDate) => {
+                                                    setOpenDate(false)
+                                                    if (selectedDate) setDate(selectedDate)
+                                                }}
+                                                minimumDate={dayjs().toDate()}
+                                                maximumDate={dayjs().add(1, 'month').toDate()}
+                                            />
                                     }
                                 </View>
                             </View>
-                        </>
-                    }
-                    {repeatValue == "weekly" &&
-                        <>
-                            <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
-                            <View className="flex-row w-full">
-                                {weekdays.map((day) => (
-                                    <Pressable
-                                        key={day.id}
-                                        className={`w-[42px] h-[42px] flex justify-center items-center m-1 rounded-full ${dayValue == day.id ? isDark ? "bg-gray-100" : "bg-gray-600" : isDark ? "bg-gray-400" : "bg-gray-400"}`}
-                                        onPress={() => setDayValue(day.id)}
-                                    >
-                                        <BrandBoldText className={"text-white dark:text-black"}>
-                                            {day.short}
-                                        </BrandBoldText>
-                                    </Pressable>
-                                ))}
+
+                        : repeat === "weekly" ?
+                            <View>
+                                <View className="h-[1px] my-6 bg-[#737780]"></View>
+
+                                <View className="flex-row flex-1 justify-between mx-8">
+                                    {weekdays.map((day) => (
+                                        <Pressable
+                                            key={day.id}
+                                            className={`w-[30px] h-[30px] justify-center items-center rounded-full
+                                                ${weekday === day.id
+                                                    ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
+                                                    : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}`}
+                                            onPress={() => setWeekday(day.id)}
+                                        >
+                                            <BrandBoldText className="text-[#22252B] text-[16px]">
+                                                {day.short}
+                                            </BrandBoldText>
+                                        </Pressable>
+                                    ))}
+                                </View>
                             </View>
-                        </>
+
+                        : null
                     }
-                    <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
-                    <View className="w-[100%] gap-20 flex-row items-start justify-between">
+
+                    <View className="h-[1px] my-6 bg-[#737780]"></View>
+
+                    <View className="flex-row items-center justify-between">
                         <View className="flex-row items-center gap-[10px]">
                             <ClockIcon />
-                            <BrandBoldText className="text-black dark:text-white flex" style={{ paddingVertical: 10 }}>Time Due</BrandBoldText>
+
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
+                                Time due
+                            </BrandText>
                         </View>
-                        <View className="flex-col items-center">
-                            <BrandText className="text-black dark:text-white">Select time</BrandText>
-                            <Pressable onPress={() => { setOpenTime(true) }}
-                                className="flex items-center bg-white dark:bg-darkBg border border-black dark:border-white rounded-lg px-5 py-2"
-                            >
-                                <BrandBoldText className="text-black dark:text-white">
-                                {dayjs(time).format('h:mm A')}</BrandBoldText></Pressable>
-                            {openTime &&
-                                <DateTimePicker value={time} mode="time" display="default"
+
+                        {!openTime
+                            ?
+                                <Pressable onPress={() => { setOpenTime(true) }}
+                                    className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
+                                                border-[#9FB6AE] dark:border-[#D0D1D4] rounded-xl p-3"
+                                >
+                                    <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
+                                        {dayjs(time).format('h:mm A')}
+                                    </BrandText>
+                                </Pressable>
+
+                            :
+                                <DateTimePicker
+                                    value={time}
+                                    mode="time"
+                                    display="default"
                                     onChange={(event, selectedTime) => {
-                                        setOpenTime(false);
-                                        if (selectedTime) { setTime(selectedTime) };
-                                    }} />
-                            }
-                        </View>
+                                        setOpenTime(false)
+                                        if (selectedTime) setTime(selectedTime)
+                                    }}
+                                    
+                                />
+                        }
                     </View>
 
                     <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>

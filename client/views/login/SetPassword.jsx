@@ -119,9 +119,7 @@ export const SetPassword = ({route}) => {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
-
                 <View className="px-[16px]">
-    
                     <View className="flex-row ps-2 mt-[150px] mb-10 items-center">
                         <Pressable
                             hitSlop={20}

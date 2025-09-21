@@ -173,7 +173,6 @@ export const AddFamilyMember = ({route}) => {
                 <View className="items-end">
                     <SmallBottomRightSquiggle />
                 </View>
-                
             </View>
         </TouchableWithoutFeedback>
     )

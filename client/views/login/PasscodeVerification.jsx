@@ -73,7 +73,6 @@ export const PasscodeVerification = ({route}) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View className="flex-1 bg-lightBg dark:bg-darkBg items-center justify-between">
                 <View className="px-[16px]">
-
                     <View className="flex-row items-center mt-[150px] mb-4 ps-2">
                         <Pressable
                             hitSlop={20}
@@ -114,7 +113,11 @@ export const PasscodeVerification = ({route}) => {
                             keyboardType="number-pad"
                             textContentType="oneTimeCode"
                             renderCell={({ index, symbol, isFocused }) => (
-                                <View key={index} className="w-12 h-12 border-2 border-gray-300 mx-1 flex items-center justify-center bg-white rounded-lg">
+                                <View
+                                    key={index}
+                                    className="w-12 h-12 border-2 border-gray-300 mx-1 flex
+                                        items-center justify-center bg-white rounded-lg"
+                                >
                                     <BrandText
                                         onLayout={getCellOnLayoutHandler(index)}
                                         className={`text-[24px] ${isFocused ? 'border-blue-500' : ''}`}

@@ -59,6 +59,7 @@ export const Settings = () => {
                 >
                     <View className="flex-row items-center">
                         <NotificationsIcon />
+
                         <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-8">
                             Notifications
                         </BrandBoldText>
@@ -72,6 +73,7 @@ export const Settings = () => {
                 >
                     <View className="flex-row items-center">
                         <DarkModeIcon />
+
                         <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-8">
                             Theme
                         </BrandBoldText>
@@ -94,6 +96,7 @@ export const Settings = () => {
                 >
                     <View className="flex-1 flex-row items-center">
                         <LogoutIcon />
+
                         <BrandBoldText className="text-white text-[20px] ms-4">
                             Logout
                         </BrandBoldText>
@@ -106,6 +109,7 @@ export const Settings = () => {
                 >
                     <View className="flex-1 flex-row items-center">
                         <DeleteIcon />
+                        
                         <BrandBoldText className="text-[#A1A4AA] dark:text-[#737780] text-[20px] ms-4">
                             Delete Account
                         </BrandBoldText>

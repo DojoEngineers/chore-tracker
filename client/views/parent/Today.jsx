@@ -80,6 +80,7 @@ export const Today = () => {
                                 <View className="flex-1">
                                     <View className="flex-row">
                                         <SquareIcon />
+
                                         <BrandBoldText
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mb-2 ms-3"
                                         >
@@ -115,6 +116,7 @@ export const Today = () => {
                                             >
                                                 Overdue!
                                             </BrandBoldText>
+                                            
                                         :
                                             <BrandText
                                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
