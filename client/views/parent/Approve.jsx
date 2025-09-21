@@ -164,11 +164,13 @@ export const Approve = () => {
                                 </BrandText>
 
                             :
+                            <View className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-6 mt-4 justify-center">
                                 <BrandText
-                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mt-6"
+                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]"
                                     >
                                     No recent activity
                                 </BrandText>
+                            </View>
                         }
                     </View>
                 </ScrollView>

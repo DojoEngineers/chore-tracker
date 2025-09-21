@@ -81,11 +81,13 @@ export const HorizontalChoreScroll = ({chores, apiError, loading, noChoreMessage
                     </BrandText>
 
                 :
-                    <BrandText
-                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] my-4 px-[16px]"
-                    >
-                        {noChoreMessage}
-                    </BrandText>
+                    <View className="flex-row my-3 bg-[#9FB6AE] dark:bg-[#2F3339] rounded-3xl py-4 px-6 mx-[16px]">
+                        <BrandText
+                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] my-4 px-[16px]"
+                        >
+                            {noChoreMessage}
+                        </BrandText>
+                    </View>
             }
         </View>
     )

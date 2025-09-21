@@ -100,7 +100,7 @@ export const PasscodeVerification = ({route}) => {
 
                     <View className="items-center mb-8">
                         <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                            Enter the verification code that was sent to {username}.
+                            Enter the verification code that was sent to {username}. This code is only valid for 24 hours.
                         </BrandText>
                     </View>
 

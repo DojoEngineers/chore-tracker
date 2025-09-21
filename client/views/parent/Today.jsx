@@ -147,11 +147,15 @@ export const Today = () => {
                     </BrandText>
 
                 :
-                    <BrandText
-                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] my-4 px-[16px] flex-1"
-                    >
-                        No chores due today
-                    </BrandText>
+                    <View className="flex-1">
+                        <View className="flex-row my-3 bg-[#9FB6AE] dark:bg-[#2F3339] rounded-3xl py-4 px-6 mx-[16px]">
+                            <BrandText
+                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] my-4 px-[16px] flex-1"
+                            >
+                                No chores due today
+                            </BrandText>
+                        </View>
+                    </View>
             }
             
             <ParentNavBar />

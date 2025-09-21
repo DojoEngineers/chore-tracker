@@ -22,17 +22,6 @@ import { DateIcon } from "../../components/icons/DateIcon"
 import { AssignedToIcon } from "../../components/icons/AssignedToIcon"
 import dayjs from "dayjs"
 
-
-//NOTE: familyData in userContext is currently empty. Right now, I'm getting the data from inside of loggedInData.family
-
-const DEFAULT_FORM_VALUES = {
-    // childValue: "",
-    // date: "",
-    // time: "",
-    // repeatValue: "",
-    // requirePhotos: false,
-    details: "",
-}
 const weekdays = [
     { id: 1, short: 'Mon', full: 'Monday' },
     { id: 2, short: 'Tue', full: 'Tuesday' },
@@ -50,66 +39,15 @@ export const NewChoreDetails = ({ route }) => {
         sendTestNotification,
         sendPushNotification,
         isLoading
-    } = useNotifications();
-
-    const { title } = route.params
-
-    // for checking dark/light mode inside inputs that dont support nativewind's classname.
-    const colorScheme = useColorScheme()
-    const isDark = colorScheme === "dark"
-
-    // variables for validating selected date. User must select a date between today and 1 month from now.
-    const today = new Date();
-    const aMonthFromNow = new Date();
-    aMonthFromNow.setMonth(today.getMonth() + 1);
-    const tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 1)
-    const aWeekFromNow = new Date();
-    aWeekFromNow.setDate(today.getDate() + 7)
-    const sixPM = new Date();
-    sixPM.setHours(18, 0, 0, 0);
-
-    const [repeat, setRepeat] = useState([{ label: "never", value: "never" }, { label: "daily", value: "daily" }, { label: "weekly", value: "weekly" }, { label: "monthly", value: "monthly" }])
-    const [openRepeat, setOpenRepeat] = useState(false)
-    const [repeatValue, setRepeatValue] = useState(repeat[0].value)
-
-    const [apiErrors, setApiErrors] = useState({})
-    const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
-    const [formErrors, setFormErrors] = useState({})
-
-    const navigation = useNavigation()
-    const { loggedInData, familyData } = useLogin()
-
-    // an array of objects that hold the name/id of each child in family. Required for the dropDownPicker.
-    const [children, setChildren] = useState("")
-
-    // dropdown picker variables (select a child)
-    const [open, setOpen] = useState(false);
-    const [childValue, setChildValue] = useState(null);
-    const [items, setItems] = useState([])
-
-    //"require photos" toggle boolean
-    const [requirePhotos, setRequirePhotos] = useState(false);
-
-    //Sets date/time to today
-    const [date, setDate] = useState(tomorrow)
-    const [time, setTime] = useState(sixPM)
-
-    // Sets day of week (if chore repeats weekly)
-    const [dayValue, setDayValue] = useState(null)
-
-    // controls when date/time modals are open/closed
-    const [openTime, setOpenTime] = useState(false)
-    const [openDate, setOpenDate] = useState("")
-
-
+    } = useNotifications()
+    
     //  send test 
     const handleSendTest = async () => {
         const result = await sendTestNotification();
         if (result?.success) {
-            Alert.alert('Success', 'Test notification sent!');
+        Alert.alert('Success', 'Test notification sent!')
         }
-    };
+    }
 
     // Send chore reminder
     const handleSendChoreReminder = async () => {
@@ -147,99 +85,89 @@ export const NewChoreDetails = ({ route }) => {
         }
     };
 
+    // Notification code ends here
 
-    useEffect(() => {
-        console.log("loggedindata", loggedInData)
-        // console.log("familyData", familyData)
-        // console.log("children", children)
-        if (loggedInData.family) {
-            setChildren(loggedInData.family.children)
+    const today = dayjs().toDate()
+    const aMonthFromNow = dayjs().add(1, 'month').toDate()
+    const tomorrow = dayjs().add(1, 'day').toDate()
+    const aWeekFromNow = dayjs().add(7, 'day')
+    const sixPM = dayjs().hour(18).minute(0).second(0).millisecond(0).toDate()
+    
+    const [repeat, setRepeat] = useState([{ label: "never", value: "never" }, { label: "daily", value: "daily" },
+        { label: "weekly", value: "weekly" }, { label: "monthly", value: "monthly" }])
+    const [openRepeat, setOpenRepeat] = useState(false)
+    const [repeatValue, setRepeatValue] = useState(repeat[0].value)
+    const [apiErrors, setApiErrors] = useState({})
+    const [details, setDetails] = useState("")
+    const [detailsError, setDetailsError] = useState("")
+    const [kid, setKid] = useState(null)
+    const [requirePhotos, setRequirePhotos] = useState(false)
+    const [date, setDate] = useState(tomorrow)
+    const [time, setTime] = useState(sixPM)
+    const [dayValue, setDayValue] = useState(null)
+    const [openKids, setOpenKids] = useState(false)
+    const [openTime, setOpenTime] = useState(false)
+    const [openDate, setOpenDate] = useState(false)
+    
+    const { title } = route.params
+    const navigation = useNavigation()
+    const { loggedInData } = useLogin()
+    const colorScheme = useColorScheme()
+    const isDark = colorScheme === "dark"
+
+    const kids = loggedInData.family.children
+        .filter(kid => kid.isActive)
+        .map(kid => ({label: kid.name, value: kid._id}))
+
+    const handleDetailsChange = (formDetails) => {
+        setDetails(formDetails)
+        if (formDetails.length >= 100) {
+            setDetailsError("Details cannot exceed 100 characters.")
         }
-        if (children && children.length > 0) {
-            setItems(children.map(member => ({
-                label: member.name,
-                value: member._id
-            })))
-            console.log("added kids!")
+        else if (formDetails.length < 5) {
+            setDetailsError("Details must be at least 5 characters.")
         }
-
-    }, [familyData, children])
-
-
-    // Dynamically set form data
-    const handleChange = (name, value) => {
-        setFormData(prev => ({ ...prev, [name]: value }))
-        validateData(name, value)
+        else (
+            setDetailsError(false)
+        )
     }
 
-    // Validate form inputs dynamically
-    const validateData = (name, value) => {
-        const validations = {
-            details: value => (
-                value.length < 5 ? "Details must be at least 5 characters."
-                    : value.length >= 100 ? "Details cannot exceed 100 characters."
-                        : false
-            )
-        }
-        setFormErrors(prev => ({ ...prev, [name]: validations[name](value) }))
-    }
-
-    // Check for errors before submitting form
-    const isReadyToSubmit = () => {
-        for (let key in formErrors) {
-            if (formErrors[key] != false || formData[key] == "") {
-                console.log("not ready")
-                return false
-            }
-        }
-        if (!childValue) {
-            return false
-        }
-        console.log("ready")
-        return true
-    }
-
-    // Submit form
     const handleSubmit = async () => {
-        console.log("add...")
-        if (!isReadyToSubmit()) {
+        if (detailsError) {
             Toast.show({
                 type: 'error',
                 text1: "Please make corrections to the form."
             })
             return
         }
-        else {
-            console.log("submitting...")
-            handleSendTest()
-            // combining date and time in the frontend (best practice)
-            const dateTime = new Date(date);
-            dateTime.setHours(
-                time.getHours(),
-                time.getMinutes(),
-                0, 0
-            );
-            console.log("day", dayValue)
-            const allData = {
-                title: title, details: formData.details, creator: loggedInData._id, stageDate: dayjs().toISOString(),
-                worker: childValue, dueDate: dateTime, needsPics: requirePhotos, repeat: repeatValue, day: dayValue
-            }
-            addChore(allData)
-                .then(res => {
-                    if (res) {
-                        Toast.show({
-                            type: 'success',
-                            text1: "Chore added"
-                        })
-                        navigation.navigate("Dashboard", { animationType: "fade_from_bottom" })
-                    }
-                    else {
-                        Toast.show({
-                            type: 'error',
-                            text1: "Unable to add chore"
-                        })
-                    }
 
+        else {
+            handleSendTest()
+            const dateTime = dayjs(date)
+                .hour(dayjs(time).hour())
+                .minute(dayjs(time).minute())
+                .second(0)
+                .millisecond(0)
+            const allData = {
+                title, details, creator: loggedInData._id, stageDate: dayjs().toISOString(),
+                worker: kid, dueDate: dateTime.toISOString(), needsPics: requirePhotos, repeat: repeatValue, day: dayValue
+            }
+
+            addChore(allData)
+                .then(() => {
+                    Toast.show({
+                        type: 'success',
+                        text1: "Chore created!"
+                    })
+                    navigation.replace("Dashboard", { animationType: "fade_from_bottom" })
+                })
+                .catch((error) => {
+                    console.log("addChore error:", error)
+                    setApiErrors(prev => ({...prev, addChore: "Unable to create chore."}))
+                    Toast.show({
+                        type: 'error',
+                        text1: "Unable to create chore."
+                    })
                 })
         }
     }
@@ -253,8 +181,8 @@ export const NewChoreDetails = ({ route }) => {
                 extraScrollHeight={100}
             >
                 <View className="flex-1 px-[16px] bg-lightBg dark:bg-grayBg">
-                    <View className="flex-row w-full mt-[70px] items-center mb-8">
 
+                    <View className="flex-row w-full mt-[70px] items-center mb-8">
                         <Pressable
                             hitSlop={20}
                             className="ps-6 pe-8"
@@ -266,22 +194,24 @@ export const NewChoreDetails = ({ route }) => {
                             {title}
                         </BrandBoldText>
                     </View>
+
                     <View className="w-full flex-row justify-between items-center z-100 relative">
+
                         <View className="flex-row items-center gap-[10px]">
                             <AssignedToIcon />
                             <BrandBoldText className="text-black dark:text-white">Assign to</BrandBoldText>
                         </View>
+
                         <DropDownPicker
-                            open={open}
-                            value={childValue}
-                            items={items}
-                            setOpen={setOpen}
-                            setValue={setChildValue}
-                            setItems={setItems}
+                            open={openKids}
+                            setOpen={setOpenKids}
+                            items={kids}
+                            value={kid}
+                            setValue={setKid}
                             placeholder="Pick one"
                             listMode="SCROLLVIEW"
                             containerStyle={{
-                                width: 150, // This controls the overall container
+                                width: 150
                             }}
                             style={{
                                 zIndex: 100,
@@ -291,7 +221,7 @@ export const NewChoreDetails = ({ route }) => {
                                 borderColor: isDark ? "white" : "black",
                             }}
                             arrowIconContainerStyle={{
-                                marginRight: 10, // Moves arrow away from right edge
+                                marginRight: 10
                             }}
                             textStyle={{
                                 color: isDark ? "white" : "black",
@@ -302,15 +232,12 @@ export const NewChoreDetails = ({ route }) => {
                                 color: isDark ? "white" : "black",
                                 fontFamily: "nunito"
                             }}
-                            // Open state styling
-                            dropDownContainerStyle=
-                            {{
+                            dropDownContainerStyle={{
                                 zIndex: 100,
                                 elevation: 100,
                                 backgroundColor: isDark ? "#22252B" : "white",
                                 width: 150
                             }}
-                            // Arrow styling
                             arrowIconStyle={{
                                 tintColor: isDark ? "white" : "black",
                                 marginLeft: 5,
@@ -319,7 +246,6 @@ export const NewChoreDetails = ({ route }) => {
                             tickIconStyle={{
                                 tintColor: isDark ? "white" : "black",
                             }}
-                            // styles the selected value
                             labelStyle={{
                                 color: isDark ? "white" : "black",
                             }}
@@ -402,11 +328,8 @@ export const NewChoreDetails = ({ route }) => {
                                             dark:border-white rounded-lg px-[20px] py-[10px]"
                                     >
                                         <BrandBoldText className="text-black dark:text-white flex justify-center">
-                                            {repeatValue == "never" ? date.toDateString() :
-                                                date.toLocaleDateString('en-US', {
-                                                    month: 'short',
-                                                    day: 'numeric'
-                                                })} </BrandBoldText>
+                                            {repeatValue == "never" ? dayjs(date).format('ddd MMM D YYYY') :
+                                                dayjs(date).format('MMM D')} </BrandBoldText>
                                     </Pressable>
                                     {openDate &&
                                         <DateTimePicker value={date} mode="date" display="default"
@@ -451,10 +374,8 @@ export const NewChoreDetails = ({ route }) => {
                             <Pressable onPress={() => { setOpenTime(true) }}
                                 className="flex items-center bg-white dark:bg-darkBg border border-black dark:border-white rounded-lg px-5 py-2"
                             >
-                                <BrandBoldText className="text-black dark:text-white">{time.toLocaleTimeString('en-US', {
-                                    hour: 'numeric',
-                                    minute: '2-digit'
-                                })}</BrandBoldText></Pressable>
+                                <BrandBoldText className="text-black dark:text-white">
+                                {dayjs(time).format('h:mm A')}</BrandBoldText></Pressable>
                             {openTime &&
                                 <DateTimePicker value={time} mode="time" display="default"
                                     onChange={(event, selectedTime) => {
@@ -495,10 +416,10 @@ export const NewChoreDetails = ({ route }) => {
                             <TextInput
                                 multiline={true}
                                 numberOfLines={3}
-                                value={formData.details}
-                                onChangeText={(text) => handleChange('details', text)}
+                                value={details.details}
+                                onChangeText={(text) => handleDetailsChange('details', text)}
                                 placeholder="Add optional note"
-                                error={formErrors.details}
+                                error={detailsError.details}
                                 className="text-[15px] align-top h-[100px] border-[1px] borderblack dark:border-white rounded-lg bg-white dark:bg-darkBg text-black dark:text-white px-[10px]"
                                 placeholderTextColor={isDark ? "white" : "black"}
                             />

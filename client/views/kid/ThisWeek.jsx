@@ -157,11 +157,13 @@ export const ThisWeek = () => {
                         </BrandText>
 
                     :
-                        <BrandText
-                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] my-2 px-[16px] flex-1"
-                        >
-                            No chores due today
-                        </BrandText>
+                        <View className="flex-row w-full my-3 bg-[#9FB6AE] dark:bg-[#2F3339] rounded-3xl py-4 px-6">
+                            <BrandText
+                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] my-2 px-[16px] flex-1"
+                            >
+                                No chores due today
+                            </BrandText>
+                        </View>
                 }
 
                 <BrandText
@@ -239,11 +241,13 @@ export const ThisWeek = () => {
                         </BrandText>
 
                     :
-                        <BrandText
-                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] my-2 px-[16px] flex-1"
-                        >
-                            No chores due by end of week
-                        </BrandText>
+                        <View className="flex-row w-full my-3 bg-[#9FB6AE] dark:bg-[#2F3339] rounded-3xl py-4 px-6">
+                            <BrandText
+                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] my-2 px-[16px] flex-1"
+                            >
+                                No chores due by end of week
+                            </BrandText>
+                        </View>
                 }
 
             </ScrollView>

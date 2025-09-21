@@ -84,7 +84,7 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics}
                             </Pressable>
 
                             <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ms-6">
-                                Complete Chore
+                                Complete chore
                             </BrandText>
                         </View>
 
@@ -112,7 +112,7 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics}
                             onPress={submitAfterPhoto}
                         >
                             <BrandBoldText className="text-darkPrimaryText text-[16px]">
-                                Submit After Photo
+                                Submit after photo
                             </BrandBoldText>
                         </Pressable>
 
