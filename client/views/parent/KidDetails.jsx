@@ -86,6 +86,7 @@ export const KidDetails = ({route}) => {
                 <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-1">
                     <View className="flex-row items-center w-full">
                         <DueTodayIcon/>
+
                         <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
                             Due Today
                         </BrandBoldText>
@@ -113,6 +114,7 @@ export const KidDetails = ({route}) => {
                                                 >
                                                     Overdue!
                                                 </BrandBoldText>
+
                                             :
                                                 <BrandText
                                                     className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
@@ -182,6 +184,7 @@ export const KidDetails = ({route}) => {
                 <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-1">
                     <View className="flex-row items-center w-full">
                         <DueTodayIcon/>
+
                         <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
                             Due by end of week
                         </BrandBoldText>
@@ -201,6 +204,7 @@ export const KidDetails = ({route}) => {
                                         >
                                             {chore.title}
                                         </BrandText>
+
                                         <BrandText
                                             className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
                                         >
@@ -234,9 +238,7 @@ export const KidDetails = ({route}) => {
                                                 {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
                                             </BrandBoldText>
                                         </View>
-
                                     </View>
-                                    
                                 </Pressable>
                             ))
 
@@ -268,6 +270,7 @@ export const KidDetails = ({route}) => {
                 <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-1">
                     <View className="flex-row items-center w-full">
                         <CheckIcon/>
+
                         <BrandBoldText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[16px] ms-5">
                             Chore history
                         </BrandBoldText>
@@ -287,6 +290,7 @@ export const KidDetails = ({route}) => {
                                         >
                                             {chore.title}
                                         </BrandText>
+
                                         <BrandText
                                             className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
                                         >
@@ -324,9 +328,7 @@ export const KidDetails = ({route}) => {
                                                     : "Awaiting review"}
                                             </BrandBoldText>
                                         </View>
-
                                     </View>
-                                    
                                 </Pressable>
                             ))
                             

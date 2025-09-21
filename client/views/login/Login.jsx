@@ -106,14 +106,10 @@ export const Login = () => {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
-
                 <View>
-                    <View>
-                        <TopSquiggle />
-                    </View>
+                    <TopSquiggle />
 
                     <View className="px-[16px] mt-[75px]">
-
                         <Pressable
                             className="ps-2"
                             hitSlop={20}
@@ -168,9 +164,8 @@ export const Login = () => {
                             </Pressable>
                         </View>
 
-                        <View>
-                            <PrimaryButton onPress={handleLogin} label="Sign in" />
-                        </View>
+                        <PrimaryButton onPress={handleLogin} label="Sign in" />
+                    
                     </View>
                 </View>
 

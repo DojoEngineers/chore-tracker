@@ -43,7 +43,6 @@ export const StartingPage = () => {
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
-
             <LogoTopSquiggle />
 
             <View className="items-center px-[16px]">
@@ -70,9 +69,14 @@ export const StartingPage = () => {
 
             <View>
                 <View className="flex-row px-[16px] justify-center">
-                    <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">Added by a parent? </BrandText>
+                    <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-xl">
+                        Added by a parent?
+                    </BrandText>
+
                     <Pressable hitSlop={20} onPress={() => navigation.navigate('UsernameVerification')}>
-                        <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">Verify Here</BrandBoldText>
+                        <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">
+                            Verify Here
+                        </BrandBoldText>
                     </Pressable>
                 </View>
 

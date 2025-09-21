@@ -18,10 +18,7 @@ export const SplashScreen = () => {
 
     return (
         <View className="flex-1 justify-between bg-lightBg dark:bg-darkBg">
-
-            <View>
-                <LogoTopSquiggle/>
-            </View>
+            <LogoTopSquiggle/>
 
             <View className="items-center p-16">
                 <BrandBoldText className="text-7xl text-lightPrimaryText dark:text-darkPrimaryText leading-[80px]">

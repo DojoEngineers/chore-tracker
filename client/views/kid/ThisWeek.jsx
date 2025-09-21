@@ -92,6 +92,7 @@ export const ThisWeek = () => {
                                 <View className="flex-1">
                                     <View className="flex-row">
                                         <SquareIcon />
+
                                         <BrandBoldText
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mb-2 ms-3"
                                         >
@@ -127,6 +128,7 @@ export const ThisWeek = () => {
                                             >
                                                 Overdue!
                                             </BrandBoldText>
+
                                         :
                                             <BrandText
                                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
@@ -151,7 +153,7 @@ export const ThisWeek = () => {
 
                     : apiErrors.getChoresByWorker ?
                         <BrandText
-                            className="text-red-500 my-4 px-[16px] flex-1 my-2"
+                            className="text-red-500 px-[16px] flex-1 my-2"
                         >
                             {apiErrors.getChoresByWorker}
                         </BrandText>
@@ -184,6 +186,7 @@ export const ThisWeek = () => {
                                 <View className="flex-1">
                                     <View className="flex-row">
                                         <SquareIcon />
+
                                         <BrandBoldText
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mb-2 ms-3"
                                         >
@@ -235,7 +238,7 @@ export const ThisWeek = () => {
 
                     : apiErrors.getChoresByWorker ?
                         <BrandText
-                            className="text-red-500 my-4 px-[16px] flex-1 my-2"
+                            className="text-red-500 px-[16px] flex-1 my-2"
                         >
                             {apiErrors.getChoresByWorker}
                         </BrandText>

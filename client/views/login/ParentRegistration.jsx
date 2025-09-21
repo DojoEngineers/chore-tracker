@@ -114,11 +114,8 @@ export const ParentRegistration = () => {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
-
                 <View>
-                    <View>
-                        <TopSquiggle />
-                    </View>
+                    <TopSquiggle />
 
                     <View className="flex-row p-[17px]">
                         <Pressable
@@ -181,11 +178,11 @@ export const ParentRegistration = () => {
                         />
                     </View>
 
-                        <BottomLink
-                            onPress={() => navigation.navigate('Login')}
-                            text="Already have an account? "
-                            link="Login Now"
-                        />
+                    <BottomLink
+                        onPress={() => navigation.navigate('Login')}
+                        text="Already have an account? "
+                        link="Login Now"
+                    />
                 </View>
             </View>
         </TouchableWithoutFeedback>

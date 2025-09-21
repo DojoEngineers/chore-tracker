@@ -147,12 +147,14 @@ export const EditProfile = () => {
                             >
                                 <BackArrow/>
                             </Pressable>
+
                             <View className="flex-1 ms-[34px]">
                                 <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
                                     Edit Profile
                                 </BrandBoldText>
                             </View>
                         </View>
+
                         <View className="items-center">
                             <View
                                 className="rounded-full me-3 aspect-square h-[85px] justify-center
@@ -163,6 +165,7 @@ export const EditProfile = () => {
                                 </BrandText>
                             </View>
                         </View>
+
                         {apiErrors.updateUser && (
                             <BrandText className="text-red-500 text-center">
                                 {apiErrors.updateUser}
@@ -173,6 +176,7 @@ export const EditProfile = () => {
                                 {apiErrors.checkUsername}
                             </BrandText>
                         )}
+
                         <View className="mb-6">
                             <UserInput
                                 icon={FirstNameIcon}
@@ -182,6 +186,7 @@ export const EditProfile = () => {
                                 error={formErrors.name}
                             />
                         </View>
+
                         <View className="mb-6">
                             <UserInput
                                 icon={EmailIcon}
@@ -191,6 +196,7 @@ export const EditProfile = () => {
                                 error={formErrors.username}
                             />
                         </View>
+                        
                         <View className="items-center">
                             <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px] px-2">
                                 Email verification is required upon updating your email.
