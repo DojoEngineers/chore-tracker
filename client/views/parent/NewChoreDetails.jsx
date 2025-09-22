@@ -152,16 +152,13 @@ export const NewChoreDetails = ({ route }) => {
         if (formDetails.length >= 100) {
             setDetailsError("Details cannot exceed 100 characters.")
         }
-        else if (formDetails.length < 5) {
-            setDetailsError("Details must be at least 5 characters.")
-        }
         else (
             setDetailsError(false)
         )
     }
 
     const handleSubmit = async () => {
-        if (detailsError || dateTimeError) {
+        if (detailsError || dateTimeError || Object.keys(kid).length === 0) {
             Toast.show({
                 type: 'error',
                 text1: "Please make corrections to the form."
@@ -171,11 +168,6 @@ export const NewChoreDetails = ({ route }) => {
 
         else {
             handleSendTest()
-            const dateTime = dayjs(date)
-                .hour(dayjs(time).hour())
-                .minute(dayjs(time).minute())
-                .second(0)
-                .millisecond(0)
             const allData = {
                 title, details, creator: loggedInData._id, stageDate: dayjs().toISOString(),
                 worker: kid, dueDate: dateTime.toISOString(), needsPics: requirePhotos, repeat: repeat, day: weekday
@@ -285,7 +277,7 @@ export const NewChoreDetails = ({ route }) => {
                                             setMode("date")
                                         }}
                                         className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
-                                        border-[#9FB6AE] dark:border-[#D0D1D4] rounded-xl p-3"
+                                        border-[#D0D1D4] dark:border-[#D0D1D4] rounded-xl p-3"
                                     >
                                         <BrandText
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]"
@@ -338,7 +330,7 @@ export const NewChoreDetails = ({ route }) => {
                                 setMode("time")
                             }}
                             className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
-                                        border-[#9FB6AE] dark:border-[#D0D1D4] rounded-xl p-3"
+                                        border-[#D0D1D4] dark:border-[#D0D1D4] rounded-xl p-3"
                         >
                             <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
                                 {dayjs(dateTime).format('h:mm A')}
@@ -346,47 +338,63 @@ export const NewChoreDetails = ({ route }) => {
                         </Pressable>
                     </View>
 
-                    <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
+                    <View className="h-[1px] my-6 bg-[#737780]"></View>
+
                     <View className="flex-row justify-between items-center pe-[16px]">
-                        < View className="flex-row items-center gap-[10px]">
+                        <View className="flex-row items-center gap-[10px]">
                             <CameraIcon width={20} />
-                            <BrandBoldText className="text-black dark:text-white">Require photos?</BrandBoldText>
+
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
+                                Require photos?
+                            </BrandText>
                         </View>
+                        
                         <Switch
                             value={requirePhotos}
                             onValueChange={setRequirePhotos}
-                            trackColor={{ false: isDark ? "#6a6a6aff" : '#a5a5a5ff', true: isDark ? "#a75c1aff" : "#618479ff" }}
-                            thumbColor={requirePhotos ?
-                                isDark ? "#FB943C" : "#84A99D"
+                            trackColor={{
+                                false: isDark ? "#6a6a6aff" : '#a5a5a5ff',
+                                true: isDark ? "#a75c1aff" : "#618479ff"
+                            }}
+                            thumbColor={requirePhotos
+                                ? isDark ? "#FB943C" : "#84A99D"
                                 : isDark ? "#d2d2d2ff" : "#979797ff"}
                             style={{ transform: [{ scale: 1.5 }] }}
                         />
                     </View>
 
-                    <View className="h-[1px] mt-6 mb-4 bg-black dark:bg-white"></View>
+                    <View className="h-[1px] my-6 bg-[#737780]"></View>
+
+                    {detailsError &&
+                        <BrandText className="text-red-500 text-center">
+                            {detailsError}
+                        </BrandText>
+                    }
 
                     <View className="flex-row justify-between items-start">
-                        <View className="flex-row items-center gap-[10px] mt-4">
+                        <View className="flex-row items-center gap-[10px]">
                             <WriteIcon width={20} />
-                            <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText">
+
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
                                 Notes
-                            </BrandBoldText>
+                            </BrandText>
                         </View>
-                        <View className=" shadow-md h-[100px] w-[70%] mt-4">
+
+                        <View className="shadow-md h-[100px] w-[70%]">
                             <TextInput
                                 multiline={true}
                                 numberOfLines={3}
-                                value={details.details}
-                                onChangeText={(text) => handleDetailsChange('details', text)}
-                                placeholder="Add optional note"
-                                error={detailsError.details}
-                                className="text-[15px] align-top h-[100px] border-[1px] borderblack dark:border-white rounded-lg bg-white dark:bg-darkBg text-black dark:text-white px-[10px]"
+                                value={details}
+                                onChangeText={handleDetailsChange}
+                                placeholder="Add optional notes"
                                 placeholderTextColor={isDark ? "white" : "black"}
+                                className="text-[16px] align-top h-[100px] border-[1px] border-[#D0D1D4] dark:border-white
+                                    rounded-xl bg-white dark:bg-darkBg text-black dark:text-white p-2"
                             />
                         </View>
-
                     </View>
-                    <View className="mt-8 mb-14">
+
+                    <View className="flex-1 justify-end mb-12">
                         <PrimaryButton onPress={handleSubmit} disabled={!expoPushToken} label="Add" />
                     </View>
 

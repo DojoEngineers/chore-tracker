@@ -19,7 +19,7 @@ export const NewChoreDropDown = ({open, setOpen, value, setValue, items,
                 zIndex,
                 backgroundColor: isDark ? "#22252B" : "#9FB6AE",
                 border: 2,
-                borderColor: isDark ? "#D0D1D4" : "#9FB6AE",
+                borderColor: isDark ? "#D0D1D4" : "#D0D1D4",
                 borderRadius: 12
             }}
             textStyle={{
