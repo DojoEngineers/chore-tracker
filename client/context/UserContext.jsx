@@ -43,33 +43,33 @@ export const UserContextProvider = ({ children }) => {
     const notificationListener = useRef();
     const responseListener = useRef();
 
-    useEffect(() => {
-        // Register for push notifications on app start
-        registerForPushNotifications().then(token => {
-            setExpoPushToken(token || '');
-        });
+    // useEffect(() => {
+    //     // Register for push notifications on app start
+    //     registerForPushNotifications().then(token => {
+    //         setExpoPushToken(token || '');
+    //     });
 
-        // Listen for incoming notifications
-        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            console.log('📨 Notification received:', notification);
-            setNotification(notification);
-        });
+    //     // Listen for incoming notifications
+    //     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+    //         console.log('📨 Notification received:', notification);
+    //         setNotification(notification);
+    //     });
 
-        // Listen for notification interactions (taps)
-        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log('👆 Notification tapped:', response);
-            // Handle notification tap - navigate to specific screen, etc.
-        });
+    //     // Listen for notification interactions (taps)
+    //     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+    //         console.log('👆 Notification tapped:', response);
+    //         // Handle notification tap - navigate to specific screen, etc.
+    //     });
 
-        return () => {
-            if (notificationListener.current) {
-                Notifications.removeNotificationSubscription(notificationListener.current);
-            }
-            if (responseListener.current) {
-                Notifications.removeNotificationSubscription(responseListener.current);
-            }
-        };
-    }, []);
+    //     return () => {
+    //         if (notificationListener.current) {
+    //             Notifications.removeNotificationSubscription(notificationListener.current);
+    //         }
+    //         if (responseListener.current) {
+    //             Notifications.removeNotificationSubscription(responseListener.current);
+    //         }
+    //     };
+    // }, []);
 
     const registerForPushNotifications = async () => {
         try {

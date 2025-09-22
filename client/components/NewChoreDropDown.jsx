@@ -8,7 +8,11 @@ export const NewChoreDropDown = ({open, setOpen, value, setValue, items,
             open={open}
             setOpen={setOpen}
             value={value}
-            setValue={setValue}
+            setValue={(callback) => {
+                const newValue =
+                typeof callback === 'function' ? callback(value) : callback;
+                setValue(newValue)
+            }}
             items={items}
             placeholder={placeholder || null}
             listMode="SCROLLVIEW"
@@ -19,7 +23,7 @@ export const NewChoreDropDown = ({open, setOpen, value, setValue, items,
                 zIndex,
                 backgroundColor: isDark ? "#22252B" : "#9FB6AE",
                 border: 2,
-                borderColor: isDark ? "#D0D1D4" : "#9FB6AE",
+                borderColor: isDark ? "#D0D1D4" : "#D0D1D4",
                 borderRadius: 12
             }}
             textStyle={{

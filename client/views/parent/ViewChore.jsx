@@ -291,7 +291,7 @@ export const ViewChore = ({route}) => {
                         ?
                             <View className="mb-12">
                                 <Pressable
-                                    onPress={() => navigation.navigate("NewChore")}
+                                    onPress={() => navigation.navigate("NewChoreDetails", {chore})}
                                     className="p-[10px] rounded-full items-center justify-center bg-[#9FB6AE] dark:bg-darkButton w-full h-[56px] mt-4"
                                 >
                                     <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">

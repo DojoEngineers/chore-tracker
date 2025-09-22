@@ -1,13 +1,12 @@
 import { useNavigation } from "@react-navigation/native"
 import { useLogin, useNotifications } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
-import { Keyboard, Platform, Pressable, TouchableWithoutFeedback, View } from "react-native"
+import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
-import DateTimePicker from '@react-native-community/datetimepicker'
-import { addChore } from "../../services/chore.service"
+import { addChore, updateChore } from "../../services/chore.service"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { Switch } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
@@ -21,8 +20,9 @@ import { DateIcon } from "../../components/icons/DateIcon"
 import { AssignedToIcon } from "../../components/icons/AssignedToIcon"
 import dayjs from "dayjs"
 import { NewChoreDropDown } from "../../components/NewChoreDropDown"
+import DateTimePickerModal from 'react-native-modal-datetime-picker'
 
-const weekdays = [
+const WEEKDAYS = [
     { id: 0, short: 'S', full: 'Sunday' },
     { id: 1, short: 'M', full: 'Monday' },
     { id: 2, short: 'T', full: 'Tuesday' },
@@ -32,83 +32,85 @@ const weekdays = [
     { id: 6, short: 'S', full: 'Saturday' }
 ]
 
-const repeatOptions = [
+const REPEAT_OPTIONS = [
     { label: "Never", value: "never" },
     { label: "Daily", value: "daily" },
     { label: "Weekly", value: "weekly" },
     { label: "Monthly", value: "monthly" }
 ]
 
+const DEFAULT_FORM_VALUES = {
+    kid: "",
+    repeat: REPEAT_OPTIONS[0].value,
+    weekday: null,
+    details: "",
+    needsPics: false,
+    dateTime: "",
+    title: ""
+}
+
 export const NewChoreDetails = ({ route }) => {
 
-    const {
-        expoPushToken,
-        sendTestNotification,
-        sendPushNotification,
-        isLoading
-    } = useNotifications()
+    // const {
+    //     expoPushToken,
+    //     sendTestNotification,
+    //     sendPushNotification,
+    //     isLoading
+    // } = useNotifications()
     
-    //  send test 
-    const handleSendTest = async () => {
-        const result = await sendTestNotification();
-        if (result?.success) {
-        Alert.alert('Success', 'Test notification sent!')
-        }
-    }
+    // //  send test 
+    // const handleSendTest = async () => {
+    //     const result = await sendTestNotification();
+    //     if (result?.success) {
+    //     Alert.alert('Success', 'Test notification sent!')
+    //     }
+    // }
 
-    // Send chore reminder
-    const handleSendChoreReminder = async () => {
-        if (!expoPushToken) {
-            Alert.alert('Error', 'Push token not available');
-            return;
-        }
+    // // Send chore reminder
+    // const handleSendChoreReminder = async () => {
+    //     if (!expoPushToken) {
+    //         Alert.alert('Error', 'Push token not available');
+    //         return;
+    //     }
 
-        const result = await NotificationService.sendChoreReminder(
-            expoPushToken,
-            'Take out trash',
-            'today at 6 PM'
-        );
+    //     const result = await NotificationService.sendChoreReminder(
+    //         expoPushToken,
+    //         'Take out trash',
+    //         'today at 6 PM'
+    //     );
 
-        if (result?.success) {
-            Alert.alert('Success', 'Chore reminder sent!');
-        }
-    };
+    //     if (result?.success) {
+    //         Alert.alert('Success', 'Chore reminder sent!');
+    //     }
+    // };
 
-    // Send chore completed notification
-    const handleSendChoreCompleted = async () => {
-        if (!expoPushToken) {
-            Alert.alert('Error', 'Push token not available');
-            return;
-        }
+    // // Send chore completed notification
+    // const handleSendChoreCompleted = async () => {
+    //     if (!expoPushToken) {
+    //         Alert.alert('Error', 'Push token not available');
+    //         return;
+    //     }
 
-        const result = await NotificationService.sendChoreCompleted(
-            expoPushToken,
-            'Kitchen cleaning',
-            'John'
-        );
+    //     const result = await NotificationService.sendChoreCompleted(
+    //         expoPushToken,
+    //         'Kitchen cleaning',
+    //         'John'
+    //     );
 
-        if (result?.success) {
-            Alert.alert('Success', 'Chore completed notification sent!');
-        }
-    };
+    //     if (result?.success) {
+    //         Alert.alert('Success', 'Chore completed notification sent!');
+    //     }
+    // };
 
     // Notification code ends here
     
     const [apiErrors, setApiErrors] = useState({})
-    const [openKids, setOpenKids] = useState(false)
-    const [kid, setKid] = useState({})
-    const [openRepeat, setOpenRepeat] = useState(false)
-    const [repeat, setRepeat] = useState(repeatOptions[0].value)
-    const [openDate, setOpenDate] = useState(false)
-    const [date, setDate] = useState(dayjs().add(1, 'day').toDate())
-    const [weekday, setWeekday] = useState(null)
-    const [time, setTime] = useState(dayjs().hour(18).minute(0).second(0).millisecond(0).toDate())
-    const [openTime, setOpenTime] = useState(false)
-    const [details, setDetails] = useState("")
-    const [detailsError, setDetailsError] = useState("")
-    const [requirePhotos, setRequirePhotos] = useState(false)
+    const [isOpen, setIsOpen] = useState({kids: false, repeat: false, dateTime: false})
+    const [formData, setFormData] = useState(() => ({...DEFAULT_FORM_VALUES, dateTime: dayjs().add(1, 'day').hour(18).minute(0)}))
+    const [mode, setMode] = useState("")
+    const [formErrors, setFormErrors] = useState({dateTime: false, details: false})
     
-    const { title } = route.params
+    const { title, chore } = route.params || {}
     const navigation = useNavigation()
     const { loggedInData } = useLogin()
     const colorScheme = useColorScheme()
@@ -118,33 +120,58 @@ export const NewChoreDetails = ({ route }) => {
         .filter(kid => kid.isActive)
         .map(kid => ({label: kid.name, value: kid._id}))
 
-    const handleTimeChange = (event, selectedTime) => {
-        if (Platform.OS === 'ios') {
-            selectedTime && setTime(selectedTime)
-            if (event.type === 'dismissed') {
-                setOpenTime(false)
-            }
+    useEffect(() => {
+        if (chore) {
+            setFormData({
+                kid: chore.worker?._id,
+                repeat: chore.repeat,
+                weekday: chore.day,
+                dateTime: dayjs(chore.dueDate),
+                details: chore.details,
+                needsPics: chore.needsPics,
+                title: chore.title
+            })
+        } else if (title) {
+            setFormData(prev => ({ ...prev, title }));
+        }
+    }, [chore, title])
+
+    const handleDateTimeChange = (name, value) => {
+        let newDateTime
+        if (mode === 'date') {
+            newDateTime = dayjs(value)
+                .hour(formData.dateTime.hour())
+                .minute(formData.dateTime.minute())
         } else {
-            selectedTime && setTime(selectedTime)
-            setOpenTime(false)
+            newDateTime = formData.dateTime
+                .hour(dayjs(value).hour())
+                .minute(dayjs(value).minute())
         }
+        setIsOpen(prev => ({...prev, [name]: false}))
+        handleChange(name, newDateTime)
     }
-    
-    const handleDetailsChange = (formDetails) => {
-        setDetails(formDetails)
-        if (formDetails.length >= 100) {
-            setDetailsError("Details cannot exceed 100 characters.")
+
+    const handleChange = (name, value) => {
+        setFormData(prev => ({...prev, [name]: value}))
+        validateData(name, value)
+    }
+
+    const validateData = (name, value) => {
+        const validations = {
+            dateTime: value => (
+                dayjs(value).isBefore(dayjs()) ? "Due date must not be in the past."
+                : false
+            ),
+            details: value => (
+                value.length >= 100 ? "Details cannot exceed 100 characters."
+                : false
+            )
         }
-        else if (formDetails.length < 5) {
-            setDetailsError("Details must be at least 5 characters.")
-        }
-        else (
-            setDetailsError(false)
-        )
+        setFormErrors(prev => ({...prev, [name]: validations[name](value)}))
     }
 
     const handleSubmit = async () => {
-        if (detailsError) {
+        if (formErrors.details || formErrors.dateTime || !formData.kid) {
             Toast.show({
                 type: 'error',
                 text1: "Please make corrections to the form."
@@ -152,35 +179,51 @@ export const NewChoreDetails = ({ route }) => {
             return
         }
 
-        else {
-            handleSendTest()
-            const dateTime = dayjs(date)
-                .hour(dayjs(time).hour())
-                .minute(dayjs(time).minute())
-                .second(0)
-                .millisecond(0)
-            const allData = {
-                title, details, creator: loggedInData._id, stageDate: dayjs().toISOString(),
-                worker: kid, dueDate: dateTime.toISOString(), needsPics: requirePhotos, repeat: repeat, day: weekday
+            // handleSendTest()
+            const {details, kid, dateTime, needsPics, repeat, weekday} = formData
+            const baseData = {
+                title: formData.title, details, creator: loggedInData._id, worker: kid,
+                dueDate: dateTime.toISOString(), needsPics, repeat, day: weekday
             }
 
-            addChore(allData)
-                .then(() => {
-                    Toast.show({
-                        type: 'success',
-                        text1: "Chore created!"
+            if (chore) {
+                const finalData = {...baseData, _id: chore._id, dateEdited: dayjs().toISOString()}
+                updateChore(finalData)
+                    .then(() => {
+                        Toast.show({
+                            type: 'success',
+                            text1: "Chore edited!"
+                        })
+                        navigation.replace("Dashboard", { animationType: "fade_from_bottom" })
                     })
-                    navigation.replace("Dashboard", { animationType: "fade_from_bottom" })
-                })
-                .catch((error) => {
-                    console.log("addChore error:", error)
-                    setApiErrors(prev => ({...prev, addChore: "Unable to create chore."}))
-                    Toast.show({
-                        type: 'error',
-                        text1: "Unable to create chore."
+                    .catch((error) => {
+                        console.log("updateChore error:", error)
+                        setApiErrors(prev => ({...prev, updateChore: "Unable to update chore."}))
+                        Toast.show({
+                            type: 'error',
+                            text1: "Unable to update chore."
+                        })
                     })
-                })
-        }
+
+            } else {
+                const finalData = {...baseData, stageDate: dayjs().toISOString()}
+                addChore(finalData)
+                    .then(() => {
+                        Toast.show({
+                            type: 'success',
+                            text1: "Chore created!"
+                        })
+                        navigation.replace("Dashboard", { animationType: "fade_from_bottom" })
+                    })
+                    .catch((error) => {
+                        console.log("addChore error:", error)
+                        setApiErrors(prev => ({...prev, addChore: "Unable to create chore."}))
+                        Toast.show({
+                            type: 'error',
+                            text1: "Unable to create chore."
+                        })
+                    })
+            }
     }
 
     return (
@@ -203,15 +246,20 @@ export const NewChoreDetails = ({ route }) => {
                         </Pressable>
 
                         <BrandBoldText className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText">
-                            {title}
+                            {formData.title}
                         </BrandBoldText>
                     </View>
 
-                    {apiErrors.addChore && (
+                    {apiErrors.addChore &&
                         <BrandText className="text-red-500 text-center">
                             {apiErrors.addChore}
                         </BrandText>
-                    )}
+                    }
+                    {apiErrors.updateChore &&
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.updateChore}
+                        </BrandText>
+                    }
 
                     <View className="flex-row justify-between items-center z-100 relative">
                         <View className="flex-row items-center gap-[10px]">
@@ -222,8 +270,8 @@ export const NewChoreDetails = ({ route }) => {
                         </View>
 
                         <NewChoreDropDown
-                            open={openKids} setOpen={setOpenKids} value={kid} setValue={setKid}
-                            items={kids} isDark={isDark} placeholder="Pick one" zIndex={100}
+                            open={isOpen.kids} setOpen={(open) => setIsOpen(prev => ({...prev, kids: open}))} value={formData.kid}
+                            setValue={(kid) => setFormData(prev => ({...prev, kid}))} items={kids} isDark={isDark} placeholder="Pick one" zIndex={100}
                         />
                     </View>
 
@@ -238,15 +286,21 @@ export const NewChoreDetails = ({ route }) => {
                         </View>
 
                         <NewChoreDropDown
-                            open={openRepeat} setOpen={setOpenRepeat} value={repeat}
-                            setValue={setRepeat} items={repeatOptions} isDark={isDark} zIndex={10}
+                            open={isOpen.repeat} setOpen={(open) => setIsOpen(prev => ({...prev, repeat: open}))} value={formData.repeat}
+                            setValue={(repeat) => setFormData(prev => ({...prev, repeat}))} items={REPEAT_OPTIONS} isDark={isDark} zIndex={10}
                         />
                     </View>
 
-                    {(repeat === "never" || repeat === "monthly")
+                    {(formData.repeat === "never" || formData.repeat === "monthly")
                         ?
                             <View>
                                 <View className="h-[1px] my-6 bg-[#737780]"></View>
+
+                                {formErrors.dateTime &&
+                                    <BrandText className="text-red-500 text-center">
+                                        {formErrors.dateTime}
+                                    </BrandText>
+                                }
 
                                 <View className="flex-row items-center justify-between">
                                     <View className="flex-row items-center gap-[10px]">
@@ -256,48 +310,36 @@ export const NewChoreDetails = ({ route }) => {
                                         </BrandText>
                                     </View>
 
-                                    {!openDate
-                                        ?
-                                            <Pressable onPress={() => { setOpenDate(true) }}
-                                                className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
-                                                border-[#9FB6AE] dark:border-[#D0D1D4] rounded-xl p-3"
-                                            >
-                                                <BrandText
-                                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]"
-                                                >
-                                                    {dayjs(date).format('MMM D, YYYY')}
-                                                </BrandText>
-                                            </Pressable>
-
-                                        :
-                                            <DateTimePicker
-                                                value={date}
-                                                mode="date"
-                                                display="default"
-                                                onChange={(event, selectedDate) => {
-                                                    setOpenDate(false)
-                                                    if (selectedDate) setDate(selectedDate)
-                                                }}
-                                                minimumDate={dayjs().toDate()}
-                                                maximumDate={dayjs().add(1, 'month').toDate()}
-                                            />
-                                    }
+                                    <Pressable
+                                        onPress={() => {
+                                            setIsOpen(prev => ({...prev, dateTime: true}))
+                                            setMode("date")
+                                        }}
+                                        className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
+                                        border-[#D0D1D4] dark:border-[#D0D1D4] rounded-xl p-3"
+                                    >
+                                        <BrandText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]"
+                                        >
+                                            {dayjs(formData.dateTime).format('MMM D, YYYY')}
+                                        </BrandText>
+                                    </Pressable>
                                 </View>
                             </View>
 
-                        : repeat === "weekly" ?
+                        : formData.repeat === "weekly" ?
                             <View>
                                 <View className="h-[1px] my-6 bg-[#737780]"></View>
 
                                 <View className="flex-row flex-1 justify-between mx-8">
-                                    {weekdays.map((day) => (
+                                    {WEEKDAYS.map((day) => (
                                         <Pressable
                                             key={day.id}
                                             className={`w-[30px] h-[30px] justify-center items-center rounded-full
                                                 ${weekday === day.id
                                                     ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
                                                     : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}`}
-                                            onPress={() => setWeekday(day.id)}
+                                            onPress={() => setFormData(prev => ({...prev, weekday: day.id}))}
                                         >
                                             <BrandBoldText className="text-[#22252B] text-[16px]">
                                                 {day.short}
@@ -321,71 +363,90 @@ export const NewChoreDetails = ({ route }) => {
                             </BrandText>
                         </View>
 
-                        {!openTime
-                            ?
-                                <Pressable onPress={() => { setOpenTime(true) }}
-                                    className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
-                                                border-[#9FB6AE] dark:border-[#D0D1D4] rounded-xl p-3"
-                                >
-                                    <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
-                                        {dayjs(time).format('h:mm A')}
-                                    </BrandText>
-                                </Pressable>
-
-                            :
-                                <DateTimePicker
-                                    value={time}
-                                    mode="time"
-                                    display="default"
-                                    onChange={handleTimeChange}
-                                />
-                        }
+                        <Pressable
+                            onPress={() => {
+                                setIsOpen(prev => ({...prev, dateTime: true}))
+                                setMode("time")
+                            }}
+                            className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
+                                        border-[#D0D1D4] dark:border-[#D0D1D4] rounded-xl p-3"
+                        >
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
+                                {dayjs(formData.dateTime).format('h:mm A')}
+                            </BrandText>
+                        </Pressable>
                     </View>
 
-                    <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
+                    <View className="h-[1px] my-6 bg-[#737780]"></View>
+
                     <View className="flex-row justify-between items-center pe-[16px]">
-                        < View className="flex-row items-center gap-[10px]">
+                        <View className="flex-row items-center gap-[10px]">
                             <CameraIcon width={20} />
-                            <BrandBoldText className="text-black dark:text-white">Require photos?</BrandBoldText>
+
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
+                                Require photos?
+                            </BrandText>
                         </View>
+                        
                         <Switch
-                            value={requirePhotos}
-                            onValueChange={setRequirePhotos}
-                            trackColor={{ false: isDark ? "#6a6a6aff" : '#a5a5a5ff', true: isDark ? "#a75c1aff" : "#618479ff" }}
-                            thumbColor={requirePhotos ?
-                                isDark ? "#FB943C" : "#84A99D"
+                            value={formData.needsPics}
+                            onValueChange={(needsPics)=> setFormData(prev => ({...prev, needsPics}))}
+                            trackColor={{
+                                false: isDark ? "#6a6a6aff" : '#a5a5a5ff',
+                                true: isDark ? "#a75c1aff" : "#618479ff"
+                            }}
+                            thumbColor={formData.needsPics
+                                ? isDark ? "#FB943C" : "#84A99D"
                                 : isDark ? "#d2d2d2ff" : "#979797ff"}
                             style={{ transform: [{ scale: 1.5 }] }}
                         />
                     </View>
 
-                    <View className="h-[1px] mt-6 mb-4 bg-black dark:bg-white"></View>
+                    <View className="h-[1px] my-6 bg-[#737780]"></View>
+
+                    {formErrors.details &&
+                        <BrandText className="text-red-500 text-center">
+                            {formErrors.details}
+                        </BrandText>
+                    }
 
                     <View className="flex-row justify-between items-start">
-                        <View className="flex-row items-center gap-[10px] mt-4">
+                        <View className="flex-row items-center gap-[10px]">
                             <WriteIcon width={20} />
-                            <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText">
+
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
                                 Notes
-                            </BrandBoldText>
+                            </BrandText>
                         </View>
-                        <View className=" shadow-md h-[100px] w-[70%] mt-4">
+
+                        <View className="shadow-md h-[100px] w-[70%]">
                             <TextInput
                                 multiline={true}
                                 numberOfLines={3}
-                                value={details.details}
-                                onChangeText={(text) => handleDetailsChange('details', text)}
-                                placeholder="Add optional note"
-                                error={detailsError.details}
-                                className="text-[15px] align-top h-[100px] border-[1px] borderblack dark:border-white rounded-lg bg-white dark:bg-darkBg text-black dark:text-white px-[10px]"
+                                value={formData.details}
+                                onChangeText={(details) => handleChange("details", details)}
+                                placeholder="Add optional notes"
                                 placeholderTextColor={isDark ? "white" : "black"}
+                                className="text-[16px] align-top h-[100px] border-[1px] border-[#D0D1D4] dark:border-white
+                                    rounded-xl bg-white dark:bg-darkBg text-black dark:text-white p-2"
                             />
                         </View>
-
-                    </View>
-                    <View className="mt-8 mb-14">
-                        <PrimaryButton onPress={handleSubmit} disabled={!expoPushToken} label="Add" />
                     </View>
 
+                    <View className="flex-1 justify-end mb-12">
+                        <PrimaryButton onPress={handleSubmit} label="Add" />
+                    </View>
+
+                    <DateTimePickerModal
+                        isVisible={isOpen.dateTime}
+                        mode={mode}
+                        date={formData.dateTime.toDate()}
+                        onConfirm={(dateTime) => handleDateTimeChange("dateTime", dateTime)}
+                        onCancel={() => setIsOpen(prev => ({...prev, dateTime: false}))}
+                        minimumDate={dayjs().toDate()}
+                        maximumDate={dayjs().add(1, 'month').toDate()}
+                        display={mode === 'date' ? 'inline' : 'spinner'}
+                    />
                 </View>
             </KeyboardAwareScrollView >
         </TouchableWithoutFeedback >
