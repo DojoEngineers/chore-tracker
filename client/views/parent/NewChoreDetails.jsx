@@ -1,12 +1,11 @@
 import { useNavigation } from "@react-navigation/native"
 import { useLogin, useNotifications } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
-import { Keyboard, Platform, Pressable, TouchableWithoutFeedback, View } from "react-native"
+import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
-import DateTimePicker from '@react-native-community/datetimepicker'
 import { addChore } from "../../services/chore.service"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { Switch } from 'react-native-paper';
@@ -21,6 +20,7 @@ import { DateIcon } from "../../components/icons/DateIcon"
 import { AssignedToIcon } from "../../components/icons/AssignedToIcon"
 import dayjs from "dayjs"
 import { NewChoreDropDown } from "../../components/NewChoreDropDown"
+import DateTimePickerModal from 'react-native-modal-datetime-picker'
 
 const weekdays = [
     { id: 0, short: 'S', full: 'Sunday' },
@@ -99,11 +99,12 @@ export const NewChoreDetails = ({ route }) => {
     const [kid, setKid] = useState({})
     const [openRepeat, setOpenRepeat] = useState(false)
     const [repeat, setRepeat] = useState(repeatOptions[0].value)
-    const [openDate, setOpenDate] = useState(false)
-    const [date, setDate] = useState(dayjs().add(1, 'day').toDate())
     const [weekday, setWeekday] = useState(null)
-    const [time, setTime] = useState(dayjs().hour(18).minute(0).second(0).millisecond(0).toDate())
-    const [openTime, setOpenTime] = useState(false)
+    const [openDateTime, setOpenDateTime] = useState(false)
+    const [dateTime, setDateTime] = useState(dayjs().add(1, 'day').hour(18).minute(0))
+    const [mode, setMode] = useState("")
+    const [dateTimeError, setDateTimeError] = useState("")
+    
     const [details, setDetails] = useState("")
     const [detailsError, setDetailsError] = useState("")
     const [requirePhotos, setRequirePhotos] = useState(false)
@@ -118,16 +119,32 @@ export const NewChoreDetails = ({ route }) => {
         .filter(kid => kid.isActive)
         .map(kid => ({label: kid.name, value: kid._id}))
 
-    const handleTimeChange = (event, selectedTime) => {
-        if (Platform.OS === 'ios') {
-            selectedTime && setTime(selectedTime)
-            if (event.type === 'dismissed') {
-                setOpenTime(false)
-            }
-        } else {
-            selectedTime && setTime(selectedTime)
-            setOpenTime(false)
+    useEffect(() => {
+        if (dayjs(dateTime).isBefore(dayjs())) {
+            setDateTimeError("Due date must not be in the past.")
         }
+        else setDateTimeError(false)
+    }, [dateTime])
+
+    const handleDateTimeChange = (selected) => {
+        if (mode === 'date') handleDateChange(selected)
+        else handleTimeChange(selected)
+    }
+
+    const handleDateChange = (selectedDate) => {
+        const newDateTime = dayjs(selectedDate)
+            .hour(dateTime.hour())
+            .minute(dateTime.minute())
+        setDateTime(newDateTime)
+        setOpenDateTime(false)
+    }
+
+    const handleTimeChange = (selectedTime) => {
+        const newDateTime = dateTime
+            .hour(dayjs(selectedTime).hour())
+            .minute(dayjs(selectedTime).minute())
+        setDateTime(newDateTime)
+        setOpenDateTime(false)
     }
     
     const handleDetailsChange = (formDetails) => {
@@ -144,7 +161,7 @@ export const NewChoreDetails = ({ route }) => {
     }
 
     const handleSubmit = async () => {
-        if (detailsError) {
+        if (detailsError || dateTimeError) {
             Toast.show({
                 type: 'error',
                 text1: "Please make corrections to the form."
@@ -207,11 +224,11 @@ export const NewChoreDetails = ({ route }) => {
                         </BrandBoldText>
                     </View>
 
-                    {apiErrors.addChore && (
+                    {apiErrors.addChore &&
                         <BrandText className="text-red-500 text-center">
                             {apiErrors.addChore}
                         </BrandText>
-                    )}
+                    }
 
                     <View className="flex-row justify-between items-center z-100 relative">
                         <View className="flex-row items-center gap-[10px]">
@@ -248,6 +265,12 @@ export const NewChoreDetails = ({ route }) => {
                             <View>
                                 <View className="h-[1px] my-6 bg-[#737780]"></View>
 
+                                {dateTimeError &&
+                                    <BrandText className="text-red-500 text-center">
+                                        {dateTimeError}
+                                    </BrandText>
+                                }
+
                                 <View className="flex-row items-center justify-between">
                                     <View className="flex-row items-center gap-[10px]">
                                         <DateIcon />
@@ -256,32 +279,20 @@ export const NewChoreDetails = ({ route }) => {
                                         </BrandText>
                                     </View>
 
-                                    {!openDate
-                                        ?
-                                            <Pressable onPress={() => { setOpenDate(true) }}
-                                                className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
-                                                border-[#9FB6AE] dark:border-[#D0D1D4] rounded-xl p-3"
-                                            >
-                                                <BrandText
-                                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]"
-                                                >
-                                                    {dayjs(date).format('MMM D, YYYY')}
-                                                </BrandText>
-                                            </Pressable>
-
-                                        :
-                                            <DateTimePicker
-                                                value={date}
-                                                mode="date"
-                                                display="default"
-                                                onChange={(event, selectedDate) => {
-                                                    setOpenDate(false)
-                                                    if (selectedDate) setDate(selectedDate)
-                                                }}
-                                                minimumDate={dayjs().toDate()}
-                                                maximumDate={dayjs().add(1, 'month').toDate()}
-                                            />
-                                    }
+                                    <Pressable
+                                        onPress={() => {
+                                            setOpenDateTime(true)
+                                            setMode("date")
+                                        }}
+                                        className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
+                                        border-[#9FB6AE] dark:border-[#D0D1D4] rounded-xl p-3"
+                                    >
+                                        <BrandText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]"
+                                        >
+                                            {dayjs(dateTime).format('MMM D, YYYY')}
+                                        </BrandText>
+                                    </Pressable>
                                 </View>
                             </View>
 
@@ -321,25 +332,18 @@ export const NewChoreDetails = ({ route }) => {
                             </BrandText>
                         </View>
 
-                        {!openTime
-                            ?
-                                <Pressable onPress={() => { setOpenTime(true) }}
-                                    className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
-                                                border-[#9FB6AE] dark:border-[#D0D1D4] rounded-xl p-3"
-                                >
-                                    <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
-                                        {dayjs(time).format('h:mm A')}
-                                    </BrandText>
-                                </Pressable>
-
-                            :
-                                <DateTimePicker
-                                    value={time}
-                                    mode="time"
-                                    display="default"
-                                    onChange={handleTimeChange}
-                                />
-                        }
+                        <Pressable
+                            onPress={() => {
+                                setOpenDateTime(true)
+                                setMode("time")
+                            }}
+                            className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
+                                        border-[#9FB6AE] dark:border-[#D0D1D4] rounded-xl p-3"
+                        >
+                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
+                                {dayjs(dateTime).format('h:mm A')}
+                            </BrandText>
+                        </Pressable>
                     </View>
 
                     <View className="h-[1px] mt-8 mb-4 bg-black dark:bg-white"></View>
@@ -386,6 +390,16 @@ export const NewChoreDetails = ({ route }) => {
                         <PrimaryButton onPress={handleSubmit} disabled={!expoPushToken} label="Add" />
                     </View>
 
+                    <DateTimePickerModal
+                        isVisible={openDateTime}
+                        mode={mode}
+                        date={dateTime.toDate()}
+                        onConfirm={handleDateTimeChange}
+                        onCancel={() => setOpenDateTime(false)}
+                        minimumDate={dayjs().toDate()}
+                        maximumDate={dayjs().add(1, 'month').toDate()}
+                        display={mode === 'date' ? 'inline' : 'spinner'}
+                    />
                 </View>
             </KeyboardAwareScrollView >
         </TouchableWithoutFeedback >

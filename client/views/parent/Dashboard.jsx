@@ -3,7 +3,6 @@ import { Header } from "../../components/Header"
 import { ParentNavBar } from "../../components/ParentNavBar"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
-import DateTimePicker from '@react-native-community/datetimepicker'
 import { useEffect, useState } from "react"
 import { getChoresByParents } from "../../services/chore.service"
 import Toast from "react-native-toast-message"
@@ -19,6 +18,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { LargeSquareIcon } from "../../components/icons/LargeSquareIcon"
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { KidNavBar } from "../../components/KidNavBar"
+import DateTimePickerModal from 'react-native-modal-datetime-picker'
 
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
@@ -39,7 +39,6 @@ export const Dashboard = () => {
     const navigation = useNavigation()
 
     const handleDateChange = (selectedDate) => {
-        if (!selectedDate) return
         setDate(selectedDate)
         setViewCalendarChores(true)
         setViewCalendar(false)
@@ -126,17 +125,6 @@ export const Dashboard = () => {
                             View chores by due date
                         </BrandBoldText>
                     </View>
-
-                    {viewCalendar &&
-                        <DateTimePicker
-                            value={date}
-                            mode="date"
-                            display="default"
-                            minimumDate={dayjs().subtract(1, "month").toDate()}
-                            maximumDate={dayjs().add(1, "month").toDate()}
-                            onChange={(e, selectedDate) => {handleDateChange(selectedDate)}}
-                        />
-                    }
                 </Pressable>
 
                 {viewCalendarChores &&
@@ -404,6 +392,17 @@ export const Dashboard = () => {
             </ScrollView>
 
             {loggedInData.isParent ? <ParentNavBar /> : <KidNavBar />}
+
+            <DateTimePickerModal
+                isVisible={viewCalendar}
+                mode="date"
+                date={date}
+                onConfirm={handleDateChange}
+                onCancel={() => setViewCalendar(false)}
+                minimumDate={dayjs().subtract(1, "month").toDate()}
+                maximumDate={dayjs().add(1, "month").toDate()}
+                display="inline"
+            />
         </View>
     )
 }
