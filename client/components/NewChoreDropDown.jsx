@@ -8,7 +8,11 @@ export const NewChoreDropDown = ({open, setOpen, value, setValue, items,
             open={open}
             setOpen={setOpen}
             value={value}
-            setValue={setValue}
+            setValue={(callback) => {
+                const newValue =
+                typeof callback === 'function' ? callback(value) : callback;
+                setValue(newValue)
+            }}
             items={items}
             placeholder={placeholder || null}
             listMode="SCROLLVIEW"

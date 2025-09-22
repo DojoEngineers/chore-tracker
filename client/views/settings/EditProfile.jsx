@@ -56,7 +56,6 @@ export const EditProfile = () => {
         return true
     }
 
-    // Submit form
     const handleSubmit = () => {
         if (!isReadyToSubmit()){
             Toast.show({

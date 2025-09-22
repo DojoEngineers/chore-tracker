@@ -22,7 +22,7 @@ import dayjs from "dayjs"
 import { NewChoreDropDown } from "../../components/NewChoreDropDown"
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 
-const weekdays = [
+const WEEKDAYS = [
     { id: 0, short: 'S', full: 'Sunday' },
     { id: 1, short: 'M', full: 'Monday' },
     { id: 2, short: 'T', full: 'Tuesday' },
@@ -32,82 +32,81 @@ const weekdays = [
     { id: 6, short: 'S', full: 'Saturday' }
 ]
 
-const repeatOptions = [
+const REPEAT_OPTIONS = [
     { label: "Never", value: "never" },
     { label: "Daily", value: "daily" },
     { label: "Weekly", value: "weekly" },
     { label: "Monthly", value: "monthly" }
 ]
 
+const DEFAULT_FORM_VALUES = {
+    kid: null,
+    repeat: REPEAT_OPTIONS[0].value,
+    weekday: null,
+    details: "",
+    needPics: false
+}
+
 export const NewChoreDetails = ({ route }) => {
 
-    const {
-        expoPushToken,
-        sendTestNotification,
-        sendPushNotification,
-        isLoading
-    } = useNotifications()
+    // const {
+    //     expoPushToken,
+    //     sendTestNotification,
+    //     sendPushNotification,
+    //     isLoading
+    // } = useNotifications()
     
-    //  send test 
-    const handleSendTest = async () => {
-        const result = await sendTestNotification();
-        if (result?.success) {
-        Alert.alert('Success', 'Test notification sent!')
-        }
-    }
+    // //  send test 
+    // const handleSendTest = async () => {
+    //     const result = await sendTestNotification();
+    //     if (result?.success) {
+    //     Alert.alert('Success', 'Test notification sent!')
+    //     }
+    // }
 
-    // Send chore reminder
-    const handleSendChoreReminder = async () => {
-        if (!expoPushToken) {
-            Alert.alert('Error', 'Push token not available');
-            return;
-        }
+    // // Send chore reminder
+    // const handleSendChoreReminder = async () => {
+    //     if (!expoPushToken) {
+    //         Alert.alert('Error', 'Push token not available');
+    //         return;
+    //     }
 
-        const result = await NotificationService.sendChoreReminder(
-            expoPushToken,
-            'Take out trash',
-            'today at 6 PM'
-        );
+    //     const result = await NotificationService.sendChoreReminder(
+    //         expoPushToken,
+    //         'Take out trash',
+    //         'today at 6 PM'
+    //     );
 
-        if (result?.success) {
-            Alert.alert('Success', 'Chore reminder sent!');
-        }
-    };
+    //     if (result?.success) {
+    //         Alert.alert('Success', 'Chore reminder sent!');
+    //     }
+    // };
 
-    // Send chore completed notification
-    const handleSendChoreCompleted = async () => {
-        if (!expoPushToken) {
-            Alert.alert('Error', 'Push token not available');
-            return;
-        }
+    // // Send chore completed notification
+    // const handleSendChoreCompleted = async () => {
+    //     if (!expoPushToken) {
+    //         Alert.alert('Error', 'Push token not available');
+    //         return;
+    //     }
 
-        const result = await NotificationService.sendChoreCompleted(
-            expoPushToken,
-            'Kitchen cleaning',
-            'John'
-        );
+    //     const result = await NotificationService.sendChoreCompleted(
+    //         expoPushToken,
+    //         'Kitchen cleaning',
+    //         'John'
+    //     );
 
-        if (result?.success) {
-            Alert.alert('Success', 'Chore completed notification sent!');
-        }
-    };
+    //     if (result?.success) {
+    //         Alert.alert('Success', 'Chore completed notification sent!');
+    //     }
+    // };
 
     // Notification code ends here
     
     const [apiErrors, setApiErrors] = useState({})
-    const [openKids, setOpenKids] = useState(false)
-    const [kid, setKid] = useState({})
-    const [openRepeat, setOpenRepeat] = useState(false)
-    const [repeat, setRepeat] = useState(repeatOptions[0].value)
-    const [weekday, setWeekday] = useState(null)
-    const [openDateTime, setOpenDateTime] = useState(false)
-    const [dateTime, setDateTime] = useState(dayjs().add(1, 'day').hour(18).minute(0))
+    const [isOpen, setIsOpen] = useState({kids: false, repeat: false, dateTime: false})
+    const [formData, setFormData] = useState(() => ({...DEFAULT_FORM_VALUES, dateTime: dayjs().add(1, 'day').hour(18).minute(0)}))
     const [mode, setMode] = useState("")
-    const [dateTimeError, setDateTimeError] = useState("")
-    
-    const [details, setDetails] = useState("")
-    const [detailsError, setDetailsError] = useState("")
-    const [requirePhotos, setRequirePhotos] = useState(false)
+    const [formErrors, setFormErrors] = useState({dateTime: false, details: false})
     
     const { title } = route.params
     const navigation = useNavigation()
@@ -119,46 +118,42 @@ export const NewChoreDetails = ({ route }) => {
         .filter(kid => kid.isActive)
         .map(kid => ({label: kid.name, value: kid._id}))
 
-    useEffect(() => {
-        if (dayjs(dateTime).isBefore(dayjs())) {
-            setDateTimeError("Due date must not be in the past.")
+    const handleDateTimeChange = (name, value) => {
+        let newDateTime
+        if (mode === 'date') {
+            newDateTime = dayjs(value)
+                .hour(formData.dateTime.hour())
+                .minute(formData.dateTime.minute())
+        } else {
+            newDateTime = formData.dateTime
+                .hour(dayjs(value).hour())
+                .minute(dayjs(value).minute())
         }
-        else setDateTimeError(false)
-    }, [dateTime])
-
-    const handleDateTimeChange = (selected) => {
-        if (mode === 'date') handleDateChange(selected)
-        else handleTimeChange(selected)
+        setIsOpen(prev => ({...prev, [name]: false}))
+        handleChange(name, newDateTime)
     }
 
-    const handleDateChange = (selectedDate) => {
-        const newDateTime = dayjs(selectedDate)
-            .hour(dateTime.hour())
-            .minute(dateTime.minute())
-        setDateTime(newDateTime)
-        setOpenDateTime(false)
+    const handleChange = (name, value) => {
+        setFormData(prev => ({...prev, [name]: value}))
+        validateData(name, value)
     }
 
-    const handleTimeChange = (selectedTime) => {
-        const newDateTime = dateTime
-            .hour(dayjs(selectedTime).hour())
-            .minute(dayjs(selectedTime).minute())
-        setDateTime(newDateTime)
-        setOpenDateTime(false)
-    }
-    
-    const handleDetailsChange = (formDetails) => {
-        setDetails(formDetails)
-        if (formDetails.length >= 100) {
-            setDetailsError("Details cannot exceed 100 characters.")
+    const validateData = (name, value) => {
+        const validations = {
+            dateTime: value => (
+                dayjs(value).isBefore(dayjs()) ? "Due date must not be in the past."
+                : false
+            ),
+            details: value => (
+                value.length >= 100 ? "Details cannot exceed 100 characters."
+                : false
+            )
         }
-        else (
-            setDetailsError(false)
-        )
+        setFormErrors(prev => ({...prev, [name]: validations[name](value)}))
     }
 
     const handleSubmit = async () => {
-        if (detailsError || dateTimeError || Object.keys(kid).length === 0) {
+        if (formErrors.details || formErrors.dateTime || !formData.kid) {
             Toast.show({
                 type: 'error',
                 text1: "Please make corrections to the form."
@@ -167,10 +162,11 @@ export const NewChoreDetails = ({ route }) => {
         }
 
         else {
-            handleSendTest()
+            // handleSendTest()
+            const {details, kid, dateTime, needPics, repeat, weekday} = formData
             const allData = {
                 title, details, creator: loggedInData._id, stageDate: dayjs().toISOString(),
-                worker: kid, dueDate: dateTime.toISOString(), needsPics: requirePhotos, repeat: repeat, day: weekday
+                worker: kid, dueDate: dateTime.toISOString(), needPics, repeat, day: weekday
             }
 
             addChore(allData)
@@ -231,8 +227,8 @@ export const NewChoreDetails = ({ route }) => {
                         </View>
 
                         <NewChoreDropDown
-                            open={openKids} setOpen={setOpenKids} value={kid} setValue={setKid}
-                            items={kids} isDark={isDark} placeholder="Pick one" zIndex={100}
+                            open={isOpen.kids} setOpen={(open) => setIsOpen(prev => ({...prev, kids: open}))} value={formData.kid}
+                            setValue={(kid) => setFormData(prev => ({...prev, kid}))} items={kids} isDark={isDark} placeholder="Pick one" zIndex={100}
                         />
                     </View>
 
@@ -247,19 +243,19 @@ export const NewChoreDetails = ({ route }) => {
                         </View>
 
                         <NewChoreDropDown
-                            open={openRepeat} setOpen={setOpenRepeat} value={repeat}
-                            setValue={setRepeat} items={repeatOptions} isDark={isDark} zIndex={10}
+                            open={isOpen.repeat} setOpen={(open) => setIsOpen(prev => ({...prev, repeat: open}))} value={formData.repeat}
+                            setValue={(repeat) => setFormData(prev => ({...prev, repeat}))} items={REPEAT_OPTIONS} isDark={isDark} zIndex={10}
                         />
                     </View>
 
-                    {(repeat === "never" || repeat === "monthly")
+                    {(formData.repeat === "never" || formData.repeat === "monthly")
                         ?
                             <View>
                                 <View className="h-[1px] my-6 bg-[#737780]"></View>
 
-                                {dateTimeError &&
+                                {formErrors.dateTime &&
                                     <BrandText className="text-red-500 text-center">
-                                        {dateTimeError}
+                                        {formErrors.dateTime}
                                     </BrandText>
                                 }
 
@@ -273,7 +269,7 @@ export const NewChoreDetails = ({ route }) => {
 
                                     <Pressable
                                         onPress={() => {
-                                            setOpenDateTime(true)
+                                            setIsOpen(prev => ({...prev, dateTime: true}))
                                             setMode("date")
                                         }}
                                         className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
@@ -282,25 +278,25 @@ export const NewChoreDetails = ({ route }) => {
                                         <BrandText
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]"
                                         >
-                                            {dayjs(dateTime).format('MMM D, YYYY')}
+                                            {dayjs(formData.dateTime).format('MMM D, YYYY')}
                                         </BrandText>
                                     </Pressable>
                                 </View>
                             </View>
 
-                        : repeat === "weekly" ?
+                        : formData.repeat === "weekly" ?
                             <View>
                                 <View className="h-[1px] my-6 bg-[#737780]"></View>
 
                                 <View className="flex-row flex-1 justify-between mx-8">
-                                    {weekdays.map((day) => (
+                                    {WEEKDAYS.map((day) => (
                                         <Pressable
                                             key={day.id}
                                             className={`w-[30px] h-[30px] justify-center items-center rounded-full
                                                 ${weekday === day.id
                                                     ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
                                                     : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}`}
-                                            onPress={() => setWeekday(day.id)}
+                                            onPress={() => setFormData(prev => ({...prev, weekday: day.id}))}
                                         >
                                             <BrandBoldText className="text-[#22252B] text-[16px]">
                                                 {day.short}
@@ -326,14 +322,14 @@ export const NewChoreDetails = ({ route }) => {
 
                         <Pressable
                             onPress={() => {
-                                setOpenDateTime(true)
+                                setIsOpen(prev => ({...prev, dateTime: true}))
                                 setMode("time")
                             }}
                             className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
                                         border-[#D0D1D4] dark:border-[#D0D1D4] rounded-xl p-3"
                         >
                             <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px]">
-                                {dayjs(dateTime).format('h:mm A')}
+                                {dayjs(formData.dateTime).format('h:mm A')}
                             </BrandText>
                         </Pressable>
                     </View>
@@ -350,13 +346,13 @@ export const NewChoreDetails = ({ route }) => {
                         </View>
                         
                         <Switch
-                            value={requirePhotos}
-                            onValueChange={setRequirePhotos}
+                            value={formData.needPics}
+                            onValueChange={(needPics)=> setFormData(prev => ({...prev, needPics}))}
                             trackColor={{
                                 false: isDark ? "#6a6a6aff" : '#a5a5a5ff',
                                 true: isDark ? "#a75c1aff" : "#618479ff"
                             }}
-                            thumbColor={requirePhotos
+                            thumbColor={formData.needPics
                                 ? isDark ? "#FB943C" : "#84A99D"
                                 : isDark ? "#d2d2d2ff" : "#979797ff"}
                             style={{ transform: [{ scale: 1.5 }] }}
@@ -365,9 +361,9 @@ export const NewChoreDetails = ({ route }) => {
 
                     <View className="h-[1px] my-6 bg-[#737780]"></View>
 
-                    {detailsError &&
+                    {formErrors.details &&
                         <BrandText className="text-red-500 text-center">
-                            {detailsError}
+                            {formErrors.details}
                         </BrandText>
                     }
 
@@ -384,8 +380,8 @@ export const NewChoreDetails = ({ route }) => {
                             <TextInput
                                 multiline={true}
                                 numberOfLines={3}
-                                value={details}
-                                onChangeText={handleDetailsChange}
+                                value={formData.details}
+                                onChangeText={(details) => handleChange("details", details)}
                                 placeholder="Add optional notes"
                                 placeholderTextColor={isDark ? "white" : "black"}
                                 className="text-[16px] align-top h-[100px] border-[1px] border-[#D0D1D4] dark:border-white
@@ -395,15 +391,15 @@ export const NewChoreDetails = ({ route }) => {
                     </View>
 
                     <View className="flex-1 justify-end mb-12">
-                        <PrimaryButton onPress={handleSubmit} disabled={!expoPushToken} label="Add" />
+                        <PrimaryButton onPress={handleSubmit} label="Add" />
                     </View>
 
                     <DateTimePickerModal
-                        isVisible={openDateTime}
+                        isVisible={isOpen.dateTime}
                         mode={mode}
-                        date={dateTime.toDate()}
-                        onConfirm={handleDateTimeChange}
-                        onCancel={() => setOpenDateTime(false)}
+                        date={formData.dateTime.toDate()}
+                        onConfirm={(dateTime) => handleDateTimeChange("dateTime", dateTime)}
+                        onCancel={() => setIsOpen(prev => ({...prev, dateTime: false}))}
                         minimumDate={dayjs().toDate()}
                         maximumDate={dayjs().add(1, 'month').toDate()}
                         display={mode === 'date' ? 'inline' : 'spinner'}
