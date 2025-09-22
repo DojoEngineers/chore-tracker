@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useEffect, useState } from "react"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
-import { addChore } from "../../services/chore.service"
+import { addChore, updateChore } from "../../services/chore.service"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { Switch } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
@@ -40,11 +40,13 @@ const REPEAT_OPTIONS = [
 ]
 
 const DEFAULT_FORM_VALUES = {
-    kid: null,
+    kid: "",
     repeat: REPEAT_OPTIONS[0].value,
     weekday: null,
     details: "",
-    needPics: false
+    needsPics: false,
+    dateTime: "",
+    title: ""
 }
 
 export const NewChoreDetails = ({ route }) => {
@@ -108,7 +110,7 @@ export const NewChoreDetails = ({ route }) => {
     const [mode, setMode] = useState("")
     const [formErrors, setFormErrors] = useState({dateTime: false, details: false})
     
-    const { title } = route.params
+    const { title, chore } = route.params || {}
     const navigation = useNavigation()
     const { loggedInData } = useLogin()
     const colorScheme = useColorScheme()
@@ -117,6 +119,22 @@ export const NewChoreDetails = ({ route }) => {
     const kids = loggedInData.family.children
         .filter(kid => kid.isActive)
         .map(kid => ({label: kid.name, value: kid._id}))
+
+    useEffect(() => {
+        if (chore) {
+            setFormData({
+                kid: chore.worker?._id,
+                repeat: chore.repeat,
+                weekday: chore.day,
+                dateTime: dayjs(chore.dueDate),
+                details: chore.details,
+                needsPics: chore.needsPics,
+                title: chore.title
+            })
+        } else if (title) {
+            setFormData(prev => ({ ...prev, title }));
+        }
+    }, [chore, title])
 
     const handleDateTimeChange = (name, value) => {
         let newDateTime
@@ -161,31 +179,51 @@ export const NewChoreDetails = ({ route }) => {
             return
         }
 
-        else {
             // handleSendTest()
-            const {details, kid, dateTime, needPics, repeat, weekday} = formData
-            const allData = {
-                title, details, creator: loggedInData._id, stageDate: dayjs().toISOString(),
-                worker: kid, dueDate: dateTime.toISOString(), needPics, repeat, day: weekday
+            const {details, kid, dateTime, needsPics, repeat, weekday} = formData
+            const baseData = {
+                title: formData.title, details, creator: loggedInData._id, worker: kid,
+                dueDate: dateTime.toISOString(), needsPics, repeat, day: weekday
             }
 
-            addChore(allData)
-                .then(() => {
-                    Toast.show({
-                        type: 'success',
-                        text1: "Chore created!"
+            if (chore) {
+                const finalData = {...baseData, _id: chore._id, dateEdited: dayjs().toISOString()}
+                updateChore(finalData)
+                    .then(() => {
+                        Toast.show({
+                            type: 'success',
+                            text1: "Chore edited!"
+                        })
+                        navigation.replace("Dashboard", { animationType: "fade_from_bottom" })
                     })
-                    navigation.replace("Dashboard", { animationType: "fade_from_bottom" })
-                })
-                .catch((error) => {
-                    console.log("addChore error:", error)
-                    setApiErrors(prev => ({...prev, addChore: "Unable to create chore."}))
-                    Toast.show({
-                        type: 'error',
-                        text1: "Unable to create chore."
+                    .catch((error) => {
+                        console.log("updateChore error:", error)
+                        setApiErrors(prev => ({...prev, updateChore: "Unable to update chore."}))
+                        Toast.show({
+                            type: 'error',
+                            text1: "Unable to update chore."
+                        })
                     })
-                })
-        }
+
+            } else {
+                const finalData = {...baseData, stageDate: dayjs().toISOString()}
+                addChore(finalData)
+                    .then(() => {
+                        Toast.show({
+                            type: 'success',
+                            text1: "Chore created!"
+                        })
+                        navigation.replace("Dashboard", { animationType: "fade_from_bottom" })
+                    })
+                    .catch((error) => {
+                        console.log("addChore error:", error)
+                        setApiErrors(prev => ({...prev, addChore: "Unable to create chore."}))
+                        Toast.show({
+                            type: 'error',
+                            text1: "Unable to create chore."
+                        })
+                    })
+            }
     }
 
     return (
@@ -208,13 +246,18 @@ export const NewChoreDetails = ({ route }) => {
                         </Pressable>
 
                         <BrandBoldText className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText">
-                            {title}
+                            {formData.title}
                         </BrandBoldText>
                     </View>
 
                     {apiErrors.addChore &&
                         <BrandText className="text-red-500 text-center">
                             {apiErrors.addChore}
+                        </BrandText>
+                    }
+                    {apiErrors.updateChore &&
+                        <BrandText className="text-red-500 text-center">
+                            {apiErrors.updateChore}
                         </BrandText>
                     }
 
@@ -346,13 +389,13 @@ export const NewChoreDetails = ({ route }) => {
                         </View>
                         
                         <Switch
-                            value={formData.needPics}
-                            onValueChange={(needPics)=> setFormData(prev => ({...prev, needPics}))}
+                            value={formData.needsPics}
+                            onValueChange={(needsPics)=> setFormData(prev => ({...prev, needsPics}))}
                             trackColor={{
                                 false: isDark ? "#6a6a6aff" : '#a5a5a5ff',
                                 true: isDark ? "#a75c1aff" : "#618479ff"
                             }}
-                            thumbColor={formData.needPics
+                            thumbColor={formData.needsPics
                                 ? isDark ? "#FB943C" : "#84A99D"
                                 : isDark ? "#d2d2d2ff" : "#979797ff"}
                             style={{ transform: [{ scale: 1.5 }] }}
