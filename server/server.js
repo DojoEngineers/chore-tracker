@@ -4,7 +4,7 @@ import { config } from "dotenv"; // instead of importing all of dotenv
 import { dbConnect } from "./config/mongoose.config.js";
 import userRouter from "./routes/user.route.js"
 import choreRouter from "./routes/chore.route.js"
-import uploadRouter from "./routes/upload.js";
+import imageRouter from "./routes/image.route.js";
 import path from 'path'
 import { fileURLToPath } from 'url';
 import emailjs from "@emailjs/nodejs"
@@ -30,12 +30,12 @@ cors({ origin: process.env.FRONTEND_API_URL, credentials:true })
 app.use(express.json())
 app.use("/user", userRouter);
 app.use("/chore", choreRouter);
-app.use("/upload", uploadRouter);
+app.use("/image", imageRouter);
 
 
 
-// This line serves files from /uploads
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// This line serves files from /images
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 config(); // instead of dotenv.config
 const PORT = process.env.PORT;

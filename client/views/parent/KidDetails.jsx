@@ -61,7 +61,7 @@ export const KidDetails = ({route}) => {
                 })
             })
             .finally(() => setLoading(false))
-    }, [])
+    }, [kid])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
@@ -80,7 +80,7 @@ export const KidDetails = ({route}) => {
             </View>
 
             <ScrollView
-                showsVerticalScrollIndicator={true}
+                showsVerticalScrollIndicator={false}
                 className="px-[16px] flex-1"
             >
                 <View className="py-[15px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3 flex-1">

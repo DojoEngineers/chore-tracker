@@ -8,13 +8,10 @@ const CHORE_INSTANCE = axios.create({
 
 CHORE_INSTANCE.interceptors.request.use(
     async (config) => {
-        console.log("intercepting...")
         const user = await AsyncStorage.getItem('user')
         const data = JSON.parse(user)
         if (data) {
-            console.log("data", data)
             const token = data.token
-            console.log("token", token)
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`
             }
@@ -81,5 +78,7 @@ export const updateChore = async (data) => {
         const RES = await CHORE_INSTANCE.put( '/', data )
         return RES.data
     } 
-    catch( error ){ throw error.response.data.errors }
+    catch( error ){
+        throw error.response.data.errors
+    }
 }

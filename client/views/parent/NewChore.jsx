@@ -167,7 +167,7 @@ export const NewChore = () => {
                                 :
                                     <ScrollView
                                         contentContainerClassName="items-center"
-                                        showsVerticalScrollIndicator={true}
+                                        showsVerticalScrollIndicator={false}
                                         className="mb-12"
                                     >
                                         <PresetChoreButton chore="Feed the pet(s)"/>

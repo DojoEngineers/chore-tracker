@@ -292,12 +292,10 @@ export const UserContextProvider = ({ children }) => {
     };
 
     const login = async (userData) => {
-        console.log("in context's login.")
         try {
             await AsyncStorage.setItem('user', JSON.stringify(userData));
             setUser(userData)
             setIsLoggedIn(true)
-            console.log("set user", userData)
             return userData
         } catch (e) {
             console.log('Failed to save user', e);

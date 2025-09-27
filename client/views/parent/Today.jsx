@@ -45,7 +45,7 @@ export const Today = () => {
                 })
             })
             .finally(() => setLoading(false))
-    }, [])
+    }, [loggedInData])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
@@ -67,7 +67,7 @@ export const Today = () => {
             {chores.length > 0
                 ?
                     <ScrollView
-                        showsVerticalScrollIndicator={true}
+                        showsVerticalScrollIndicator={false}
                         className="px-[16px] mt-4 flex-1"
                     >
                         {chores.map((chore) => (

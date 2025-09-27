@@ -69,7 +69,7 @@ export const Kids = () => {
                         <View className="flex-1">
                             <ScrollView
                                 contentContainerClassName="items-center flex-grow"
-                                showsVerticalScrollIndicator={true}
+                                showsVerticalScrollIndicator={false}
                                 className="flex-1"
                             >
                                 {kids.map((kid) => (
