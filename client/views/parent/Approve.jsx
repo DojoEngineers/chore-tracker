@@ -50,7 +50,7 @@ export const Approve = () => {
                 })
             })
             .finally(() => setLoading(false))
-    }, [])
+    }, [loggedInData])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
@@ -73,7 +73,7 @@ export const Approve = () => {
 
             <View className="flex-1">
                 <ScrollView
-                    showsVerticalScrollIndicator={true}
+                    showsVerticalScrollIndicator={false}
                     className="flex-1"
                 >
                     <View className="py-[25px] px-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] my-3 mx-[16px] flex-1">

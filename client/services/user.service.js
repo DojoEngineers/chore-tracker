@@ -8,13 +8,10 @@ const USER_INSTANCE = axios.create({
 
 USER_INSTANCE.interceptors.request.use(
     async (config) => {
-        console.log("intercepting...")
         const user = await AsyncStorage.getItem('user')
         const data = JSON.parse(user)
         if (data) {
-            console.log("data", data)
             const token = data.token
-            console.log("token", token)
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`
             }

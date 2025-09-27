@@ -12,7 +12,7 @@ import { useEffect } from "react"
 export const StartingPage = () => {
 
     const navigation = useNavigation()
-    const {user, isLoggingOut, isLoggedIn, setLoggedInData} = useLogin()
+    const {user, setLoggedInData} = useLogin()
 
     const checkUserToken = async () => {
         console.log("user already logged in:", user)
@@ -30,7 +30,6 @@ export const StartingPage = () => {
     }
 
     useEffect(() => {
-        console.log("login useEffect")
         if (!user || !user._id) {
             console.log("No valid user, staying on login page")
             return;
@@ -39,7 +38,7 @@ export const StartingPage = () => {
             checkUserToken()
         }, 200)
         return () => clearTimeout(timer)
-    }, [])
+    }, [user])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">

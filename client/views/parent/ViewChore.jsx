@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { getChoreById, updateChore } from "../../services/chore.service"
 import Toast from "react-native-toast-message"
-import { Pressable, ScrollView, View } from "react-native"
+import { Alert, Pressable, ScrollView, View, Linking, Image } from "react-native"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { useNavigation } from "@react-navigation/native"
 import { BackArrow } from "../../components/icons/BackArrow"
@@ -19,8 +19,26 @@ import { DeleteModal } from "../../components/DeleteModal"
 import { RejectModal } from "../../components/RejectModal"
 import { useLogin } from "../../context/UserContext"
 import { CompleteModal } from "../../components/CompleteModal"
+import * as ImagePicker from 'expo-image-picker';
+import { addImage } from "../../services/image.service"
+import Constants from 'expo-constants'
+
 
 dayjs.extend(utc)
+
+const API_ERROR_KEYS = [
+    'getChoreById',
+    'deleteChore',
+    'approveChore',
+    'rejectChore',
+    'completeChore',
+    'addBeforeImageToChore',
+    'addBeforeImage',
+    'addAfterImageToChore',
+    'addAfterImage',
+]
+
+const BACKEND_URL = Constants.expoConfig.extra.BACKEND_API_URL
 
 export const ViewChore = ({route}) => {
 
@@ -49,10 +67,10 @@ export const ViewChore = ({route}) => {
                 })
             })
         .finally(() => setLoading(false))
-    }, [])
+    }, [id])
 
-    const handleApprove = (_id) => {
-        updateChore({_id, stage: "approved", stageDate: dayjs().toISOString()})
+    const handleApprove = () => {
+        updateChore({_id: id, stage: "approved", stageDate: dayjs().toISOString()})
             .then(() => {
                 Toast.show({
                     type: 'success',
@@ -68,6 +86,58 @@ export const ViewChore = ({route}) => {
                     text1: "Unable to approve chore."
                 })
             })
+    }
+
+    const takeBeforePhoto = async () => {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync()
+        if (status !== 'granted') {
+            Alert.alert(
+                "Camera permission required",
+                "Please enable camera access in your phone's settings.",
+                [
+                    {text: "Cancel", style: "cancel"},
+                    {text: "Open Settings", onPress: () => Linking.openSettings()}
+                ]
+            )
+            return
+        }
+
+        const result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.8,
+        })
+
+        if (!result.canceled) {
+            const uri = result.assets[0].uri
+            addImage(uri)
+                .then((res) => {
+                    setChore(prev => ({...prev, beforePic: res.url}))
+                    updateChore({_id: id, beforePic: res.url})
+                        .then(() => {
+                            Toast.show({
+                                type: 'success',
+                                text1: "Before photo added!"
+                            })
+                        })
+                        .catch((error) => {
+                            console.log("addBeforeImageToChore error:", error)
+                            setApiErrors(prev => ({...prev, addBeforeImageToChore: "Unable to add before image to chore."}))
+                            Toast.show({
+                                type: 'error',
+                                text1: "Unable to add before image to chore."
+                            })
+                        })
+                })
+                .catch((error) => {
+                    console.log("addBeforeImage error:", error)
+                    setApiErrors(prev => ({...prev, addBeforeImage: "Unable to save before image."}))
+                    Toast.show({
+                        type: 'error',
+                        text1: "Unable to save before image."
+                    })
+                })
+        }
     }
         
     return (
@@ -87,30 +157,12 @@ export const ViewChore = ({route}) => {
                 </BrandBoldText>
             </View>
 
-            {apiErrors.getChoreById && (
-                <BrandText className="text-red-500 text-center">
-                    {apiErrors.getChoreById}
-                </BrandText>
-            )}
-            {apiErrors.deleteChore && (
-                <BrandText className="text-red-500 text-center">
-                    {apiErrors.deleteChore}
-                </BrandText>
-            )}
-            {apiErrors.approveChore && (
-                <BrandText className="text-red-500 text-center">
-                    {apiErrors.approveChore}
-                </BrandText>
-            )}
-            {apiErrors.rejectChore && (
-                <BrandText className="text-red-500 text-center">
-                    {apiErrors.rejectChore}
-                </BrandText>
-            )}
-            {apiErrors.completeChore && (
-                <BrandText className="text-red-500 text-center">
-                    {apiErrors.completeChore}
-                </BrandText>
+            {API_ERROR_KEYS.map(key => 
+                apiErrors[key] && (
+                    <BrandText key={key} className="text-red-500 text-center">
+                        {apiErrors[key]}
+                    </BrandText>
+                )
             )}
 
             {loading && (
@@ -121,7 +173,7 @@ export const ViewChore = ({route}) => {
 
             <ScrollView
                 contentContainerClassName="flex-grow"
-                showsVerticalScrollIndicator={true}
+                showsVerticalScrollIndicator={false}
                 className="flex-1"
             >
                 <View className="flex-row items-center my-6 mx-2">
@@ -283,6 +335,43 @@ export const ViewChore = ({route}) => {
                         <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
                     </View>
                 }
+
+                {(chore.beforePic || chore.afterPic) &&
+                    <View>
+                        <ScrollView
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                            className="flex-1 my-6 mx-2"
+                        >
+                            {chore.beforePic && (
+                                <View className="mr-6">
+                                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] mb-2">
+                                        Before Photo
+                                    </BrandText>
+                                    <Image
+                                        source={{uri: `${BACKEND_URL}${chore.beforePic}`}}
+                                        className="w-[200px] h-[200px] rounded-lg"
+                                    />
+                                </View>
+                            )}
+
+                            {chore.afterPic && (
+                                <View className="">
+                                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] mb-2">
+                                        After Photo
+                                    </BrandText>
+                                    <Image
+                                        source={{uri: `${BACKEND_URL}${chore.afterPic}`}}
+                                        className="w-[200px] h-[200px] rounded-lg"
+                                    />
+                                </View>
+                            )}
+                        </ScrollView>
+
+                        <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+                    </View>
+                }
+
             </ScrollView>
 
             {(chore.stage === "incomplete" || chore.stage === "rejectedReassigned")
@@ -312,7 +401,7 @@ export const ViewChore = ({route}) => {
                         : chore.worker._id === loggedInData._id ?
                             <View className="mb-12">
                                 <Pressable
-                                    onPress={[]}
+                                    onPress={takeBeforePhoto}
                                     className="p-[10px] rounded-full items-center justify-center bg-[#84A99D] w-full h-[56px] mt-4"
                                 >
                                     <BrandBoldText className="text-[#ECEDEE] text-[20px] ms-4">
@@ -338,7 +427,7 @@ export const ViewChore = ({route}) => {
                 <View className="mb-12">
 
                     <Pressable
-                        onPress={() => handleApprove(chore._id)}
+                        onPress={handleApprove}
                         className="p-[10px] rounded-full items-center justify-center dark:bg-[#B3EAD3] bg-[#84A99D] w-full h-[56px] mt-5"
                     >
                         <BrandBoldText className="text-darkPrimaryText dark:text-lightPrimaryText text-[20px] ms-4">
@@ -377,6 +466,7 @@ export const ViewChore = ({route}) => {
                 setApiErrors={setApiErrors}
                 id={id}
                 needsPics={chore.needsPics}
+                setChore={setChore}
             />
 
         </View>

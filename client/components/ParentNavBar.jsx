@@ -28,7 +28,7 @@ export const ParentNavBar = () => {
                 >
                     {route.name === "Dashboard" ? <HighlightedHomeIcon width={26} /> : <HomeIcon width={26} />}
                     <BrandText
-                        className={`mt-1 text-[14px] ${route.name === "Dashboard" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
+                        className={`mt-1 text-[10px] ${route.name === "Dashboard" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
                     >
                         Home
                     </BrandText>
@@ -40,7 +40,7 @@ export const ParentNavBar = () => {
                 >
                     {route.name === "Today" ? <HighlightedTodayIcon width={26} /> : <TodayIcon width={26} />}
                     <BrandText
-                        className={`mt-1 text-[14px] ${route.name === "Today" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
+                        className={`mt-1 text-[10px] ${route.name === "Today" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
                     >
                         Today
                     </BrandText>
@@ -54,7 +54,7 @@ export const ParentNavBar = () => {
                 >
                     {route.name === "Approve" ? <HighlightedApproveIcon width={26} /> : <ApproveIcon width={26} />}
                     <BrandText
-                        className={`mt-1 text-[14px] ${route.name === "Approve" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
+                        className={`mt-1 text-[10px] ${route.name === "Approve" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
                     >
                         Approve
                     </BrandText>
@@ -66,7 +66,7 @@ export const ParentNavBar = () => {
                 >
                     {isOnKids ? <HighlightedKidsIcon width={26} /> : <KidsIcon width={26} />}
                     <BrandText
-                        className={`mt-1 text-[14px] ${isOnKids ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
+                        className={`mt-1 text-[10px] ${isOnKids ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
                     >
                         Kids
                     </BrandText>

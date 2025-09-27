@@ -16,16 +16,16 @@ export const KidNavBar = () => {
 
     return (
         <View className="bg-white dark:bg-[#333740] w-full h-[100px] border-t-2
-            dark:border-[#737780] border-[#ECEDEE] flex-row pb-4 px-[50px]">
+            dark:border-[#737780] border-[#ECEDEE] flex-row pb-4">
             
-            <View className="flex-1 items-center justify-center mr-12">
+            <View className="flex-1 items-center justify-center">
                 <Pressable
                     className="justify-center items-center"
                     onPress={() => navigation.navigate("Dashboard", {animationType: "fade_from_bottom"})}
                 >
                     {route.name === "Dashboard" ? <HighlightedHomeIcon width={26} /> : <HomeIcon width={26} />}
                     <BrandText
-                        className={`mt-1 text-[14px] ${route.name === "Dashboard" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
+                        className={`mt-1 text-[10px] ${route.name === "Dashboard" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
                     >
                         Home
                     </BrandText>
@@ -39,21 +39,23 @@ export const KidNavBar = () => {
                 >
                     {route.name === "ThisWeek" ? <HighlightedTodayIcon width={26} /> : <TodayIcon width={26} />}
                     <BrandText
-                        className={`mt-1 text-[14px] ${route.name === "ThisWeek" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
+                        className={`mt-1 text-[10px] ${route.name === "ThisWeek" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
                     >
                         This Week
                     </BrandText>
                 </Pressable>
             </View>
 
-            <View className="flex-1 items-center justify-center ml-12">
+            <View className="flex-1 items-center justify-center">
                 <Pressable
                     className="justify-center items-center"
                     onPress={() => navigation.navigate("Completed", {animationType: "fade_from_bottom"})}
                 >
                     {route.name === "Completed" ? <HighlightedApproveIcon width={26} /> : <ApproveIcon width={26} />}
                     <BrandText
-                        className={`mt-1 text-[14px] ${route.name === "Completed" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        className={`mt-1 text-[10px] ${route.name === "Completed" ? "text-lightButton dark:text-darkButton" : "text-[#D0D1D4]"}`}
                     >
                         Completed
                     </BrandText>

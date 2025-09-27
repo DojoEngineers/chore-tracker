@@ -16,9 +16,9 @@ export const HorizontalChoreScroll = ({chores, apiError, loading, noChoreMessage
             {chores.length > 0
                 ?
                     <ScrollView
-                        horizontal
                         className="px-[16px] my-4"
-                        showsVerticalScrollIndicator={true}
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
                     >
                         {chores.map(chore => (
                             <Pressable

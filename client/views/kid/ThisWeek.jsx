@@ -56,7 +56,7 @@ export const ThisWeek = () => {
                     })
                 })
                 .finally(() => setLoading(false))
-        }, [])
+        }, [loggedInData])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
@@ -70,7 +70,7 @@ export const ThisWeek = () => {
             </BrandBoldText>
 
             <ScrollView
-                showsVerticalScrollIndicator={true}
+                showsVerticalScrollIndicator={false}
                 className="px-[16px] mt-2 flex-1"
             >
 

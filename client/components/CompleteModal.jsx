@@ -1,4 +1,4 @@
-import { Keyboard, Modal, Pressable, TextInput, TouchableWithoutFeedback, useColorScheme, View } from "react-native"
+import { Alert, Keyboard, Linking, Modal, Pressable, TextInput, TouchableWithoutFeedback, useColorScheme, View } from "react-native"
 import { BrandBoldText } from "./text/BrandBoldText"
 import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
@@ -8,11 +8,12 @@ import dayjs from "dayjs"
 import { updateChore } from "../services/chore.service"
 import { CloseIcon } from "./icons/CloseIcon"
 import { BrandText } from "./text/BrandText"
-import { Checkbox } from "react-native-paper"
+import * as ImagePicker from 'expo-image-picker';
+import { addImage } from "../services/image.service"
 
 dayjs.extend(utc)
 
-export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics}) => {
+export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics, setChore}) => {
 
     const [kidComments, setKidComments] = useState("")
     const [commentsError, setCommentsError] = useState("")
@@ -47,6 +48,7 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics}
                 })
                 navigation.replace("Dashboard", {animationType: "slide_from_left"})
             })
+
             .catch((error) => {
                 console.log("completeChore error:", error)
                 setApiErrors(prev => ({...prev, completeChore: "Unable to complete chore."}))
@@ -57,8 +59,54 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics}
             })
     }
 
-    const submitAfterPhoto = () => {
-        return
+    const takeAfterPhoto = async () => {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync()
+        if (status !== 'granted') {
+            Alert.alert(
+                "Camera permission required",
+                "Please enable camera access in your phone's settings.",
+                [
+                    {text: "Cancel", style: "cancel"},
+                    {text: "Open Settings", onPress: () => Linking.openSettings()}
+                ]
+            )
+            return
+        }
+
+        const result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.8,
+        })
+
+        if (!result.canceled) {
+            const uri = result.assets[0].uri
+
+            addImage(uri)
+                .then((res) => {
+                    setChore(prev => ({...prev, afterPic: res.url}))
+                    updateChore({_id: id, afterPic: res.url})
+                        .catch((error) => {
+                            console.log("addAfterImageToChore error:", error)
+                            setApiErrors(prev => ({...prev, addAfterImageToChore: "Unable to add after image to chore."}))
+                            Toast.show({
+                                type: 'error',
+                                text1: "Unable to add after image to chore."
+                            })
+                        })
+                })
+
+                .catch((error) => {
+                    console.log("addAfterImage error:", error)
+                    setApiErrors(prev => ({...prev, addAfterImage: "Unable to save after image."}))
+                    Toast.show({
+                        type: 'error',
+                        text1: "Unable to save after image."
+                    })
+                })
+
+            handleComplete()
+        }
     }
 
     return (
@@ -68,67 +116,68 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics}
             visible={visible}
             onRequestClose={() => setVisible(false)}
         >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                <View
-                    className="flex-1 justify-center items-center"
-                    style={{backgroundColor:  'rgba(68, 73, 85, 0.5)'}}
-                >
-                    <View className="bg-[#ECEDEE] dark:bg-[#454954] p-[16px] rounded-3xl w-[90%]">
+            <View className="flex-1 justify-center items-center bg-transparent">
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                    <View
+                        className="absolute inset-0"
+                        style={{backgroundColor:  'rgba(68, 73, 85, 0.5)'}}
+                    />
+                </TouchableWithoutFeedback>
 
-                        <View className="flex-row items-center mb-6">
-                            <Pressable
-                                hitSlop={20}
-                                onPress={() => setVisible(false)}
-                            >
-                                <CloseIcon />
-                            </Pressable>
-
-                            <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ms-6">
-                                Complete chore
-                            </BrandText>
-                        </View>
-
-                        {commentsError &&
-                            <BrandText
-                                className="text-red-500 text-[14px] text-center"
-                            >
-                                    {commentsError}
-                            </BrandText>
-                        }
-
-                        <TextInput
-                            className="border border-[#A1A4AA] dark:border-[#D0D1D4] rounded-2xl p-3 bg-[#D0D1D4] dark:bg-transparent
-                                text-lightPrimaryText dark:text-darkPrimaryText h-[80px] mb-8 font-nunito text-[15px]"
-                            value={kidComments}
-                            onChangeText={(comments) => handleChange(comments)}
-                            placeholder="Add comments here"
-                            placeholderTextColor={placeholderColor}
-                            multiline={true}
-                            textAlignVertical="top"
-                        />
-                        
+                <View className="bg-[#ECEDEE] dark:bg-[#454954] p-[16px] rounded-3xl w-[90%]">
+                    <View className="flex-row items-center mb-6">
                         <Pressable
-                            className="p-[10px] items-center justify-center bg-[#84A99D] rounded-full w-full"
-                            onPress={submitAfterPhoto}
+                            hitSlop={20}
+                            onPress={() => setVisible(false)}
                         >
-                            <BrandBoldText className="text-darkPrimaryText text-[16px]">
-                                Submit after photo
-                            </BrandBoldText>
+                            <CloseIcon />
                         </Pressable>
 
-                        {!needsPics &&
-                            <Pressable
-                                className="p-[10px] items-center justify-center bg-[#455C56] rounded-full w-full mt-4"
-                                onPress={handleComplete}
-                            >
-                                <BrandBoldText className="text-darkPrimaryText text-[16px]">
-                                    Complete without photo
-                                </BrandBoldText>
-                            </Pressable>
-                        }
+                        <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ms-6">
+                            Complete chore
+                        </BrandText>
                     </View>
+
+                    {commentsError &&
+                        <BrandText
+                            className="text-red-500 text-[14px] text-center"
+                        >
+                                {commentsError}
+                        </BrandText>
+                    }
+
+                    <TextInput
+                        className="border border-[#A1A4AA] dark:border-[#D0D1D4] rounded-2xl p-3 bg-[#D0D1D4] dark:bg-transparent
+                            text-lightPrimaryText dark:text-darkPrimaryText h-[80px] mb-8 font-nunito text-[15px]"
+                        value={kidComments}
+                        onChangeText={(comments) => handleChange(comments)}
+                        placeholder="Add comments here"
+                        placeholderTextColor={placeholderColor}
+                        multiline={true}
+                        textAlignVertical="top"
+                    />
+                
+                    <Pressable
+                        className="p-[10px] items-center justify-center bg-[#84A99D] rounded-full w-full"
+                        onPress={takeAfterPhoto}
+                    >
+                        <BrandBoldText className="text-darkPrimaryText text-[16px]">
+                            Submit after photo
+                        </BrandBoldText>
+                    </Pressable>
+
+                    {!needsPics &&
+                        <Pressable
+                            className="p-[10px] items-center justify-center bg-[#455C56] rounded-full w-full mt-4"
+                            onPress={handleComplete}
+                        >
+                            <BrandBoldText className="text-darkPrimaryText text-[16px]">
+                                Complete without photo
+                            </BrandBoldText>
+                        </Pressable>
+                    }
                 </View>
-            </TouchableWithoutFeedback>
+            </View>
         </Modal>
     )
 }
