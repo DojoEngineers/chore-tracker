@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { config } from "dotenv"; // instead of importing all of dotenv
+import { config } from "dotenv";
 import { dbConnect } from "./config/mongoose.config.js";
 import userRouter from "./routes/user.route.js"
 import choreRouter from "./routes/chore.route.js"
@@ -14,7 +14,6 @@ import { Expo } from 'expo-server-sdk'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 emailjs.init({
     publicKey: process.env.EMAILJS_PUBLIC_KEY,
@@ -31,8 +30,6 @@ app.use(express.json())
 app.use("/user", userRouter);
 app.use("/chore", choreRouter);
 app.use("/image", imageRouter);
-
-
 
 // This line serves files from /images
 app.use('/images', express.static(path.join(__dirname, 'images')));
@@ -97,12 +94,10 @@ app.post('/api/send-notification', async (req, res) => {
     console.error('Error sending notifications:', error);
     res.status(500).json({ error: 'Failed to send notifications' });
   }
-});
-
+})
 
 app.listen(PORT, '0.0.0.0', async () => {
     console.log("port:", PORT);
     // Line below generates a new instance of reoccuring chores (if chore's conditionas are met)
     // await startJobs();
-    
-});
+})

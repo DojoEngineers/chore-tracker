@@ -2,6 +2,7 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import { addImage } from "../controllers/image.controller.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const imageRouter = express.Router();
 
@@ -32,6 +33,6 @@ const upload = multer({
 });
 
 imageRouter.route('/')
-    .post(upload.single('image'), addImage)
+    .post(protect, upload.single('image'), addImage)
 
 export default imageRouter

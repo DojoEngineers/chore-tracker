@@ -1,30 +1,29 @@
 import { Router } from "express"
 import { protect } from "../middleware/authMiddleware.js"
-import { addChore, getAllChores, getChoreById, getChoresByWorker, deleteAllChores, updateChore, deleteChore, getTemplates, getChoresByParent } from "../controllers/chore.controller.js"
+import { addChore, getAllChores, getChoreById, getChoresByWorker, deleteAllChores, updateChore,
+    deleteChore, getTemplates, getChoresByParents} from "../controllers/chore.controller.js"
 
 const choreRouter = Router()
 
-
+// for testing:
 choreRouter.route('/all')
     .get(getAllChores)
     .delete(deleteAllChores)
 
 choreRouter.route('/')
-    // add protect after done testing
-    .post(addChore)
-    .get(getChoreById)
-    .put(updateChore) // I removed protect here for testing - Katie
+    .post(protect, addChore)
+    .get(protect, getChoreById)
+    .put(protect, updateChore)
+    //for testing:
     .delete(deleteChore)
 
-    
 choreRouter.route('/worker')
-    .get(getChoresByWorker)
+    .get(protect, getChoresByWorker)
 
 choreRouter.route('/parents')
-    .get(getChoresByParent)
-
+    .get(protect, getChoresByParents)
 
 choreRouter.route('/templates')
-    .get(getTemplates)
+    .get(protect, getTemplates)
 
 export default choreRouter

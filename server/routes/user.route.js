@@ -1,18 +1,16 @@
 import { Router } from "express"
 import { protect } from "../middleware/authMiddleware.js"
-import { getCurrentUser, loginUser, registerUser, updateUser, checkUsername, getUserByUsername, verifyUser, verifyPassword, changePassword, resendCode, sendPassword, deleteUser, getAllUsers } from "../controllers/user.controller.js"
-// import { verify } from "jsonwebtoken"
+import { getCurrentUser, loginUser, registerUser, updateUser, checkUsername, getUserByUsername, verifyUser, verifyPassword,
+    changePassword, resendCode, sendPassword, deleteUser, getAllUsers } from "../controllers/user.controller.js"
 
 const userRouter = Router()
 
+// for testing:
 userRouter.route('/all')
     .get(getAllUsers)
 
-// userRouter.route('/addUser')
-//     .post(addUser)
-
 userRouter.route('/')
-    .get( getCurrentUser)
+    .get(protect, getCurrentUser)
     .post(registerUser)
     .put(protect, updateUser)
     //for testing:
@@ -34,7 +32,7 @@ userRouter.route('/verify')
     .post(verifyUser)
 
     userRouter.route('/verifyPassword')
-    .get(verifyPassword)
+    .get(protect, verifyPassword)
 
 userRouter.route('/resendCode')
     .post(resendCode)
@@ -43,7 +41,6 @@ userRouter.route('/sendPassword')
     .post(sendPassword)
 
 userRouter.route('/changePassword')
-    .put(changePassword)
-
+    .put(protect, changePassword)
 
 export default userRouter
