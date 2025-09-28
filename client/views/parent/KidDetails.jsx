@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native"
-import { Pressable, ScrollView, useColorScheme, View } from "react-native"
+import { Pressable, ScrollView, View } from "react-native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { useEffect, useState } from "react"
@@ -217,7 +217,7 @@ export const KidDetails = ({route}) => {
 
                                         {chore.repeat === "weekly"
                                             ?
-                                                <WeeklyRepeatIcons chore={chore} fontSize={10} circleSize={20}/>
+                                                <WeeklyRepeatIcons chore={chore} fontSize={12} circleSize={20}/>
 
                                             : chore.repeat === "daily" ?
                                                 <BrandText

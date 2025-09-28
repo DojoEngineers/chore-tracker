@@ -227,7 +227,7 @@ export const ThisWeek = () => {
                                     
                                     {chore.repeat === "weekly"
                                         ?
-                                            <WeeklyRepeatIcons chore={chore} fontSize={10} circleSize={20}/>
+                                            <WeeklyRepeatIcons chore={chore} fontSize={12} circleSize={20}/>
 
                                         : chore.repeat === "daily" ?
                                             <BrandText

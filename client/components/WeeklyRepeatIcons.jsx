@@ -1,5 +1,6 @@
 import { View } from "react-native"
 import { BrandBoldText } from "./text/BrandBoldText";
+import { useLogin } from "../context/UserContext";
 
 const WEEKDAYS = [
     { id: 0, short: 'S', full: 'Sunday' },
@@ -13,6 +14,8 @@ const WEEKDAYS = [
 
 export const WeeklyRepeatIcons = ({chore, circleSize, fontSize}) => {
 
+    const {loggedInData} = useLogin()
+
     return (
         <View className="flex-row">
             {WEEKDAYS.map((day) => {
@@ -20,12 +23,25 @@ export const WeeklyRepeatIcons = ({chore, circleSize, fontSize}) => {
 
                 return (
                     <View
+                    style={{
+                        width: circleSize,
+                        height: circleSize,
+                        borderRadius: circleSize / 2,
+                        marginRight: day.id === 6 ? 0 : 4,
+                    }}
                     key={day.id}
-                    className={`w-[${circleSize}px] h-[${circleSize}px] justify-center items-center rounded-full
-                        ${isSelected ? "bg-[#84A99D] dark:bg-gray-100": "bg-[#A1A4AA] dark:bg-gray-400"}
-                        ${day.id === 6 ? "" : "mr-1"}`}
+                    className={` justify-center items-center
+                        ${isSelected
+                            ? "bg-[#394C46] dark:bg-[#D0D1D4]"
+                            : "bg-[#AEC4BC] dark:bg-[#3B4047]"}`}
                     >
-                        <BrandBoldText className={`text-[#22252B] text-[${fontSize}px]`}>
+                        <BrandBoldText
+                        style={{ fontSize }}
+                        className={`dark:text-[#111215]
+                            ${isSelected
+                                ? "text-[#F5F8F6]"
+                                : "text-[#84A99D]"}`}
+                        >
                             {day.short}
                         </BrandBoldText>
                     </View>
