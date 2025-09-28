@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { getChoreById, updateChore } from "../../services/chore.service"
 import Toast from "react-native-toast-message"
-import { Alert, Pressable, ScrollView, View, Linking, Image } from "react-native"
+import { Alert, Pressable, ScrollView, View, Linking, Image, useColorScheme } from "react-native"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { useNavigation } from "@react-navigation/native"
 import { BackArrow } from "../../components/icons/BackArrow"
@@ -23,7 +23,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { addImage } from "../../services/image.service"
 import Constants from 'expo-constants'
 
-
 dayjs.extend(utc)
 
 const API_ERROR_KEYS = [
@@ -36,6 +35,16 @@ const API_ERROR_KEYS = [
     'addBeforeImage',
     'addAfterImageToChore',
     'addAfterImage',
+]
+
+const WEEKDAYS = [
+    { id: 0, short: 'S', full: 'Sunday' },
+    { id: 1, short: 'M', full: 'Monday' },
+    { id: 2, short: 'T', full: 'Tuesday' },
+    { id: 3, short: 'W', full: 'Wednesday' },
+    { id: 4, short: 'T', full: 'Thursday' },
+    { id: 5, short: 'F', full: 'Friday' },
+    { id: 6, short: 'S', full: 'Saturday' }
 ]
 
 const BACKEND_URL = Constants.expoConfig.extra.BACKEND_API_URL
@@ -52,6 +61,8 @@ export const ViewChore = ({route}) => {
     const navigation = useNavigation()
     const {id} = route.params
     const {loggedInData} = useLogin()
+    const colorScheme = useColorScheme()
+    const isDark = colorScheme === "dark"
 
     useEffect(() => {
         getChoreById(id)
@@ -204,12 +215,37 @@ export const ViewChore = ({route}) => {
 
                 <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
 
-                <View className="flex-row items-center my-6 mx-2">
-                    <RepeatIcon />
+                <View className="flex-row items-center my-6 mx-2 justify-between">
+                    <View className="items-center flex-row">
+                        <RepeatIcon />
 
-                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                        {chore.repeat?.charAt(0).toUpperCase() + chore.repeat?.slice(1)}
-                    </BrandText>
+                        <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
+                            {chore.repeat?.charAt(0).toUpperCase() + chore.repeat?.slice(1)}
+                        </BrandText>
+                    </View>
+
+                    {chore.repeat === "weekly" &&
+                        <View className="flex-row">
+                            {WEEKDAYS.map((day, index) => {
+                                const isSelected = chore.weeklyRepeatDays?.includes(day.id)
+
+                                return (
+                                    <View
+                                    key={day.id}
+                                    className={`w-[30px] h-[30px] justify-center items-center rounded-full
+                                        ${isSelected
+                                        ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
+                                        : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}
+                                        ${day.id === 6 ? "" : "mr-1"}`}
+                                    >
+                                        <BrandBoldText className="text-[#22252B] text-[16px]">
+                                            {day.short}
+                                        </BrandBoldText>
+                                    </View>
+                                )
+                            })}
+                        </View>
+                    }
                 </View>
 
                 <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
