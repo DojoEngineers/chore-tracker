@@ -22,6 +22,7 @@ import { CompleteModal } from "../../components/CompleteModal"
 import * as ImagePicker from 'expo-image-picker';
 import { addImage } from "../../services/image.service"
 import Constants from 'expo-constants'
+import { WeeklyRepeatIcons } from "../../components/WeeklyRepeatIcons";
 
 dayjs.extend(utc)
 
@@ -35,16 +36,6 @@ const API_ERROR_KEYS = [
     'addBeforeImage',
     'addAfterImageToChore',
     'addAfterImage',
-]
-
-const WEEKDAYS = [
-    { id: 0, short: 'S', full: 'Sunday' },
-    { id: 1, short: 'M', full: 'Monday' },
-    { id: 2, short: 'T', full: 'Tuesday' },
-    { id: 3, short: 'W', full: 'Wednesday' },
-    { id: 4, short: 'T', full: 'Thursday' },
-    { id: 5, short: 'F', full: 'Friday' },
-    { id: 6, short: 'S', full: 'Saturday' }
 ]
 
 const BACKEND_URL = Constants.expoConfig.extra.BACKEND_API_URL
@@ -61,8 +52,6 @@ export const ViewChore = ({route}) => {
     const navigation = useNavigation()
     const {id} = route.params
     const {loggedInData} = useLogin()
-    const colorScheme = useColorScheme()
-    const isDark = colorScheme === "dark"
 
     useEffect(() => {
         getChoreById(id)
@@ -227,26 +216,7 @@ export const ViewChore = ({route}) => {
                                 </View>
 
                                 {chore.repeat === "weekly" &&
-                                    <View className="flex-row">
-                                        {WEEKDAYS.map((day) => {
-                                            const isSelected = chore.weeklyRepeatDays?.includes(day.id)
-
-                                            return (
-                                                <View
-                                                key={day.id}
-                                                className={`w-[30px] h-[30px] justify-center items-center rounded-full
-                                                    ${isSelected
-                                                    ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
-                                                    : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}
-                                                    ${day.id === 6 ? "" : "mr-1"}`}
-                                                >
-                                                    <BrandBoldText className="text-[#22252B] text-[16px]">
-                                                        {day.short}
-                                                    </BrandBoldText>
-                                                </View>
-                                            )
-                                        })}
-                                    </View>
+                                    <WeeklyRepeatIcons chore={chore} fontSize={16} circleSize={30}/>
                                 }
                             </View>
 
