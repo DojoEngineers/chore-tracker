@@ -33,7 +33,11 @@ export const Privacy = () => {
 
                 <View className="items-center mb-8">
                     <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                        Text here.
+                        We respect your privacy and keep your family’s data safe. We collect account info, profile details,
+                        and app activity to help you assign and track chores. Your data is securely stored,
+                        shared only with trusted services, and visible to family members in the app. Parents can manage all child accounts,
+                        and you can update info or inactivate your account anytime. We never sell your data.
+                        For questions, contact us at xxx@app.com.
                     </BrandText>
                 </View>
             </View>

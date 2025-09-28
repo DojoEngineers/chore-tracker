@@ -42,7 +42,7 @@ const REPEAT_OPTIONS = [
 const DEFAULT_FORM_VALUES = {
     kids: [],
     repeat: REPEAT_OPTIONS[0].value,
-    weekday: null,
+    weeklyRepeatDays: [],
     details: "",
     needsPics: false,
     dateTime: "",
@@ -125,7 +125,7 @@ export const NewChoreDetails = ({ route }) => {
             setFormData({
                 kids: [chore.worker?._id],
                 repeat: chore.repeat,
-                weekday: chore.day,
+                weeklyRepeatDays: chore.weeklyRepeatDays,
                 dateTime: dayjs(chore.dueDate),
                 details: chore.details,
                 needsPics: chore.needsPics,
@@ -170,6 +170,21 @@ export const NewChoreDetails = ({ route }) => {
         setFormErrors(prev => ({...prev, [name]: validations[name](value)}))
     }
 
+    const handleWeeklyRepeat = (day) => {
+        setFormData(prev => {
+            const currentDays = prev.weeklyRepeatDays || []
+            let updatedDays
+
+            if (currentDays.includes(day.id)) {
+                updatedDays = currentDays.filter(d => d !== day.id);
+            } else {
+                updatedDays = [...currentDays, day.id];
+            }
+
+            return {...prev, weeklyRepeatDays: updatedDays};
+        })
+    }
+
     const handleSubmit = async () => {
         if (formErrors.details || formErrors.dateTime || formData.kids.length === 0) {
             Toast.show({
@@ -179,10 +194,10 @@ export const NewChoreDetails = ({ route }) => {
             return
         }
 
-        const {details, kids, dateTime, needsPics, repeat, weekday} = formData
+        const {details, kids, dateTime, needsPics, repeat, weeklyRepeatDays} = formData
         const baseData = {
             title: formData.title, details, creator: loggedInData._id,
-            dueDate: dateTime.toISOString(), needsPics, repeat, day: weekday
+            dueDate: dateTime.toISOString(), needsPics, repeat, weeklyRepeatDays
         }
         const promises = []
         let finalData = {}
@@ -325,20 +340,23 @@ export const NewChoreDetails = ({ route }) => {
                                 <View className="h-[1px] my-6 bg-[#737780]"></View>
 
                                 <View className="flex-row flex-1 justify-between mx-8">
-                                    {WEEKDAYS.map((day) => (
-                                        <Pressable
-                                            key={day.id}
-                                            className={`w-[30px] h-[30px] justify-center items-center rounded-full
-                                                ${formData.weekday === day.id
-                                                    ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
-                                                    : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}`}
-                                            onPress={() => setFormData(prev => ({...prev, weekday: day.id}))}
-                                        >
-                                            <BrandBoldText className="text-[#22252B] text-[16px]">
-                                                {day.short}
-                                            </BrandBoldText>
-                                        </Pressable>
-                                    ))}
+                                    {WEEKDAYS.map((day) => {
+                                        const isSelected = formData.weeklyRepeatDays?.includes(day.id)
+                                        return (
+                                            <Pressable
+                                                key={day.id}
+                                                className={`w-[30px] h-[30px] justify-center items-center rounded-full
+                                                    ${isSelected
+                                                        ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
+                                                        : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}`}
+                                                onPress={() => handleWeeklyRepeat(day)}
+                                            >
+                                                <BrandBoldText className="text-[#22252B] text-[16px]">
+                                                    {day.short}
+                                                </BrandBoldText>
+                                            </Pressable>
+                                        )
+                                    })}
                                 </View>
                             </View>
 

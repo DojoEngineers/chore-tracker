@@ -146,53 +146,60 @@ export const addChore = async (req, res) => {
             const in7days = new Date(in6days)
             in7days.setDate(in7days.getDate() + 1);
 
-            const CHORE1 = await Chore.create({ ...req.body, dueDate: today, stage: "incomplete", isActive: true, })
-            const CHORE2 = await Chore.create({ ...req.body, dueDate: tomorrow, stage: "incomplete", isActive: true, })
-            const CHORE3 = await Chore.create({ ...req.body, dueDate: in2days, stage: "incomplete", isActive: true, })
-            const CHORE4 = await Chore.create({ ...req.body, dueDate: in3days, stage: "incomplete", isActive: true, })
-            const CHORE5 = await Chore.create({ ...req.body, dueDate: in4days, stage: "incomplete", isActive: true, })
-            const CHORE6 = await Chore.create({ ...req.body, dueDate: in5days, stage: "incomplete", isActive: true, })
-            const CHORE7 = await Chore.create({ ...req.body, dueDate: in6days, stage: "incomplete", isActive: true, })
             const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
+
+            const CHORE1 = await Chore.create({ ...req.body, dueDate: today, stage: "incomplete", isActive: true, templateId: Template._id})
+            const CHORE2 = await Chore.create({ ...req.body, dueDate: tomorrow, stage: "incomplete", isActive: true, templateId: Template._id})
+            const CHORE3 = await Chore.create({ ...req.body, dueDate: in2days, stage: "incomplete", isActive: true, templateId: Template._id})
+            const CHORE4 = await Chore.create({ ...req.body, dueDate: in3days, stage: "incomplete", isActive: true, templateId: Template._id})
+            const CHORE5 = await Chore.create({ ...req.body, dueDate: in4days, stage: "incomplete", isActive: true, templateId: Template._id})
+            const CHORE6 = await Chore.create({ ...req.body, dueDate: in5days, stage: "incomplete", isActive: true, templateId: Template._id})
+            const CHORE7 = await Chore.create({ ...req.body, dueDate: in6days, stage: "incomplete", isActive: true, templateId: Template._id})
             console.log(`running cron job. ${req.body.repeat}.`)
             res.status(201).json(CHORE1)
         }
 
         else if (req.body.repeat == "weekly") {
-            console.log("day", req.body.day)
+            console.log("days", req.body.weeklyRepeatDays)
             const today = new Date();
             const todayDay = today.getDay();
-            const target = req.body.day
-            let diff = target - todayDay;
-
             const dueDate = new Date(req.body.dueDate);
             const hours = dueDate.getHours();
             const minutes = dueDate.getMinutes();
-            // If targetDay is earlier in the week, wrap to next week
-            if (diff < 0) {
-                diff += 7;
-            }
-            let hourDue = dueDate.getHours()
-            let currentHour = today.getHours()
-            console.log("current", currentHour, "hourDue", hourDue, "diff", diff)
-            //makes dueDay next week instead of today
-            if (diff === 0 && currentHour > hourDue) {
-                console.log("wrapping")
-                diff = 7;}
 
-            const newDueDate = new Date(today);
-            newDueDate.setDate(today.getDate() + diff);
-            newDueDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-            console.log("duedate", newDueDate.toLocaleDateString())
+            const weeklyDays = req.body.weeklyRepeatDays || []
+            const createdChores = []
 
-            const CHORE = await Chore.create({ ...req.body, dueDate: newDueDate, stage: "incomplete", isActive: true, })
             const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
+
+            for (const target of weeklyDays) {
+                let diff = target - todayDay
+                // If targetDay is earlier in the week, wrap to next week
+                if (diff < 0) {
+                    diff += 7;
+                }
+                let hourDue = dueDate.getHours()
+                let currentHour = today.getHours()
+                console.log("current", currentHour, "hourDue", hourDue, "diff", diff)
+                //makes dueDay next week instead of today
+                if (diff === 0 && currentHour > hourDue) {
+                    console.log("wrapping")
+                    diff = 7;}
+
+                const newDueDate = new Date(today);
+                newDueDate.setDate(today.getDate() + diff);
+                newDueDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+                console.log("dueDate", newDueDate.toLocaleDateString())
+
+                const CHORE = await Chore.create({ ...req.body, dueDate: newDueDate, stage: "incomplete", isActive: true, templateId: Template._id})
+                createdChores.push(CHORE)
+            }
             console.log("running cron job. Weekly.")
-            res.status(201).json(CHORE)
+            res.status(201).json(createdChores)
         }
         else if (req.body.repeat == "monthly") {
-            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, })
             const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
+            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, templateId: Template._id})
             console.log("running cron job. Monthly.")
             res.status(201).json(CHORE)
         }
@@ -209,8 +216,8 @@ export const updateChore = async (req, res) => {
     console.log("edit Chore controller. req.body:", req.body)
     try {
         // can't change id or creator
-        const allowedUpdates = ['title', "details", 'stage', "worker", "dueDate", "stageDate", "beforePic",
-            "afterPic", "isActive", "needsPics", "parentComments", "kidComments", "dateEdited"]; // Define what can be updated
+        const allowedUpdates = ['title', "details", 'stage', "worker", "dueDate", "stageDate", "beforePic", "afterPic",
+            "isActive", "needsPics", "parentComments", "kidComments", "dateEdited", "weeklyRepeatDays"]; // Define what can be updated
         const updateData = {};
         // Only include allowed fields that exist in req.body
         // Not sure if line 74 works

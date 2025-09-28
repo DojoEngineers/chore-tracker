@@ -28,8 +28,8 @@ const choreSchema = new mongoose.Schema({
         type: Date,
         required: [true, "Please assign a due date."],
     },
-    day: {
-        type:Number,
+    weeklyRepeatDays: {
+        type: [Number],
         required: false
     },
     dateEdited: {

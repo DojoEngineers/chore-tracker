@@ -7,8 +7,8 @@ const choreTemplateSchema = new mongoose.Schema({
     type: String,
     enum: ["daily", "weekly", "monthly"]
   },
-  day: {
-    type: Number,
+  weeklyRepeatDays: {
+    type: [Number],
     required: false
   },
   creator: {

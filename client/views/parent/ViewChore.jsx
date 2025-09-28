@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { getChoreById, updateChore } from "../../services/chore.service"
 import Toast from "react-native-toast-message"
-import { Alert, Pressable, ScrollView, View, Linking, Image } from "react-native"
+import { Alert, Pressable, ScrollView, View, Linking, Image, useColorScheme } from "react-native"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { useNavigation } from "@react-navigation/native"
 import { BackArrow } from "../../components/icons/BackArrow"
@@ -23,7 +23,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { addImage } from "../../services/image.service"
 import Constants from 'expo-constants'
 
-
 dayjs.extend(utc)
 
 const API_ERROR_KEYS = [
@@ -36,6 +35,16 @@ const API_ERROR_KEYS = [
     'addBeforeImage',
     'addAfterImageToChore',
     'addAfterImage',
+]
+
+const WEEKDAYS = [
+    { id: 0, short: 'S', full: 'Sunday' },
+    { id: 1, short: 'M', full: 'Monday' },
+    { id: 2, short: 'T', full: 'Tuesday' },
+    { id: 3, short: 'W', full: 'Wednesday' },
+    { id: 4, short: 'T', full: 'Thursday' },
+    { id: 5, short: 'F', full: 'Friday' },
+    { id: 6, short: 'S', full: 'Saturday' }
 ]
 
 const BACKEND_URL = Constants.expoConfig.extra.BACKEND_API_URL
@@ -52,6 +61,8 @@ export const ViewChore = ({route}) => {
     const navigation = useNavigation()
     const {id} = route.params
     const {loggedInData} = useLogin()
+    const colorScheme = useColorScheme()
+    const isDark = colorScheme === "dark"
 
     useEffect(() => {
         getChoreById(id)
@@ -153,7 +164,7 @@ export const ViewChore = ({route}) => {
                 </Pressable>
 
                 <BrandBoldText className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText">
-                    {chore.title}
+                    {chore?.title}
                 </BrandBoldText>
             </View>
 
@@ -165,310 +176,338 @@ export const ViewChore = ({route}) => {
                 )
             )}
 
-            {loading && (
-                <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText">
-                    {loading}
-                </BrandText>
-            )}
-
-            <ScrollView
-                contentContainerClassName="flex-grow"
-                showsVerticalScrollIndicator={false}
-                className="flex-1"
-            >
-                <View className="flex-row items-center my-6 mx-2">
-                    <AssignedToIcon />
-
-                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                        Created by{" "}
+            {loading
+                ?
+                    <BrandText className="text-lightPrimaryText dark:text-darkPrimaryText">
+                        {loading}
                     </BrandText>
 
-                    <BrandText className="text-[16px] text-darkButton">
-                        {chore.creator?.name}
-                    </BrandText>
-                </View>
-
-                <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
-
-                <View className="flex-row items-center my-6 mx-2">
-                    <AssignedToIcon />
-
-                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                        Assigned to{" "}
-                    </BrandText>
-
-                    <BrandText className="text-[16px] text-darkButton">
-                        {chore.worker?.name}
-                    </BrandText>
-                </View>
-
-                <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
-
-                <View className="flex-row items-center my-6 mx-2">
-                    <RepeatIcon />
-
-                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                        {chore.repeat?.charAt(0).toUpperCase() + chore.repeat?.slice(1)}
-                    </BrandText>
-                </View>
-
-                <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
-
-                <View className="flex-row items-center my-6 ms-2 me-[24px]">
-                    <StageIcon />
-
-                    <BrandText
-                        className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4"
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                        adjustsFontSizeToFit={true}
-                        minimumFontScale={0.5}
-                    >
-                        {chore.stage === "incomplete" ? "Incomplete"
-                            : chore.stage === "complete" ? "Completed on "
-                            : chore.stage === "approved" ? "Approved on "
-                            : chore.stage === "rejectedReassigned" ? "Rejected and reassigned on "
-                            : "Rejected on "
-                        }
-                        {chore.stage !== "incomplete"
-                            ? dayjs(chore.stageDate).local().format("MMMM D [at] h:mma")
-                            : dayjs(chore.dueDate).isBefore(dayjs()) ? " • Overdue"
-                            : ""
-                        }
-                    </BrandText>
-                </View>
-
-                <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
-
-                <View className="flex-row items-center my-6 mx-2">
-                    <DateIcon />
-
-                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                        Due {dayjs(chore.dueDate).local().format("dddd, MMMM D")}
-                    </BrandText>
-                </View>
-
-                <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
-
-                <View className="flex-row items-center my-6 mx-2">
-                    <ClockIcon />
-
-                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                        at {dayjs(chore.dueDate).local().format("h:mma")}
-                    </BrandText>
-                </View>
-
-                <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
-
-                <View className="flex-row items-center my-6 mx-2">
-                    <CameraIcon />
-
-                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                        {chore.needsPics ? "Photo required" : "Photo not required"}
-                    </BrandText>
-                </View>
-
-                <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
-                
-                {chore.details &&
-                    <View>
-                        <View className="flex-row items-start my-6 mx-2">
-                            <View className="flex-row items-center">
-                                <WriteIcon />
-
-                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                                    Notes
-                                </BrandText>
-                            </View>
-
-                            <View className="flex-1 ms-[56px]">
-                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE]">
-                                    {chore.details}
-                                </BrandText>
-                            </View>
-                        </View>
-
-                        <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
-                    </View>
-                }
-
-                {chore.parentComments &&
-                    <View>
-                        <View className="flex-row items-start my-6 mx-2">
-                            <View className="flex-row items-start">
-                                <WriteIcon />
-
-                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                                    Parent{"\n"}Comments
-                                </BrandText>
-                            </View>
-
-                            <View className="flex-1 ms-6">
-                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE]">
-                                    {chore.parentComments}
-                                </BrandText>
-                            </View>
-                        </View>
-
-                        <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
-                    </View>
-                }
-
-                {chore.kidComments &&
-                    <View>
-                        <View className="flex-row items-start my-6 mx-2">
-                            <View className="flex-row items-start">
-                                <WriteIcon />
-
-                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
-                                    Kid{"\n"}Comments
-                                </BrandText>
-                            </View>
-
-                            <View className="flex-1 ms-6">
-                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE]">
-                                    {chore.kidComments}
-                                </BrandText>
-                            </View>
-                        </View>
-
-                        <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
-                    </View>
-                }
-
-                {(chore.beforePic || chore.afterPic) &&
-                    <View>
+                :
+                    <View className="flex-1">
                         <ScrollView
-                            horizontal={true}
-                            showsHorizontalScrollIndicator={false}
-                            className="flex-1 my-6 mx-2"
+                            contentContainerClassName="flex-grow"
+                            showsVerticalScrollIndicator={false}
+                            className="flex-1"
                         >
-                            {chore.beforePic && (
-                                <View className="mr-6">
-                                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] mb-2">
-                                        Before Photo
-                                    </BrandText>
-                                    <Image
-                                        source={{uri: `${BACKEND_URL}${chore.beforePic}`}}
-                                        className="w-[200px] h-[200px] rounded-lg"
-                                    />
-                                </View>
-                            )}
+                            <View className="flex-row items-center my-6 mx-2">
+                                <AssignedToIcon />
 
-                            {chore.afterPic && (
-                                <View className="">
-                                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] mb-2">
-                                        After Photo
+                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
+                                    Created by{" "}
+                                </BrandText>
+
+                                <BrandText className="text-[16px] text-darkButton">
+                                    {chore.creator?.name}
+                                </BrandText>
+                            </View>
+
+                            <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+
+                            <View className="flex-row items-center my-6 mx-2">
+                                <AssignedToIcon />
+
+                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
+                                    Assigned to{" "}
+                                </BrandText>
+
+                                <BrandText className="text-[16px] text-darkButton">
+                                    {chore.worker?.name}
+                                </BrandText>
+                            </View>
+
+                            <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+
+                            <View className="flex-row items-center my-6 mx-2 justify-between">
+                                <View className="items-center flex-row">
+                                    <RepeatIcon />
+
+                                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
+                                        {chore.repeat?.charAt(0).toUpperCase() + chore.repeat?.slice(1)}
                                     </BrandText>
-                                    <Image
-                                        source={{uri: `${BACKEND_URL}${chore.afterPic}`}}
-                                        className="w-[200px] h-[200px] rounded-lg"
-                                    />
                                 </View>
-                            )}
+
+                                {chore.repeat === "weekly" &&
+                                    <View className="flex-row">
+                                        {WEEKDAYS.map((day) => {
+                                            const isSelected = chore.weeklyRepeatDays?.includes(day.id)
+
+                                            return (
+                                                <View
+                                                key={day.id}
+                                                className={`w-[30px] h-[30px] justify-center items-center rounded-full
+                                                    ${isSelected
+                                                    ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
+                                                    : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}
+                                                    ${day.id === 6 ? "" : "mr-1"}`}
+                                                >
+                                                    <BrandBoldText className="text-[#22252B] text-[16px]">
+                                                        {day.short}
+                                                    </BrandBoldText>
+                                                </View>
+                                            )
+                                        })}
+                                    </View>
+                                }
+                            </View>
+
+                            <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+
+                            <View className="flex-row items-center my-6 ms-2 me-[24px]">
+                                <StageIcon />
+
+                                <BrandText
+                                    className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4"
+                                    numberOfLines={1}
+                                    ellipsizeMode="tail"
+                                    adjustsFontSizeToFit={true}
+                                    minimumFontScale={0.5}
+                                >
+                                    {chore.stage === "incomplete" ? "Incomplete"
+                                        : chore.stage === "complete" ? "Completed on "
+                                        : chore.stage === "approved" ? "Approved on "
+                                        : chore.stage === "rejectedReassigned" ? "Rejected and reassigned on "
+                                        : "Rejected on "
+                                    }
+                                    {chore.stage !== "incomplete"
+                                        ? dayjs(chore.stageDate).local().format("MMMM D [at] h:mma")
+                                        : dayjs(chore.dueDate).isBefore(dayjs()) ? " • Overdue"
+                                        : ""
+                                    }
+                                </BrandText>
+                            </View>
+
+                            <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+
+                            <View className="flex-row items-center my-6 mx-2">
+                                <DateIcon />
+
+                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
+                                    Due {dayjs(chore.dueDate).local().format("dddd, MMMM D")}
+                                </BrandText>
+                            </View>
+
+                            <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+
+                            <View className="flex-row items-center my-6 mx-2">
+                                <ClockIcon />
+
+                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
+                                    at {dayjs(chore.dueDate).local().format("h:mma")}
+                                </BrandText>
+                            </View>
+
+                            <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+
+                            <View className="flex-row items-center my-6 mx-2">
+                                <CameraIcon />
+
+                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
+                                    {chore.needsPics ? "Photo required" : "Photo not required"}
+                                </BrandText>
+                            </View>
+
+                            <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+                            
+                            {chore.details &&
+                                <View>
+                                    <View className="flex-row items-start my-6 mx-2">
+                                        <View className="flex-row items-center">
+                                            <WriteIcon />
+
+                                            <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
+                                                Notes
+                                            </BrandText>
+                                        </View>
+
+                                        <View className="flex-1 ms-[56px]">
+                                            <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE]">
+                                                {chore.details}
+                                            </BrandText>
+                                        </View>
+                                    </View>
+
+                                    <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+                                </View>
+                            }
+
+                            {chore.parentComments &&
+                                <View>
+                                    <View className="flex-row items-start my-6 mx-2">
+                                        <View className="flex-row items-start">
+                                            <WriteIcon />
+
+                                            <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
+                                                Parent{"\n"}Comments
+                                            </BrandText>
+                                        </View>
+
+                                        <View className="flex-1 ms-6">
+                                            <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE]">
+                                                {chore.parentComments}
+                                            </BrandText>
+                                        </View>
+                                    </View>
+
+                                    <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+                                </View>
+                            }
+
+                            {chore.kidComments &&
+                                <View>
+                                    <View className="flex-row items-start my-6 mx-2">
+                                        <View className="flex-row items-start">
+                                            <WriteIcon />
+
+                                            <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] ms-4">
+                                                Kid{"\n"}Comments
+                                            </BrandText>
+                                        </View>
+
+                                        <View className="flex-1 ms-6">
+                                            <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE]">
+                                                {chore.kidComments}
+                                            </BrandText>
+                                        </View>
+                                    </View>
+
+                                    <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+                                </View>
+                            }
+
+                            {(chore.beforePic || chore.afterPic) &&
+                                <View>
+                                    <ScrollView
+                                        horizontal={true}
+                                        showsHorizontalScrollIndicator={false}
+                                        className="flex-1 my-6 mx-2"
+                                    >
+                                        {chore.beforePic && (
+                                            <View className="mr-6">
+                                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] mb-2">
+                                                    Before Photo
+                                                </BrandText>
+                                                <Image
+                                                    source={{uri: `${BACKEND_URL}${chore.beforePic}`}}
+                                                    className="w-[200px] h-[200px] rounded-lg"
+                                                />
+                                            </View>
+                                        )}
+
+                                        {chore.afterPic && (
+                                            <View className="">
+                                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] mb-2">
+                                                    After Photo
+                                                </BrandText>
+                                                <Image
+                                                    source={{uri: `${BACKEND_URL}${chore.afterPic}`}}
+                                                    className="w-[200px] h-[200px] rounded-lg"
+                                                />
+                                            </View>
+                                        )}
+                                    </ScrollView>
+
+                                    <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+                                </View>
+                            }
+
                         </ScrollView>
 
-                        <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+                        {(chore.stage === "incomplete" || chore.stage === "rejectedReassigned")
+                            ?
+                                loggedInData.isParent
+                                    ?
+                                        <View className="mb-12">
+                                            <Pressable
+                                                onPress={() => navigation.navigate("NewChoreDetails", {chore})}
+                                                className="p-[10px] rounded-full items-center justify-center bg-[#9FB6AE] dark:bg-darkButton w-full h-[56px] mt-4"
+                                            >
+                                                <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
+                                                    Edit chore
+                                                </BrandBoldText>
+                                            </Pressable>
+                                            
+                                            <Pressable
+                                                onPress={() => setDeleteModalVisible(true)}
+                                                className="p-[10px] rounded-full items-center justify-center bg-[#737780] w-full h-[56px] mt-5"
+                                            >
+                                                <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
+                                                    Delete chore
+                                                </BrandBoldText>
+                                            </Pressable>
+                                        </View>
+
+                                    : chore.worker._id === loggedInData._id ?
+                                        <View className="mb-12">
+                                            <Pressable
+                                                onPress={takeBeforePhoto}
+                                                className="p-[10px] rounded-full items-center justify-center bg-[#84A99D] w-full h-[56px] mt-4"
+                                            >
+                                                <BrandBoldText className="text-[#ECEDEE] text-[20px] ms-4">
+                                                    {chore.beforePic ? "Resubmit" : "Submit"} before photo
+                                                </BrandBoldText>
+                                            </Pressable>
+                                            
+                                            <Pressable
+                                                onPress={() => setCompleteModalVisible(true)}
+                                                className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px] mt-5"
+                                            >
+                                                <BrandBoldText className="text-[#ECEDEE] text-[20px] ms-4">
+                                                    Complete chore
+                                                </BrandBoldText>
+                                            </Pressable>
+                                        </View>
+                                        
+                                    : null
+                            : null
+                        }
+
+                        {(chore.stage === "complete" && loggedInData.isParent) && 
+                            <View className="mb-12">
+
+                                <Pressable
+                                    onPress={handleApprove}
+                                    className="p-[10px] rounded-full items-center justify-center dark:bg-[#B3EAD3] bg-[#84A99D] w-full h-[56px] mt-5"
+                                >
+                                    <BrandBoldText className="text-darkPrimaryText dark:text-lightPrimaryText text-[20px] ms-4">
+                                        Approve
+                                    </BrandBoldText>
+                                </Pressable>
+
+                                <Pressable
+                                    onPress={() => setRejectModalVisible(true)}
+                                    className="p-[10px] rounded-full items-center justify-center bg-[#F40000] w-full h-[56px] mt-4"
+                                >
+                                    <BrandBoldText className="text-darkPrimaryText text-[20px] ms-4">
+                                        Reject
+                                    </BrandBoldText>
+                                </Pressable>
+                            </View>
+                        }
+
+                        <DeleteModal
+                            visible={deleteModalVisible}
+                            setVisible={setDeleteModalVisible}
+                            setApiErrors={setApiErrors}
+                            id={id}
+                        />
+
+                        <RejectModal
+                            visible={rejectModalVisible}
+                            setVisible={setRejectModalVisible}
+                            setApiErrors={setApiErrors}
+                            id={id}
+                        />
+
+                        <CompleteModal
+                            visible={completeModalVisible}
+                            setVisible={setCompleteModalVisible}
+                            setApiErrors={setApiErrors}
+                            id={id}
+                            needsPics={chore.needsPics}
+                            setChore={setChore}
+                        />
                     </View>
-                }
-
-            </ScrollView>
-
-            {(chore.stage === "incomplete" || chore.stage === "rejectedReassigned")
-                ?
-                    loggedInData.isParent
-                        ?
-                            <View className="mb-12">
-                                <Pressable
-                                    onPress={() => navigation.navigate("NewChoreDetails", {chore})}
-                                    className="p-[10px] rounded-full items-center justify-center bg-[#9FB6AE] dark:bg-darkButton w-full h-[56px] mt-4"
-                                >
-                                    <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
-                                        Edit chore
-                                    </BrandBoldText>
-                                </Pressable>
-                                
-                                <Pressable
-                                    onPress={() => setDeleteModalVisible(true)}
-                                    className="p-[10px] rounded-full items-center justify-center bg-[#737780] w-full h-[56px] mt-5"
-                                >
-                                    <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
-                                        Delete chore
-                                    </BrandBoldText>
-                                </Pressable>
-                            </View>
-
-                        : chore.worker._id === loggedInData._id ?
-                            <View className="mb-12">
-                                <Pressable
-                                    onPress={takeBeforePhoto}
-                                    className="p-[10px] rounded-full items-center justify-center bg-[#84A99D] w-full h-[56px] mt-4"
-                                >
-                                    <BrandBoldText className="text-[#ECEDEE] text-[20px] ms-4">
-                                        {chore.beforePic ? "Resubmit" : "Submit"} before photo
-                                    </BrandBoldText>
-                                </Pressable>
-                                
-                                <Pressable
-                                    onPress={() => setCompleteModalVisible(true)}
-                                    className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px] mt-5"
-                                >
-                                    <BrandBoldText className="text-[#ECEDEE] text-[20px] ms-4">
-                                        Complete chore
-                                    </BrandBoldText>
-                                </Pressable>
-                            </View>
-                            
-                        : null
-                : null
             }
-
-            {(chore.stage === "complete" && loggedInData.isParent) && 
-                <View className="mb-12">
-
-                    <Pressable
-                        onPress={handleApprove}
-                        className="p-[10px] rounded-full items-center justify-center dark:bg-[#B3EAD3] bg-[#84A99D] w-full h-[56px] mt-5"
-                    >
-                        <BrandBoldText className="text-darkPrimaryText dark:text-lightPrimaryText text-[20px] ms-4">
-                            Approve
-                        </BrandBoldText>
-                    </Pressable>
-
-                    <Pressable
-                        onPress={() => setRejectModalVisible(true)}
-                        className="p-[10px] rounded-full items-center justify-center bg-[#F40000] w-full h-[56px] mt-4"
-                    >
-                        <BrandBoldText className="text-darkPrimaryText text-[20px] ms-4">
-                            Reject
-                        </BrandBoldText>
-                    </Pressable>
-                </View>
-            }
-
-            <DeleteModal
-                visible={deleteModalVisible}
-                setVisible={setDeleteModalVisible}
-                setApiErrors={setApiErrors}
-                id={id}
-            />
-
-            <RejectModal
-                visible={rejectModalVisible}
-                setVisible={setRejectModalVisible}
-                setApiErrors={setApiErrors}
-                id={id}
-            />
-
-            <CompleteModal
-                visible={completeModalVisible}
-                setVisible={setCompleteModalVisible}
-                setApiErrors={setApiErrors}
-                id={id}
-                needsPics={chore.needsPics}
-                setChore={setChore}
-            />
-
         </View>
     )
 }
