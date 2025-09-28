@@ -33,7 +33,11 @@ export const Terms = () => {
 
                 <View className="items-center mb-8">
                     <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                        Text here.
+                        We want our app to be safe and helpful for every family. By using the app,
+                        you agree to use it responsibly and only for family chores and related activities.
+                        Parents are responsible for managing their children’s accounts and information.
+                        We do not sell your data and we take privacy seriously (see our Privacy section for details).
+                        For any questions or concerns, contact us anytime at xxx@app.com.
                     </BrandText>
                 </View>
             </View>
