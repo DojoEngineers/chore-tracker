@@ -347,11 +347,15 @@ export const NewChoreDetails = ({ route }) => {
                                                 key={day.id}
                                                 className={`w-[30px] h-[30px] justify-center items-center rounded-full
                                                     ${isSelected
-                                                        ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
-                                                        : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}`}
+                                                        ? "bg-[#394C46] dark:bg-[#D0D1D4]"
+                                                        : "bg-[#AEC4BC] dark:bg-[#3B4047]"}`}
                                                 onPress={() => handleWeeklyRepeat(day)}
                                             >
-                                                <BrandBoldText className="text-[#22252B] text-[16px]">
+                                                <BrandBoldText className={`text-[18px] dark:text-[#111215]
+                                                    ${isSelected
+                                                        ? "text-[#F5F8F6]"
+                                                        : "text-[#84A99D]"}`}
+                                                >
                                                     {day.short}
                                                 </BrandBoldText>
                                             </Pressable>

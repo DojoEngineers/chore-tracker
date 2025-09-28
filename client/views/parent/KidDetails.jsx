@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native"
-import { Pressable, ScrollView, useColorScheme, View } from "react-native"
+import { Pressable, ScrollView, View } from "react-native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { useEffect, useState } from "react"
@@ -13,20 +13,11 @@ import utc from 'dayjs/plugin/utc';
 import {DueTodayIcon} from "../../components/icons/DueTodayIcon"
 import {CheckIcon} from "../../components/icons/CheckIcon"
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import { WeeklyRepeatIcons } from "../../components/WeeklyRepeatIcons";
 
 dayjs.extend(isBetween)
 dayjs.extend(utc)
 dayjs.extend(isSameOrBefore)
-
-const WEEKDAYS = [
-    { id: 0, short: 'S', full: 'Sunday' },
-    { id: 1, short: 'M', full: 'Monday' },
-    { id: 2, short: 'T', full: 'Tuesday' },
-    { id: 3, short: 'W', full: 'Wednesday' },
-    { id: 4, short: 'T', full: 'Thursday' },
-    { id: 5, short: 'F', full: 'Friday' },
-    { id: 6, short: 'S', full: 'Saturday' }
-]
 
 export const KidDetails = ({route}) => {
 
@@ -36,8 +27,6 @@ export const KidDetails = ({route}) => {
 
     const navigation = useNavigation()
     const { kid } = route.params
-    const colorScheme = useColorScheme()
-    const isDark = colorScheme === "dark"
 
     useEffect(() => {
         getChoresByWorker(kid._id)
@@ -228,26 +217,7 @@ export const KidDetails = ({route}) => {
 
                                         {chore.repeat === "weekly"
                                             ?
-                                                <View className="flex-row">
-                                                    {WEEKDAYS.map((day) => {
-                                                        const isSelected = chore.weeklyRepeatDays?.includes(day.id)
-            
-                                                        return (
-                                                            <View
-                                                            key={day.id}
-                                                            className={`w-[20px] h-[20px] justify-center items-center rounded-full
-                                                                ${isSelected
-                                                                ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
-                                                                : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}
-                                                                ${day.id === 6 ? "" : "mr-1"}`}
-                                                            >
-                                                                <BrandBoldText className="text-[#22252B] text-[10px]">
-                                                                    {day.short}
-                                                                </BrandBoldText>
-                                                            </View>
-                                                        )
-                                                    })}
-                                                </View>
+                                                <WeeklyRepeatIcons chore={chore} fontSize={12} circleSize={20}/>
 
                                             : chore.repeat === "daily" ?
                                                 <BrandText
