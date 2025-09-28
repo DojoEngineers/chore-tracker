@@ -1,18 +1,29 @@
+import { useCallback } from "react";
 import DropDownPicker from "react-native-dropdown-picker"
 
 export const NewChoreDropDown = ({open, setOpen, value, setValue, items,
-    placeholder, isDark, zIndex}) => {
+    placeholder, isDark, zIndex, singleValue}) => {
+
+    const normalizedValue = singleValue ? value : Array.isArray(value) ? value : []
+
+    let multipleText = ""
+    if (!singleValue) {
+        if (normalizedValue.length === 1) {
+            const selectedItem = items.find(item => item.value === normalizedValue[0]);
+            multipleText = selectedItem ? selectedItem.label : ""
+        } else if (normalizedValue.length > 1) {
+            multipleText = `${normalizedValue.length} kids`;
+        }
+    }
 
     return (
         <DropDownPicker
+            multiple={!singleValue}
+            multipleText={multipleText || null}
             open={open}
             setOpen={setOpen}
-            value={value}
-            setValue={(callback) => {
-                const newValue =
-                typeof callback === 'function' ? callback(value) : callback;
-                setValue(newValue)
-            }}
+            value={normalizedValue}
+            setValue={setValue}
             items={items}
             placeholder={placeholder || null}
             listMode="SCROLLVIEW"
@@ -22,7 +33,7 @@ export const NewChoreDropDown = ({open, setOpen, value, setValue, items,
             style={{
                 zIndex,
                 backgroundColor: isDark ? "#22252B" : "#9FB6AE",
-                border: 2,
+                borderWidth: 2,
                 borderColor: isDark ? "#D0D1D4" : "#D0D1D4",
                 borderRadius: 12
             }}
@@ -40,7 +51,7 @@ export const NewChoreDropDown = ({open, setOpen, value, setValue, items,
                 zIndex,
                 backgroundColor: isDark ? "#22252B" : "#9FB6AE",
                 width: 130,
-                border: 2,
+                borderWidth: 2,
                 borderColor: isDark ? "#D0D1D4" : "#9FB6AE",
                 borderRadius: 12
             }}

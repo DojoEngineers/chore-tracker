@@ -51,7 +51,6 @@ export const Dashboard = () => {
     }
 
     useEffect(() => {
-        if (!loggedInData) return
         getChoresByParents(loggedInData.family.parents.map(p => p._id))
             .then((res) => {
 
@@ -98,7 +97,7 @@ export const Dashboard = () => {
                 })
             })
             .finally(() => setLoading(false))
-    }, [loggedInData])
+    }, [])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
