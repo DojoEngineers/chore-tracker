@@ -379,10 +379,10 @@ export const Dashboard = () => {
                                 </View>
                             </View>
 
-                            <View className="flex-1 items-center w-full mt-[50px]">
+                            <View className="flex-1 items-center w-full mt-[20px] mb-[50px]">
                                 <LargeSquareIcon />
                                 
-                                <BrandText className="text-[16px] text-[#737780] dark:text-[#A1A4AA] mt-[30px]">
+                                <BrandText className="text-[16px] text-[#737780] dark:text-[#A1A4AA] mt-[20px]">
                                     No chores added yet
                                 </BrandText>
                             </View>

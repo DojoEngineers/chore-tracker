@@ -62,10 +62,13 @@ export const TutorialPage3 = () => {
                     </BrandText>
                 )}
 
-                <BrandBoldText className="text-center text-lightPrimaryText dark:text-darkPrimaryText text-[18px]">
+                <BrandBoldText className="text-center text-lightPrimaryText dark:text-darkPrimaryText text-[18px] px-[16px]">
                     {loggedInData.isParent
-                        ? "Visible results."
-                        : "Text goes here."
+                        ? "Quickly approve completed chores with just a tap! Save time while keeping your kids on track, " +
+                        "and see all their hard work at a glance. Turn completed chores into visible wins your family can be proud of!"
+
+                        : "Take an after photo to show off your hard work. You can also view your completed chores anytime in the Completed tab. " +
+                        "See the difference you made and celebrate your success!"
                     }
                 </BrandBoldText>
             </View>

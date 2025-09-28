@@ -29,6 +29,7 @@ export const Approve = () => {
                 const filteredPendingChores = res.filter(chore => 
                     chore.stage === "complete"
                 )
+                .sort((a, b) => dayjs(a.stageDate).valueOf() - dayjs(b.stageDate).valueOf())
                 setPendingChores(filteredPendingChores)
 
                 // Recent Approvals and Rejections
@@ -50,7 +51,7 @@ export const Approve = () => {
                 })
             })
             .finally(() => setLoading(false))
-    }, [loggedInData])
+    }, [])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">

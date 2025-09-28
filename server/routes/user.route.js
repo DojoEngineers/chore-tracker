@@ -41,6 +41,6 @@ userRouter.route('/sendPassword')
     .post(sendPassword)
 
 userRouter.route('/changePassword')
-    .put(protect, changePassword)
+    .put(changePassword)
 
 export default userRouter

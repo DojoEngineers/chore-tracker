@@ -48,7 +48,7 @@ export const Completed = () => {
                 })
             })
             .finally(() => setLoading(false))
-    }, [loggedInData])
+    }, [])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">

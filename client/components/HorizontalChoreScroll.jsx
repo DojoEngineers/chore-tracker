@@ -55,7 +55,7 @@ export const HorizontalChoreScroll = ({chores, apiError, loading, noChoreMessage
                                     }
 
                                     <BrandBoldText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[12px] text-center px-1"
+                                        className="text-darkPrimaryText text-[12px] text-center px-1"
                                         numberOfLines={3}
                                         ellipsizeMode="tail"
                                     >
