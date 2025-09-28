@@ -84,9 +84,21 @@ export const Dashboard = () => {
 
                     return {...chore, recentStage: mostRecent.stage, recentDate: mostRecent.date.toDate()}
                 })
+
+                const seenTemplates = new Set()
+                const uniqueByTemplate = filteredChores.filter(chore => {
+                    if (chore.templateId) {
+                        if (seenTemplates.has(chore.templateId)) return false
+                        seenTemplates.add(chore.templateId)
+                        return true
+                    }
+                    return true
+                })
                 
-                .sort((a, b) => dayjs(b.recentDate).valueOf() - dayjs(a.recentDate).valueOf())
-                setRecentActivityChores(filteredChores)
+                const sorted = uniqueByTemplate.sort(
+                    (a, b) => dayjs(b.recentDate).valueOf() - dayjs(a.recentDate).valueOf()
+                )
+                setRecentActivityChores(sorted)
             })
             .catch((error) => {
                 console.log("getChoresByParents error:", error)

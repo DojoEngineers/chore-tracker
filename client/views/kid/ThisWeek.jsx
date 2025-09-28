@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, View } from "react-native"
+import { Pressable, ScrollView, useColorScheme, View } from "react-native"
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {SquareIcon} from "../../components/icons/SquareIcon"
@@ -18,6 +18,16 @@ dayjs.extend(utc)
 dayjs.extend(isSameOrBefore)
 dayjs.extend(isBetween)
 
+const WEEKDAYS = [
+    { id: 0, short: 'S', full: 'Sunday' },
+    { id: 1, short: 'M', full: 'Monday' },
+    { id: 2, short: 'T', full: 'Tuesday' },
+    { id: 3, short: 'W', full: 'Wednesday' },
+    { id: 4, short: 'T', full: 'Thursday' },
+    { id: 5, short: 'F', full: 'Friday' },
+    { id: 6, short: 'S', full: 'Saturday' }
+]
+
 export const ThisWeek = () => {
 
         const [apiErrors, setApiErrors] = useState({})
@@ -26,6 +36,8 @@ export const ThisWeek = () => {
     
         const navigation = useNavigation()
         const {loggedInData} = useLogin()
+        const colorScheme = useColorScheme()
+        const isDark = colorScheme === "dark"
 
         useEffect(() => {
             getChoresByWorker(loggedInData._id)
@@ -38,11 +50,20 @@ export const ThisWeek = () => {
                     .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
     
                     // Rest of the week chores (excluding today)
+                    const seenTemplates = new Set()
                     const thisWeek = res.filter((chore) =>
                         dayjs(chore.dueDate).local().isBetween(dayjs().add(1, 'day').startOf('day'), dayjs().endOf('week'), null, '[]') &&
                         ['incomplete', 'rejectedReassigned'].includes(chore.stage)
                     )
                     .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
+                    .filter(chore => {
+                        if (chore.templateId) {
+                            if (seenTemplates.has(chore.templateId.toString())) return false
+                            seenTemplates.add(chore.templateId.toString())
+                            return true
+                        }
+                        return true
+                    })
     
                     // Set chores in state
                     setChores(prev => ({...prev, today, thisWeek}))
@@ -215,12 +236,43 @@ export const ThisWeek = () => {
                                         </View>
                                     </View>
 
-                                    <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
-                                    >
-                                        Due on {dayjs(chore.dueDate).local().format("dddd")}
-                                    </BrandText>
-                                    
+                                    {chore.repeat === "weekly"
+                                        ?
+                                            <View className="flex-row">
+                                                {WEEKDAYS.map((day) => {
+                                                    const isSelected = chore.weeklyRepeatDays?.includes(day.id)
+        
+                                                    return (
+                                                        <View
+                                                        key={day.id}
+                                                        className={`w-[20px] h-[20px] justify-center items-center rounded-full
+                                                            ${isSelected
+                                                            ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
+                                                            : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}
+                                                            ${day.id === 6 ? "" : "mr-1"}`}
+                                                        >
+                                                            <BrandBoldText className="text-[#22252B] text-[10px]">
+                                                                {day.short}
+                                                            </BrandBoldText>
+                                                        </View>
+                                                    )
+                                                })}
+                                            </View>
+
+                                        : chore.repeat === "daily" ?
+                                            <BrandText
+                                                className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
+                                            >
+                                                Due daily by {dayjs(chore.dueDate).local().format("h:mma")}
+                                            </BrandText>
+
+                                        :
+                                            <BrandText
+                                                className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
+                                            >
+                                                Due on {dayjs(chore.dueDate).local().format("dddd")}
+                                            </BrandText>
+                                    }
                                 </View>
 
                                 <View className="justify-center">

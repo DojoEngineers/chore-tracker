@@ -249,6 +249,13 @@ export const KidDetails = ({route}) => {
                                                     })}
                                                 </View>
 
+                                            : chore.repeat === "daily" ?
+                                                <BrandText
+                                                    className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
+                                                >
+                                                    Due daily by {dayjs(chore.dueDate).local().format("h:mma")}
+                                                </BrandText>
+
                                             :
                                                 <BrandText
                                                     className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
