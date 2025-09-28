@@ -30,7 +30,7 @@ export const Kids = () => {
             <View className="flex-1 px-[16px]">
                 {kids.length === 0
                     ?
-                        <View className="flex-1 mt-7">
+                        <View className="flex-1 mt-4">
                             <View className="p-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
                                 <View className="flex-row">
                                     <AddKidIcon />
@@ -52,14 +52,14 @@ export const Kids = () => {
                                 </View>
                             </View>
 
-                            <View className="w-full mt-6">
+                            <View className="w-full mt-[20px]">
                                 <PrimaryButton onPress={() => navigation.navigate("AddFamilyMember", {isParent:false})} label="Add a kid" />
                             </View>
 
-                            <View className="flex-1 items-center w-full mt-[50px]">
+                            <View className="flex-1 items-center w-full justify-center mb-[10px]">
                                 <LargeKidsIcon />
 
-                                <BrandText className="text-[16px] text-[#737780] dark:text-[#A1A4AA] mt-[30px]">
+                                <BrandText className="text-[16px] text-[#737780] dark:text-[#A1A4AA] mt-[20px]">
                                     No kids added yet
                                 </BrandText>
                             </View>

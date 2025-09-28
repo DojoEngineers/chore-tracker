@@ -74,7 +74,7 @@ export const StartingPage = () => {
 
                     <Pressable hitSlop={20} onPress={() => navigation.navigate('UsernameVerification')}>
                         <BrandBoldText className="text-lightLink dark:text-darkLink text-xl">
-                            Verify Here
+                            {" "}Verify Here
                         </BrandBoldText>
                     </Pressable>
                 </View>

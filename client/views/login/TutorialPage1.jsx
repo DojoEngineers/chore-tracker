@@ -52,10 +52,12 @@ export const TutorialPage1 = () => {
                     </BrandText>
                 )}
 
-                <BrandBoldText className="text-center text-lightPrimaryText dark:text-darkPrimaryText text-[18px]">
+                <BrandBoldText className="text-center text-lightPrimaryText dark:text-darkPrimaryText text-[18px] px-[16px]">
                     {loggedInData.isParent
-                        ? "Easily assign chores to your kids."
-                        : "Text goes here."
+                        ? "Easily assign chores to your kids! Create one-time or recurring tasks, set due dates, add notes, " +
+                        "and assign them to one or more kids in just a few taps. Update, delete or reassign chores anytime when plans change."
+
+                        : `Snap a quick before photo of your chore. This shows what needs to be done and makes it easy to see your progress later!`
                     }
                 </BrandBoldText>
             </View>

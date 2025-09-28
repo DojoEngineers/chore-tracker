@@ -40,7 +40,7 @@ const REPEAT_OPTIONS = [
 ]
 
 const DEFAULT_FORM_VALUES = {
-    kid: "",
+    kids: [],
     repeat: REPEAT_OPTIONS[0].value,
     weekday: null,
     details: "",
@@ -116,14 +116,14 @@ export const NewChoreDetails = ({ route }) => {
     const colorScheme = useColorScheme()
     const isDark = colorScheme === "dark"
 
-    const kids = loggedInData.family.children
+    const kidOptions = loggedInData.family.children
         .filter(kid => kid.isActive)
         .map(kid => ({label: kid.name, value: kid._id}))
 
     useEffect(() => {
         if (chore) {
             setFormData({
-                kid: chore.worker?._id,
+                kids: [chore.worker?._id],
                 repeat: chore.repeat,
                 weekday: chore.day,
                 dateTime: dayjs(chore.dueDate),
@@ -171,7 +171,7 @@ export const NewChoreDetails = ({ route }) => {
     }
 
     const handleSubmit = async () => {
-        if (formErrors.details || formErrors.dateTime || !formData.kid) {
+        if (formErrors.details || formErrors.dateTime || formData.kids.length === 0) {
             Toast.show({
                 type: 'error',
                 text1: "Please make corrections to the form."
@@ -179,51 +179,47 @@ export const NewChoreDetails = ({ route }) => {
             return
         }
 
-            // handleSendTest()
-            const {details, kid, dateTime, needsPics, repeat, weekday} = formData
-            const baseData = {
-                title: formData.title, details, creator: loggedInData._id, worker: kid,
-                dueDate: dateTime.toISOString(), needsPics, repeat, day: weekday
-            }
+        const {details, kids, dateTime, needsPics, repeat, weekday} = formData
+        const baseData = {
+            title: formData.title, details, creator: loggedInData._id,
+            dueDate: dateTime.toISOString(), needsPics, repeat, day: weekday
+        }
+        const promises = []
+        let finalData = {}
 
             if (chore) {
-                const finalData = {...baseData, _id: chore._id, dateEdited: dayjs().toISOString()}
-                updateChore(finalData)
-                    .then(() => {
-                        Toast.show({
-                            type: 'success',
-                            text1: "Chore edited!"
-                        })
-                        navigation.replace("Dashboard", { animationType: "fade_from_bottom" })
-                    })
-                    .catch((error) => {
-                        console.log("updateChore error:", error)
-                        setApiErrors(prev => ({...prev, updateChore: "Unable to update chore."}))
-                        Toast.show({
-                            type: 'error',
-                            text1: "Unable to update chore."
-                        })
-                    })
+                if (kids.includes(chore.worker)) {
+                    finalData = {...baseData, _id: chore._id, dateEdited: dayjs().toISOString(), worker: chore.worker}
+                } else {
+                    finalData = {...chore, isActive: false}
+                }
+                promises.push(updateChore(finalData))
 
-            } else {
-                const finalData = {...baseData, stageDate: dayjs().toISOString()}
-                addChore(finalData)
-                    .then(() => {
-                        Toast.show({
-                            type: 'success',
-                            text1: "Chore created!"
-                        })
-                        navigation.replace("Dashboard", { animationType: "fade_from_bottom" })
-                    })
-                    .catch((error) => {
-                        console.log("addChore error:", error)
-                        setApiErrors(prev => ({...prev, addChore: "Unable to create chore."}))
-                        Toast.show({
-                            type: 'error',
-                            text1: "Unable to create chore."
-                        })
-                    })
+                const newKids = kids.filter(kid => kid !== chore.worker)
+                newKids.forEach(kid => {
+                    finalData = {...baseData, worker: kid, stageDate: dayjs().toISOString() }
+                    promises.push(addChore(finalData))
+                })
             }
+            
+            else {
+                kids.forEach(kid => {
+                    finalData = {...baseData, stageDate: dayjs().toISOString(), worker: kid}
+                    promises.push(addChore(finalData))
+                })
+            }
+
+        Promise.all(promises)
+            .then(() => {
+                const message = chore ? "Chore updated!" : "Chore created!"
+                Toast.show({type: 'success', text1: message})
+                navigation.replace("Dashboard", { animationType: "fade_from_bottom" })
+            })
+            .catch(error => {
+                console.log("Updating / adding chores error:", error)
+                setApiErrors(prev => ({...prev, chore: "Unable to save chore."}))
+                Toast.show({ type: 'error', text1: "Unable to save chore." })
+            })
     }
 
     return (
@@ -250,14 +246,9 @@ export const NewChoreDetails = ({ route }) => {
                         </BrandBoldText>
                     </View>
 
-                    {apiErrors.addChore &&
+                    {apiErrors.chore &&
                         <BrandText className="text-red-500 text-center">
-                            {apiErrors.addChore}
-                        </BrandText>
-                    }
-                    {apiErrors.updateChore &&
-                        <BrandText className="text-red-500 text-center">
-                            {apiErrors.updateChore}
+                            {apiErrors.chore}
                         </BrandText>
                     }
 
@@ -270,8 +261,9 @@ export const NewChoreDetails = ({ route }) => {
                         </View>
 
                         <NewChoreDropDown
-                            open={isOpen.kids} setOpen={(open) => setIsOpen(prev => ({...prev, kids: open}))} value={formData.kid}
-                            setValue={(kid) => setFormData(prev => ({...prev, kid}))} items={kids} isDark={isDark} placeholder="Pick one" zIndex={100}
+                            open={isOpen.kids} setOpen={(open) => setIsOpen(prev => ({...prev, kids: open}))} zIndex={100}
+                            value={formData.kids} singleValue={false} items={kidOptions} isDark={isDark} placeholder="Pick kids"
+                            setValue={(callback) => {setFormData(prev => ({...prev, kids:  callback(prev.kids)}))}}
                         />
                     </View>
 
@@ -286,8 +278,9 @@ export const NewChoreDetails = ({ route }) => {
                         </View>
 
                         <NewChoreDropDown
-                            open={isOpen.repeat} setOpen={(open) => setIsOpen(prev => ({...prev, repeat: open}))} value={formData.repeat}
-                            setValue={(repeat) => setFormData(prev => ({...prev, repeat}))} items={REPEAT_OPTIONS} isDark={isDark} zIndex={10}
+                            open={isOpen.repeat} setOpen={(open) => setIsOpen(prev => ({...prev, repeat: open}))}
+                            value={formData.repeat} singleValue={true} items={REPEAT_OPTIONS} isDark={isDark} zIndex={10}
+                            setValue={(callback) => {setFormData(prev => ({...prev, repeat: callback(prev.repeat)}))}}
                         />
                     </View>
 
@@ -336,7 +329,7 @@ export const NewChoreDetails = ({ route }) => {
                                         <Pressable
                                             key={day.id}
                                             className={`w-[30px] h-[30px] justify-center items-center rounded-full
-                                                ${weekday === day.id
+                                                ${formData.weekday === day.id
                                                     ? isDark ? "bg-gray-100" : "bg-[#84A99D]"
                                                     : isDark ? "bg-gray-400" : "bg-[#A1A4AA]"}`}
                                             onPress={() => setFormData(prev => ({...prev, weekday: day.id}))}

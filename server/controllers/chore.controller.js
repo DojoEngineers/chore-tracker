@@ -23,7 +23,7 @@ export const seedDB = async (req,res) => {
     }
 }
 
-// templates are used to generate an instance of a reoccuring chore.
+// templates are used to generate an instance of a reoccurring chore.
 export const getTemplates = async (req, res) => {
     console.log("getting temps...")
     try {
@@ -102,7 +102,7 @@ export async function getChoresByWorker(req, res) {
 
 // query needs to be array of family ids to work
 // The frontend sends: params: { parents } 
-export async function getChoresByParent(req, res) {
+export async function getChoresByParents(req, res) {
     console.log("controller get creator chores")
     console.log("req.query", req.query["parents[]"])
     try {
@@ -132,7 +132,7 @@ export const addChore = async (req, res) => {
             const tomorrow = today
             tomorrow.setDate(tomorrow.getDate() + 1)
             tomorrow.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-            console.log("tommorrow", tomorrow)
+            console.log("tomorrow", tomorrow)
             const in2days = new Date(tomorrow)
             in2days.setDate(in2days.getDate() + 1);
             const in3days = new Date(in2days)

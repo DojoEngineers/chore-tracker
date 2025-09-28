@@ -63,10 +63,14 @@ export const TutorialPage2 = () => {
                     </BrandText>
                 )}
 
-                <BrandBoldText className="text-center text-lightPrimaryText dark:text-darkPrimaryText text-[18px]">
+                <BrandBoldText className="text-center text-lightPrimaryText dark:text-darkPrimaryText text-[18px] px-[16px]">
                     {loggedInData.isParent
-                        ? "Track their progress."
-                        : "Text goes here."
+                        ? "View tasks by due date with an interactive calendar, instantly see what’s due in the Today tab, " +
+                        "and view chores by kid in the Kids tab to stay organized. " +
+                        "Review completed chores in the Approve tab. No more guessing or hunting for updates!"
+
+                        : "Complete your chore! Check what’s due this week in the This Week tab or use the interactive " +
+                        "calendar in the dashboard to stay on track."
                     }
                 </BrandBoldText>
             </View>
