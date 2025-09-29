@@ -1,7 +1,18 @@
-import Tutorial2PhotoSvg from '../assets/Tutorial2Photo';
+import Tutorial2ParentPhoto from '../assets/Tutorial2ParentPhoto';
+import { useLogin } from '../context/UserContext';
+import Tutorial2KidPhoto from '../assets/Tutorial2KidPhoto'
 
-const aspectRatio = 360 / 315
+const parentAspectRatio = 360 / 315
+const kidAspectRatio = 360 /312
 
 export const Tutorial2Photo = ({width = 360}) => {
-    return <Tutorial2PhotoSvg width={width} height={width/aspectRatio} />
+
+    const {loggedInData} = useLogin()
+
+    return (
+        loggedInData.isParent
+            ? <Tutorial2ParentPhoto width={width} height={width/parentAspectRatio} />
+
+            : <Tutorial2KidPhoto width={width} height={width/kidAspectRatio} />
+    )
 }

@@ -38,7 +38,7 @@ export const StartingPage = () => {
             checkUserToken()
         }, 200)
         return () => clearTimeout(timer)
-    }, [user])
+    }, [])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">

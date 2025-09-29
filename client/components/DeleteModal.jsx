@@ -34,18 +34,18 @@ export const DeleteModal = ({visible, setVisible, setApiErrors, id}) => {
             animationType="fade"
             transparent={true}
             visible={visible}
-            onRequestClose={() => setVisible(false)}
+            onRequestClose={() => setVisible(prev => ({...prev, delete: false}))}
         >
             <View
                 className="flex-1 justify-center items-center"
-                style={{backgroundColor:  'rgba(68, 73, 85, 0.5)'}}
+                style={{backgroundColor: 'rgba(68, 73, 85, 0.5)'}}
             >
                 <View className="bg-[#ECEDEE] dark:bg-[#454954] p-[16px] rounded-3xl w-[250px]">
                     <View className="flex-row items-center">
                         <Pressable
                             hitSlop={20}
                             className="pe-4 me-6"
-                            onPress={() => setVisible(false)}
+                            onPress={() => setVisible(prev => ({...prev, delete: false}))}
                         >
                             <CloseIcon />
                         </Pressable>

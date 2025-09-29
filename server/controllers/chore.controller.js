@@ -103,11 +103,11 @@ export async function getChoresByWorker(req, res) {
 // query needs to be array of family ids to work
 // The frontend sends: params: { parents } 
 export async function getChoresByParents(req, res) {
-    console.log("controller get creator chores")
-    console.log("req.query", req.query["parents[]"])
+    // console.log("controller get creator chores")
+    // console.log("req.query", req.query["parents[]"])
     try {
         const some = await Chore.find({ creator: {$in: req.query["parents[]"]}, isActive: true }).populate('worker', "name _id")
-        console.log("some", some)
+        // console.log("some", some)
         res.status(200).json(some);
     } catch (error) {
         console.log("can't get creator chores");
@@ -217,17 +217,30 @@ export const updateChore = async (req, res) => {
     try {
         // can't change id or creator
         const allowedUpdates = ['title', "details", 'stage', "worker", "dueDate", "stageDate", "beforePic", "afterPic",
-            "isActive", "needsPics", "parentComments", "kidComments", "dateEdited", "weeklyRepeatDays"]; // Define what can be updated
+            "isActive", "needsPics", "parentComments", "kidComments", "dateEdited", "weeklyRepeatDays", "templateId"]; // Define what can be updated
         const updateData = {};
         // Only include allowed fields that exist in req.body
         // Not sure if line 74 works
         allowedUpdates.forEach(field => {
             if (req.body[field] !== undefined) {
-                updateData[field] = req.body[field];
+                updateData[field] = req.body[field]
             }
-        });
-        const CHORE = await Chore.findByIdAndUpdate(req.body._id, { $set: updateData }, { new: true }).select('-password');
+        })
+        const CHORE = await Chore.findByIdAndUpdate(req.body._id, { $set: updateData }, { new: true }).select('-password')
+
+        if (req.body.editScope === 'repeating') {
+            if (req.body.templateId) {
+                await ChoreTemplate.findByIdAndUpdate(req.body.templateId, { $set: updateData }, { new: true })
+            }
+            else {
+                const template = await ChoreTemplate.create({ ...req.body, isActive: true, })
+                CHORE.templateId = template._id
+                await CHORE.save()
+            }
+        }
+
         res.status(201).json(CHORE)
+
     } catch (error) {
         console.log("edit Chore controller error", error)
         res.status(400).json(error)

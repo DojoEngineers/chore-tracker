@@ -114,13 +114,13 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
             animationType="fade"
             transparent={true}
             visible={visible}
-            onRequestClose={() => setVisible(false)}
+            onRequestClose={() => setVisible(prev => ({...prev, complete: false}))}
         >
             <View className="flex-1 justify-center items-center bg-transparent">
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View
                         className="absolute inset-0"
-                        style={{backgroundColor:  'rgba(68, 73, 85, 0.5)'}}
+                        style={{backgroundColor: 'rgba(68, 73, 85, 0.5)'}}
                     />
                 </TouchableWithoutFeedback>
 
@@ -128,7 +128,7 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
                     <View className="flex-row items-center mb-6">
                         <Pressable
                             hitSlop={20}
-                            onPress={() => setVisible(false)}
+                            onPress={() => setVisible(prev => ({...prev, complete: false}))}
                         >
                             <CloseIcon />
                         </Pressable>

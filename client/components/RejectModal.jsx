@@ -71,19 +71,19 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
             animationType="fade"
             transparent={true}
             visible={visible}
-            onRequestClose={() => setVisible(false)}
+            onRequestClose={() => setVisible(prev => ({...prev, reject: false}))}
         >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <View
                     className="flex-1 justify-center items-center"
-                    style={{backgroundColor:  'rgba(68, 73, 85, 0.5)'}}
+                    style={{backgroundColor: 'rgba(68, 73, 85, 0.5)'}}
                 >
                     <View className="bg-[#ECEDEE] dark:bg-[#454954] p-[16px] rounded-3xl w-[90%]">
 
                         <Pressable
                             hitSlop={20}
                             className="mb-6"
-                            onPress={() => setVisible(false)}
+                            onPress={() => setVisible(prev => ({...prev, reject: false}))}
                         >
                             <CloseIcon />
                         </Pressable>
