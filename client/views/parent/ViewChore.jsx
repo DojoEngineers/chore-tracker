@@ -56,6 +56,7 @@ export const ViewChore = ({route}) => {
     useEffect(() => {
         getChoreById(id)
         .then((res) => {
+            console.log(res)
             setChore(res)
         })
         .catch((error) => {

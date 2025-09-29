@@ -33,7 +33,7 @@ export const NewChoreDropDown = ({open, setOpen, value, setValue, items,
             style={{
                 zIndex,
                 backgroundColor: isDark ? "#22252B" : "#9FB6AE",
-                borderWidth: 2,
+                borderWidth: 1,
                 borderColor: isDark ? "#D0D1D4" : "#D0D1D4",
                 borderRadius: 12
             }}
@@ -51,7 +51,7 @@ export const NewChoreDropDown = ({open, setOpen, value, setValue, items,
                 zIndex,
                 backgroundColor: isDark ? "#22252B" : "#9FB6AE",
                 width: 130,
-                borderWidth: 2,
+                borderWidth: 1,
                 borderColor: isDark ? "#D0D1D4" : "#9FB6AE",
                 borderRadius: 12
             }}
