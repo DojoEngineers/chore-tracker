@@ -3,7 +3,7 @@ import { useLogin } from '../context/UserContext';
 import Tutorial2KidPhoto from '../assets/Tutorial2KidPhoto'
 
 const parentAspectRatio = 360 / 315
-const kidAspectRatio = 360 /312
+const kidAspectRatio = 360 / 321
 
 export const Tutorial2Photo = ({width = 360}) => {
 

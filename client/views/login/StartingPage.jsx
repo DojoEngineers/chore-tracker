@@ -23,7 +23,12 @@ export const StartingPage = () => {
                 type: 'success',
                 text1: "Login Successful!"
             })
-            navigation.replace('Dashboard')
+            if (data.firstLogin) {
+                navigation.replace('TutorialPage1')
+            }
+            else {
+                navigation.replace('Dashboard')
+            }
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }
