@@ -230,7 +230,6 @@ export const updateChore = async (req, res) => {
 
         if (req.body.editScope === 'repeating') {
             if (req.body.templateId) {
-                console.log("in the if statement. templateId", req.body.templateId)
                 await ChoreTemplate.findByIdAndUpdate(req.body.templateId, { $set: updateData }, { new: true })
             }
             else {

@@ -23,6 +23,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { addImage } from "../../services/image.service"
 import Constants from 'expo-constants'
 import { WeeklyRepeatIcons } from "../../components/WeeklyRepeatIcons";
+import { ImageModal } from "../../components/ImageModal"
 
 dayjs.extend(utc)
 
@@ -45,9 +46,8 @@ export const ViewChore = ({route}) => {
     const [apiErrors, setApiErrors] = useState({})
     const [chore, setChore] = useState({})
     const [loading, setLoading] = useState("Loading chore...")
-    const [deleteModalVisible, setDeleteModalVisible] = useState(false)
-    const [rejectModalVisible, setRejectModalVisible] = useState(false)
-    const [completeModalVisible, setCompleteModalVisible] = useState(false)
+    const [selectedImage, setSelectedImage] = useState()
+    const [modalVisible, setModalVisible] = useState({delete: false, reject: false, complete: false, image: false})
 
     const navigation = useNavigation()
     const {id} = route.params
@@ -56,7 +56,6 @@ export const ViewChore = ({route}) => {
     useEffect(() => {
         getChoreById(id)
         .then((res) => {
-            console.log(res)
             setChore(res)
         })
         .catch((error) => {
@@ -357,22 +356,38 @@ export const ViewChore = ({route}) => {
                                                 <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] mb-2">
                                                     Before Photo
                                                 </BrandText>
-                                                <Image
-                                                    source={{uri: `${BACKEND_URL}${chore.beforePic}`}}
-                                                    className="w-[200px] h-[200px] rounded-lg"
-                                                />
+
+                                                <Pressable
+                                                    onPress={() =>{
+                                                        setSelectedImage(`${BACKEND_URL}${chore.beforePic}`)
+                                                        setModalVisible(prev => ({...prev, image: true}))
+                                                    }}
+                                                >
+                                                    <Image
+                                                        source={{uri: `${BACKEND_URL}${chore.beforePic}`}}
+                                                        className="w-[200px] h-[200px] rounded-lg"
+                                                    />
+                                                </Pressable>
                                             </View>
                                         )}
 
                                         {chore.afterPic && (
-                                            <View className="">
+                                            <View>
                                                 <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] mb-2">
                                                     After Photo
                                                 </BrandText>
-                                                <Image
-                                                    source={{uri: `${BACKEND_URL}${chore.afterPic}`}}
-                                                    className="w-[200px] h-[200px] rounded-lg"
-                                                />
+
+                                                <Pressable
+                                                    onPress={() =>{
+                                                        setSelectedImage(`${BACKEND_URL}${chore.afterPic}`)
+                                                        setModalVisible(prev => ({...prev, image: true}))
+                                                    }}
+                                                >
+                                                    <Image
+                                                        source={{uri: `${BACKEND_URL}${chore.afterPic}`}}
+                                                        className="w-[200px] h-[200px] rounded-lg"
+                                                    />
+                                                </Pressable>
                                             </View>
                                         )}
                                     </ScrollView>
@@ -398,7 +413,7 @@ export const ViewChore = ({route}) => {
                                             </Pressable>
                                             
                                             <Pressable
-                                                onPress={() => setDeleteModalVisible(true)}
+                                                onPress={() => setModalVisible(prev => ({...prev, delete: true}))}
                                                 className="p-[10px] rounded-full items-center justify-center bg-[#737780] w-full h-[56px] mt-5"
                                             >
                                                 <BrandBoldText className="text-[#111215] dark:text-[#ECEDEE] text-[20px] ms-4">
@@ -419,7 +434,7 @@ export const ViewChore = ({route}) => {
                                             </Pressable>
                                             
                                             <Pressable
-                                                onPress={() => setCompleteModalVisible(true)}
+                                                onPress={() => setModalVisible(prev => ({...prev, complete: true}))}
                                                 className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px] mt-5"
                                             >
                                                 <BrandBoldText className="text-[#ECEDEE] text-[20px] ms-4">
@@ -445,7 +460,7 @@ export const ViewChore = ({route}) => {
                                 </Pressable>
 
                                 <Pressable
-                                    onPress={() => setRejectModalVisible(true)}
+                                    onPress={() => setModalVisible(prev => ({...prev, reject: true}))}
                                     className="p-[10px] rounded-full items-center justify-center bg-[#F40000] w-full h-[56px] mt-4"
                                 >
                                     <BrandBoldText className="text-darkPrimaryText text-[20px] ms-4">
@@ -456,26 +471,32 @@ export const ViewChore = ({route}) => {
                         }
 
                         <DeleteModal
-                            visible={deleteModalVisible}
-                            setVisible={setDeleteModalVisible}
+                            visible={modalVisible.delete}
+                            setVisible={setModalVisible}
                             setApiErrors={setApiErrors}
                             id={id}
                         />
 
                         <RejectModal
-                            visible={rejectModalVisible}
-                            setVisible={setRejectModalVisible}
+                            visible={modalVisible.reject}
+                            setVisible={setModalVisible}
                             setApiErrors={setApiErrors}
                             id={id}
                         />
 
                         <CompleteModal
-                            visible={completeModalVisible}
-                            setVisible={setCompleteModalVisible}
+                            visible={modalVisible.complete}
+                            setVisible={setModalVisible}
                             setApiErrors={setApiErrors}
                             id={id}
                             needsPics={chore.needsPics}
                             setChore={setChore}
+                        />
+
+                        <ImageModal
+                            visible={modalVisible.image}
+                            setVisible={setModalVisible}
+                            imageUri={selectedImage}
                         />
                     </View>
             }
