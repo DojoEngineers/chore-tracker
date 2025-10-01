@@ -209,7 +209,7 @@ export const Dashboard = () => {
                                         </View>
                                     </View>
 
-                                    {dayjs(chore.dueDate).isBefore(dayjs())
+                                    {(dayjs(chore.dueDate).isBefore(dayjs()) && (chore.stage === "incomplete" || chore.stage === "rejectedReassigned"))
                                         ?
                                             <BrandBoldText
                                                 className="text-[#F40000] text-[10px]"

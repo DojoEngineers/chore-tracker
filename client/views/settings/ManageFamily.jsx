@@ -55,7 +55,7 @@ export const ManageFamily = () => {
                         className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px] mb-6"
                         onPress={() => navigation.navigate('AddFamilyMember', {isParent:true})}
                     >
-                        <BrandBoldText className="text-white text-[20px]">Add a second parent</BrandBoldText>
+                        <BrandBoldText className="text-white text-[20px]">Add another parent</BrandBoldText>
                     </Pressable>
                 }
 
