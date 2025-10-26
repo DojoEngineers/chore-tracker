@@ -10,26 +10,27 @@ import { updateUser } from "../../services/user.service"
 import Toast from "react-native-toast-message"
 import { useLogin } from "../../context/UserContext"
 
-export const DeleteKid = ({route}) => {
+export const DeleteFamilyMember = ({route}) => {
 
     const [modalVisible, setModalVisible] = useState(false)
-    const [selectedKid, setSelectedKid] = useState({})
+    const [selectedUser, setSelectedUser] = useState({})
     const [ apiErrors, setApiErrors ] = useState({})
 
-    const {kids} = route.params
+    const {users, isParent} = route.params
     const navigation = useNavigation()
     const {setLoggedInData} = useLogin()
 
     const handleDelete = () => {
-        updateUser({id: selectedKid._id, isActive: false})
+        updateUser({id: selectedUser._id, isActive: false})
             .then( (res) => { 
                 Toast.show({
                     type: 'success',
-                    text1: `${selectedKid.name} successfully deleted!`
+                    text1: `${selectedUser.name} successfully deleted!`
                 })
+                const key = isParent ? "parents" : "children"
                 setLoggedInData((prev) => ({
-                    ...prev, family: {...prev.family, children: prev.family.children
-                    .filter((kid) => kid._id !== selectedKid._id)
+                    ...prev, family: {...prev.family, [key]: prev.family[key]
+                    .filter((user) => user._id !== selectedUser._id)
                 }}))
                 navigation.goBack()
             })
@@ -57,7 +58,7 @@ export const DeleteKid = ({route}) => {
 
                     <View className="flex-1 ms-[34px]">
                         <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                            Delete a kid
+                            Delete a {isParent? "parent" : "kid"}
                         </BrandBoldText>
                     </View>
                 </View>
@@ -71,7 +72,7 @@ export const DeleteKid = ({route}) => {
                 <BrandBoldText
                     className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] my-8 text-center"
                 >
-                    Please select which kid you would like to delete.
+                    Please select which {isParent? "parent" : "kid"} you would like to delete.
                     {"\n"}WARNING! This cannot be undone.
                 </BrandBoldText>
 
@@ -81,35 +82,38 @@ export const DeleteKid = ({route}) => {
                         showsVerticalScrollIndicator={false}
                         className="flex-1"
                     >
-                        {kids.map((kid) => (
-                            <View key={kid._id} className="mb-8 items-center">
-                                <Pressable
-                                    onPress={() => {
-                                        setModalVisible(true)
-                                        setSelectedKid(kid)
-                                    }}
-                                    className="w-[207px] h-[207px] rounded-full items-center justify-center mb-2 dark:bg-[#333740] bg-[#D0D1D4]"
-                                >
+                        {users
+                            .filter((user, index) => !(isParent && index === 0))
+                            .map((user) => (
+                                <View key={user._id} className="mb-8 items-center">
+                                    <Pressable
+                                        onPress={() => {
+                                            setModalVisible(true)
+                                            setSelectedUser(user)
+                                        }}
+                                        className="w-[207px] h-[207px] rounded-full items-center justify-center mb-2 dark:bg-[#333740] bg-[#D0D1D4]"
+                                    >
+                                        <BrandText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[128px]"
+                                        >
+                                            {user.name[0]}
+                                        </BrandText>
+                                    </Pressable>
+
+                                    <BrandBoldText
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center"
+                                        >
+                                            {user.name}
+                                    </BrandBoldText>
+
                                     <BrandText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[128px]"
+                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] text-center"
                                     >
-                                        {kid.name[0]}
+                                        {user.username}
                                     </BrandText>
-                                </Pressable>
-
-                                <BrandBoldText
-                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center"
-                                    >
-                                        {kid.name}
-                                </BrandBoldText>
-
-                                <BrandText
-                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] text-center"
-                                >
-                                    {kid.username}
-                                </BrandText>
-                            </View>
-                        ))}
+                                </View>
+                            ))
+                        }
                     </ScrollView>
                 </View>
 
@@ -145,7 +149,7 @@ export const DeleteKid = ({route}) => {
                         </View>
 
                         <BrandText className="dark:text-darkPrimaryText text-[#111215] text-[16px] my-4">
-                            Are you sure you want to delete {selectedKid.name}?
+                            Are you sure you want to delete {selectedUser.name}?
                         </BrandText>
 
                         <Pressable

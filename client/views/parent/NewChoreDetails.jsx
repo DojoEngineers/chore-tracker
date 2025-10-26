@@ -271,7 +271,7 @@ export const NewChoreDetails = ({ route }) => {
                     }
 
                     {(chore && chore?.repeat !== 'never') && (
-                        <View className="">
+                        <View>
                             <RadioButton.Group
                                 onValueChange={value => setEditScope(value)}
                                 value={editScope}
@@ -325,6 +325,14 @@ export const NewChoreDetails = ({ route }) => {
                             setValue={(callback) => {setFormData(prev => ({...prev, kids:  callback(prev.kids)}))}}
                         />
                     </View>
+
+                    {formData.kids.length > 1 &&
+                        <BrandText
+                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] text-center mt-3"
+                        >
+                            Each kid will be assigned a separate chore.
+                        </BrandText>
+                    }
 
                     <View className="h-[1px] my-6 bg-[#737780]"></View>
 

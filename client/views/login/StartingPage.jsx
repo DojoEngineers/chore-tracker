@@ -51,7 +51,7 @@ export const StartingPage = () => {
 
             <View className="items-center px-[16px]">
                 <BrandBoldText className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                    Chore Tracking App
+                    Track My Chores
                 </BrandBoldText>
             </View>
 

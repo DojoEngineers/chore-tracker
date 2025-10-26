@@ -14,6 +14,9 @@ import {DueTodayIcon} from "../../components/icons/DueTodayIcon"
 import {CheckIcon} from "../../components/icons/CheckIcon"
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { WeeklyRepeatIcons } from "../../components/WeeklyRepeatIcons";
+import { DeleteModal } from "../../components/DeleteModal.jsx"
+import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import { SwipeDeleteButton } from "../../components/SwipeDeleteButton.jsx"
 
 dayjs.extend(isBetween)
 dayjs.extend(utc)
@@ -23,12 +26,16 @@ export const KidDetails = ({route}) => {
 
     const [apiErrors, setApiErrors] = useState({})
     const [chores, setChores] = useState({today: [], thisWeek: [], completed: []})
+    const [modalVisible, setModalVisible] = useState({delete: false})
+    const [id, setId] = useState("")
+    const [refreshTrigger, setRefreshTrigger] = useState(0)
     const [loading, setLoading] = useState("loading chores...")
 
     const navigation = useNavigation()
     const { kid } = route.params
 
     useEffect(() => {
+        setLoading("loading chores...")
         getChoresByWorker(kid._id)
             .then((res) => {
                 // Today's chores
@@ -71,7 +78,7 @@ export const KidDetails = ({route}) => {
                 })
             })
             .finally(() => setLoading(false))
-    }, [kid])
+    }, [kid, refreshTrigger])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
@@ -89,6 +96,12 @@ export const KidDetails = ({route}) => {
                 </BrandBoldText>
             </View>
 
+            {apiErrors.deleteChore && (
+                <BrandText className="text-red-500 text-center">
+                    {apiErrors.deleteChore}
+                </BrandText>
+            )}
+
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 className="px-[16px] flex-1"
@@ -105,65 +118,75 @@ export const KidDetails = ({route}) => {
                     {chores.today.length > 0
                         ?
                             chores.today.map((chore) => (
-                                <Pressable
-                                    onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-3 mt-4"
+                                <ReanimatedSwipeable
                                     key={chore._id}
+                                    renderRightActions={() => (
+                                        <SwipeDeleteButton
+                                            choreId={chore._id}
+                                            setModalVisible={setModalVisible}
+                                            setId={setId}
+                                        />
+                                    )}
                                 >
-                                    <View className="flex-row items-center justify-between">
-                                        <BrandText
-                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                                        >
-                                            {chore.title}
-                                        </BrandText>
-
-                                        {dayjs(chore.dueDate).isBefore(dayjs())
-                                            ?
-                                                <BrandBoldText
-                                                    className="text-[#F40000] text-[12px]"
-                                                >
-                                                    Overdue!
-                                                </BrandBoldText>
-
-                                            :
-                                                <BrandText
-                                                    className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
-                                                >
-                                                    Due by {dayjs(chore.dueDate).local().format("h:mma")}
-                                                </BrandText>
-                                        }
-                                    </View>
-
-                                    <View className="flex-row items-center mt-2">
-                                        <View className="rounded-full bg-[#84A99D]
-                                            me-3 aspect-square h-[20px] justify-center dark:bg-darkButton">
-                                            <BrandBoldText className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px] text-center">
-                                                {kid.name[0]}
-                                            </BrandBoldText>
-                                        </View>
-
-                                        <BrandText
-                                            className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
-                                        >
-                                            {`${kid.name} • `}
-                                        </BrandText>
-
-                                        <View className={`rounded-full py-1 px-3
-                                            ${chore.stage === "incomplete"
-                                                ? "bg-[#FDBB74]" : ""}
-                                            ${chore.stage === "rejectedReassigned"
-                                                ? "bg-[#FF5757]" : ""}`}
-                                        >
-                                            <BrandBoldText
-                                                className="text-[12px] text-[#111215]"
+                                    <Pressable
+                                        onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
+                                        className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-3 mt-4"
+                                    >
+                                        <View className="flex-row items-center justify-between">
+                                            <BrandText
+                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
                                             >
-                                                {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
-                                            </BrandBoldText>
+                                                {chore.title}
+                                            </BrandText>
+
+                                            {dayjs(chore.dueDate).isBefore(dayjs())
+                                                ?
+                                                    <BrandBoldText
+                                                        className="text-[#F40000] text-[12px]"
+                                                    >
+                                                        Overdue!
+                                                    </BrandBoldText>
+
+                                                :
+                                                    <BrandText
+                                                        className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
+                                                    >
+                                                        Due by {dayjs(chore.dueDate).local().format("h:mma")}
+                                                    </BrandText>
+                                            }
                                         </View>
 
-                                    </View>
-                                    
-                                </Pressable>
+                                        <View className="flex-row items-center mt-2">
+                                            <View className="rounded-full bg-[#84A99D]
+                                                me-3 aspect-square h-[20px] justify-center dark:bg-darkButton">
+                                                <BrandBoldText className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px] text-center">
+                                                    {kid.name[0]}
+                                                </BrandBoldText>
+                                            </View>
+
+                                            <BrandText
+                                                className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
+                                            >
+                                                {`${kid.name} • `}
+                                            </BrandText>
+
+                                            <View className={`rounded-full py-1 px-3
+                                                ${chore.stage === "incomplete"
+                                                    ? "bg-[#FDBB74]" : ""}
+                                                ${chore.stage === "rejectedReassigned"
+                                                    ? "bg-[#FF5757]" : ""}`}
+                                            >
+                                                <BrandBoldText
+                                                    className="text-[12px] text-[#111215]"
+                                                >
+                                                    {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
+                                                </BrandBoldText>
+                                            </View>
+
+                                        </View>
+                                        
+                                    </Pressable>
+                                </ReanimatedSwipeable>
                             ))
 
                         : loading ?
@@ -203,66 +226,77 @@ export const KidDetails = ({route}) => {
                     {chores.thisWeek.length > 0
                         ?
                             chores.thisWeek.map((chore) => (
-                                <Pressable
-                                    onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                    className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-3 mt-4"
+                                <ReanimatedSwipeable
                                     key={chore._id}
+                                    renderRightActions={() => (
+                                        <SwipeDeleteButton
+                                            choreId={chore._id}
+                                            setModalVisible={setModalVisible}
+                                            setId={setId}
+                                        />
+                                    )}
                                 >
-                                    <View className="flex-row items-center justify-between">
-                                        <BrandText
-                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                                        >
-                                            {chore.title}
-                                        </BrandText>
-
-                                        {chore.repeat === "weekly"
-                                            ?
-                                                <WeeklyRepeatIcons chore={chore} fontSize={12} circleSize={20}/>
-
-                                            : chore.repeat === "daily" ?
-                                                <BrandText
-                                                    className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
-                                                >
-                                                    Due daily by {dayjs(chore.dueDate).local().format("h:mma")}
-                                                </BrandText>
-
-                                            :
-                                                <BrandText
-                                                    className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
-                                                >
-                                                    Due on {dayjs(chore.dueDate).local().format("dddd")}
-                                                </BrandText>
-                                        }
-                                    </View>
-
-                                    <View className="flex-row items-center mt-2">
-                                        <View className="rounded-full bg-[#84A99D]
-                                            me-3 aspect-square h-[20px] justify-center dark:bg-darkButton">
-                                            <BrandBoldText className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px] text-center">
-                                                {kid.name[0]}
-                                            </BrandBoldText>
-                                        </View>
-
-                                        <BrandText
-                                            className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
-                                        >
-                                            {`${kid.name} • `}
-                                        </BrandText>
-
-                                        <View className={`rounded-full py-1 px-3
-                                            ${chore.stage === "incomplete"
-                                                ? "bg-[#FDBB74]" : ""}
-                                            ${chore.stage === "rejectedReassigned"
-                                                ? "bg-[#FF5757]" : ""}`}
-                                        >
-                                            <BrandBoldText
-                                                className="text-[12px] text-[#111215]"
+                                    <Pressable
+                                        onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
+                                        className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-3 mt-4"
+                                        key={chore._id}
+                                    >
+                                        <View className="flex-row items-center justify-between">
+                                            <BrandText
+                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
                                             >
-                                                {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
-                                            </BrandBoldText>
+                                                {chore.title}
+                                            </BrandText>
+
+                                            {chore.repeat === "weekly"
+                                                ?
+                                                    <WeeklyRepeatIcons chore={chore} fontSize={12} circleSize={20}/>
+
+                                                : chore.repeat === "daily" ?
+                                                    <BrandText
+                                                        className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
+                                                    >
+                                                        Due daily by {dayjs(chore.dueDate).local().format("h:mma")}
+                                                    </BrandText>
+
+                                                :
+                                                    <BrandText
+                                                        className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
+                                                    >
+                                                        Due on {dayjs(chore.dueDate).local().format("dddd")}
+                                                    </BrandText>
+                                            }
                                         </View>
-                                    </View>
-                                </Pressable>
+
+                                        <View className="flex-row items-center mt-2">
+                                            <View className="rounded-full bg-[#84A99D]
+                                                me-3 aspect-square h-[20px] justify-center dark:bg-darkButton">
+                                                <BrandBoldText className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px] text-center">
+                                                    {kid.name[0]}
+                                                </BrandBoldText>
+                                            </View>
+
+                                            <BrandText
+                                                className="text-lightPrimaryText dark:text-[#ECEDEE] text-[12px]"
+                                            >
+                                                {`${kid.name} • `}
+                                            </BrandText>
+
+                                            <View className={`rounded-full py-1 px-3
+                                                ${chore.stage === "incomplete"
+                                                    ? "bg-[#FDBB74]" : ""}
+                                                ${chore.stage === "rejectedReassigned"
+                                                    ? "bg-[#FF5757]" : ""}`}
+                                            >
+                                                <BrandBoldText
+                                                    className="text-[12px] text-[#111215]"
+                                                >
+                                                    {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
+                                                </BrandBoldText>
+                                            </View>
+                                        </View>
+                                    </Pressable>
+                                </ReanimatedSwipeable>
                             ))
 
                         : loading ?
@@ -380,6 +414,14 @@ export const KidDetails = ({route}) => {
                     }
                 </View>
             </ScrollView>
+
+            <DeleteModal
+                visible={modalVisible.delete}
+                setVisible={setModalVisible}
+                setApiErrors={setApiErrors}
+                id={id}
+                setRefreshTrigger={setRefreshTrigger}
+            />
 
             <ParentNavBar />
         </View>

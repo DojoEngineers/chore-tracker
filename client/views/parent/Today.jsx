@@ -13,6 +13,9 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {SquareIcon} from "../../components/icons/SquareIcon"
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import { SwipeDeleteButton } from "../../components/SwipeDeleteButton"
+import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import { DeleteModal } from "../../components/DeleteModal"
 
 dayjs.extend(utc)
 dayjs.extend(isSameOrBefore)
@@ -22,11 +25,15 @@ export const Today = () => {
     const [apiErrors, setApiErrors] = useState({})
     const [chores, setChores] = useState([])
     const [loading, setLoading] = useState("Loading chores...")
+    const [modalVisible, setModalVisible] = useState({delete: false})
+    const [id, setId] = useState("")
+    const [refreshTrigger, setRefreshTrigger] = useState(0)
 
     const navigation = useNavigation()
     const {loggedInData} = useLogin()
 
     useEffect(() => {
+        setLoading("loading chores...")
         getChoresByParents(loggedInData.family.parents.map(p => p._id))
             .then((res) => {
                 const filteredChores = res.filter(chore =>
@@ -45,7 +52,7 @@ export const Today = () => {
                 })
             })
             .finally(() => setLoading(false))
-    }, [])
+    }, [refreshTrigger])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
@@ -71,66 +78,77 @@ export const Today = () => {
                         className="px-[16px] mt-4 flex-1"
                     >
                         {chores.map((chore) => (
-                            <Pressable
-                                onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
-                                className="flex-row w-full my-3 bg-[#9FB6AE]
-                                    dark:bg-[#2F3339] rounded-3xl py-4 px-6"
+                            <ReanimatedSwipeable
                                 key={chore._id}
+                                renderRightActions={() => (
+                                    <SwipeDeleteButton
+                                        choreId={chore._id}
+                                        setModalVisible={setModalVisible}
+                                        setId={setId}
+                                    />
+                                )}
                             >
-                                <View className="flex-1">
-                                    <View className="flex-row">
-                                        <SquareIcon />
+                                <Pressable
+                                    onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
+                                    className="flex-row w-full mt-4 bg-[#9FB6AE]
+                                        dark:bg-[#2F3339] rounded-3xl py-4 px-6"
+                                    key={chore._id}
+                                >
+                                    <View className="flex-1">
+                                        <View className="flex-row">
+                                            <SquareIcon />
 
-                                        <BrandBoldText
-                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mb-2 ms-3"
-                                        >
-                                            {chore.title}
-                                        </BrandBoldText>
-                                    </View>
-
-                                    <View className="flex-row items-center mb-2">
-                                        <BrandText
-                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[12px]"
-                                        >
-                                            {`${chore.worker.name} • `}
-                                        </BrandText>
-                                        
-                                        <View className={`rounded-full py-1 px-3
-                                            ${chore.stage === "incomplete"
-                                                ? "bg-[#FDBB74]" : ""}
-                                            ${chore.stage === "rejectedReassigned"
-                                                ? "bg-[#FF5757]" : ""}`}
-                                        >
                                             <BrandBoldText
-                                                className="text-[12px] text-[#111215]"
+                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mb-2 ms-3"
                                             >
-                                                {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
+                                                {chore.title}
                                             </BrandBoldText>
                                         </View>
+
+                                        <View className="flex-row items-center mb-2">
+                                            <BrandText
+                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[12px]"
+                                            >
+                                                {`${chore.worker.name} • `}
+                                            </BrandText>
+                                            
+                                            <View className={`rounded-full py-1 px-3
+                                                ${chore.stage === "incomplete"
+                                                    ? "bg-[#FDBB74]" : ""}
+                                                ${chore.stage === "rejectedReassigned"
+                                                    ? "bg-[#FF5757]" : ""}`}
+                                            >
+                                                <BrandBoldText
+                                                    className="text-[12px] text-[#111215]"
+                                                >
+                                                    {chore.stage === "incomplete" ? "Incomplete" : "Rejected and reassigned"}
+                                                </BrandBoldText>
+                                            </View>
+                                        </View>
+
+                                        {dayjs(chore.dueDate).isBefore(dayjs())
+                                            ?
+                                                <BrandBoldText
+                                                    className="text-[#F40000] text-[10px]"
+                                                >
+                                                    Overdue!
+                                                </BrandBoldText>
+                                                
+                                            :
+                                                <BrandText
+                                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
+                                                >
+                                                    Due by {dayjs(chore.dueDate).format("h:mma")}
+                                                </BrandText>
+                                        }
+
                                     </View>
 
-                                    {dayjs(chore.dueDate).isBefore(dayjs())
-                                        ?
-                                            <BrandBoldText
-                                                className="text-[#F40000] text-[10px]"
-                                            >
-                                                Overdue!
-                                            </BrandBoldText>
-                                            
-                                        :
-                                            <BrandText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[10px]"
-                                            >
-                                                Due by {dayjs(chore.dueDate).format("h:mma")}
-                                            </BrandText>
-                                    }
-
-                                </View>
-
-                                <View className="justify-center">
-                                    <ForwardArrow />
-                                </View>
-                            </Pressable>
+                                    <View className="justify-center">
+                                        <ForwardArrow />
+                                    </View>
+                                </Pressable>
+                            </ReanimatedSwipeable>
                         ))}
                     </ScrollView>
 
@@ -159,6 +177,14 @@ export const Today = () => {
                         </View>
                     </View>
             }
+
+            <DeleteModal
+                visible={modalVisible.delete}
+                setVisible={setModalVisible}
+                setApiErrors={setApiErrors}
+                id={id}
+                setRefreshTrigger={setRefreshTrigger}
+            />
             
             <ParentNavBar />
         </View>
