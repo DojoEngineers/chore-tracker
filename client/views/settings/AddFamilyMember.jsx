@@ -131,7 +131,7 @@ export const AddFamilyMember = ({route}) => {
 
                         <View className="flex-1 mb-10 ms-[34px]">
                             <BrandBoldText className="text-[32px] text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                                {isParent ? "Add another parent" : "Add a kid"}
+                                Add a {isParent ? "parent" : "kid"}
                             </BrandBoldText>
                         </View>
                     </View>
@@ -146,6 +146,13 @@ export const AddFamilyMember = ({route}) => {
                             {apiErrors.checkUsername}
                         </BrandText>
                     )}
+
+                    <View className="items-center mb-12">
+                        <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
+                            After adding a {isParent ? "parent" : "kid"}, they will get an email with a verification code.
+                            They can use the ‘Verify’ link on our home page to enter the code and create their account.
+                        </BrandText>
+                    </View>
 
                     <View className="mb-10">
                         <UserInput

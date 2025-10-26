@@ -33,7 +33,7 @@ import { KidDetails } from "./views/parent/KidDetails";
 import { ViewChore } from "./views/parent/ViewChore";
 import { Today } from "./views/parent/Today";
 import { Approve } from "./views/parent/Approve";
-import { DeleteKid } from "./views/settings/DeleteKid";
+import { DeleteFamilyMember } from "./views/settings/DeleteFamilyMember";
 import { Completed } from "./views/kid/Completed";
 import { ThisWeek } from "./views/kid/ThisWeek";
 
@@ -85,7 +85,7 @@ export default function App() {
               <Stack.Screen name="ViewChore" component={ViewChore}></Stack.Screen>
               <Stack.Screen name="Today" component={Today} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="Approve" component={Approve} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="DeleteKid" component={DeleteKid}></Stack.Screen>
+              <Stack.Screen name="DeleteFamilyMember" component={DeleteFamilyMember}></Stack.Screen>
               <Stack.Screen name="Completed" component={Completed} options={chooseAnimation}></Stack.Screen>
               <Stack.Screen name="ThisWeek" component={ThisWeek} options={chooseAnimation}></Stack.Screen>
             </Stack.Navigator>

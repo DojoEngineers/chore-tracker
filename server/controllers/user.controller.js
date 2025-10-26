@@ -338,8 +338,8 @@ export const getCurrentUser = async (req, res) => {
         const USER = await User.findById(req.user._id).select(`-password`).populate({
             path: 'family',
             populate: [
-                { path: 'children', model: "User" },
-                { path: 'parents', model: "User", select: "name isParent _id" }
+                { path: 'children', model: "User", select: "name username _id isActive" },
+                { path: 'parents', model: "User", select: "name username _id isActive" }
             ]
         }).lean();
         if (!USER) {

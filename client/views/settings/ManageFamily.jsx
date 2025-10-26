@@ -3,8 +3,8 @@ import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { useLogin } from "../../context/UserContext"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { useNavigation } from "@react-navigation/native"
-import { BrandText } from "../../components/text/BrandText"
 import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottomRightSquiggle"
+import { BrandText } from "../../components/text/BrandText"
 
 export const ManageFamily = () => {
 
@@ -19,8 +19,7 @@ export const ManageFamily = () => {
 
             <View className="flex-1 items-center px-[16px]">
 
-                <View className="flex-row mt-[75px]">
-
+                <View className="flex-row mt-[75px] mb-8">
                     <Pressable
                         className="pt-4 ps-2"
                         hitSlop={20}
@@ -36,16 +35,16 @@ export const ManageFamily = () => {
                     </View>
                 </View>
 
-                <View className="items-center my-[70px]">
+                <View className="items-center mb-8">
                     <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                        After adding a family member, they will get an email with a verification code.
-                        They can use the ‘Verify’ link on our home page to enter the code and create their account.
+                        A maximum of 3 parents can exist per family.
+                        Only the family account creator, {parents[0].name} ({parents[0].username}), can delete other parents.
                     </BrandText>
                 </View>
 
                 <Pressable
                     className="p-[10px] mb-6 rounded-full items-center justify-center bg-[#84A99D] w-full h-[56px]"
-                    onPress={() => navigation.navigate('AddFamilyMember', {isParent:false})}
+                    onPress={() => navigation.navigate('AddFamilyMember', {isParent: false})}
                 >
                     <BrandBoldText className="text-white text-[20px]">Add a kid</BrandBoldText>
                 </Pressable>
@@ -53,18 +52,27 @@ export const ManageFamily = () => {
                 {parents.length <= 2 &&
                     <Pressable
                         className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px] mb-6"
-                        onPress={() => navigation.navigate('AddFamilyMember', {isParent:true})}
+                        onPress={() => navigation.navigate('AddFamilyMember', {isParent: true})}
                     >
-                        <BrandBoldText className="text-white text-[20px]">Add another parent</BrandBoldText>
+                        <BrandBoldText className="text-white text-[20px]">Add a parent</BrandBoldText>
                     </Pressable>
                 }
 
                 {kids.length >= 1 &&
                     <Pressable
-                        className="p-[10px] rounded-full items-center justify-center bg-[#F40000] w-full h-[56px]"
-                        onPress={() => navigation.navigate('DeleteKid', {kids})}
+                        className="p-[10px] rounded-full items-center justify-center bg-[#F40000] w-full h-[56px] mb-6"
+                        onPress={() => navigation.navigate('DeleteFamilyMember', {users: kids, isParent: false})}
                     >
                         <BrandBoldText className="text-white text-[20px]">Delete a kid</BrandBoldText>
+                    </Pressable>
+                }
+
+                {(parents.length >= 2 && parents[0]._id === loggedInData._id) &&
+                    <Pressable
+                        className="p-[10px] rounded-full items-center justify-center bg-[#F40000] w-full h-[56px]"
+                        onPress={() => navigation.navigate('DeleteFamilyMember', {users: parents, isParent: true})}
+                    >
+                        <BrandBoldText className="text-white text-[20px]">Delete a parent</BrandBoldText>
                     </Pressable>
                 }
             </View>
