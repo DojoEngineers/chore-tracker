@@ -36,6 +36,7 @@ import { Approve } from "./views/parent/Approve";
 import { DeleteFamilyMember } from "./views/settings/DeleteFamilyMember";
 import { Completed } from "./views/kid/Completed";
 import { ThisWeek } from "./views/kid/ThisWeek";
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export default function App() {
 
@@ -55,42 +56,44 @@ export default function App() {
   return (
     // <NotificationProvider>
       <UserContextProvider>
-        <GlobalStyling>
-          <NavigationContainer>
-            <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="SplashScreen" component={SplashScreen}></Stack.Screen>
-              <Stack.Screen name="StartingPage" component={StartingPage} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="ParentRegistration" component={ParentRegistration}></Stack.Screen>
-              <Stack.Screen name="PasscodeVerification" component={PasscodeVerification}></Stack.Screen>
-              <Stack.Screen name="UsernameVerification" component={UsernameVerification}></Stack.Screen>
-              <Stack.Screen name="TutorialPage1" component={TutorialPage1}></Stack.Screen>
-              <Stack.Screen name="TutorialPage2" component={TutorialPage2}></Stack.Screen>
-              <Stack.Screen name="TutorialPage3" component={TutorialPage3}></Stack.Screen>
-              <Stack.Screen name="Dashboard" component={Dashboard} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="Login" component={Login} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
-              <Stack.Screen name="SetPassword" component={SetPassword}></Stack.Screen>
-              <Stack.Screen name="Settings" component={Settings} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
-              <Stack.Screen name="ManageFamily" component={ManageFamily} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="AddFamilyMember" component={AddFamilyMember}></Stack.Screen>
-              <Stack.Screen name="NewChore" component={NewChore} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="NewChoreDetails" component={NewChoreDetails}></Stack.Screen>
-              <Stack.Screen name="VerifyPassword" component={VerifyPassword}></Stack.Screen>
-              <Stack.Screen name="Help" component={Help}></Stack.Screen>
-              <Stack.Screen name="Terms" component={Terms}></Stack.Screen>
-              <Stack.Screen name="Privacy" component={Privacy}></Stack.Screen>
-              <Stack.Screen name="Kids" component={Kids} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="KidDetails" component={KidDetails} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="ViewChore" component={ViewChore}></Stack.Screen>
-              <Stack.Screen name="Today" component={Today} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="Approve" component={Approve} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="DeleteFamilyMember" component={DeleteFamilyMember}></Stack.Screen>
-              <Stack.Screen name="Completed" component={Completed} options={chooseAnimation}></Stack.Screen>
-              <Stack.Screen name="ThisWeek" component={ThisWeek} options={chooseAnimation}></Stack.Screen>
-            </Stack.Navigator>
-          </NavigationContainer>
-        </GlobalStyling>
+        <GestureHandlerRootView className="flex-1">
+          <GlobalStyling>
+            <NavigationContainer>
+              <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="SplashScreen" component={SplashScreen}></Stack.Screen>
+                <Stack.Screen name="StartingPage" component={StartingPage} options={chooseAnimation}></Stack.Screen>
+                <Stack.Screen name="ParentRegistration" component={ParentRegistration}></Stack.Screen>
+                <Stack.Screen name="PasscodeVerification" component={PasscodeVerification}></Stack.Screen>
+                <Stack.Screen name="UsernameVerification" component={UsernameVerification}></Stack.Screen>
+                <Stack.Screen name="TutorialPage1" component={TutorialPage1}></Stack.Screen>
+                <Stack.Screen name="TutorialPage2" component={TutorialPage2}></Stack.Screen>
+                <Stack.Screen name="TutorialPage3" component={TutorialPage3}></Stack.Screen>
+                <Stack.Screen name="Dashboard" component={Dashboard} options={chooseAnimation}></Stack.Screen>
+                <Stack.Screen name="Login" component={Login} options={chooseAnimation}></Stack.Screen>
+                <Stack.Screen name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
+                <Stack.Screen name="SetPassword" component={SetPassword}></Stack.Screen>
+                <Stack.Screen name="Settings" component={Settings} options={chooseAnimation}></Stack.Screen>
+                <Stack.Screen name="EditProfile" component={EditProfile}></Stack.Screen>
+                <Stack.Screen name="ManageFamily" component={ManageFamily} options={chooseAnimation}></Stack.Screen>
+                <Stack.Screen name="AddFamilyMember" component={AddFamilyMember}></Stack.Screen>
+                <Stack.Screen name="NewChore" component={NewChore} options={chooseAnimation}></Stack.Screen>
+                <Stack.Screen name="NewChoreDetails" component={NewChoreDetails}></Stack.Screen>
+                <Stack.Screen name="VerifyPassword" component={VerifyPassword}></Stack.Screen>
+                <Stack.Screen name="Help" component={Help}></Stack.Screen>
+                <Stack.Screen name="Terms" component={Terms}></Stack.Screen>
+                <Stack.Screen name="Privacy" component={Privacy}></Stack.Screen>
+                <Stack.Screen name="Kids" component={Kids} options={chooseAnimation}></Stack.Screen>
+                <Stack.Screen name="KidDetails" component={KidDetails} options={chooseAnimation}></Stack.Screen>
+                <Stack.Screen name="ViewChore" component={ViewChore}></Stack.Screen>
+                <Stack.Screen name="Today" component={Today} options={chooseAnimation}></Stack.Screen>
+                <Stack.Screen name="Approve" component={Approve} options={chooseAnimation}></Stack.Screen>
+                <Stack.Screen name="DeleteFamilyMember" component={DeleteFamilyMember}></Stack.Screen>
+                <Stack.Screen name="Completed" component={Completed} options={chooseAnimation}></Stack.Screen>
+                <Stack.Screen name="ThisWeek" component={ThisWeek} options={chooseAnimation}></Stack.Screen>
+              </Stack.Navigator>
+            </NavigationContainer>
+          </GlobalStyling>
+        </GestureHandlerRootView>
         <Toast />
       </UserContextProvider>
     // </NotificationProvider>

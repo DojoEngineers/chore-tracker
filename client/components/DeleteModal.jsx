@@ -6,7 +6,7 @@ import { updateChore } from "../services/chore.service"
 import { useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
 
-export const DeleteModal = ({visible, setVisible, setApiErrors, id}) => {
+export const DeleteModal = ({visible, setVisible, setApiErrors, id, setRefreshTrigger}) => {
 
     const navigation = useNavigation()
 
@@ -17,7 +17,13 @@ export const DeleteModal = ({visible, setVisible, setApiErrors, id}) => {
                     type: 'success',
                     text1: "Chore successfully deleted!"
                 })
-                navigation.replace("Dashboard", {animationType: "slide_from_left"})
+                setVisible(prev => ({...prev, delete: false}))
+                if (setRefreshTrigger) {
+                    setRefreshTrigger(prev => prev + 1)
+                }
+                else {
+                    navigation.replace("Dashboard", {animationType: "slide_from_left"})
+                }
             })
             .catch( error => {
                 console.log("deleteChore error:", error)
