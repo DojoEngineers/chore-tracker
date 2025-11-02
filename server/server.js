@@ -5,6 +5,7 @@ import { dbConnect } from "./config/mongoose.config.js";
 import userRouter from "./routes/user.route.js"
 import choreRouter from "./routes/chore.route.js"
 import imageRouter from "./routes/image.route.js";
+import R2Router from "./routes/r2.route.js";
 import path from 'path'
 import { fileURLToPath } from 'url';
 import emailjs from "@emailjs/nodejs"
@@ -29,6 +30,7 @@ cors({ origin: process.env.FRONTEND_API_URL, credentials:true })
 app.use(express.json())
 app.use("/user", userRouter);
 app.use("/chore", choreRouter);
+app.use("/r2", R2Router)
 app.use("/image", imageRouter);
 
 // This line serves files from /images
@@ -38,6 +40,10 @@ config(); // instead of dotenv.config
 const PORT = process.env.PORT;
 
 dbConnect();
+
+
+
+
 
 //EXPO PUSH NOTIFICATIONS
 // Create a new Expo SDK client
