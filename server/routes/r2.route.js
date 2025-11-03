@@ -1,13 +1,10 @@
 import { Router } from "express"
-import { protect } from "../middleware/authMiddleware.js"
 import multer from 'multer';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 
 const R2Router = Router()
-
 
 const s3Client = new S3Client({
     region: 'auto',
@@ -29,9 +26,6 @@ const upload = multer({
 
 // Middleware to handle multiple files
 export const uploadMiddleware = upload.array('photos', 2); // max 2 photos
-
-
-
 
 export const uploadPhotos = async (req, res) => {
     try {
@@ -128,10 +122,10 @@ export const getPhotoUrls = async (req, res) => {
     }
 };
 
-R2.route(`/upload`)
+R2Router.route(`/upload`)
     .post(uploadPhotos)
 
-R2.route(`/retrieve`)
+R2Router.route(`/retrieve`)
     .post(getPhotoUrls)
 
 export default R2Router
