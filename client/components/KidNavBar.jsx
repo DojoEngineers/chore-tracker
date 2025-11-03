@@ -21,7 +21,7 @@ export const KidNavBar = () => {
             <View className="flex-1 items-center justify-center">
                 <Pressable
                     className="justify-center items-center"
-                    onPress={() => navigation.navigate("Dashboard", {animationType: "fade_from_bottom"})}
+                    onPress={() => navigation.replace("Dashboard", {animationType: "fade_from_bottom"})}
                 >
                     {route.name === "Dashboard" ? <HighlightedHomeIcon width={26} /> : <HomeIcon width={26} />}
                     <BrandText
@@ -35,7 +35,7 @@ export const KidNavBar = () => {
             <View className="flex-1 items-center justify-center">
                 <Pressable
                     className="justify-center items-center"
-                    onPress={() => navigation.navigate("ThisWeek", {animationType: "fade_from_bottom"})}
+                    onPress={() => navigation.replace("ThisWeek", {animationType: "fade_from_bottom"})}
                 >
                     {route.name === "ThisWeek" ? <HighlightedTodayIcon width={26} /> : <TodayIcon width={26} />}
                     <BrandText
@@ -49,7 +49,7 @@ export const KidNavBar = () => {
             <View className="flex-1 items-center justify-center">
                 <Pressable
                     className="justify-center items-center"
-                    onPress={() => navigation.navigate("Completed", {animationType: "fade_from_bottom"})}
+                    onPress={() => navigation.replace("Completed", {animationType: "fade_from_bottom"})}
                 >
                     {route.name === "Completed" ? <HighlightedApproveIcon width={26} /> : <ApproveIcon width={26} />}
                     <BrandText

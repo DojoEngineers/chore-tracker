@@ -32,7 +32,7 @@ export const DeleteFamilyMember = ({route}) => {
                     ...prev, family: {...prev.family, [key]: prev.family[key]
                     .filter((user) => user._id !== selectedUser._id)
                 }}))
-                navigation.goBack()
+                navigation.replace('Settings', {animationType: "slide_from_left"})
             })
             .catch( error => {
                 console.log("updateUser error:", error)

@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { getChoreById, updateChore } from "../../services/chore.service"
 import Toast from "react-native-toast-message"
-import { Alert, Pressable, ScrollView, View, Linking, Image, useColorScheme } from "react-native"
+import { Alert, Pressable, ScrollView, View, Linking, Image } from "react-native"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import dayjs from "dayjs"
 import { BrandText } from "../../components/text/BrandText"
@@ -53,21 +53,23 @@ export const ViewChore = ({route}) => {
     const {id} = route.params
     const {loggedInData} = useLogin()
 
-    useEffect(() => {
-        getChoreById(id)
-        .then((res) => {
-            setChore(res)
-        })
-        .catch((error) => {
-            console.log("getChoreById error:", error)
-            setApiErrors(prev => ({...prev, getChoreById: "Unable to get chore information."}))
-            Toast.show({
-                type: 'error',
-                text1: "Unable to get chore information."
-                })
+    useFocusEffect(
+        useCallback(() => {
+            getChoreById(id)
+            .then((res) => {
+                setChore(res)
             })
-        .finally(() => setLoading(false))
-    }, [id])
+            .catch((error) => {
+                console.log("getChoreById error:", error)
+                setApiErrors(prev => ({...prev, getChoreById: "Unable to get chore information."}))
+                Toast.show({
+                    type: 'error',
+                    text1: "Unable to get chore information."
+                    })
+                })
+            .finally(() => setLoading(false))
+        }, [id])
+    )
 
     const handleApprove = () => {
         updateChore({_id: id, stage: "approved", stageDate: dayjs().toISOString()})
@@ -76,7 +78,7 @@ export const ViewChore = ({route}) => {
                     type: 'success',
                     text1: "Chore approved!"
                 })
-                navigation.replace("Dashboard", {animationType: "slide_from_left"})
+                navigation.goBack()
             })
             .catch((error) => {
                 console.log("approveChore error:", error)

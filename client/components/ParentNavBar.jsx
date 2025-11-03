@@ -24,7 +24,7 @@ export const ParentNavBar = () => {
                 
                 <Pressable
                     className="justify-center items-center"
-                    onPress={() => navigation.navigate("Dashboard", {animationType: "fade_from_bottom"})}
+                    onPress={() => navigation.replace("Dashboard", {animationType: "fade_from_bottom"})}
                 >
                     {route.name === "Dashboard" ? <HighlightedHomeIcon width={26} /> : <HomeIcon width={26} />}
                     <BrandText
@@ -36,7 +36,7 @@ export const ParentNavBar = () => {
 
                 <Pressable
                     className="justify-center items-center"
-                    onPress={() => navigation.navigate("Today", {animationType: "fade_from_bottom"})}
+                    onPress={() => navigation.replace("Today", {animationType: "fade_from_bottom"})}
                 >
                     {route.name === "Today" ? <HighlightedTodayIcon width={26} /> : <TodayIcon width={26} />}
                     <BrandText
@@ -50,7 +50,7 @@ export const ParentNavBar = () => {
 
                 <Pressable
                     className="justify-center items-center"
-                    onPress={() => navigation.navigate("Approve", {animationType: "fade_from_bottom"})}
+                    onPress={() => navigation.replace("Approve", {animationType: "fade_from_bottom"})}
                 >
                     {route.name === "Approve" ? <HighlightedApproveIcon width={26} /> : <ApproveIcon width={26} />}
                     <BrandText
@@ -62,7 +62,7 @@ export const ParentNavBar = () => {
 
                 <Pressable
                     className="justify-center items-center"
-                    onPress={() => navigation.navigate("Kids", {animationType: "fade_from_bottom"})}
+                    onPress={() => navigation.replace("Kids", {animationType: "fade_from_bottom"})}
                 >
                     {isOnKids ? <HighlightedKidsIcon width={26} /> : <KidsIcon width={26} />}
                     <BrandText

@@ -142,7 +142,7 @@ export const EditProfile = () => {
                             <Pressable
                                 className="pt-4 ps-2"
                                 hitSlop={20}
-                                onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
+                                onPress={() => navigation.goBack()}
                             >
                                 <BackArrow/>
                             </Pressable>

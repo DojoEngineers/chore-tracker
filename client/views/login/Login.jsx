@@ -64,7 +64,7 @@ export const Login = () => {
                     login({username, password})
                         .then(res => {
                             if (res.passwordReset) {
-                                navigation.replace("SetPassword", {username})
+                                navigation.navigate("SetPassword", {username})
                             }
                             else {
                                 loginUser(res)
@@ -113,7 +113,7 @@ export const Login = () => {
                         <Pressable
                             className="ps-2"
                             hitSlop={20}
-                            onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
+                            onPress={() => navigation.replace("StartingPage", {animationType: "slide_from_left"})}
                         >
                             <BackArrow/>
                         </Pressable>

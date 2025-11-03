@@ -81,7 +81,7 @@ export const VerifyPassword = ({route}) => {
                     <View className="flex-row ps-2 mt-[75px] mb-10 items-center">
                         <Pressable
                             hitSlop={20}
-                            onPress={() => navigation.navigate("Settings", {animationType: "slide_from_left"})}
+                            onPress={() => navigation.goBack()}
                         >
                             <BackArrow/>
                         </Pressable>

@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { useLogin } from "../../context/UserContext"
 import { getChoresByParents } from "../../services/chore.service"
 import Toast from "react-native-toast-message"
@@ -8,7 +8,7 @@ import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
 import { ParentNavBar } from "../../components/ParentNavBar"
 import { ForwardArrow } from "../../components/icons/ForwardArrow"
-import { useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {SquareIcon} from "../../components/icons/SquareIcon"
@@ -24,7 +24,7 @@ export const Today = () => {
 
     const [apiErrors, setApiErrors] = useState({})
     const [chores, setChores] = useState([])
-    const [loading, setLoading] = useState("Loading chores...")
+    const [loading, setLoading] = useState(true)
     const [modalVisible, setModalVisible] = useState({delete: false})
     const [id, setId] = useState("")
     const [refreshTrigger, setRefreshTrigger] = useState(0)
@@ -32,27 +32,29 @@ export const Today = () => {
     const navigation = useNavigation()
     const {loggedInData} = useLogin()
 
-    useEffect(() => {
-        setLoading("loading chores...")
-        getChoresByParents(loggedInData.family.parents.map(p => p._id))
-            .then((res) => {
-                const filteredChores = res.filter(chore =>
-                    ['incomplete', 'rejectedReassigned'].includes(chore.stage) &&
-                    dayjs(chore.dueDate).local().isSameOrBefore(dayjs().local(), 'day')
-                )
-                .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf());
-                setChores(filteredChores)
-            })
-            .catch ((error) => {
-                console.log("getChoresByParents error:", error)
-                setApiErrors(prev => ({...prev, getChoresByParents: "Unable to get chore information."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to get chore information."
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true)
+            getChoresByParents(loggedInData.family.parents.map(p => p._id))
+                .then((res) => {
+                    const filteredChores = res.filter(chore =>
+                        ['incomplete', 'rejectedReassigned'].includes(chore.stage) &&
+                        dayjs(chore.dueDate).local().isSameOrBefore(dayjs().local(), 'day')
+                    )
+                    .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf());
+                    setChores(filteredChores)
                 })
-            })
-            .finally(() => setLoading(false))
-    }, [refreshTrigger])
+                .catch ((error) => {
+                    console.log("getChoresByParents error:", error)
+                    setApiErrors(prev => ({...prev, getChoresByParents: "Unable to get chore information."}))
+                    Toast.show({
+                        type: 'error',
+                        text1: "Unable to get chore information."
+                    })
+                })
+                .finally(() => setLoading(false))
+        }, [refreshTrigger])
+    )
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
@@ -71,7 +73,7 @@ export const Today = () => {
                 Check out what's due today
             </BrandText>
 
-            {chores.length > 0
+            {chores.length > 0 && !loading
                 ?
                     <ScrollView
                         showsVerticalScrollIndicator={false}
@@ -156,7 +158,7 @@ export const Today = () => {
                     <BrandText
                         className="text-lightPrimaryText dark:text-darkPrimaryText my-4 px-[16px] flex-1"
                     >
-                        {loading}
+                        Loading chores...
                     </BrandText>
 
                 : apiErrors.getChoresByParents ?

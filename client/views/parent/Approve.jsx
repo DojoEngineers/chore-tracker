@@ -3,10 +3,10 @@ import { Header } from "../../components/Header"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
 import { ParentNavBar } from "../../components/ParentNavBar"
-import { useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { getChoresByParents } from "../../services/chore.service"
 import { useLogin } from "../../context/UserContext"
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
 import dayjs from "dayjs"
 import {ApproveAndRejectIcon} from "../../components/icons/ApproveAndRejectIcon"
@@ -22,36 +22,38 @@ export const Approve = () => {
     const {loggedInData} = useLogin()
     const navigation = useNavigation()
 
-    useEffect(() => {
-        getChoresByParents(loggedInData.family.parents.map(p => p._id))
-            .then((res) => {
-                // Pending Chores
-                const filteredPendingChores = res.filter(chore => 
-                    chore.stage === "complete"
-                )
-                .sort((a, b) => dayjs(a.stageDate).valueOf() - dayjs(b.stageDate).valueOf())
-                setPendingChores(filteredPendingChores)
+    useFocusEffect(
+        useCallback(() => {
+            getChoresByParents(loggedInData.family.parents.map(p => p._id))
+                .then((res) => {
+                    // Pending Chores
+                    const filteredPendingChores = res.filter(chore => 
+                        chore.stage === "complete"
+                    )
+                    .sort((a, b) => dayjs(a.stageDate).valueOf() - dayjs(b.stageDate).valueOf())
+                    setPendingChores(filteredPendingChores)
 
-                // Recent Approvals and Rejections
-                const twentyFourHoursAgo = dayjs().subtract(24, "hour")
+                    // Recent Approvals and Rejections
+                    const twentyFourHoursAgo = dayjs().subtract(24, "hour")
 
-                const recentChores = res.filter(chore =>
-                    ['rejectedReassigned', 'rejectedUnassigned', 'approved'].includes(chore.stage) &&
-                    dayjs(chore.stageDate).isAfter(twentyFourHoursAgo)
-                )
-                .sort((a, b) => dayjs(b.stageDate).valueOf() - dayjs(a.stageDate).valueOf())
-                setRecentActivityChores(recentChores)
-            })
-            .catch((error) => {
-                console.log("getChoresByParents error:", error)
-                setApiErrors(prev => ({...prev, getChoresByParents: "Unable to get chore information."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to get chore information."
+                    const recentChores = res.filter(chore =>
+                        ['rejectedReassigned', 'rejectedUnassigned', 'approved'].includes(chore.stage) &&
+                        dayjs(chore.stageDate).isAfter(twentyFourHoursAgo)
+                    )
+                    .sort((a, b) => dayjs(b.stageDate).valueOf() - dayjs(a.stageDate).valueOf())
+                    setRecentActivityChores(recentChores)
                 })
-            })
-            .finally(() => setLoading(false))
-    }, [])
+                .catch((error) => {
+                    console.log("getChoresByParents error:", error)
+                    setApiErrors(prev => ({...prev, getChoresByParents: "Unable to get chore information."}))
+                    Toast.show({
+                        type: 'error',
+                        text1: "Unable to get chore information."
+                    })
+                })
+                .finally(() => setLoading(false))
+        }, [])
+    )
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">

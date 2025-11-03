@@ -46,7 +46,7 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
                     type: 'success',
                     text1: "Chore completed!"
                 })
-                navigation.replace("Dashboard", {animationType: "slide_from_left"})
+                navigation.goBack()
             })
 
             .catch((error) => {
