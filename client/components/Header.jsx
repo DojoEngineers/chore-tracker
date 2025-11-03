@@ -20,7 +20,7 @@ export const Header = () => {
             <View className="flex-row mt-[50px] mb-6 justify-between ps-[16px] pe-[35px] items-center">
                 <View className="flex-row items-center">
                     <Pressable
-                        onPress={() => navigation.navigate("Dashboard", {animationType: "fade_from_bottom"})}
+                        onPress={() => navigation.replace("Dashboard", {animationType: "fade_from_bottom"})}
                         className="rounded-full me-3 aspect-square h-[50px] justify-center dark:bg-[#333740] bg-[#A1A4AA] shadow"
                     >
                         <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[36px] text-center">
@@ -40,7 +40,7 @@ export const Header = () => {
 
                 <Pressable
                     hitSlop={20}
-                    onPress={() => navigation.navigate("Settings", {animationType: "slide_from_bottom"})}
+                    onPress={() => navigation.replace("Settings", {animationType: "slide_from_bottom"})}
                 >
                     <SettingsIcon />
                 </Pressable>

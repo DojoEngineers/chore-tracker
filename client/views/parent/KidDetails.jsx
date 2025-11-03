@@ -1,8 +1,8 @@
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { Pressable, ScrollView, View } from "react-native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
-import { useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import {getChoresByWorker} from "../../services/chore.service.js"
 import Toast from "react-native-toast-message"
 import { BrandText } from "../../components/text/BrandText"
@@ -29,56 +29,59 @@ export const KidDetails = ({route}) => {
     const [modalVisible, setModalVisible] = useState({delete: false})
     const [id, setId] = useState("")
     const [refreshTrigger, setRefreshTrigger] = useState(0)
-    const [loading, setLoading] = useState("loading chores...")
+    const [showList, setShowList] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     const navigation = useNavigation()
     const { kid } = route.params
 
-    useEffect(() => {
-        setLoading("loading chores...")
-        getChoresByWorker(kid._id)
-            .then((res) => {
-                // Today's chores
-                const today = res.filter((chore) =>
-                    ['incomplete', 'rejectedReassigned'].includes(chore.stage) &&
-                    dayjs(chore.dueDate).local().isSameOrBefore(dayjs().local(), 'day')
-                )
-                .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true)
+            getChoresByWorker(kid._id)
+                .then((res) => {
+                    // Today's chores
+                    const today = res.filter((chore) =>
+                        ['incomplete', 'rejectedReassigned'].includes(chore.stage) &&
+                        dayjs(chore.dueDate).local().isSameOrBefore(dayjs().local(), 'day')
+                    )
+                    .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
 
-                // Rest of the week chores (excluding today)
-                const seenTemplates = new Set()
-                const thisWeek = res.filter((chore) =>
-                    dayjs(chore.dueDate).local().isBetween(dayjs().add(1, 'day').startOf('day'), dayjs().endOf('week'), null, '[]') &&
-                    ['incomplete', 'rejectedReassigned'].includes(chore.stage)
-                )
-                .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
-                .filter(chore => {
-                    if (chore.templateId) {
-                        if (seenTemplates.has(chore.templateId.toString())) return false
-                        seenTemplates.add(chore.templateId.toString())
+                    // Rest of the week chores (excluding today)
+                    const seenTemplates = new Set()
+                    const thisWeek = res.filter((chore) =>
+                        dayjs(chore.dueDate).local().isBetween(dayjs().add(1, 'day').startOf('day'), dayjs().endOf('week'), null, '[]') &&
+                        ['incomplete', 'rejectedReassigned'].includes(chore.stage)
+                    )
+                    .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
+                    .filter(chore => {
+                        if (chore.templateId) {
+                            if (seenTemplates.has(chore.templateId.toString())) return false
+                            seenTemplates.add(chore.templateId.toString())
+                            return true
+                        }
                         return true
-                    }
-                    return true
-                })
+                    })
 
-                // Completed chores
-                const completed = res
-                .filter(chore => ['complete', 'approved', 'rejectedUnassigned'].includes(chore.stage))
-                .sort((a, b) => dayjs(b.stageDate).valueOf() - dayjs(a.stageDate).valueOf())
+                    // Completed chores
+                    const completed = res
+                    .filter(chore => ['complete', 'approved', 'rejectedUnassigned'].includes(chore.stage))
+                    .sort((a, b) => dayjs(b.stageDate).valueOf() - dayjs(a.stageDate).valueOf())
 
-                // Set chores in state
-                setChores(prev => ({...prev, today, thisWeek, completed}))
-            })
-            .catch ((error) => {
-                console.log("getChoresByWorker error:", error)
-                setApiErrors(prev => ({...prev, getChoresByWorker: "Unable to get chore information."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to get chore information."
+                    // Set chores in state
+                    setChores({today, thisWeek, completed})
                 })
-            })
-            .finally(() => setLoading(false))
-    }, [kid, refreshTrigger])
+                .catch ((error) => {
+                    console.log("getChoresByWorker error:", error)
+                    setApiErrors(prev => ({...prev, getChoresByWorker: "Unable to get chore information."}))
+                    Toast.show({
+                        type: 'error',
+                        text1: "Unable to get chore information."
+                    })
+                })
+                .finally(() => setLoading(false))
+        }, [kid, refreshTrigger])
+    )
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
@@ -115,7 +118,7 @@ export const KidDetails = ({route}) => {
                         </BrandBoldText>
                     </View>
 
-                    {chores.today.length > 0
+                    {chores.today.length > 0 && !loading
                         ?
                             chores.today.map((chore) => (
                                 <ReanimatedSwipeable
@@ -193,7 +196,7 @@ export const KidDetails = ({route}) => {
                             <BrandText
                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
                             >
-                                {loading}
+                                Loading chores...
                             </BrandText>
                         
                         : apiErrors.getChoresByWorker ?
@@ -223,7 +226,7 @@ export const KidDetails = ({route}) => {
                         </BrandBoldText>
                     </View>
 
-                    {chores.thisWeek.length > 0
+                    {chores.thisWeek.length > 0 && !loading
                         ?
                             chores.thisWeek.map((chore) => (
                                 <ReanimatedSwipeable
@@ -303,7 +306,7 @@ export const KidDetails = ({route}) => {
                             <BrandText
                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
                             >
-                                {loading}
+                                Loading chores...
                             </BrandText>
 
                         : apiErrors.getChoresByWorker ?
@@ -333,7 +336,7 @@ export const KidDetails = ({route}) => {
                         </BrandBoldText>
                     </View>
 
-                    {chores.completed.length > 0
+                    {chores.completed.length > 0 && !loading
                         ?
                             chores.completed.map((chore) => (
                                 <Pressable
@@ -393,7 +396,7 @@ export const KidDetails = ({route}) => {
                             <BrandText
                                 className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px] mt-4"
                             >
-                                {loading}
+                                Loading chores...
                             </BrandText>
 
                         : apiErrors.getChoresByWorker ?

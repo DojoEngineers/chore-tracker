@@ -87,14 +87,11 @@ export const AddFamilyMember = ({route}) => {
                                 text1: "Account created successfully!"
                             })
                             setLoggedInData(prev => {
+                                const key = isParent ? "parents" : "children"
                                 const currentFamily = prev.family || { parents: [], children: [] }
-                                if (isParent) {
-                                    return {...prev, family: {...currentFamily, parents: [...currentFamily.parents, res.user]}}
-                                } else {
-                                    return {...prev, family: {...currentFamily, children: [...currentFamily.children, res.user]}}
-                                }
-                            })
-                            navigation.navigate('Dashboard', {animationType: "slide_from_left"})
+                                return {...prev, family: {...currentFamily, [key]: [...currentFamily[key], res.user]}
+                            }})
+                            navigation.replace('Settings', {animationType: "slide_from_left"})
                         })
                         .catch( error => {
                             console.log("register error:", error)

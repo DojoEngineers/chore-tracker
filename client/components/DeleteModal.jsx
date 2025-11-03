@@ -22,7 +22,7 @@ export const DeleteModal = ({visible, setVisible, setApiErrors, id, setRefreshTr
                     setRefreshTrigger(prev => prev + 1)
                 }
                 else {
-                    navigation.replace("Dashboard", {animationType: "slide_from_left"})
+                    navigation.goBack()
                 }
             })
             .catch( error => {

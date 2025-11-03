@@ -16,7 +16,6 @@ import { CameraIcon } from "../../components/icons/CameraIcon"
 import { ClockIcon } from "../../components/icons/ClockIcon"
 import { WriteIcon } from "../../components/icons/WriteIcon"
 import { BackArrow } from "../../components/icons/BackArrow"
-import { DateIcon } from "../../components/icons/DateIcon"
 import { AssignedToIcon } from "../../components/icons/AssignedToIcon"
 import dayjs from "dayjs"
 import { NewChoreDropDown } from "../../components/NewChoreDropDown"
@@ -229,14 +228,20 @@ export const NewChoreDetails = ({ route }) => {
 
         Promise.all(promises)
             .then(() => {
-                const message = chore ? "Chore updated!" : "Chore created!"
-                Toast.show({type: 'success', text1: message})
-                navigation.replace("Dashboard", { animationType: "fade_from_bottom" })
+                if (chore) {
+                    Toast.show({type: 'success', text1: "Chore updated!"})
+                    navigation.goBack()
+                }
+                else {
+                    Toast.show({type: 'success', text1: "Chore created!"})
+                    // navigation.replace("Dashboard", {animationType: "fade_from_bottom"})
+                    navigation.pop(2)
+                }
             })
             .catch(error => {
                 console.log("Updating / adding chores error:", error)
                 setApiErrors(prev => ({...prev, chore: "Unable to save chore."}))
-                Toast.show({ type: 'error', text1: "Unable to save chore." })
+                Toast.show({type: 'error', text1: "Unable to save chore."})
             })
     }
 

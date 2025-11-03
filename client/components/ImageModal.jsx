@@ -1,4 +1,4 @@
-import { Modal, Pressable, Image, View } from 'react-native'
+import { Modal, Pressable, Image } from 'react-native'
 
 export const ImageModal = ({visible, setVisible, imageUri}) => {
 
@@ -16,7 +16,8 @@ export const ImageModal = ({visible, setVisible, imageUri}) => {
                 <Image
                     source={{ uri: imageUri }}
                     className="w-[95%] h-[95%]"
-                    resizeMode="contain" />
+                    resizeMode="contain"
+                />
             </Pressable>
         </Modal>
     )

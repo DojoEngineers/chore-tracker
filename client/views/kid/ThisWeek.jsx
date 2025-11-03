@@ -3,8 +3,8 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import {SquareIcon} from "../../components/icons/SquareIcon"
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
-import { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useCallback, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useLogin } from "../../context/UserContext";
 import isBetween from 'dayjs/plugin/isBetween';
 import { Header } from "../../components/Header";
@@ -28,45 +28,47 @@ export const ThisWeek = () => {
         const navigation = useNavigation()
         const {loggedInData} = useLogin()
 
-        useEffect(() => {
-            getChoresByWorker(loggedInData._id)
-                .then((res) => {
-                    // Today's chores
-                    const today = res.filter((chore) =>
-                        ['incomplete', 'rejectedReassigned'].includes(chore.stage) &&
-                        dayjs(chore.dueDate).local().isSameOrBefore(dayjs().local(), 'day')
-                    )
-                    .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
-    
-                    // Rest of the week chores (excluding today)
-                    const seenTemplates = new Set()
-                    const thisWeek = res.filter((chore) =>
-                        dayjs(chore.dueDate).local().isBetween(dayjs().add(1, 'day').startOf('day'), dayjs().endOf('week'), null, '[]') &&
-                        ['incomplete', 'rejectedReassigned'].includes(chore.stage)
-                    )
-                    .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
-                    .filter(chore => {
-                        if (chore.templateId) {
-                            if (seenTemplates.has(chore.templateId.toString())) return false
-                            seenTemplates.add(chore.templateId.toString())
+        useFocusEffect(
+            useCallback(() => {
+                getChoresByWorker(loggedInData._id)
+                    .then((res) => {
+                        // Today's chores
+                        const today = res.filter((chore) =>
+                            ['incomplete', 'rejectedReassigned'].includes(chore.stage) &&
+                            dayjs(chore.dueDate).local().isSameOrBefore(dayjs().local(), 'day')
+                        )
+                        .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
+        
+                        // Rest of the week chores (excluding today)
+                        const seenTemplates = new Set()
+                        const thisWeek = res.filter((chore) =>
+                            dayjs(chore.dueDate).local().isBetween(dayjs().add(1, 'day').startOf('day'), dayjs().endOf('week'), null, '[]') &&
+                            ['incomplete', 'rejectedReassigned'].includes(chore.stage)
+                        )
+                        .sort((a, b) => dayjs(a.dueDate).valueOf() - dayjs(b.dueDate).valueOf())
+                        .filter(chore => {
+                            if (chore.templateId) {
+                                if (seenTemplates.has(chore.templateId.toString())) return false
+                                seenTemplates.add(chore.templateId.toString())
+                                return true
+                            }
                             return true
-                        }
-                        return true
+                        })
+        
+                        // Set chores in state
+                        setChores(prev => ({...prev, today, thisWeek}))
                     })
-    
-                    // Set chores in state
-                    setChores(prev => ({...prev, today, thisWeek}))
-                })
-                .catch ((error) => {
-                    console.log("getChoresByWorker error:", error)
-                    setApiErrors(prev => ({...prev, getChoresByWorker: "Unable to get chore information."}))
-                    Toast.show({
-                        type: 'error',
-                        text1: "Unable to get chore information."
+                    .catch ((error) => {
+                        console.log("getChoresByWorker error:", error)
+                        setApiErrors(prev => ({...prev, getChoresByWorker: "Unable to get chore information."}))
+                        Toast.show({
+                            type: 'error',
+                            text1: "Unable to get chore information."
+                        })
                     })
-                })
-                .finally(() => setLoading(false))
-        }, [])
+                    .finally(() => setLoading(false))
+            }, [])
+        )
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">

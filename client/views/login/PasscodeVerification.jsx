@@ -22,10 +22,7 @@ export const PasscodeVerification = ({route}) => {
     const { username, updatingUsername = false } = route.params
 
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT })
-    const [props, getCellOnLayoutHandler] = useClearByFocusCell({
-        value,
-        setValue,
-    })
+    const [props, getCellOnLayoutHandler] = useClearByFocusCell({value, setValue})
 
     const handleVerify = value => {
         const data = {username, verificationCode: value}
@@ -35,10 +32,9 @@ export const PasscodeVerification = ({route}) => {
                     type: 'success',
                     text1: "Verification Successful!"
                 })
-                if (updatingUsername) {
-                    navigation.navigate("Login")
-                }
-                navigation.navigate("SetPassword", {username: res.username})
+                updatingUsername
+                    ? navigation.replace("Login")
+                    : navigation.replace("SetPassword", {username: res.username})
             })
             .catch(error => {
                 console.log("verify error:", error)

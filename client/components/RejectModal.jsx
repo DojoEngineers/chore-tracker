@@ -46,7 +46,7 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
                     type: 'success',
                     text1: "Chore rejected!"
                 })
-                navigation.replace("Dashboard", {animationType: "slide_from_left"})
+                navigation.goBack()
             })
             .catch((error) => {
                 console.log("rejectChore error:", error)

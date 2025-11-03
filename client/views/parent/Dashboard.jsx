@@ -3,7 +3,7 @@ import { Header } from "../../components/Header"
 import { ParentNavBar } from "../../components/ParentNavBar"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
-import { useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { getChoresByParents } from "../../services/chore.service"
 import Toast from "react-native-toast-message"
 import dayjs from "dayjs"
@@ -12,7 +12,7 @@ import { ForwardArrow } from "../../components/icons/ForwardArrow"
 import { SquareIcon } from "../../components/icons/SquareIcon"
 import utc from 'dayjs/plugin/utc';
 import { ViewCalendarIcon } from "../../components/icons/ViewCalendarIcon"
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { RecentActivityIcon } from "../../components/icons/RecentActivityIcon"
 import relativeTime from "dayjs/plugin/relativeTime";
 import { LargeSquareIcon } from "../../components/icons/LargeSquareIcon"
@@ -50,66 +50,70 @@ export const Dashboard = () => {
         setCalendarChores(filteredChores)
     }
 
-    useEffect(() => {
-        getChoresByParents(loggedInData.family.parents.map(p => p._id))
-            .then((res) => {
+    useFocusEffect(
+        useCallback(() => {
+            setDate(new Date())
+            setViewCalendarChores(false)
+            getChoresByParents(loggedInData.family.parents.map(p => p._id))
+                .then((res) => {
 
-                setAllChoresByParents(res)
+                    setAllChoresByParents(res)
 
-                const now = dayjs().local()
-                const twentyFourHoursAgo = now.subtract(24, "hour")
+                    const now = dayjs().local()
+                    const twentyFourHoursAgo = now.subtract(24, "hour")
+                    
+                    const recentChores = res.filter((chore) =>
+                        dayjs(chore.stageDate).local().isAfter(twentyFourHoursAgo) ||
+                        (chore.dateEdited && dayjs(chore.dateEdited).local().isAfter(twentyFourHoursAgo)) ||
+                        (chore.dueDate && dayjs(chore.dueDate).local().isBefore(now) && dayjs(chore.dueDate).local().isAfter(twentyFourHoursAgo))
+                    )
                 
-                const recentChores = res.filter((chore) =>
-                    dayjs(chore.stageDate).local().isAfter(twentyFourHoursAgo) ||
-                    (chore.dateEdited && dayjs(chore.dateEdited).local().isAfter(twentyFourHoursAgo)) ||
-                    (chore.dueDate && dayjs(chore.dueDate).local().isBefore(now) && dayjs(chore.dueDate).local().isAfter(twentyFourHoursAgo))
-                )
-            
-                const filteredChores = recentChores.map((chore) => {
-                    const due = dayjs(chore.dueDate).local()
-                    const stages = [
-                        chore.stage === "incomplete" ? { stage: "Assigned", date: dayjs(chore.stageDate).local() } : null,
-                        chore.stage === "complete" ? { stage: "Awaiting review", date: dayjs(chore.stageDate).local() } : null,
-                        chore.stage === "approved" ? { stage: "Approved", date: dayjs(chore.stageDate).local() } : null,
-                        chore.stage === "rejectedUnassigned" ? { stage: "Rejected", date: dayjs(chore.stageDate).local() } : null,
-                        chore.stage === "rejectedReassigned" ? { stage: "Rejected and reassigned", date: dayjs(chore.stageDate).local() } : null,
-                        chore.dateEdited ? { stage: "Edited", date: dayjs(chore.dateEdited).local() } : null,
-                        (["incomplete","rejectedUnassigned","rejectedReassigned"].includes(chore.stage)
-                            && due.isBefore(now) && due.isAfter(twentyFourHoursAgo))
-                            ? { stage: "Became overdue", date: due }
-                            : null
-                    ].filter(item => item && item.date)
+                    const filteredChores = recentChores.map((chore) => {
+                        const due = dayjs(chore.dueDate).local()
+                        const stages = [
+                            chore.stage === "incomplete" ? { stage: "Assigned", date: dayjs(chore.stageDate).local() } : null,
+                            chore.stage === "complete" ? { stage: "Awaiting review", date: dayjs(chore.stageDate).local() } : null,
+                            chore.stage === "approved" ? { stage: "Approved", date: dayjs(chore.stageDate).local() } : null,
+                            chore.stage === "rejectedUnassigned" ? { stage: "Rejected", date: dayjs(chore.stageDate).local() } : null,
+                            chore.stage === "rejectedReassigned" ? { stage: "Rejected and reassigned", date: dayjs(chore.stageDate).local() } : null,
+                            chore.dateEdited ? { stage: "Edited", date: dayjs(chore.dateEdited).local() } : null,
+                            (["incomplete","rejectedUnassigned","rejectedReassigned"].includes(chore.stage)
+                                && due.isBefore(now) && due.isAfter(twentyFourHoursAgo))
+                                ? { stage: "Became overdue", date: due }
+                                : null
+                        ].filter(item => item && item.date)
 
-                    const mostRecent = stages.reduce((a, b) => (a.date.isAfter(b.date) ? a : b));
+                        const mostRecent = stages.reduce((a, b) => (a.date.isAfter(b.date) ? a : b));
 
-                    return {...chore, recentStage: mostRecent.stage, recentDate: mostRecent.date.toDate()}
-                })
+                        return {...chore, recentStage: mostRecent.stage, recentDate: mostRecent.date.toDate()}
+                    })
 
-                const seenTemplates = new Set()
-                const uniqueByTemplate = filteredChores.filter(chore => {
-                    if (chore.templateId) {
-                        if (seenTemplates.has(chore.templateId)) return false
-                        seenTemplates.add(chore.templateId)
+                    const seenTemplates = new Set()
+                    const uniqueByTemplate = filteredChores.filter(chore => {
+                        if (chore.templateId) {
+                            if (seenTemplates.has(chore.templateId)) return false
+                            seenTemplates.add(chore.templateId)
+                            return true
+                        }
                         return true
-                    }
-                    return true
+                    })
+                    
+                    const sorted = uniqueByTemplate.sort(
+                        (a, b) => dayjs(b.recentDate).valueOf() - dayjs(a.recentDate).valueOf()
+                    )
+                    setRecentActivityChores(sorted)
                 })
-                
-                const sorted = uniqueByTemplate.sort(
-                    (a, b) => dayjs(b.recentDate).valueOf() - dayjs(a.recentDate).valueOf()
-                )
-                setRecentActivityChores(sorted)
-            })
-            .catch((error) => {
-                console.log("getChoresByParents error:", error)
-                setApiErrors(prev => ({...prev, getChoresByParents: "Unable to get chore information."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to get chore information."
+                .catch((error) => {
+                    console.log("getChoresByParents error:", error)
+                    setApiErrors(prev => ({...prev, getChoresByParents: "Unable to get chore information."}))
+                    Toast.show({
+                        type: 'error',
+                        text1: "Unable to get chore information."
+                    })
                 })
-            })
-            .finally(() => setLoading(false))
-    }, [])
+                .finally(() => setLoading(false))
+        }, [])
+    )
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
