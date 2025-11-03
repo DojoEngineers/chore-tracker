@@ -5,11 +5,10 @@ import { useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
 import utc from 'dayjs/plugin/utc'
 import dayjs from "dayjs"
-import { updateChore } from "../services/chore.service"
+import { storePhotos, updateChore } from "../services/chore.service"
 import { CloseIcon } from "./icons/CloseIcon"
 import { BrandText } from "./text/BrandText"
 import * as ImagePicker from 'expo-image-picker';
-import { addImage } from "../services/image.service"
 
 dayjs.extend(utc)
 
@@ -82,10 +81,10 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
         if (!result.canceled) {
             const uri = result.assets[0].uri
 
-            addImage(uri)
+            storePhotos([uri])
                 .then((res) => {
-                    setChore(prev => ({...prev, afterPic: res.url}))
-                    updateChore({_id: id, afterPic: res.url})
+                    setChore(prev => ({...prev, afterPic: res[0]}))
+                    updateChore({_id: id, afterPic: res[0]})
                         .catch((error) => {
                             console.log("addAfterImageToChore error:", error)
                             setApiErrors(prev => ({...prev, addAfterImageToChore: "Unable to add after image to chore."}))
