@@ -1,10 +1,12 @@
 import axios from 'axios'
 import Constants from 'expo-constants'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { v4 as uuidv4 } from 'uuid';
+import { Alert } from 'react-native'
+
+const BACKEND_API_URL = Constants.expoConfig.extra.BACKEND_API_URL
 
 const CHORE_INSTANCE = axios.create({
-    baseURL: `${Constants.expoConfig.extra.BACKEND_API_URL}/chore`
+    baseURL: `${BACKEND_API_URL}/chore`
 })
 
 CHORE_INSTANCE.interceptors.request.use(
@@ -25,7 +27,7 @@ CHORE_INSTANCE.interceptors.request.use(
 )
 
 // uploads before/after photo names to cloudflare and returns their unique filenames.
-export const StorePhotos = async (photoUris) => {
+export const storePhotos = async (photoUris) => {
     try {
         const formData = new FormData();
         
@@ -67,7 +69,7 @@ export const StorePhotos = async (photoUris) => {
 
 // param photos is an array of the names of the before/after pics from mongodb
 // returns an array of 2 urls (beforepic and afterpic).
-export const RetrievePhotos = async (photos) => {
+export const retrievePhotos = async (photos) => {
     try {
         const pics = await axios.post(
             `${BACKEND_API_URL}/r2/retrieve`, 
