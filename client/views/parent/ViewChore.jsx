@@ -1,9 +1,9 @@
-import { useCallback, useState } from "react"
-import { getChoreById, retrievePhotos, storePhotos, updateChore } from "../../services/chore.service"
+import { useEffect, useState } from "react"
+import { getChoreById, updateChore } from "../../services/chore.service"
 import Toast from "react-native-toast-message"
-import { Alert, Pressable, ScrollView, View, Linking, Image } from "react-native"
+import { Alert, Pressable, ScrollView, View, Linking, Image, useColorScheme } from "react-native"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
-import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import dayjs from "dayjs"
 import { BrandText } from "../../components/text/BrandText"
@@ -20,6 +20,8 @@ import { RejectModal } from "../../components/RejectModal"
 import { useLogin } from "../../context/UserContext"
 import { CompleteModal } from "../../components/CompleteModal"
 import * as ImagePicker from 'expo-image-picker';
+// import { addImage } from "../../services/image.service"
+import { storePhotos } from "../../services/chore.service"
 import Constants from 'expo-constants'
 import { WeeklyRepeatIcons } from "../../components/WeeklyRepeatIcons";
 import { ImageModal } from "../../components/ImageModal"
@@ -34,7 +36,8 @@ const API_ERROR_KEYS = [
     'completeChore',
     'addBeforeImageToChore',
     'addBeforeImage',
-    'retrievePhotos'
+    'addAfterImageToChore',
+    'addAfterImage',
 ]
 
 const BACKEND_URL = Constants.expoConfig.extra.BACKEND_API_URL
@@ -51,48 +54,38 @@ export const ViewChore = ({route}) => {
     const {id} = route.params
     const {loggedInData} = useLogin()
 
-    useFocusEffect(
-        useCallback(() => {
-            getChoreById(id)
-                .then((res) => {
-                    setChore(res)
-                    if (res.beforePic || res.afterPic) {
-                        const photoFiles = [];
-                        if (res.beforePic) photoFiles.push(res.beforePic)
-                        if (res.afterPic) photoFiles.push(res.afterPic)
-                        retrievePhotos(photoFiles)
-                            .then((urls) => {
-                                const updatedChore = {...res}
-                                if (res.beforePic) {updatedChore.beforePic = urls[0]}
-                                if (res.afterPic) {updatedChore.afterPic = res.beforePic ? urls[1] : urls[0]}
-                                setChore(updatedChore)
-                            })
-                            .catch((error) => {
-                                console.log("retrievePhotos error:", error)
-                                setApiErrors(prev => ({...prev, retrievePhotos: "Unable to retrieve photos."}))
-                                Toast.show({type: 'error', text1: "Unable to retrieve photos."})
-                            })
-                    }
+    useEffect(() => {
+        getChoreById(id)
+        .then((res) => {
+            setChore(res)
+        })
+        .catch((error) => {
+            console.log("getChoreById error:", error)
+            setApiErrors(prev => ({...prev, getChoreById: "Unable to get chore information."}))
+            Toast.show({
+                type: 'error',
+                text1: "Unable to get chore information."
                 })
-                .catch((error) => {
-                    console.log("getChoreById error:", error)
-                    setApiErrors(prev => ({...prev, getChoreById: "Unable to get chore information."}))
-                    Toast.show({type: 'error', text1: "Unable to get chore information."})
-                })
-                .finally(() => setLoading(false))
-        }, [id])
-    )
+            })
+        .finally(() => setLoading(false))
+    }, [id])
 
     const handleApprove = () => {
         updateChore({_id: id, stage: "approved", stageDate: dayjs().toISOString()})
             .then(() => {
-                Toast.show({type: 'success', text1: "Chore approved!"})
-                navigation.goBack()
+                Toast.show({
+                    type: 'success',
+                    text1: "Chore approved!"
+                })
+                navigation.replace("Dashboard", {animationType: "slide_from_left"})
             })
             .catch((error) => {
                 console.log("approveChore error:", error)
                 setApiErrors(prev => ({...prev, approveChore: "Unable to approve chore."}))
-                Toast.show({type: 'error', text1: "Unable to approve chore."})
+                Toast.show({
+                    type: 'error',
+                    text1: "Unable to approve chore."
+                })
             })
     }
 
@@ -118,23 +111,33 @@ export const ViewChore = ({route}) => {
 
         if (!result.canceled) {
             const uri = result.assets[0].uri
-            storePhotos([uri])
+            // addImage(uri)
+            storePhotos(uri)
                 .then((res) => {
-                    setChore(prev => ({...prev, beforePic: res[0]}))
-                    updateChore({_id: id, beforePic: res[0]})
+                    setChore(prev => ({...prev, beforePic: res.url}))
+                    updateChore({_id: id, beforePic: res.url})
                         .then(() => {
-                            Toast.show({type: 'success', text1: "Before photo added!"})
+                            Toast.show({
+                                type: 'success',
+                                text1: "Before photo added!"
+                            })
                         })
                         .catch((error) => {
                             console.log("addBeforeImageToChore error:", error)
                             setApiErrors(prev => ({...prev, addBeforeImageToChore: "Unable to add before image to chore."}))
-                            Toast.show({type: 'error', text1: "Unable to add before image to chore."})
+                            Toast.show({
+                                type: 'error',
+                                text1: "Unable to add before image to chore."
+                            })
                         })
                 })
                 .catch((error) => {
                     console.log("addBeforeImage error:", error)
                     setApiErrors(prev => ({...prev, addBeforeImage: "Unable to save before image."}))
-                    Toast.show({type: 'error', text1: "Unable to save before image."})
+                    Toast.show({
+                        type: 'error',
+                        text1: `${error}`
+                    })
                 })
         }
     }

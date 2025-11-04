@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const R2Router = Router()
 
+//connects to cloudflare's R2 storage
 const s3Client = new S3Client({
     region: 'auto',
     endpoint: process.env.R2_ENDPOINT,
@@ -25,50 +26,45 @@ const upload = multer({
 });
 
 // Middleware to handle multiple files
-export const uploadMiddleware = upload.array('photos', 2); // max 2 photos
+export const uploadMiddleware = upload.single('photo');
 
-export const uploadPhotos = async (req, res) => {
+export const uploadPhoto = async (req, res) => {
+    console.log("uploading in server")
     try {
-        if (!req.files || req.files.length === 0) {
+        if (!req.file) {
             return res.status(400).json({
                 success: false,
-                error: 'No photos provided'
+                error: 'No photo provided'
             });
         }
-
-        const uploadedFiles = [];
         const expiresAt = new Date(Date.now() + ONE_DAY * 1000);
 
-        // Upload each photo to R2
-        for (const file of req.files) {
-            // Generate unique filename
-            const fileExtension = file.originalname.split('.').pop();
-            const fileName = `${uuidv4()}.${fileExtension}`;
+        // Generate unique filename
+        const fileExtension = req.file.originalname.split('.').pop();
+        const fileName = `${uuidv4()}.${fileExtension}`;
 
-            // Upload to R2
-            const command = new PutObjectCommand({
-                Bucket: BUCKET_NAME,
-                Key: fileName,
-                Body: file.buffer,
-                ContentType: file.mimetype,
-            });
+        // Upload to R2
+        const command = new PutObjectCommand({
+            Bucket: BUCKET_NAME,
+            Key: fileName,
+            Body: req.file.buffer,
+            ContentType: req.file.mimetype,
+        });
 
-            await s3Client.send(command);
-            uploadedFiles.push(fileName);
-        }
+        await s3Client.send(command);
 
         res.json({
             success: true,
-            fileNames: uploadedFiles,
+            fileName: fileName,
             expiresAt: expiresAt.toISOString(),
-            message: `${uploadedFiles.length} photo(s) uploaded successfully`
+            message: 'Photo uploaded successfully'
         });
 
     } catch (error) {
         console.error('Upload error:', error);
         res.status(500).json({
             success: false,
-            error: 'Failed to upload photos',
+            error: 'Failed to upload photo',
             details: error.message
         });
     }
@@ -123,7 +119,7 @@ export const getPhotoUrls = async (req, res) => {
 };
 
 R2Router.route(`/upload`)
-    .post(uploadPhotos)
+    .post(uploadMiddleware, uploadPhoto)
 
 R2Router.route(`/retrieve`)
     .post(getPhotoUrls)
