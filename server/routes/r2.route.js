@@ -70,10 +70,11 @@ export const uploadPhoto = async (req, res) => {
     }
 };
 
-//  Get presigned URLs for photos (valid for 1 day)
+// req is an array of 2 urls
+//  Get presigned URLs for photos (valid for 1 day
 export const getPhotoUrls = async (req, res) => {
     try {
-        const { fileNames } = req.body; // Expecting array of filenames
+        const { fileNames } = req.body;
 
         if (!fileNames || !Array.isArray(fileNames) || fileNames.length === 0) {
             return res.status(400).json({

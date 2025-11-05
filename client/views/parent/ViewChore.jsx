@@ -114,8 +114,8 @@ export const ViewChore = ({route}) => {
             // addImage(uri)
             storePhotos(uri)
                 .then((res) => {
-                    setChore(prev => ({...prev, beforePic: res.url}))
-                    updateChore({_id: id, beforePic: res.url})
+                    setChore(prev => ({...prev, beforePic: res}))
+                    updateChore({_id: id, beforePic: res})
                         .then(() => {
                             Toast.show({
                                 type: 'success',
