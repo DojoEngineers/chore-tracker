@@ -80,11 +80,12 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
 
         if (!result.canceled) {
             const uri = result.assets[0].uri
-
-            storePhotos([uri])
+            // changed param [uri] to uri
+            storePhotos(uri)
                 .then((res) => {
-                    setChore(prev => ({...prev, afterPic: res[0]}))
-                    updateChore({_id: id, afterPic: res[0]})
+                    // changed res[0] to res.url
+                    setChore(prev => ({...prev, afterPic: res.url}))
+                    updateChore({_id: id, afterPic: res.url})
                         .catch((error) => {
                             console.log("addAfterImageToChore error:", error)
                             setApiErrors(prev => ({...prev, addAfterImageToChore: "Unable to add after image to chore."}))

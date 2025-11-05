@@ -30,9 +30,11 @@ CHORE_INSTANCE.interceptors.request.use(
 
 export const storePhotos = async (photoUri) => {
     console.log("storephotos Service.")
+    console.log("photouri", photoUri)
+    console.log(typeof photoUri)
     try {
         const formData = new FormData();
-        
+
         // Get the file extension
         const uriParts = photoUri.split('.');
         const fileType = uriParts[uriParts.length - 1];
