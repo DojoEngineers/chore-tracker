@@ -80,11 +80,8 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
 
         if (!result.canceled) {
             const uri = result.assets[0].uri
-            // changed param [uri] to uri
             storePhotos(uri)
                 .then((res) => {
-                    console.log("res", res)
-                    // changed res[0] to res.url
                     setChore(prev => ({...prev, afterPic: res}))
                     updateChore({_id: id, afterPic: res})
                         .catch((error) => {

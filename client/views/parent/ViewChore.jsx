@@ -20,7 +20,6 @@ import { RejectModal } from "../../components/RejectModal"
 import { useLogin } from "../../context/UserContext"
 import { CompleteModal } from "../../components/CompleteModal"
 import * as ImagePicker from 'expo-image-picker';
-import Constants from 'expo-constants'
 import { WeeklyRepeatIcons } from "../../components/WeeklyRepeatIcons";
 import { ImageModal } from "../../components/ImageModal"
 
@@ -37,8 +36,6 @@ const API_ERROR_KEYS = [
     'retrievePhotos'
 ]
 
-const BACKEND_URL = Constants.expoConfig.extra.BACKEND_API_URL
-
 export const ViewChore = ({route}) => {
 
     const [apiErrors, setApiErrors] = useState({})
@@ -46,6 +43,7 @@ export const ViewChore = ({route}) => {
     const [loading, setLoading] = useState("Loading chore...")
     const [selectedImage, setSelectedImage] = useState()
     const [modalVisible, setModalVisible] = useState({delete: false, reject: false, complete: false, image: false})
+    const [refreshTrigger, setRefreshTrigger] = useState(0)
 
     const navigation = useNavigation()
     const {id} = route.params
@@ -61,10 +59,10 @@ export const ViewChore = ({route}) => {
                         if (res.beforePic) photoFiles.push(res.beforePic)
                         if (res.afterPic) photoFiles.push(res.afterPic)
                         retrievePhotos(photoFiles)
-                            .then((urls) => {
+                            .then((photos) => {
                                 const updatedChore = {...res}
-                                if (res.beforePic) {updatedChore.beforePic = urls[0]}
-                                if (res.afterPic) {updatedChore.afterPic = res.beforePic ? urls[1] : urls[0]}
+                                if (res.beforePic) {updatedChore.beforePic = photos[0].url}
+                                if (res.afterPic) {updatedChore.afterPic = res.beforePic ? photos[1].url : photos[0].url}
                                 setChore(updatedChore)
                             })
                             .catch((error) => {
@@ -80,7 +78,7 @@ export const ViewChore = ({route}) => {
                     Toast.show({type: 'error', text1: "Unable to get chore information."})
                 })
                 .finally(() => setLoading(false))
-        }, [id])
+        }, [id, refreshTrigger])
     )
 
     const handleApprove = () => {
@@ -123,6 +121,7 @@ export const ViewChore = ({route}) => {
                     setChore(prev => ({...prev, beforePic: res}))
                     updateChore({_id: id, beforePic: res})
                         .then(() => {
+                            setRefreshTrigger(prev => prev +1)
                             Toast.show({type: 'success', text1: "Before photo added!"})
                         })
                         .catch((error) => {
@@ -358,12 +357,12 @@ export const ViewChore = ({route}) => {
 
                                                 <Pressable
                                                     onPress={() =>{
-                                                        setSelectedImage(`${BACKEND_URL}${chore.beforePic}`)
+                                                        setSelectedImage(chore.beforePic)
                                                         setModalVisible(prev => ({...prev, image: true}))
                                                     }}
                                                 >
                                                     <Image
-                                                        source={{uri: `${BACKEND_URL}${chore.beforePic}`}}
+                                                        source={{uri: chore.beforePic}}
                                                         className="w-[200px] h-[200px] rounded-lg"
                                                     />
                                                 </Pressable>
@@ -378,12 +377,12 @@ export const ViewChore = ({route}) => {
 
                                                 <Pressable
                                                     onPress={() =>{
-                                                        setSelectedImage(`${BACKEND_URL}${chore.afterPic}`)
+                                                        setSelectedImage(chore.afterPic)
                                                         setModalVisible(prev => ({...prev, image: true}))
                                                     }}
                                                 >
                                                     <Image
-                                                        source={{uri: `${BACKEND_URL}${chore.afterPic}`}}
+                                                        source={{uri: chore.afterPic}}
                                                         className="w-[200px] h-[200px] rounded-lg"
                                                     />
                                                 </Pressable>

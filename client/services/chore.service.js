@@ -96,7 +96,7 @@ export const retrievePhotos = async (photos) => {
 
         if (pics.data && pics.data.success) {
             const urls = pics.data.photos
-            Alert.alert("Success", "Image URLs retrieved");
+            // Alert.alert("Success", "Image URLs retrieved");
             return urls; // Returns array of URLs: ['url1', 'url2']
         } else {
             Alert.alert("Error", "No photos found");

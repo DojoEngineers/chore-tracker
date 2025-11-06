@@ -2,33 +2,65 @@ import { Pressable, ScrollView, View, ImageBackground } from "react-native"
 import { BrandBoldText } from "./text/BrandBoldText"
 import { BrandText } from "./text/BrandText"
 import { useLogin } from "../context/UserContext"
-import { useNavigation } from "@react-navigation/native"
-import Constants from 'expo-constants'
-
-const BACKEND_URL = Constants.expoConfig.extra.BACKEND_API_URL
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { useCallback, useEffect, useState } from "react"
+import { retrievePhotos } from "../services/chore.service"
 
 export const HorizontalChoreScroll = ({chores, apiError, loading, noChoreMessage}) => {
+
+    const [choresWithPhotos, setChoresWithPhotos] = useState()
 
     const {loggedInData} = useLogin()
     const navigation = useNavigation()
 
+    useFocusEffect(
+        useCallback(() => {
+            const updateChoresWithPhotos = () => {
+            Promise.all(
+                chores.map((chore) => {
+                if (chore.afterPic) {
+                    return retrievePhotos([chore.afterPic])
+                    .then((res) => {
+                        return { ...chore, afterPic: res[0].url }
+                    })
+                    .catch((error) => {
+                        console.log("Error retrieving photo for chore:", chore._id, error);
+                        return chore
+                    });
+                } else {
+                    return Promise.resolve(chore)
+                }
+                })
+            )
+                .then((updatedChores) => {
+                setChoresWithPhotos(updatedChores)
+                })
+                .catch((err) => {
+                console.log("Error updating chores with photos:", err);
+                });
+            };
+
+            updateChoresWithPhotos();
+        }, [chores])
+    );
+
     return (
         <View className={`${!loggedInData.isParent && "flex-1"}`}>
 
-            {chores.length > 0
+            {choresWithPhotos?.length > 0
                 ?
                     <ScrollView
                         className="px-[16px] my-4"
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
                     >
-                        {chores.map(chore => (
+                        {choresWithPhotos.map(chore => (
                             <Pressable
                                 key={chore._id}
                                 onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
                             >
                                 <ImageBackground
-                                    source={chore.afterPic ? { uri: `${BACKEND_URL}${chore.afterPic}` } : null}
+                                    source={chore.afterPic ? {uri: chore.afterPic} : null}
                                     className={`w-[123px] h-[123px] rounded-3xl overflow-hidden flex mr-3
                                         ${!chore.afterPic ? "bg-[#9FB6AE] dark:bg-[#2F3339]" : ""}
                                         ${loggedInData.isParent ? "justify-between" : "justify-center"}
