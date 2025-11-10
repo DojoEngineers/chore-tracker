@@ -30,6 +30,8 @@ export const ThisWeek = () => {
 
         useFocusEffect(
             useCallback(() => {
+                setLoading("Loading chore...")
+                setApiErrors({})
                 getChoresByWorker(loggedInData._id)
                     .then((res) => {
                         // Today's chores

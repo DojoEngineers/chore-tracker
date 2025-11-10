@@ -3,7 +3,7 @@ import { BrandBoldText } from "./text/BrandBoldText"
 import { BrandText } from "./text/BrandText"
 import { useLogin } from "../context/UserContext"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { retrievePhotos } from "../services/chore.service"
 
 export const HorizontalChoreScroll = ({chores, apiError, loading, noChoreMessage}) => {
@@ -15,34 +15,30 @@ export const HorizontalChoreScroll = ({chores, apiError, loading, noChoreMessage
 
     useFocusEffect(
         useCallback(() => {
-            const updateChoresWithPhotos = () => {
             Promise.all(
                 chores.map((chore) => {
-                if (chore.afterPic) {
-                    return retrievePhotos([chore.afterPic])
-                    .then((res) => {
-                        return { ...chore, afterPic: res[0].url }
-                    })
-                    .catch((error) => {
-                        console.log("Error retrieving photo for chore:", chore._id, error);
-                        return chore
-                    });
-                } else {
-                    return Promise.resolve(chore)
-                }
+                    if (chore.afterPic) {
+                        return retrievePhotos([chore.afterPic])
+                            .then((res) => {
+                                return { ...chore, afterPic: res[0].url }
+                            })
+                            .catch((error) => {
+                                console.log("Error retrieving photo for chore:", chore._id, error)
+                                return chore
+                            })
+                    } else {
+                        return Promise.resolve(chore)
+                    }
                 })
             )
                 .then((updatedChores) => {
-                setChoresWithPhotos(updatedChores)
+                    setChoresWithPhotos(updatedChores)
                 })
                 .catch((err) => {
-                console.log("Error updating chores with photos:", err);
-                });
-            };
-
-            updateChoresWithPhotos();
+                    console.log("Error updating chores with photos:", err)
+                })
         }, [chores])
-    );
+    )
 
     return (
         <View className={`${!loggedInData.isParent && "flex-1"}`}>

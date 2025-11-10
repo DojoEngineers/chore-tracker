@@ -51,11 +51,13 @@ export const ViewChore = ({route}) => {
 
     useFocusEffect(
         useCallback(() => {
+            setLoading("Loading chore...")
+            setApiErrors({})
             getChoreById(id)
                 .then((res) => {
                     setChore(res)
                     if (res.beforePic || res.afterPic) {
-                        const photoFiles = [];
+                        const photoFiles = []
                         if (res.beforePic) photoFiles.push(res.beforePic)
                         if (res.afterPic) photoFiles.push(res.afterPic)
                         retrievePhotos(photoFiles)

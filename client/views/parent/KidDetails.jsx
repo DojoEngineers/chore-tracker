@@ -29,7 +29,6 @@ export const KidDetails = ({route}) => {
     const [modalVisible, setModalVisible] = useState({delete: false})
     const [id, setId] = useState("")
     const [refreshTrigger, setRefreshTrigger] = useState(0)
-    const [showList, setShowList] = useState(false)
     const [loading, setLoading] = useState(true)
 
     const navigation = useNavigation()
@@ -37,6 +36,7 @@ export const KidDetails = ({route}) => {
 
     useFocusEffect(
         useCallback(() => {
+            setApiErrors({})
             setLoading(true)
             getChoresByWorker(kid._id)
                 .then((res) => {
