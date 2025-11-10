@@ -44,7 +44,6 @@ export const ViewChore = ({route}) => {
     const [loading, setLoading] = useState("Loading chore...")
     const [selectedImage, setSelectedImage] = useState()
     const [modalVisible, setModalVisible] = useState({delete: false, reject: false, complete: false, image: false})
-    const [refreshTrigger, setRefreshTrigger] = useState(0)
 
     const navigation = useNavigation()
     const {id} = route.params
@@ -54,18 +53,34 @@ export const ViewChore = ({route}) => {
         useCallback(() => {
             setLoading("Loading chore...")
             setApiErrors({})
+
             getChoreById(id)
                 .then((res) => {
-                    setChore(res)
-                    if (res.beforePic || res.afterPic) {
-                        const photoFiles = []
-                        if (res.beforePic) photoFiles.push(res.beforePic)
-                        if (res.afterPic) photoFiles.push(res.afterPic)
-                        retrievePhotos(photoFiles)
+                    const updatedChore = { ...res }
+                    const photoFilesToRetrieve = []
+
+                    // Check if beforePic expired
+                    if (res.beforePic?.expiresAt && new Date(res.beforePic.expiresAt) <= new Date()) {
+                        photoFilesToRetrieve.push(res.beforePic.fileName)
+                    }
+
+                    // Check if afterPic expired
+                    if (res.afterPic?.expiresAt && new Date(res.afterPic.expiresAt) <= new Date()) {
+                        photoFilesToRetrieve.push(res.afterPic.fileName)
+                    }
+
+                    // Get new urls if expired
+                    if (photoFilesToRetrieve.length > 0) {
+                        retrievePhotos(photoFilesToRetrieve)
                             .then((photos) => {
-                                const updatedChore = {...res}
-                                if (res.beforePic) {updatedChore.beforePic = photos[0].url}
-                                if (res.afterPic) {updatedChore.afterPic = res.beforePic ? photos[1].url : photos[0].url}
+                                photos.forEach((photo) => {
+                                    if (updatedChore.beforePic?.fileName === photo.fileName) {
+                                        updatedChore.beforePic = { ...updatedChore.beforePic, url: photo.url, expiresAt: photo.expiresAt }
+                                    }
+                                    if (updatedChore.afterPic?.fileName === photo.fileName) {
+                                        updatedChore.afterPic = { ...updatedChore.afterPic, url: photo.url, expiresAt: photo.expiresAt }
+                                    }
+                                })
                                 setChore(updatedChore)
                             })
                             .catch((error) => {
@@ -73,6 +88,8 @@ export const ViewChore = ({route}) => {
                                 setApiErrors(prev => ({...prev, retrievePhotos: "Unable to retrieve photos."}))
                                 Toast.show({type: 'error', text1: "Unable to retrieve photos."})
                             })
+                    } else {
+                        setChore(updatedChore)
                     }
                 })
                 .catch((error) => {
@@ -81,7 +98,7 @@ export const ViewChore = ({route}) => {
                     Toast.show({type: 'error', text1: "Unable to get chore information."})
                 })
                 .finally(() => setLoading(false))
-        }, [id, refreshTrigger])
+        }, [id])
     )
 
     const handleApprove = () => {
@@ -124,7 +141,6 @@ export const ViewChore = ({route}) => {
                     setChore(prev => ({...prev, beforePic: res}))
                     updateChore({_id: id, beforePic: res})
                         .then(() => {
-                            setRefreshTrigger(prev => prev +1)
                             Toast.show({type: 'success', text1: "Before photo added!"})
                         })
                         .catch((error) => {
@@ -345,14 +361,14 @@ export const ViewChore = ({route}) => {
                                 </View>
                             }
 
-                            {(chore.beforePic || chore.afterPic) &&
+                            {(chore.beforePic?.url || chore.afterPic?.url) &&
                                 <View>
                                     <ScrollView
                                         horizontal={true}
                                         showsHorizontalScrollIndicator={false}
                                         className="flex-1 my-6 mx-2"
                                     >
-                                        {chore.beforePic && (
+                                        {chore.beforePic?.url && (
                                             <View className="mr-6">
                                                 <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] mb-2">
                                                     Before Photo
@@ -360,19 +376,19 @@ export const ViewChore = ({route}) => {
 
                                                 <Pressable
                                                     onPress={() =>{
-                                                        setSelectedImage(chore.beforePic)
+                                                        setSelectedImage(chore.beforePic.url)
                                                         setModalVisible(prev => ({...prev, image: true}))
                                                     }}
                                                 >
                                                     <Image
-                                                        source={{uri: chore.beforePic}}
+                                                        source={{uri: chore.beforePic.url}}
                                                         className="w-[200px] h-[200px] rounded-lg"
                                                     />
                                                 </Pressable>
                                             </View>
                                         )}
 
-                                        {chore.afterPic && (
+                                        {chore.afterPic?.url && (
                                             <View>
                                                 <BrandText className="text-[16px] text-lightPrimaryText dark:text-[#ECEDEE] mb-2">
                                                     After Photo
@@ -380,12 +396,12 @@ export const ViewChore = ({route}) => {
 
                                                 <Pressable
                                                     onPress={() =>{
-                                                        setSelectedImage(chore.afterPic)
+                                                        setSelectedImage(chore.afterPic.url)
                                                         setModalVisible(prev => ({...prev, image: true}))
                                                     }}
                                                 >
                                                     <Image
-                                                        source={{uri: chore.afterPic}}
+                                                        source={{uri: chore.afterPic.url}}
                                                         className="w-[200px] h-[200px] rounded-lg"
                                                     />
                                                 </Pressable>

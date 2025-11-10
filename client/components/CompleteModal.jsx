@@ -94,7 +94,6 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
                             })
                         })
                 })
-
                 .catch((error) => {
                     console.log("addAfterImage error:", error)
                     setApiErrors(prev => ({...prev, addAfterImage: "Unable to save after image."}))

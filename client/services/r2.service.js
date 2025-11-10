@@ -27,7 +27,7 @@ export const storePhotos = async (photoUri) => {
             })
 
         if (RES.data.success) {
-            return RES.data.fileName
+            return RES.data.photo
         }
 
     } catch (error) {

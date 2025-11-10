@@ -23,7 +23,7 @@ limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
 });
 
 // Export the middleware for single file upload
-export const uploadMiddleware = upload.single('photo');
+export const uploadMiddleware = upload.single('photo')
 
 // ====== CONTROLLERS ======
 
@@ -48,16 +48,26 @@ export const uploadPhoto = async (req, res) => {
             Key: fileName,
             Body: req.file.buffer,
             ContentType: req.file.mimetype,
-        });
+        })
 
         await s3Client.send(command)
 
+        const getCommand = new GetObjectCommand({
+            Bucket: BUCKET_NAME,
+            Key: fileName,
+        })
+
+        const url = await getSignedUrl(s3Client, getCommand, { expiresIn: ONE_DAY })
+
         res.json({
             success: true,
-            fileName,
-            expiresAt: expiresAt.toISOString(),
+            photo: {
+                fileName,
+                url,
+                expiresAt: expiresAt.toISOString(),
+            },
             message: 'Photo uploaded successfully',
-        });
+        })
 
     } catch (error) {
         console.error('Upload error:', error)
@@ -67,7 +77,7 @@ export const uploadPhoto = async (req, res) => {
             details: error.message,
         })
     }
-};
+}
 
 // Retrieve signed URLs for photos
 export const getPhotoUrls = async (req, res) => {
