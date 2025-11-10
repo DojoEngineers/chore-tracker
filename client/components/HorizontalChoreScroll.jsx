@@ -2,40 +2,94 @@ import { Pressable, ScrollView, View, ImageBackground } from "react-native"
 import { BrandBoldText } from "./text/BrandBoldText"
 import { BrandText } from "./text/BrandText"
 import { useLogin } from "../context/UserContext"
-import { useNavigation } from "@react-navigation/native"
-import Constants from 'expo-constants'
-
-const BACKEND_URL = Constants.expoConfig.extra.BACKEND_API_URL
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { useCallback, useState } from "react"
+import { retrievePhotos } from "../services/r2.service"
 
 export const HorizontalChoreScroll = ({chores, apiError, loading, noChoreMessage}) => {
+
+    const [choresWithPhotos, setChoresWithPhotos] = useState()
 
     const {loggedInData} = useLogin()
     const navigation = useNavigation()
 
+    useFocusEffect(
+        useCallback(() => {
+            Promise.all(
+                chores.map((chore) => {
+                    const photoFilesToRetrieve = []
+
+                    // Check if beforePic expired
+                    if (chore.beforePic?.expiresAt && new Date(chore.beforePic.expiresAt) <= new Date()) {
+                        photoFilesToRetrieve.push(chore.beforePic.fileName)
+                    }
+
+                    // Check if afterPic expired
+                    if (chore.afterPic?.expiresAt && new Date(chore.afterPic.expiresAt) <= new Date()) {
+                        photoFilesToRetrieve.push(chore.afterPic.fileName)
+                    }
+
+                    // Get new urls if expired
+                    if (photoFilesToRetrieve.length > 0) {
+                        return retrievePhotos(photoFilesToRetrieve)
+                            .then((photos) => {
+                                const updatedChore = { ...chore }
+
+                                photos.forEach((photo) => {
+                                    if (updatedChore.beforePic?.fileName === photo.fileName) {
+                                        updatedChore.beforePic = { ...updatedChore.beforePic, url: photo.url, expiresAt: photo.expiresAt }
+                                    }
+                                    if (updatedChore.afterPic?.fileName === photo.fileName) {
+                                        updatedChore.afterPic = { ...updatedChore.afterPic, url: photo.url, expiresAt: photo.expiresAt }
+                                    }
+                                });
+
+                                return updatedChore
+                            })
+                            .catch((error) => {
+                                console.log("Error retrieving photos for chore:", chore._id, error)
+                                return chore
+                            })
+                    } else {
+                        // URLs are still valid, return chore as-is
+                        return Promise.resolve(chore)
+                    }
+
+                })
+            )
+                .then((updatedChores) => {
+                    setChoresWithPhotos(updatedChores)
+                })
+                .catch((error) => {
+                    console.log("Error updating chores with photos:", error)
+                })
+        }, [chores])
+    )
+
     return (
         <View className={`${!loggedInData.isParent && "flex-1"}`}>
 
-            {chores.length > 0
+            {choresWithPhotos?.length > 0
                 ?
                     <ScrollView
                         className="px-[16px] my-4"
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
                     >
-                        {chores.map(chore => (
+                        {choresWithPhotos.map(chore => (
                             <Pressable
                                 key={chore._id}
                                 onPress={() => navigation.navigate("ViewChore", {id: chore._id})}
                             >
                                 <ImageBackground
-                                    source={chore.afterPic ? { uri: `${BACKEND_URL}${chore.afterPic}` } : null}
+                                    source={chore.afterPic?.url ? {uri: chore.afterPic?.url} : null}
                                     className={`w-[123px] h-[123px] rounded-3xl overflow-hidden flex mr-3
-                                        ${!chore.afterPic ? "bg-[#9FB6AE] dark:bg-[#2F3339]" : ""}
+                                        ${!chore.afterPic?.url ? "bg-[#9FB6AE] dark:bg-[#2F3339]" : ""}
                                         ${loggedInData.isParent ? "justify-between" : "justify-center"}
                                     `}
                                     imageStyle={{ borderRadius: 24 }}
                                 >
-                                    {chore.afterPic && (
+                                    {chore.afterPic?.url && (
                                         <View className="absolute inset-0 bg-black opacity-30 rounded-3xl" />
                                     )}
 

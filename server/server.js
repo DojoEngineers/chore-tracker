@@ -4,42 +4,31 @@ import { config } from "dotenv";
 import { dbConnect } from "./config/mongoose.config.js";
 import userRouter from "./routes/user.route.js"
 import choreRouter from "./routes/chore.route.js"
-import imageRouter from "./routes/image.route.js";
-import R2Router from "./routes/r2.route.js";
-import path from 'path'
-import { fileURLToPath } from 'url';
+import R2Router from "./routes/r2.route.js"
 import emailjs from "@emailjs/nodejs"
-import { startJobs } from "./agenda.js";
-import agenda from "./agenda.js";
 import { Expo } from 'expo-server-sdk'
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 emailjs.init({
     publicKey: process.env.EMAILJS_PUBLIC_KEY,
     privateKey: process.env.EMAILJS_PRIVATE_KEY
 });
 
-const app = express();
+const app = express()
 
-app.use(express.json()); 
-// allows front-end requests coming from the origin (no dubious sources).
-cors({ origin: process.env.FRONTEND_API_URL, credentials:true })
-// 'http://localhost:5173', credentials: true
 app.use(express.json())
-app.use("/user", userRouter);
-app.use("/chore", choreRouter);
+
+// allows front-end requests coming from the origin (no dubious sources)
+cors({ origin: process.env.FRONTEND_API_URL, credentials:true })
+
+app.use(express.json())
+app.use("/user", userRouter)
+app.use("/chore", choreRouter)
 app.use("/r2", R2Router)
-app.use("/image", imageRouter);
 
-// This line serves files from /images
-app.use('/images', express.static(path.join(__dirname, 'images')));
+config()
+const PORT = process.env.PORT
 
-config(); // instead of dotenv.config
-const PORT = process.env.PORT;
-
-dbConnect();
+dbConnect()
 
 
 

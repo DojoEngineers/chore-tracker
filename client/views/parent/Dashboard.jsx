@@ -52,6 +52,8 @@ export const Dashboard = () => {
 
     useFocusEffect(
         useCallback(() => {
+            setLoading("Loading recent activity...")
+            setApiErrors({})
             setDate(new Date())
             setViewCalendarChores(false)
             getChoresByParents(loggedInData.family.parents.map(p => p._id))

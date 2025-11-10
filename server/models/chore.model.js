@@ -57,11 +57,19 @@ const choreSchema = new mongoose.Schema({
         default: false
     },
     beforePic: {
-        type: String,
+        type: {
+            fileName: String,
+            url: String,
+            expiresAt: String
+        },
         required: false
     },
     afterPic: {
-        type: String,
+        type: {
+            fileName: String,
+            url: String,
+            expiresAt: String
+        },
         required: false
     },
     parentComments: {

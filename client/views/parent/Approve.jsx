@@ -24,6 +24,8 @@ export const Approve = () => {
 
     useFocusEffect(
         useCallback(() => {
+            setLoading("Loading chore...")
+            setApiErrors({})
             getChoresByParents(loggedInData.family.parents.map(p => p._id))
                 .then((res) => {
                     // Pending Chores

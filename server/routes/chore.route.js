@@ -12,7 +12,7 @@ choreRouter.route('/all')
 
 choreRouter.route('/')
     .post(protect, addChore)
-    .get(protect, getChoreById)
+    .get(getChoreById)
     .put(protect, updateChore)
     //for testing:
     .delete(deleteChore)

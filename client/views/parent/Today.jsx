@@ -34,6 +34,7 @@ export const Today = () => {
 
     useFocusEffect(
         useCallback(() => {
+            setApiErrors({})
             setLoading(true)
             getChoresByParents(loggedInData.family.parents.map(p => p._id))
                 .then((res) => {

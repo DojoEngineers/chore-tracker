@@ -17,7 +17,6 @@ export const Completed = () => {
     const [chores, setChores] = useState({complete: [], approved: [], rejectedUnassigned: []})
 
     const {loggedInData} = useLogin()
-    const navigation = useNavigation()
 
     useEffect(() => {
         getChoresByWorker(loggedInData._id)
