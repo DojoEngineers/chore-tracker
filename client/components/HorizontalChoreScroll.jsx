@@ -4,7 +4,7 @@ import { BrandText } from "./text/BrandText"
 import { useLogin } from "../context/UserContext"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { useCallback, useState } from "react"
-import { retrievePhotos } from "../services/chore.service"
+import { retrievePhotos } from "../services/r2.service"
 
 export const HorizontalChoreScroll = ({chores, apiError, loading, noChoreMessage}) => {
 

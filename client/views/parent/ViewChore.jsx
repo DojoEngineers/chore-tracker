@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react"
-import { getChoreById, retrievePhotos, storePhotos, updateChore } from "../../services/chore.service"
+import { getChoreById, updateChore } from "../../services/chore.service"
+import { retrievePhotos, storePhotos } from "../../services/r2.service"
 import Toast from "react-native-toast-message"
 import { Alert, Pressable, ScrollView, View, Linking, Image } from "react-native"
 import { BrandBoldText } from "../../components/text/BrandBoldText"

@@ -5,10 +5,11 @@ import { useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
 import utc from 'dayjs/plugin/utc'
 import dayjs from "dayjs"
-import { storePhotos, updateChore } from "../services/chore.service"
+import { updateChore } from "../services/chore.service"
 import { CloseIcon } from "./icons/CloseIcon"
 import { BrandText } from "./text/BrandText"
 import * as ImagePicker from 'expo-image-picker';
+import { storePhotos } from "../services/r2.service"
 
 dayjs.extend(utc)
 
