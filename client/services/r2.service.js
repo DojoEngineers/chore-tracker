@@ -7,7 +7,7 @@ const R2_INSTANCE = axios.create({
 
 // uploads before/after photo names to cloudflare and returns their unique filenames.
 
-export const storePhotos = async (photoUri) => {
+export const storePhotos = async (photoUri, fileName = null) => {
     try {
         const formData = new FormData()
 
@@ -21,6 +21,11 @@ export const storePhotos = async (photoUri) => {
             name: `photo.${fileType}`,
             type: `image/${fileType}`, // or `image/jpeg` for jpg
         })
+
+        // If updating an existing photo, send its fileName
+        if (fileName) {
+            formData.append('fileName', fileName)
+        }
 
         const RES = await R2_INSTANCE.post('/upload', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },

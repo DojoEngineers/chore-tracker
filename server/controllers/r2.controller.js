@@ -18,8 +18,8 @@ const s3Client = new S3Client({
 
 // Configure multer for memory storage
 const upload = multer({
-storage: multer.memoryStorage(),
-limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
 });
 
 // Export the middleware for single file upload
@@ -27,7 +27,7 @@ export const uploadMiddleware = upload.single('photo')
 
 // ====== CONTROLLERS ======
 
-// Upload photo to R2
+// Upload photo to R2 (creates or updates)
 export const uploadPhoto = async (req, res) => {
     console.log("Uploading in server")
 
@@ -41,7 +41,8 @@ export const uploadPhoto = async (req, res) => {
 
         const expiresAt = new Date(Date.now() + ONE_DAY * 1000);
         const fileExtension = req.file.originalname.split('.').pop()
-        const fileName = `${uuidv4()}.${fileExtension}`
+        // updates or uploads new name depending on if req.body.filename is present
+        const fileName = req.body.fileName || `${uuidv4()}.${fileExtension}`
 
         const command = new PutObjectCommand({
             Bucket: BUCKET_NAME,
