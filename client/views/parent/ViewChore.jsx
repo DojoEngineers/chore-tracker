@@ -136,7 +136,7 @@ export const ViewChore = ({route}) => {
 
         if (!result.canceled) {
             const uri = result.assets[0].uri
-            storePhotos(uri)
+            storePhotos(uri, chore.beforePic?.fileName)
                 .then((res) => {
                     setChore(prev => ({...prev, beforePic: res}))
                     updateChore({_id: id, beforePic: res})
