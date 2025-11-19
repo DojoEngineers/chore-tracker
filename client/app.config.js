@@ -21,7 +21,7 @@ export default {
     newArchEnabled: true,
     
     splash: {
-      image: "./assets/splash-icon.png",
+      image: "./assets/icon.png",
       resizeMode: "contain",
       backgroundColor: "#ffffff"
     },
