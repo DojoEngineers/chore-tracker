@@ -36,7 +36,7 @@ export const Help = () => {
                         Need help or have questions? We’re here for you! Check out our in-app tips
                         to learn how to assign chores, track progress, and review results.
                         If you’re still stuck or something’s not working, you can reach our support team
-                        anytime at xxx@app.com. We’ll do our best to get back to you quickly
+                        anytime at trackmychoresapp@gmail.com. We’ll do our best to get back to you quickly
                         and keep your family’s chore routine running smoothly.
                     </BrandText>
                 </View>
