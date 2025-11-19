@@ -37,7 +37,7 @@ export const Terms = () => {
                         you agree to use it responsibly and only for family chores and related activities.
                         Parents are responsible for managing their children’s accounts and information.
                         We do not sell your data and we take privacy seriously (see our Privacy section for details).
-                        For any questions or concerns, contact us anytime at xxx@app.com.
+                        For any questions or concerns, contact us anytime at trackmychoresapp@gmail.com.
                     </BrandText>
                 </View>
             </View>

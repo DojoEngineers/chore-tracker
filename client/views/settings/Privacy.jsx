@@ -37,7 +37,7 @@ export const Privacy = () => {
                         and app activity to help you assign and track chores. Your data is securely stored,
                         shared only with trusted services, and visible to family members in the app. Parents can manage all child accounts,
                         and you can update info or inactivate your account anytime. We never sell your data.
-                        For questions, contact us at xxx@app.com.
+                        For questions, contact us at trackmychoresapp@gmail.com.
                     </BrandText>
                 </View>
             </View>
