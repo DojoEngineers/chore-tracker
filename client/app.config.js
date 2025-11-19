@@ -4,11 +4,12 @@ export default {
   expo: {
     // From your app.config.js
     name: "TrackMyChores",
-    slug: "track-my-chores", 
+    slug: "track-my-chores",
+    owner: "dojoengineers",
     extra: {
       BACKEND_API_URL: process.env.BACKEND_API_URL,
       eas: {
-        projectId: "6d7a9599-3889-436c-b230-9f8afa020ed1"
+        projectId: "f9970bf3-a09a-463b-b37d-40622414d40e"
       }
     },
 
@@ -27,11 +28,13 @@ export default {
     },
     
     ios: {
+      bundleIdentifier: "com.dojoengineers.trackmychores",
       supportsTablet: true,
       userInterfaceStyle: "automatic"
     },
     
     android: {
+      package: "com.dojoengineers.trackmychores",
       userInterfaceStyle: "automatic",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
