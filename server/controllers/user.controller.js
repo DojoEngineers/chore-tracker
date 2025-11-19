@@ -95,16 +95,38 @@ export const getUserByUsername = async (req, res) => {
     }
 }
 
+// OLD FUNCTION 
 // sends code. can be called from register or resend
-export const sendTestEmail = async (name, username, code, expiration) => {
+// export const sendTestEmail = async (name, username, code, expiration) => {
+//     try {
+//         await emailjs.send(
+//             process.env.EMAILJS_SERVICE_ID,
+//             process.env.EMAILJS_TEMPLATE_ID,
+//             {
+//                 userEmail: username,
+//                 subject: "Your code to login",
+//                 message: `Hello ${name}. Your code is ${code}. It expires ${expiration}.`
+//             }
+//         );
+//     }
+//     catch (error) {
+//         console.log("failed to send email:", error)
+//     }
+
+// };
+
+
+// new function that uses code template in email.js
+export const sendCodeEmail = async (name, username, passcode, expiration) => {
     try {
         await emailjs.send(
             process.env.EMAILJS_SERVICE_ID,
-            process.env.EMAILJS_TEMPLATE_ID,
+            process.env.EMAILJS_CODE_TEMPLATE_ID,
             {
-                userEmail: username,
-                subject: "Your code to login",
-                message: `Hello ${name}. Your code is ${code}. It expires ${expiration}.`
+                email: username,
+                name,
+                passcode,
+                expiration
             }
         );
     }
@@ -113,6 +135,29 @@ export const sendTestEmail = async (name, username, code, expiration) => {
     }
 
 };
+
+// new function that uses resetpassword template in email.js
+export const sendPasswordEmail = async (name, username, password) => {
+    try {
+        await emailjs.send(
+            process.env.EMAILJS_SERVICE_ID,
+            process.env.EMAILJS_PASSWORD_RESET_TEMPLATE_ID,
+            {
+                email: username,
+                name,
+                password
+            },
+            {
+            publicKey: process.env.EMAILJS_PUBLIC_KEY,
+            privateKey: process.env.EMAILJS_PRIVATE_KEY,
+            }
+        );
+    }
+    catch (error) {
+        console.log("failed to send email:", error)
+    }
+};
+
 
 // adds unverified user to db, creates family doc if there isn't any, links family doc to user and sends email with generated code.
 export const registerUser = async (req, res) => {
@@ -153,7 +198,7 @@ export const registerUser = async (req, res) => {
                 { new: true });
             console.log("updated family", updatedFamily)
         }
-        sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
+        sendCodeEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
         res.json({ success: true, message: 'Email sent!', user });
     }
     catch (error) {
@@ -217,7 +262,7 @@ export const resendCode = async (req, res) => {
         console.log("resending. emailjs api key", process.env.EMAILJS_SERVICE_ID)
         console.log("code", code)
         console.log("sending to user", user)
-        sendTestEmail(user.name, user.username, code, user.codeExpirationDate)
+        sendCodeEmail(user.name, user.username, code, user.codeExpirationDate)
         res.status(200).json(user)
     }
 
@@ -297,7 +342,7 @@ export const sendPassword = async (req, res) => {
             { password: newPw, passwordReset: true, codeExpirationDate: expiration }, { new: true, runValidators: true }).select("-password")
         // sends email
         console.log("updated user", UPDATED_USER)
-        sendTestEmail(UPDATED_USER.name, UPDATED_USER.username, newPw, "never")
+        sendPasswordEmail(UPDATED_USER.name, UPDATED_USER.username, newPw)
         res.status(200).json(UPDATED_USER)
     }
     catch (err) {
