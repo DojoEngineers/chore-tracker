@@ -17,8 +17,7 @@ const app = express()
 
 app.use(express.json())
 
-// allows front-end requests coming from the origin (no dubious sources)
-cors({ origin: process.env.FRONTEND_API_URL, credentials:true })
+app.use(cors())
 
 app.use(express.json())
 app.use("/user", userRouter)

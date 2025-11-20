@@ -1,9 +1,27 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import Constants from 'expo-constants'
 
 const R2_INSTANCE = axios.create({
     baseURL: `${Constants.expoConfig.extra.BACKEND_API_URL}/r2`
 })
+
+R2_INSTANCE.interceptors.request.use(
+    async (config) => {
+        const user = await AsyncStorage.getItem('user')
+        const data = JSON.parse(user)
+        if (data) {
+            const token = data.token
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`
+            }
+        }
+        return config
+    },
+    (error) => {
+        return Promise.reject(error)
+    }
+)
 
 // uploads before/after photo names to cloudflare and returns their unique filenames.
 

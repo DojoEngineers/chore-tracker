@@ -6,16 +6,16 @@ import { addChore, getAllChores, getChoreById, getChoresByWorker, deleteAllChore
 const choreRouter = Router()
 
 // for testing:
-choreRouter.route('/all')
-    .get(getAllChores)
-    .delete(deleteAllChores)
+// choreRouter.route('/all')
+//     .get(getAllChores)
+//     .delete(deleteAllChores)
 
 choreRouter.route('/')
     .post(protect, addChore)
-    .get(getChoreById)
+    .get(protect, getChoreById)
     .put(protect, updateChore)
     //for testing:
-    .delete(deleteChore)
+    // .delete(deleteChore)
 
 choreRouter.route('/worker')
     .get(protect, getChoresByWorker)
