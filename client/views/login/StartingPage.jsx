@@ -7,12 +7,27 @@ import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggl
 import { useLogin } from "../../context/UserContext"
 import { getCurrentUser } from "../../services/user.service"
 import Toast from "react-native-toast-message"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { pingServer } from "../services/ping.service"
 
 export const StartingPage = () => {
 
     const navigation = useNavigation()
-    const {user, setLoggedInData} = useLogin()
+    const { user, setLoggedInData } = useLogin()
+    const { apiErrors, setApiErrors } = useState("")
+    const { serverLoading, setServerLoading } = useState(false)
+
+
+    // Wake the backend free server
+    useEffect(() => {
+        pingServer()
+            .then(res => { setServerIsLoaded(true) })
+            .catch(error => {
+                console.log("pingServer error", error)
+                Toast.error("Unable to load server")
+                setApiErrors(prev => ({ ...prev, pingServer: "Unable to load server." }))
+            })
+    }, [])
 
     const checkUserToken = async () => {
         console.log("user already logged in:", user)
@@ -53,6 +68,13 @@ export const StartingPage = () => {
                 <BrandBoldText className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
                     Track My Chores
                 </BrandBoldText>
+                {serverLoading
+                    ?
+                    <BrandBoldText>Server is ready to go!</BrandBoldText>
+                    :
+                    <BrandBoldText> Please wait 20-40 seconds for the server to wake up... server loading...</BrandBoldText>
+                }
+
             </View>
 
             <View className="items-center px-[16px]">
@@ -66,7 +88,7 @@ export const StartingPage = () => {
                 <Pressable
                     className="p-[10px] rounded-full items-center justify-center bg-[#455C56] w-full h-[56px]"
                     onPress={() => navigation.navigate('ParentRegistration')}
-                    >
+                >
                     <BrandBoldText className="text-white text-[20px]">Start a family account</BrandBoldText>
                 </Pressable>
             </View>
@@ -85,7 +107,7 @@ export const StartingPage = () => {
                 </View>
 
                 <View className="items-end">
-                    <LogoBottomSquiggle/>
+                    <LogoBottomSquiggle />
                 </View>
             </View>
 

@@ -23,6 +23,7 @@ app.use(express.json())
 app.use("/user", userRouter)
 app.use("/chore", choreRouter)
 app.use("/r2", R2Router)
+app.get("/ping", (req, res) => res.sendStatus(200))
 
 config()
 const PORT = process.env.PORT
