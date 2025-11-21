@@ -18,12 +18,12 @@ const app = express()
 app.use(express.json())
 
 app.use(cors())
-
-app.use(express.json())
 app.use("/user", userRouter)
 app.use("/chore", choreRouter)
 app.use("/r2", R2Router)
-app.get("/ping", (req, res) => res.sendStatus(200))
+app.get("/ping", (req, res) => {
+  console.log("pinging server...")
+  res.sendStatus(200)})
 
 config()
 const PORT = process.env.PORT

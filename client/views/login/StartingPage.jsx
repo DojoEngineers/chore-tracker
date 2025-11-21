@@ -8,24 +8,23 @@ import { useLogin } from "../../context/UserContext"
 import { getCurrentUser } from "../../services/user.service"
 import Toast from "react-native-toast-message"
 import { useEffect, useState } from "react"
-import { pingServer } from "../services/ping.service"
+import { pingServer } from "../../services/ping.service"
 
 export const StartingPage = () => {
 
     const navigation = useNavigation()
     const { user, setLoggedInData } = useLogin()
-    const { apiErrors, setApiErrors } = useState("")
-    const { serverLoading, setServerLoading } = useState(false)
+    const [apiErrors, setApiErrors] = useState("")
+    const [serverLoading, setServerLoading] = useState(true)
 
 
     // Wake the backend free server
     useEffect(() => {
         pingServer()
-            .then(res => { setServerIsLoaded(true) })
+            .then(res => { setServerLoading(false) })
             .catch(error => {
                 console.log("pingServer error", error)
-                Toast.error("Unable to load server")
-                setApiErrors(prev => ({ ...prev, pingServer: "Unable to load server." }))
+                setApiErrors("Unable to load server.")
             })
     }, [])
 
@@ -68,11 +67,13 @@ export const StartingPage = () => {
                 <BrandBoldText className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
                     Track My Chores
                 </BrandBoldText>
-                {serverLoading
+                {apiErrors? 
+                <BrandBoldText>{apiErrors}</BrandBoldText>
+                :serverLoading
                     ?
-                    <BrandBoldText>Server is ready to go!</BrandBoldText>
+                    <BrandBoldText className="text-[15px] text-center text-lightPrimaryText dark:text-darkPrimaryText"> Please wait 20-40 seconds for the server to wake up... server loading...</BrandBoldText>
                     :
-                    <BrandBoldText> Please wait 20-40 seconds for the server to wake up... server loading...</BrandBoldText>
+                    <BrandBoldText className="text-[15px] text-center text-lightPrimaryText dark:text-darkPrimaryText">Server is ready to go!</BrandBoldText>
                 }
 
             </View>
