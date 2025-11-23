@@ -39,7 +39,7 @@ export const SplashScreen = () => {
         if (timerDone && !serverLoading && !apiErrors) {
             navigation.replace('StartingPage', { animationType: "fade" })
         }
-    }, [timerDone, serverLoading])
+    }, [timerDone, serverLoading, apiErrors])
 
     return (
         <View className="flex-1 justify-between bg-lightBg dark:bg-darkBg">
