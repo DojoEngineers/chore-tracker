@@ -8,6 +8,7 @@ import { HorizontalChoreScroll } from "../../components/HorizontalChoreScroll";
 import { KidNavBar } from "../../components/KidNavBar";
 import { View } from "react-native";
 import { BrandBoldText } from "../../components/text/BrandBoldText";
+import Toast from "react-native-toast-message";
 
 
 export const Completed = () => {
@@ -41,10 +42,7 @@ export const Completed = () => {
             .catch((error) => {
                 console.log("getChoresByWorker error:", error)
                 setApiErrors(prev => ({...prev, getChoresByWorker: "Unable to get chore information."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to get chore information."
-                })
+                Toast.show({type: 'error', text1: "Unable to get chore information."})
             })
             .finally(() => setLoading(false))
     }, [])

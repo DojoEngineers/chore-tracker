@@ -23,26 +23,14 @@ export const ForgotPassword = () => {
     const resetPassword = () => {
         getUserByUsername(username.toLowerCase())
             .then(res => {
-                if (res && !res.isActive) {
-                    Toast.show({
-                        type: 'error',
-                        text1: "Account Deleted."
-                    })
-                }
+                if (res && !res.isActive) Toast.show({type: 'error', text1: "Account Deleted."})
                 else if (res && !res.isVerified){
-                    Toast.show({
-                        type: 'error',
-                        text1: "Account is not verified.",
-                        text2: "Verify your account in the home screen."
-                    })
+                    Toast.show({type: 'error', text1: "Account is not verified.", text2: "Verify your account in the home screen."})
                 }
                 else if (res) {
                     sendPassword(username.toLowerCase())
                         .then(() => {
-                            Toast.show({
-                                type: 'success',
-                                text1: "Email sent!",
-                            })
+                            Toast.show({type: 'success', text1: "Email sent!"})
                             logout()
                             navigation.reset({
                                 index: 0,
@@ -52,25 +40,14 @@ export const ForgotPassword = () => {
                         .catch(error => {
                             console.log("sendPassword error: ", error)
                             setApiErrors(prev => ({...prev, sendPassword: "Unable to reset password."}))
-                            Toast.show({
-                                type: 'error',
-                                text1: "Unable to reset password.",
-                            })
+                            Toast.show({type: 'error', text1: "Unable to reset password."})
                         })
-                } else {
-                    Toast.show({
-                        type: 'error',
-                        text1: "Username not found.",
-                    })
-                }
+                } else Toast.show({type: 'error', text1: "Username not found."})
             })
             .catch(error => {
                 console.log("getUserByUsername error:", error)
                 setApiErrors(prev => ({...prev, getUserByUsername: "Unable to check username."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to check username.",
-                })
+                Toast.show({type: 'error', text1: "Unable to check username."})
             })
     }
 

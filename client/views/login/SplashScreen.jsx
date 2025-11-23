@@ -1,27 +1,69 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect } from "react";
-import { View } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
 import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggle";
 import { LogoTopSquiggle } from "../../components/squiggles/LogoTopSquiggle";
 import { AppLogo } from "../../components/icons/AppLogo";
+import { pingServer } from "../../services/ping.service";
+import Toast from "react-native-toast-message";
+import { BrandBoldText } from "../../components/text/BrandBoldText";
 
 export const SplashScreen = () => {
+
+    const [apiErrors, setApiErrors] = useState("")
+    const [serverLoading, setServerLoading] = useState(true)
+    const [timerDone, setTimerDone] = useState(false)
+    const [pageLoading, setPageLoading] = useState(true)
 
     const navigation = useNavigation()
 
     useEffect(() => {
+        pingServer()
+            .then(res => setServerLoading(false))
+            .catch(error => {
+                console.log("pingServer error", error)
+                Toast.show({ type: 'error', text1: "Unable to load server."})
+                setApiErrors("Unable to load server.")
+                setServerLoading(false)
+            })
+            .finally(() => setPageLoading(false))
+
         const timer = setTimeout(() => {
-            navigation.replace('StartingPage', {animationType: "fade"})
+            setTimerDone(true)
         }, 2000)
-    return () => clearTimeout(timer)
+
+        return () => clearTimeout(timer)
     }, [])
+
+    useEffect(() => {
+        if (timerDone && !serverLoading) {
+            navigation.replace('StartingPage', { animationType: "fade" })
+        }
+    }, [timerDone, serverLoading])
 
     return (
         <View className="flex-1 justify-between bg-lightBg dark:bg-darkBg">
             <LogoTopSquiggle/>
 
-            <View className="items-center">
+            <View className="items-center px-[16px]">
                 <AppLogo />
+
+                {apiErrors && 
+                    <BrandText className="text-red-500 text-center">
+                        {apiErrors}
+                    </BrandText>
+                }
+
+                {!apiErrors && !pageLoading && serverLoading &&
+                    <View>
+                        <BrandBoldText
+                            className="text-[15px] text-center text-lightPrimaryText dark:text-darkPrimaryText mb-6"
+                        >
+                            Server loading... Please wait 40-60 seconds.
+                        </BrandBoldText>
+                        <ActivityIndicator size="large" />
+                    </View>
+                }
             </View>
 
             <View className="items-end">

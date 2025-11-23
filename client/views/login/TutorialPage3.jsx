@@ -25,10 +25,7 @@ export const TutorialPage3 = () => {
             .catch( error => {
                 console.log("updateUser error:", error)
                 setApiErrors(prev => ({...prev, updateUser: "Unable to update user."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to update user."
-                })
+                Toast.show({type: 'error', text1: "Unable to update user."})
             })
     }
 

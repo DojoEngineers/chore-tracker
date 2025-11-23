@@ -48,10 +48,7 @@ export const Approve = () => {
                 .catch((error) => {
                     console.log("getChoresByParents error:", error)
                     setApiErrors(prev => ({...prev, getChoresByParents: "Unable to get chore information."}))
-                    Toast.show({
-                        type: 'error',
-                        text1: "Unable to get chore information."
-                    })
+                    Toast.show({type: 'error', text1: "Unable to get chore information."})
                 })
                 .finally(() => setLoading(false))
         }, [])

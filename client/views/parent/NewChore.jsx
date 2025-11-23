@@ -29,21 +29,14 @@ export const NewChore = () => {
         else if (value.length > 30) {
             setFormErrors(prev => ({...prev, title: "Title cannot exceed 30 characters."}))
         }
-        else {
-            setFormErrors(prev => ({...prev, title: false}))
-        }
+        else setFormErrors(prev => ({...prev, title: false}))
     }
 
     const handleSubmit = () => {
         if (!title || formErrors.title){
-            Toast.show({
-                type: 'error',
-                text1: "Please make corrections to the form."
-            })
+            Toast.show({type: 'error', text1: "Please make corrections to the form."})
         }
-        else {
-            navigation.navigate("NewChoreDetails", {title})
-        }
+        else navigation.navigate("NewChoreDetails", {title})
     }
 
     return (

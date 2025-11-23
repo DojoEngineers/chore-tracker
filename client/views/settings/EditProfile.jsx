@@ -58,10 +58,7 @@ export const EditProfile = () => {
 
     const handleSubmit = () => {
         if (!isReadyToSubmit()){
-            Toast.show({
-                type: 'error',
-                text1: "Please make corrections to the form."
-            })
+            Toast.show({type: 'error', text1: "Please make corrections to the form."})
             return
         }
         const { name } = formData
@@ -70,17 +67,11 @@ export const EditProfile = () => {
             checkUsername(username)
                 .then((res) => {
                     if (res) {
-                        Toast.show({
-                            type: 'error',
-                            text1: "Username already exists."
-                        })
+                        Toast.show({type: 'error', text1: "Username already exists."})
                     } else {
                         updateUser({name, username, isVerified: false})
                             .then( () => { 
-                                Toast.show({
-                                    type: 'success',
-                                    text1: "Profile updated successfully!"
-                                })
+                                Toast.show({type: 'success', text1: "Profile updated successfully!"})
                                 resendCode(username)
                                 logout()
                                 navigation.reset({
@@ -91,46 +82,29 @@ export const EditProfile = () => {
                             .catch( error => {
                                 console.log("updateUser error:", error)
                                 setApiErrors(prev => ({...prev, updateUser: "Unable to edit profile."}))
-                                Toast.show({
-                                    type: 'error',
-                                    text1: "Unable to edit profile."
-                                })
+                                Toast.show({type: 'error', text1: "Unable to edit profile."})
                             })
                     }
                 })
                 .catch(error => {
                     console.log("checkUsername error:", error)
                     setApiErrors(prev => ({...prev, checkUsername: "Unable to validate username."}))
-                    Toast.show({
-                        type: 'error',
-                        text1: "Unable to validate username."
-                    })
+                    Toast.show({type: 'error', text1: "Unable to validate username."})
                 })
         }
         else if (loggedInData.name != name) {
             updateUser({name})
                 .then( (res) => { 
-                    Toast.show({
-                        type: 'success',
-                        text1: "Profile updated successfully!"
-                    })
+                    Toast.show({type: 'success', text1: "Profile updated successfully!"})
                     setLoggedInData(res)
                     navigation.goBack()
                 })
                 .catch( error => {
                     console.log("updateUser error:", error)
                     setApiErrors(prev => ({...prev, updateUser: "Unable to edit profile."}))
-                    Toast.show({
-                        type: 'error',
-                        text1: "Unable to edit profile."
-                    })
+                    Toast.show({type: 'error', text1: "Unable to edit profile."})
                 })
-        } else {
-            Toast.show({
-                type: 'error',
-                text1: "No changes have been made."
-            })
-        }
+        } else Toast.show({type: 'error', text1: "No changes have been made."})
     }
 
     return (

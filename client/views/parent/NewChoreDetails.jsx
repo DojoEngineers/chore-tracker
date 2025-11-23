@@ -178,21 +178,17 @@ export const NewChoreDetails = ({ route }) => {
             let updatedDays
 
             if (currentDays.includes(day.id)) {
-                updatedDays = currentDays.filter(d => d !== day.id);
-            } else {
-                updatedDays = [...currentDays, day.id];
+                updatedDays = currentDays.filter(d => d !== day.id)
             }
+            else updatedDays = [...currentDays, day.id]
 
-            return {...prev, weeklyRepeatDays: updatedDays};
+            return {...prev, weeklyRepeatDays: updatedDays}
         })
     }
 
     const handleSubmit = async () => {
         if (formErrors.details || formErrors.dueDate || formData.kids.length === 0) {
-            Toast.show({
-                type: 'error',
-                text1: "Please make corrections to the form."
-            })
+            Toast.show({type: 'error', text1: "Please make corrections to the form."})
             return
         }
 
@@ -234,7 +230,6 @@ export const NewChoreDetails = ({ route }) => {
                 }
                 else {
                     Toast.show({type: 'success', text1: "Chore created!"})
-                    // navigation.replace("Dashboard", {animationType: "fade_from_bottom"})
                     navigation.pop(2)
                 }
             })

@@ -14,6 +14,7 @@ import { KidNavBar } from "../../components/KidNavBar";
 import { ForwardArrow } from "../../components/icons/ForwardArrow";
 import { getChoresByWorker } from "../../services/chore.service";
 import { WeeklyRepeatIcons } from "../../components/WeeklyRepeatIcons";
+import Toast from "react-native-toast-message";
 
 dayjs.extend(utc)
 dayjs.extend(isSameOrBefore)
@@ -63,10 +64,7 @@ export const ThisWeek = () => {
                     .catch ((error) => {
                         console.log("getChoresByWorker error:", error)
                         setApiErrors(prev => ({...prev, getChoresByWorker: "Unable to get chore information."}))
-                        Toast.show({
-                            type: 'error',
-                            text1: "Unable to get chore information."
-                        })
+                        Toast.show({type: 'error', text1: "Unable to get chore information."})
                     })
                     .finally(() => setLoading(false))
             }, [])

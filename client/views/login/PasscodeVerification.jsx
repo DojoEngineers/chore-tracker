@@ -28,10 +28,7 @@ export const PasscodeVerification = ({route}) => {
         const data = {username, verificationCode: value}
         verify(data)
             .then(res => {
-                Toast.show({
-                    type: 'success',
-                    text1: "Verification Successful!"
-                })
+                Toast.show({type: 'success', text1: "Verification Successful!"})
                 updatingUsername
                     ? navigation.replace("Login")
                     : navigation.replace("SetPassword", {username: res.username})
@@ -39,29 +36,19 @@ export const PasscodeVerification = ({route}) => {
             .catch(error => {
                 console.log("verify error:", error)
                 setApiErrors(prev => ({...prev, verify: "Unable to verify account. Wrong or expired code."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to verify account.",
-                    text2: "Wrong or expired code."
-                })
+                Toast.show({type: 'error', text1: "Unable to verify account.", text2: "Wrong or expired code."})
             })
     }
 
     const resend = (username) => {
         resendCode(username)
             .then(() => {
-                Toast.show({
-                    type: 'success',
-                    text1: "Verification code resent!"
-                })
+                Toast.show({type: 'success', text1: "Verification code resent!"})
             })
             .catch(error => {
                 console.log("resendCode error:", error)
                 setApiErrors(prev => ({...prev, resendCode: "Failed to resend code."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Failed to resend code."
-                })
+                Toast.show({type: 'error', text1: "Failed to resend code."})
             })
     }
 

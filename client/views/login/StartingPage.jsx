@@ -7,42 +7,21 @@ import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggl
 import { useLogin } from "../../context/UserContext"
 import { getCurrentUser } from "../../services/user.service"
 import Toast from "react-native-toast-message"
-import { useEffect, useState } from "react"
-import { pingServer } from "../../services/ping.service"
+import { useEffect } from "react"
 
 export const StartingPage = () => {
 
     const navigation = useNavigation()
     const { user, setLoggedInData } = useLogin()
-    const [apiErrors, setApiErrors] = useState("")
-    const [serverLoading, setServerLoading] = useState(true)
-
-
-    // Wake the backend free server
-    useEffect(() => {
-        pingServer()
-            .then(res => { setServerLoading(false) })
-            .catch(error => {
-                console.log("pingServer error", error)
-                setApiErrors("Unable to load server.")
-            })
-    }, [])
 
     const checkUserToken = async () => {
         console.log("user already logged in:", user)
         try {
             const data = await getCurrentUser()
             setLoggedInData(data)
-            Toast.show({
-                type: 'success',
-                text1: "Login Successful!"
-            })
-            if (data.firstLogin) {
-                navigation.replace('TutorialPage1')
-            }
-            else {
-                navigation.replace('Dashboard')
-            }
+            Toast.show({type: 'success', text1: "Login Successful!"})
+            if (data.firstLogin) navigation.replace('TutorialPage1')
+            else navigation.replace('Dashboard')
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }
@@ -51,7 +30,7 @@ export const StartingPage = () => {
     useEffect(() => {
         if (!user || !user._id) {
             console.log("No valid user, staying on login page")
-            return;
+            return
         }
         const timer = setTimeout(() => {
             checkUserToken()
@@ -67,15 +46,6 @@ export const StartingPage = () => {
                 <BrandBoldText className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
                     Track My Chores
                 </BrandBoldText>
-                {apiErrors? 
-                <BrandBoldText>{apiErrors}</BrandBoldText>
-                :serverLoading
-                    ?
-                    <BrandBoldText className="text-[15px] text-center text-lightPrimaryText dark:text-darkPrimaryText"> Please wait 20-40 seconds for the server to wake up... server loading...</BrandBoldText>
-                    :
-                    <BrandBoldText className="text-[15px] text-center text-lightPrimaryText dark:text-darkPrimaryText">Server is ready to go!</BrandBoldText>
-                }
-
             </View>
 
             <View className="items-center px-[16px]">

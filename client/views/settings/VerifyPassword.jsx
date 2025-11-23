@@ -28,26 +28,14 @@ export const VerifyPassword = ({route}) => {
         verifyPassword({username, password})
             .then(res => {
                 if (res) {
-                    if (deleteAccount) {
-                        setModalVisible(true)
-                    }
-                    else {
-                        navigation.navigate("SetPassword", {username})
-                    }
-                } else {
-                    Toast.show({
-                        type: 'error',
-                        text1: "Incorrect password."
-                    })
-                }
+                    if (deleteAccount) setModalVisible(true)
+                    else navigation.navigate("SetPassword", {username})
+                } else Toast.show({type: 'error', text1: "Incorrect password."})
             })
             .catch(error => {
                 console.log("verifyPassword error:", error)
                 setApiErrors(prev => ({...prev, verifyPassword: "Unable to verify password."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to verify password."
-                })
+                Toast.show({type: 'error', text1: "Unable to verify password."})
             })
     }
 

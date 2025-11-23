@@ -17,10 +17,7 @@ import { PasswordInput } from "../../components/PasswordInput"
 export const Login = () => {
 
     const [ apiErrors, setApiErrors ] = useState({})
-    const [formData, setFormData] = useState({
-        username: '',
-        password: ''
-        })
+    const [formData, setFormData] = useState({username: '', password: ''})
 
     const navigation = useNavigation()
     const { login: loginUser, user, setLoggedInData } = useLogin()
@@ -30,23 +27,16 @@ export const Login = () => {
         try {
             const data = await getCurrentUser()
             setLoggedInData(data)
-            Toast.show({
-                type: 'success',
-                text1: "Login Successful!"
-            })
-            if (data.firstLogin) {
-                navigation.replace('TutorialPage1')
-            }
-            else {
-                navigation.replace('Dashboard')
-            }
+            Toast.show({type: 'success', text1: "Login Successful!"})
+            if (data.firstLogin) navigation.replace('TutorialPage1')
+            else navigation.replace('Dashboard')
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }
     }
 
     const handleChange = (name, value) => {
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData(prev => ({ ...prev, [name]: value }))
     }
 
     const handleLogin = () => {
@@ -55,10 +45,7 @@ export const Login = () => {
         getUserByUsername(username)
             .then(res => {
                 if (res && !res.isActive) {
-                    Toast.show({
-                        type: 'error',
-                        text1: "Account Deleted."
-                    })
+                    Toast.show({type: 'error', text1: "Account Deleted."})
                 }
                 else if (res && res.isVerified) {
                     login({username, password})
@@ -74,32 +61,17 @@ export const Login = () => {
                         .catch(error => {
                             console.log("login error:", error)
                             setApiErrors(prev => ({...prev, login: "Unable to login."}))
-                            Toast.show({
-                                type: 'error',
-                                text1: "Unable to login."
-                            })
+                            Toast.show({type: 'error', text1: "Unable to login."})
                         })
                 }
                 else if (res){
-                    Toast.show({
-                        type: 'error',
-                        text1: "Account is not verified.",
-                        text2: "Verify your account in the home screen."
-                    })
-                } else {
-                    Toast.show({
-                        type: 'error',
-                        text1: "Username not found."
-                    })
-                }
+                    Toast.show({type: 'error', text1: "Account is not verified.", text2: "Verify your account in the home screen."})
+                } else Toast.show({type: 'error', text1: "Username not found."})
             })
             .catch(error => {
                 console.log("getUserByUsername error:", error)
-                    setApiErrors(prev => ({...prev, getUserByUsername: "Unable to check username."}))
-                    Toast.show({
-                        type: 'error',
-                        text1: "Unable to check username.",
-                    })
+                setApiErrors(prev => ({...prev, getUserByUsername: "Unable to check username."}))
+                Toast.show({type: 'error', text1: "Unable to check username."})
             })
     }
 

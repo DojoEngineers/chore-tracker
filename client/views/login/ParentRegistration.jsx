@@ -77,37 +77,24 @@ export const ParentRegistration = () => {
         const username = formData.username.toLowerCase()
         checkUsername(username)
             .then((res) => {
-                if (res) {
-                    Toast.show({
-                        type: 'error',
-                        text1: "Username already exists."
-                    })
-                } else {
+                if (res) Toast.show({type: 'error', text1: "Username already exists."})
+                else {
                     register({name, username, isParent})
                         .then( () => { 
-                            Toast.show({
-                                type: 'success',
-                                text1: "Account created successfully!"
-                            })
+                            Toast.show({type: 'success', text1: "Account created successfully!"})
                             navigation.navigate('PasscodeVerification', {username})
                         })
                         .catch( error => {
                             console.log("register error:", error)
                             setApiErrors(prev => ({...prev, register: "Unable to create account."}))
-                            Toast.show({
-                                type: 'error',
-                                text1: "Unable to create account."
-                            })
+                            Toast.show({type: 'error', text1: "Unable to create account."})
                         })
                 }
             })
             .catch(error => {
                 console.log("checkUsername error:", error)
                 setApiErrors(prev => ({...prev, checkUsername: "Unable to validate username."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to validate username."
-                })
+                Toast.show({type: 'error', text1: "Unable to validate username."})
             })
     }
     

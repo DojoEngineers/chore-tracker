@@ -23,10 +23,7 @@ export const DeleteFamilyMember = ({route}) => {
     const handleDelete = () => {
         updateUser({id: selectedUser._id, isActive: false})
             .then( (res) => { 
-                Toast.show({
-                    type: 'success',
-                    text1: `${selectedUser.name} successfully deleted!`
-                })
+                Toast.show({type: 'success', text1: `${selectedUser.name} successfully deleted!`})
                 const key = isParent ? "parents" : "children"
                 setLoggedInData((prev) => ({
                     ...prev, family: {...prev.family, [key]: prev.family[key]
@@ -37,10 +34,7 @@ export const DeleteFamilyMember = ({route}) => {
             .catch( error => {
                 console.log("updateUser error:", error)
                 setApiErrors(prev => ({...prev, updateUser: "Unable to delete account."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to delete account."
-                })
+                Toast.show({type: 'error', text1: "Unable to delete account."})
             })
     }
 

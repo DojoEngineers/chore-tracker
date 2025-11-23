@@ -64,10 +64,7 @@ export const AddFamilyMember = ({route}) => {
 
     const handleSubmit = () => {
         if (!isReadyToSubmit()){
-            Toast.show({
-                type: 'error',
-                text1: "Please make corrections to the form."
-            })
+            Toast.show({type: 'error', text1: "Please make corrections to the form."})
             return
         }
         const { name } = formData
@@ -75,17 +72,11 @@ export const AddFamilyMember = ({route}) => {
         checkUsername(username)
             .then((res) => {
                 if (res) {
-                    Toast.show({
-                        type: 'error',
-                        text1: "Username already exists."
-                    })
+                    Toast.show({type: 'error', text1: "Username already exists."})
                 } else {
                     register({name, username, isParent, family: loggedInData.family})
                         .then( (res) => { 
-                            Toast.show({
-                                type: 'success',
-                                text1: "Account created successfully!"
-                            })
+                            Toast.show({type: 'success', text1: "Account created successfully!"})
                             setLoggedInData(prev => {
                                 const key = isParent ? "parents" : "children"
                                 const currentFamily = prev.family || { parents: [], children: [] }
@@ -96,20 +87,14 @@ export const AddFamilyMember = ({route}) => {
                         .catch( error => {
                             console.log("register error:", error)
                             setApiErrors(prev => ({...prev, register: "Unable to create account."}))
-                            Toast.show({
-                                type: 'error',
-                                text1: "Unable to create account."
-                            })
+                            Toast.show({type: 'error', text1: "Unable to create account."})
                         })
                 }
             })
             .catch(error => {
                 console.log("checkUsername error:", error)
                 setApiErrors(prev => ({...prev, checkUsername: "Unable to validate username."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to validate username."
-                })
+                Toast.show({type: 'error', text1: "Unable to validate username."})
             })
     }
 

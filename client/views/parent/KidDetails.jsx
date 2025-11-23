@@ -74,10 +74,7 @@ export const KidDetails = ({route}) => {
                 .catch ((error) => {
                     console.log("getChoresByWorker error:", error)
                     setApiErrors(prev => ({...prev, getChoresByWorker: "Unable to get chore information."}))
-                    Toast.show({
-                        type: 'error',
-                        text1: "Unable to get chore information."
-                    })
+                    Toast.show({type: 'error', text1: "Unable to get chore information."})
                 })
                 .finally(() => setLoading(false))
         }, [kid, refreshTrigger])

@@ -26,7 +26,7 @@ export const SetPassword = ({route}) => {
 
     const navigation = useNavigation()
     const { username } = route.params
-    const { login, user, setLoggedInData, setFamilyData } = useLogin()
+    const { login, setLoggedInData, setFamilyData } = useLogin()
 
     // Dynamically set form data
     const handleChange = (name, value) => {
@@ -75,16 +75,9 @@ export const SetPassword = ({route}) => {
             const data = await getCurrentUser()
             setLoggedInData(data)
             setFamilyData(data.family)
-            Toast.show({
-                type: 'success',
-                text1: "New password set!"
-            })
-            if (data.firstLogin) {
-                navigation.replace('TutorialPage1')
-            }
-            else {
-                navigation.replace('Dashboard')
-            }
+            Toast.show({type: 'success', text1: "New password set!"})
+            if (data.firstLogin) navigation.replace('TutorialPage1')
+            else navigation.replace('Dashboard')
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }
@@ -93,10 +86,7 @@ export const SetPassword = ({route}) => {
     // Submit form
     const handleSubmit = () => {
         if (!isReadyToSubmit()){
-            Toast.show({
-                type: 'error',
-                text1: "Please make corrections to the form."
-            })
+            Toast.show({type: 'error', text1: "Please make corrections to the form."})
             return
         }
         const {password, confirmPassword} = formData
@@ -109,10 +99,7 @@ export const SetPassword = ({route}) => {
             .catch(error => {
                 console.log("changePassword error:", error)
                 setApiErrors(prev => ({...prev, changePassword: "Unable to change password."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to change password."
-                })
+                Toast.show({type: 'error', text1: "Unable to change password."})
             })
     }
 
