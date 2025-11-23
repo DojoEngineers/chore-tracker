@@ -36,7 +36,7 @@ export const SplashScreen = () => {
     }, [])
 
     useEffect(() => {
-        if (timerDone && !serverLoading) {
+        if (timerDone && !serverLoading && !apiErrors) {
             navigation.replace('StartingPage', { animationType: "fade" })
         }
     }, [timerDone, serverLoading])
