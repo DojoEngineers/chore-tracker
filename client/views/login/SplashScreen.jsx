@@ -11,28 +11,41 @@ import { BrandBoldText } from "../../components/text/BrandBoldText";
 export const SplashScreen = () => {
 
     const [apiErrors, setApiErrors] = useState("")
-    const [serverLoading, setServerLoading] = useState(true)
+    const [serverLoading, setServerLoading] = useState(false)
     const [timerDone, setTimerDone] = useState(false)
-    const [pageLoading, setPageLoading] = useState(true)
 
     const navigation = useNavigation()
 
     useEffect(() => {
+        let serverResolved = false
+        
+        const loadingTimer = setTimeout(() => {
+            if (!serverResolved) {
+                setServerLoading(true)
+            }
+        }, 300)
+
         pingServer()
-            .then(res => setServerLoading(false))
+            .then(res => {
+                serverResolved = true
+                setServerLoading(false)
+            })
             .catch(error => {
+                serverResolved = true
                 console.log("pingServer error", error)
                 Toast.show({ type: 'error', text1: "Unable to load server."})
                 setApiErrors("Unable to load server.")
                 setServerLoading(false)
             })
-            .finally(() => setPageLoading(false))
 
         const timer = setTimeout(() => {
             setTimerDone(true)
         }, 2000)
 
-        return () => clearTimeout(timer)
+        return () => {
+            clearTimeout(timer)
+            clearTimeout(loadingTimer)
+        }
     }, [])
 
     useEffect(() => {
@@ -54,7 +67,7 @@ export const SplashScreen = () => {
                     </BrandText>
                 }
 
-                {!apiErrors && !pageLoading && serverLoading &&
+                {!apiErrors && serverLoading &&
                     <View>
                         <BrandBoldText
                             className="text-[15px] text-center text-lightPrimaryText dark:text-darkPrimaryText mb-6"

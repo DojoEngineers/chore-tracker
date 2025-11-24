@@ -6,21 +6,20 @@ import { getCurrentUser, loginUser, registerUser, updateUser, checkUsername, get
 const userRouter = Router()
 
 // for testing:
-userRouter.route('/all')
-    .get(getAllUsers)
+// userRouter.route('/all')
+//     .get(getAllUsers)
 
 userRouter.route('/')
-    .get(protect, getCurrentUser)
     .post(registerUser)
     .put(protect, updateUser)
-    //for testing:
-    .delete(deleteUser)
+    // //for testing:
+    // .delete(deleteUser)
 
 userRouter.route('/login')
     .post(loginUser)
 
 userRouter.route('/currentUser')
-    .get(protect, getCurrentUser)
+    .get(getCurrentUser)
 
 userRouter.route('/checkUsername')
     .get(checkUsername)
@@ -31,8 +30,8 @@ userRouter.route('/getUserByUsername')
 userRouter.route('/verify')
     .post(verifyUser)
 
-    userRouter.route('/verifyPassword')
-    .get(protect, verifyPassword)
+userRouter.route('/verifyPassword')
+.get(protect, verifyPassword)
 
 userRouter.route('/resendCode')
     .post(resendCode)

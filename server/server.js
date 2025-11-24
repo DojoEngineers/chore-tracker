@@ -8,11 +8,6 @@ import R2Router from "./routes/r2.route.js"
 import emailjs from "@emailjs/nodejs"
 import { Expo } from 'expo-server-sdk'
 
-emailjs.init({
-    publicKey: process.env.EMAILJS_PUBLIC_KEY,
-    privateKey: process.env.EMAILJS_PRIVATE_KEY
-});
-
 const app = express()
 
 app.use(express.json())
@@ -27,6 +22,10 @@ app.get("/ping", (req, res) => {
 
 config()
 const PORT = process.env.PORT
+emailjs.init({
+    publicKey: process.env.EMAILJS_PUBLIC_KEY,
+    privateKey: process.env.EMAILJS_PRIVATE_KEY
+});
 
 dbConnect()
 
