@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/native"
 import { useLogin } from "../../context/UserContext"
 import { getChoresByWorker } from "../../services/chore.service"
 import { useEffect, useState } from "react"
@@ -6,7 +5,7 @@ import dayjs from 'dayjs';
 import { Header } from "../../components/Header";
 import { HorizontalChoreScroll } from "../../components/HorizontalChoreScroll";
 import { KidNavBar } from "../../components/KidNavBar";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { BrandBoldText } from "../../components/text/BrandBoldText";
 import Toast from "react-native-toast-message";
 
@@ -52,32 +51,37 @@ export const Completed = () => {
 
             <Header />
 
-            <BrandBoldText
-                className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
+            <ScrollView
+                contentContainerClassName="flex-grow justify-between"
+                showsVerticalScrollIndicator={false}
             >
-                Waiting for approval
-            </BrandBoldText>
+                <BrandBoldText
+                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
+                >
+                    Waiting for approval
+                </BrandBoldText>
 
-            <HorizontalChoreScroll chores={chores.complete} apiError={apiErrors.getChoresByWorker}
-                loading={loading} noChoreMessage="No chores waiting for approval"/>
+                <HorizontalChoreScroll chores={chores.complete} apiError={apiErrors.getChoresByWorker}
+                    loading={loading} noChoreMessage="No chores waiting for approval"/>
 
-            <BrandBoldText
-                className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
-            >
-                Approved
-            </BrandBoldText>
+                <BrandBoldText
+                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
+                >
+                    Approved
+                </BrandBoldText>
 
-            <HorizontalChoreScroll chores={chores.approved} apiError={apiErrors.getChoresByWorker}
-                loading={loading} noChoreMessage="No approved chores"/>
+                <HorizontalChoreScroll chores={chores.approved} apiError={apiErrors.getChoresByWorker}
+                    loading={loading} noChoreMessage="No approved chores"/>
 
-            <BrandBoldText
-                className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
-            >
-                Rejected
-            </BrandBoldText>
+                <BrandBoldText
+                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[32px] px-[16px]"
+                >
+                    Rejected
+                </BrandBoldText>
 
-            <HorizontalChoreScroll chores={chores.rejectedUnassigned} apiError={apiErrors.getChoresByWorker}
-                loading={loading} noChoreMessage="No rejected chores"/>
+                <HorizontalChoreScroll chores={chores.rejectedUnassigned} apiError={apiErrors.getChoresByWorker}
+                    loading={loading} noChoreMessage="No rejected chores"/>
+            </ScrollView>
 
             <KidNavBar />
 

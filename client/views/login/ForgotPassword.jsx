@@ -61,7 +61,7 @@ export const ForgotPassword = () => {
             <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
                 <View className="px-[16px]">
     
-                    <View className="flex-row items-center mt-[150px] mb-8 ps-2">
+                    <View className="flex-row items-center mt-[20%] mb-8 ps-2">
                         <Pressable
                             hitSlop={20}
                             onPress={() => navigation.goBack()}

@@ -43,7 +43,7 @@ export const NewChore = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px]">
 
-                <View className="flex-row w-full mt-[50px] items-center mb-8">
+                <View className="flex-row w-full mt-[13%] items-center mb-8">
                     <Pressable
                         hitSlop={20}
                         className="ps-2 pe-8"
@@ -59,46 +59,51 @@ export const NewChore = () => {
 
                 {loggedInData.family.children.length === 0
                     ? 
-                        <View className="flex-1">
-                            <BrandBoldText
-                                className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText ms-3 mb-4"
-                            >
-                                Please add a kid before creating a chore
-                            </BrandBoldText>
+                        <ScrollView
+                            contentContainerClassName="items-center flex-grow"
+                            showsVerticalScrollIndicator={false}
+                        >
+                            <View className="flex-1 w-full">
+                                <BrandBoldText
+                                    className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText ms-3 mb-4"
+                                >
+                                    Please add a kid before creating a chore
+                                </BrandBoldText>
 
-                            <View className="p-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
-                                <View className="flex-row">
-                                    <AddKidIcon />
+                                <View className="p-[25px] rounded-3xl bg-[#9FB6AE] dark:bg-[#2F3339] w-full my-3">
+                                    <View className="flex-row">
+                                        <AddKidIcon />
 
-                                    <BrandBoldText className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText ms-6">
-                                        How to add a kid
-                                    </BrandBoldText>
+                                        <BrandBoldText className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText ms-6">
+                                            How to add a kid
+                                        </BrandBoldText>
+                                    </View>
+
+                                    <BrandText className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText my-4 ms-12">
+                                        Tap the button to add a kid. After adding a kid, they will receive an email with a verification code.
+                                    </BrandText>
+
+                                    <View className="bg-[#DFE8E4] dark:bg-darkBg rounded-3xl py-4 px-5 ms-11">
+                                        <BrandBoldText className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText">
+                                            Next step: 
+                                            <BrandText> Your kid will use the ‘Verify’ link on our home page to enter the code and create their account.</BrandText>
+                                        </BrandBoldText>
+                                    </View>
                                 </View>
 
-                                <BrandText className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText my-4 ms-12">
-                                    Tap the button to add a kid. After adding a kid, they will receive an email with a verification code.
-                                </BrandText>
+                                <View className="w-full mt-6">
+                                    <PrimaryButton onPress={() => navigation.navigate("AddFamilyMember", {isParent:false})} label="Add a kid" />
+                                </View>
 
-                                <View className="bg-[#DFE8E4] dark:bg-darkBg rounded-3xl py-4 px-5 ms-11">
-                                    <BrandBoldText className="text-[16px] text-lightPrimaryText dark:text-darkPrimaryText">
-                                        Next step: 
-                                        <BrandText> Your kid will use the ‘Verify’ link on our home page to enter the code and create their account.</BrandText>
-                                    </BrandBoldText>
+                                <View className="flex-1 items-center w-full mt-[10%] mb-[5%]">
+                                    <LargeKidsIcon />
+
+                                    <BrandText className="text-[16px] text-[#737780] dark:text-[#A1A4AA] mt-[30px]">
+                                        No kids added yet
+                                    </BrandText>
                                 </View>
                             </View>
-
-                            <View className="w-full mt-6">
-                                <PrimaryButton onPress={() => navigation.navigate("AddFamilyMember", {isParent:false})} label="Add a kid" />
-                            </View>
-
-                            <View className="flex-1 items-center w-full mt-[50px]">
-                                <LargeKidsIcon />
-
-                                <BrandText className="text-[16px] text-[#737780] dark:text-[#A1A4AA] mt-[30px]">
-                                    No kids added yet
-                                </BrandText>
-                            </View>
-                        </View>
+                        </ScrollView>
 
                     :
                         <View className="flex-1">

@@ -83,7 +83,7 @@ export const KidDetails = ({route}) => {
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg">
 
-            <View className="flex-row mt-[75px] items-center ps-[20px] mb-2">
+            <View className="flex-row mt-[13%] items-center ps-[20px] mb-2">
                 <Pressable
                     hitSlop={20}
                     onPress={() => navigation.goBack()}

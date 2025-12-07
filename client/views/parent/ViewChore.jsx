@@ -165,7 +165,7 @@ export const ViewChore = ({route}) => {
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px]">
         
-            <View className="flex-row w-full mt-[70px] items-center mb-4">
+            <View className="flex-row w-full mt-[13%] items-center mb-4">
                 <Pressable
                     hitSlop={20}
                     className="ps-2 pe-8"
@@ -424,7 +424,7 @@ export const ViewChore = ({route}) => {
                             ?
                                 loggedInData.isParent
                                     ?
-                                        <View className="mb-12">
+                                        <View className="mb-[10%]">
                                             <Pressable
                                                 onPress={() => navigation.navigate("NewChoreDetails", {chore})}
                                                 className="p-[10px] rounded-full items-center justify-center bg-[#9FB6AE] dark:bg-darkButton w-full h-[56px] mt-4"
@@ -445,7 +445,7 @@ export const ViewChore = ({route}) => {
                                         </View>
 
                                     : chore.worker._id === loggedInData._id ?
-                                        <View className="mb-12">
+                                        <View className="mb-[10%]">
                                             <Pressable
                                                 onPress={takeBeforePhoto}
                                                 className="p-[10px] rounded-full items-center justify-center bg-[#84A99D] w-full h-[56px] mt-4"
@@ -470,7 +470,7 @@ export const ViewChore = ({route}) => {
                         }
 
                         {(chore.stage === "complete" && loggedInData.isParent) && 
-                            <View className="mb-12">
+                            <View className="mb-[10%]">
 
                                 <Pressable
                                     onPress={!isButtonLoading ? handleApprove : null}

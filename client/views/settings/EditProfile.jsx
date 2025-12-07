@@ -123,7 +123,7 @@ export const EditProfile = () => {
             <View className="flex-1 bg-lightBg dark:bg-darkBg">
                 <View className="flex-1 justify-between">
                     <View className="px-[16px]">
-                        <View className="flex-row mt-[75px]">
+                        <View className="flex-row mt-[13%]">
                             <Pressable
                                 className="pt-4 ps-2"
                                 hitSlop={20}

@@ -17,7 +17,7 @@ export const Header = () => {
                 <TopSquiggle/>
             </View>
 
-            <View className="flex-row mt-[50px] mb-6 justify-between ps-[16px] pe-[35px] items-center">
+            <View className="flex-row mt-[12%] mb-6 justify-between ps-[16px] pe-[35px] items-center">
                 <View className="flex-row items-center">
                     <Pressable
                         onPress={() => navigation.replace("Dashboard", {animationType: "fade_from_bottom"})}

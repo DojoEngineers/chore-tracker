@@ -114,7 +114,7 @@ export const SetPassword = ({route}) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
                 <View className="px-[16px]">
-                    <View className="flex-row ps-2 mt-[150px] mb-10 items-center">
+                    <View className="flex-row ps-2 mt-[20%] mb-10 items-center">
                         <Pressable
                             hitSlop={20}
                             onPress={() => navigation.goBack()}

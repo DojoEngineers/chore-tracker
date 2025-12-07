@@ -256,7 +256,7 @@ export const NewChoreDetails = ({ route }) => {
             >
                 <View className="flex-1 px-[16px] bg-lightBg dark:bg-grayBg">
 
-                    <View className="flex-row w-full mt-[70px] items-center mb-4">
+                    <View className="flex-row w-full mt-[13%] items-center mb-4">
                         <Pressable
                             hitSlop={20}
                             className="ps-1 pe-6"
@@ -493,7 +493,7 @@ export const NewChoreDetails = ({ route }) => {
                         </View>
                     </View>
 
-                    <View className="flex-1 justify-end mb-12">
+                    <View className="flex-1 justify-end my-12">
                         <PrimaryButton onPress={handleSubmit} label={chore? "Submit edits" : "Add"} disabled={isButtonLoading}/>
                     </View>
 

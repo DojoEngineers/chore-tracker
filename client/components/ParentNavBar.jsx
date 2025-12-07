@@ -19,8 +19,8 @@ export const ParentNavBar = () => {
 
     return (
         <View className="relative">
-            <View className="bg-white dark:bg-[#333740] w-full h-[100px] border-t-2
-                dark:border-[#737780] border-[#ECEDEE] flex-row justify-between pb-4 px-[22px]">
+            <View className="bg-white dark:bg-[#333740] w-full py-[6%] border-t-2
+                dark:border-[#737780] border-[#ECEDEE] flex-row justify-between px-[22px]">
                 
                 <Pressable
                     className="justify-center items-center"

@@ -19,7 +19,7 @@ export const ManageFamily = () => {
 
             <View className="flex-1 items-center px-[16px]">
 
-                <View className="flex-row mt-[75px] mb-8">
+                <View className="flex-row mt-[13%] mb-8">
                     <Pressable
                         className="pt-4 ps-2"
                         hitSlop={20}

@@ -86,7 +86,7 @@ export const Login = () => {
                 <View>
                     <TopSquiggle />
 
-                    <View className="px-[16px] mt-[75px]">
+                    <View className="px-[16px] mt-[13%]">
                         <Pressable
                             className="ps-2"
                             hitSlop={20}

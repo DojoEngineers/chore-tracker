@@ -51,7 +51,7 @@ export const UsernameVerification = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View className="flex-1 bg-lightBg dark:bg-darkBg items-center justify-between">
                 <View className="px-[16px] w-full">
-                    <View className="flex-row mt-[150px] mb-4 items-center ps-2">
+                    <View className="flex-row mt-[20%] mb-4 items-center ps-2">
                         <Pressable
                             hitSlop={20}
                             onPress={() => navigation.goBack()}
