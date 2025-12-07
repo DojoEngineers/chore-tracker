@@ -18,12 +18,16 @@ export const VerifyPassword = ({route}) => {
     const [password, setPassword] = useState()
     const [ apiErrors, setApiErrors ] = useState({})
     const [modalVisible, setModalVisible] = useState(false)
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
     const {loggedInData, logout} = useLogin()
     const {deleteAccount = false} = route.params
 
     const handleSubmit = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         const username = loggedInData.username
         verifyPassword({username, password})
             .then(res => {
@@ -37,9 +41,13 @@ export const VerifyPassword = ({route}) => {
                 setApiErrors(prev => ({...prev, verifyPassword: "Unable to verify password."}))
                 Toast.show({type: 'error', text1: "Unable to verify password."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     const handleDelete = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         updateUser({isActive: false})
             .then( () => { 
                 Toast.show({
@@ -60,6 +68,7 @@ export const VerifyPassword = ({route}) => {
                     text1: "Unable to delete account."
                 })
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     return (
@@ -111,7 +120,7 @@ export const VerifyPassword = ({route}) => {
                     </View>
 
                     <View>
-                        <PrimaryButton onPress={handleSubmit} label="Submit" />
+                        <PrimaryButton onPress={handleSubmit} label="Submit" disabled={isButtonLoading}/>
                     </View>
                 </View>
 
@@ -155,11 +164,15 @@ export const VerifyPassword = ({route}) => {
                             </BrandText>
     
                             <Pressable
-                                className="p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full"
-                                onPress={handleDelete}
+                                className={`
+                                    p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full
+                                    ${isButtonLoading ? 'opacity-50' : ''}
+                                `}
+                                onPress={!isButtonLoading ? handleDelete : null}
+                                disabled={isButtonLoading}
                             >
                                 <BrandBoldText className="text-darkPrimaryText text-[16px]">
-                                    Delete
+                                    {!isButtonLoading ? "Delete" : "Loading..."}
                                 </BrandBoldText>
                             </Pressable>
                         </View>

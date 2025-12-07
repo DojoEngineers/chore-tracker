@@ -17,6 +17,7 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
 
     const [kidComments, setKidComments] = useState("")
     const [commentsError, setCommentsError] = useState("")
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
     const colorScheme = useColorScheme()
@@ -32,31 +33,26 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
     }
 
     const handleComplete = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         if (commentsError) {
-            Toast.show({
-                type: 'error',
-                text1: "Please make corrections to the form."
-            })
+            Toast.show({type: 'error', text1: "Please make corrections to the form."})
+            setIsButtonLoading(false)
             return
         }
 
         updateChore({_id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments})
             .then(() => {
-                Toast.show({
-                    type: 'success',
-                    text1: "Chore completed!"
-                })
+                Toast.show({type: 'success', text1: "Chore completed!"})
                 navigation.goBack()
             })
-
             .catch((error) => {
                 console.log("completeChore error:", error)
                 setApiErrors(prev => ({...prev, completeChore: "Unable to complete chore."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to complete chore."
-                })
+                Toast.show({type: 'error', text1: "Unable to complete chore."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     const takeAfterPhoto = async () => {
@@ -88,19 +84,13 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
                         .catch((error) => {
                             console.log("addAfterImageToChore error:", error)
                             setApiErrors(prev => ({...prev, addAfterImageToChore: "Unable to add after image to chore."}))
-                            Toast.show({
-                                type: 'error',
-                                text1: "Unable to add after image to chore."
-                            })
+                            Toast.show({type: 'error', text1: "Unable to add after image to chore."})
                         })
                 })
                 .catch((error) => {
                     console.log("addAfterImage error:", error)
                     setApiErrors(prev => ({...prev, addAfterImage: "Unable to save after image."}))
-                    Toast.show({
-                        type: 'error',
-                        text1: "Unable to save after image."
-                    })
+                    Toast.show({type: 'error', text1: "Unable to save after image."})
                 })
 
             handleComplete()
@@ -156,21 +146,29 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
                     />
                 
                     <Pressable
-                        className="p-[10px] items-center justify-center bg-[#84A99D] rounded-full w-full"
-                        onPress={takeAfterPhoto}
+                        className={`
+                            p-[10px] items-center justify-center bg-[#84A99D] rounded-full w-full
+                            ${isButtonLoading ? 'opacity-50' : ''}
+                        `}
+                        onPress={!isButtonLoading ? takeAfterPhoto : null}
+                        disabled={isButtonLoading}
                     >
                         <BrandBoldText className="text-darkPrimaryText text-[16px]">
-                            Submit after photo
+                            {!isButtonLoading ? "Submit after photo" : "Loading..."}
                         </BrandBoldText>
                     </Pressable>
 
                     {!needsPics &&
                         <Pressable
-                            className="p-[10px] items-center justify-center bg-[#455C56] rounded-full w-full mt-4"
-                            onPress={handleComplete}
+                            className={`
+                                p-[10px] items-center justify-center bg-[#455C56] rounded-full w-full mt-4
+                                ${isButtonLoading ? 'opacity-50' : ''}
+                            `}
+                            onPress={!isButtonLoading ? handleComplete : null}
+                            disabled={isButtonLoading}
                         >
                             <BrandBoldText className="text-darkPrimaryText text-[16px]">
-                                Complete without photo
+                                {!isButtonLoading ? "Complete without photo" : "Loading..."}
                             </BrandBoldText>
                         </Pressable>
                     }

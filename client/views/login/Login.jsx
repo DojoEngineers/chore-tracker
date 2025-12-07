@@ -18,6 +18,7 @@ export const Login = () => {
 
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState({username: '', password: ''})
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
     const { login: loginUser, user, setLoggedInData } = useLogin()
@@ -40,6 +41,9 @@ export const Login = () => {
     }
 
     const handleLogin = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         const {password} = formData
         const username = formData.username.toLowerCase()
         getUserByUsername(username)
@@ -73,6 +77,7 @@ export const Login = () => {
                 setApiErrors(prev => ({...prev, getUserByUsername: "Unable to check username."}))
                 Toast.show({type: 'error', text1: "Unable to check username."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     return (
@@ -136,7 +141,7 @@ export const Login = () => {
                             </Pressable>
                         </View>
 
-                        <PrimaryButton onPress={handleLogin} label="Sign in" />
+                        <PrimaryButton onPress={handleLogin} label="Sign in" disabled={isButtonLoading}/>
                     
                     </View>
                 </View>

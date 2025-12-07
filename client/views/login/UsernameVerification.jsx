@@ -17,10 +17,14 @@ export const UsernameVerification = () => {
 
     const [username, setUsername] = useState('')
     const [ apiErrors, setApiErrors ] = useState({})
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
 
     const handleSubmit = async () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         getUserByUsername(username.toLowerCase())
             .then ( res => {
                 if (res && !res.isActive) {
@@ -40,6 +44,7 @@ export const UsernameVerification = () => {
                 setApiErrors(prev => ({...prev, getUserByUsername: "Unable to validate username."}))
                 Toast.show({type: 'error', text1: "Unable to validate username."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     return (
@@ -80,7 +85,7 @@ export const UsernameVerification = () => {
                         />
                     </View>
 
-                    <PrimaryButton onPress={handleSubmit} label="Submit" />
+                    <PrimaryButton onPress={handleSubmit} label="Submit" disabled={isButtonLoading}/>
                 </View>
 
                 <View className="relative w-full">

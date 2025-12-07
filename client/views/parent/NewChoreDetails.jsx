@@ -111,6 +111,7 @@ export const NewChoreDetails = ({ route }) => {
     const [dateTimeMode, setDateTimeMode] = useState("")
     const [formErrors, setFormErrors] = useState({dueDate: false, details: false})
     const [editScope, setEditScope] = useState('instance')
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
     
     const { title, chore } = route.params || {}
     const navigation = useNavigation()
@@ -187,8 +188,12 @@ export const NewChoreDetails = ({ route }) => {
     }
 
     const handleSubmit = async () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         if (formErrors.details || formErrors.dueDate || formData.kids.length === 0) {
             Toast.show({type: 'error', text1: "Please make corrections to the form."})
+            setIsButtonLoading(false)
             return
         }
 
@@ -238,6 +243,7 @@ export const NewChoreDetails = ({ route }) => {
                 setApiErrors(prev => ({...prev, chore: "Unable to save chore."}))
                 Toast.show({type: 'error', text1: "Unable to save chore."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     return (
@@ -488,7 +494,7 @@ export const NewChoreDetails = ({ route }) => {
                     </View>
 
                     <View className="flex-1 justify-end mb-12">
-                        <PrimaryButton onPress={handleSubmit} label={chore? "Submit edits" : "Add"} />
+                        <PrimaryButton onPress={handleSubmit} label={chore? "Submit edits" : "Add"} disabled={isButtonLoading}/>
                     </View>
 
                     <DateTimePickerModal

@@ -17,6 +17,7 @@ export const PasscodeVerification = ({route}) => {
 
     const [value, setValue] = useState('')
     const [ apiErrors, setApiErrors ] = useState({})
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
     const { username, updatingUsername = false } = route.params
@@ -25,6 +26,9 @@ export const PasscodeVerification = ({route}) => {
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({value, setValue})
 
     const handleVerify = value => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         const data = {username, verificationCode: value}
         verify(data)
             .then(res => {
@@ -38,6 +42,7 @@ export const PasscodeVerification = ({route}) => {
                 setApiErrors(prev => ({...prev, verify: "Unable to verify account. Wrong or expired code."}))
                 Toast.show({type: 'error', text1: "Unable to verify account.", text2: "Wrong or expired code."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     const resend = (username) => {
@@ -113,7 +118,7 @@ export const PasscodeVerification = ({route}) => {
                     </View>
 
                     <View>
-                        <PrimaryButton onPress={() => handleVerify(value)} label="Verify" />
+                        <PrimaryButton onPress={() => handleVerify(value)} label="Verify" disabled={isButtonLoading}/>
                     </View>
                 </View>
 

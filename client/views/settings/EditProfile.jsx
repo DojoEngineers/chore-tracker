@@ -24,6 +24,7 @@ export const EditProfile = () => {
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState({name: loggedInData.name, username: loggedInData.username})
     const [formErrors, setFormErrors] = useState({})
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
     
     const handleChange = (name, value) => {
         setFormData(prev => ({...prev, [name]: value}))
@@ -57,10 +58,15 @@ export const EditProfile = () => {
     }
 
     const handleSubmit = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         if (!isReadyToSubmit()){
             Toast.show({type: 'error', text1: "Please make corrections to the form."})
+            setIsButtonLoading(false)
             return
         }
+
         const { name } = formData
         const username = formData.username.toLowerCase()
         if (loggedInData.username != username) {
@@ -91,6 +97,7 @@ export const EditProfile = () => {
                     setApiErrors(prev => ({...prev, checkUsername: "Unable to validate username."}))
                     Toast.show({type: 'error', text1: "Unable to validate username."})
                 })
+                .finally(() => setIsButtonLoading(false))
         }
         else if (loggedInData.name != name) {
             updateUser({name})
@@ -104,7 +111,11 @@ export const EditProfile = () => {
                     setApiErrors(prev => ({...prev, updateUser: "Unable to edit profile."}))
                     Toast.show({type: 'error', text1: "Unable to edit profile."})
                 })
-        } else Toast.show({type: 'error', text1: "No changes have been made."})
+                .finally(() => setIsButtonLoading(false))
+        } else {
+            Toast.show({type: 'error', text1: "No changes have been made."})
+            setIsButtonLoading(false)
+        }
     }
 
     return (
@@ -178,7 +189,7 @@ export const EditProfile = () => {
                     </View>
 
                     <View className="px-[16px] w-full mb-[90px] z-10">
-                        <PrimaryButton onPress={handleSubmit} label="Confirm"/>
+                        <PrimaryButton onPress={handleSubmit} label="Confirm" disabled={isButtonLoading}/>
                     </View>
                 </View>
                 

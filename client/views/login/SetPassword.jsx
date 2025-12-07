@@ -23,6 +23,7 @@ export const SetPassword = ({route}) => {
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
     const [formErrors, setFormErrors] = useState({})
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
     const { username } = route.params
@@ -85,10 +86,15 @@ export const SetPassword = ({route}) => {
 
     // Submit form
     const handleSubmit = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         if (!isReadyToSubmit()){
             Toast.show({type: 'error', text1: "Please make corrections to the form."})
+            setIsButtonLoading(false)
             return
         }
+        
         const {password, confirmPassword} = formData
         const data = {username, password, confirmPassword}
         changePassword(data)
@@ -101,6 +107,7 @@ export const SetPassword = ({route}) => {
                 setApiErrors(prev => ({...prev, changePassword: "Unable to change password."}))
                 Toast.show({type: 'error', text1: "Unable to change password."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     return (
@@ -151,7 +158,7 @@ export const SetPassword = ({route}) => {
                     </View>
 
                     <View>
-                        <PrimaryButton onPress={handleSubmit} label="Submit" />
+                        <PrimaryButton onPress={handleSubmit} label="Submit" disabled={isButtonLoading}/>
                     </View>
                 </View>
 

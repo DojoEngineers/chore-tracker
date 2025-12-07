@@ -44,6 +44,7 @@ export const ViewChore = ({route}) => {
     const [loading, setLoading] = useState("Loading chore...")
     const [selectedImage, setSelectedImage] = useState()
     const [modalVisible, setModalVisible] = useState({delete: false, reject: false, complete: false, image: false})
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
     const {id} = route.params
@@ -102,6 +103,9 @@ export const ViewChore = ({route}) => {
     )
 
     const handleApprove = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         updateChore({_id: id, stage: "approved", stageDate: dayjs().toISOString()})
             .then(() => {
                 Toast.show({type: 'success', text1: "Chore approved!"})
@@ -112,6 +116,7 @@ export const ViewChore = ({route}) => {
                 setApiErrors(prev => ({...prev, approveChore: "Unable to approve chore."}))
                 Toast.show({type: 'error', text1: "Unable to approve chore."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     const takeBeforePhoto = async () => {
@@ -468,11 +473,15 @@ export const ViewChore = ({route}) => {
                             <View className="mb-12">
 
                                 <Pressable
-                                    onPress={handleApprove}
-                                    className="p-[10px] rounded-full items-center justify-center dark:bg-[#B3EAD3] bg-[#84A99D] w-full h-[56px] mt-5"
+                                    onPress={!isButtonLoading ? handleApprove : null}
+                                    disabled={isButtonLoading}
+                                    className={`
+                                        p-[10px] rounded-full items-center justify-center dark:bg-[#B3EAD3] bg-[#84A99D] w-full h-[56px] mt-5
+                                        ${isButtonLoading ? 'opacity-50' : ''}
+                                    `}
                                 >
                                     <BrandBoldText className="text-darkPrimaryText dark:text-lightPrimaryText text-[20px] ms-4">
-                                        Approve
+                                        {!isButtonLoading ? "Approve" : "Loading..."}
                                     </BrandBoldText>
                                 </Pressable>
 

@@ -16,11 +16,15 @@ export const ForgotPassword = () => {
 
     const [username, setUsername] = useState("")
     const [ apiErrors, setApiErrors ] = useState({})
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
     const {logout} = useLogin()
 
     const resetPassword = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         getUserByUsername(username.toLowerCase())
             .then(res => {
                 if (res && !res.isActive) Toast.show({type: 'error', text1: "Account Deleted."})
@@ -49,6 +53,7 @@ export const ForgotPassword = () => {
                 setApiErrors(prev => ({...prev, getUserByUsername: "Unable to check username."}))
                 Toast.show({type: 'error', text1: "Unable to check username."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     return (
@@ -72,7 +77,7 @@ export const ForgotPassword = () => {
                     <View className="items-center mb-8 px-[4px]">
                         <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
                             Don't worry! It happens. Please enter the email address linked to your account.
-                            You will receive a message with a temporary password.
+                            You will receive an email with a temporary password.
                         </BrandText>
                     </View>
 
@@ -97,7 +102,7 @@ export const ForgotPassword = () => {
                     </View>
             
                     <View>
-                        <PrimaryButton onPress={resetPassword} label="Submit" />
+                        <PrimaryButton onPress={resetPassword} label="Submit" disabled={isButtonLoading}/>
                     </View>
                 </View>
 

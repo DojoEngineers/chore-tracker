@@ -26,6 +26,7 @@ export const ParentRegistration = () => {
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
     const [formErrors, setFormErrors] = useState({})
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
 
@@ -65,13 +66,15 @@ export const ParentRegistration = () => {
 
     // Submit form
     const handleSubmit = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         if (!isReadyToSubmit()){
-            Toast.show({
-                type: 'error',
-                text1: "Please make corrections to the form."
-            })
+            Toast.show({type: 'error', text1: "Please make corrections to the form."})
+            setIsButtonLoading(false)
             return
         }
+        
         const { name } = formData
         const isParent = true
         const username = formData.username.toLowerCase()
@@ -96,6 +99,7 @@ export const ParentRegistration = () => {
                 setApiErrors(prev => ({...prev, checkUsername: "Unable to validate username."}))
                 Toast.show({type: 'error', text1: "Unable to validate username."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
     
     return (
@@ -152,7 +156,7 @@ export const ParentRegistration = () => {
                             />
                         </View>
 
-                        <PrimaryButton onPress={handleSubmit} label="Register"/>
+                        <PrimaryButton onPress={handleSubmit} label="Register" disabled={isButtonLoading}/>
                     </View>
                 </View>
 

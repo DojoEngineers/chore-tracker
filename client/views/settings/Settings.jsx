@@ -16,18 +16,34 @@ import { NotificationsIcon } from "../../components/icons/NotificationsIcon"
 import { DarkModeIcon } from "../../components/icons/DarkModeIcon"
 import { NotificationsSwitch } from "../../components/NotificationsSwitch"
 import { ThemeDropDown } from "../../components/ThemeDropDown"
+import { useState } from "react"
+import Toast from "react-native-toast-message"
 
 export const Settings = () => {
+
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
+    const [ apiErrors, setApiErrors ] = useState({})
 
     const navigation = useNavigation()
     const {loggedInData, logout} = useLogin()
 
     const handleLogout = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         logout()
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'Login', params: { animationType: 'slide_from_left' }}]
-        })
+            .then(() => {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Login', params: { animationType: 'slide_from_left' }}]
+                })
+            })
+            .catch(error => {
+                console.log("logout error:", error)
+                setApiErrors(prev => ({...prev, logout: "Unable to logout."}))
+                Toast.show({type: 'error', text1: "Unable to logout."})
+            })
+            .finally(() => setIsButtonLoading(false))
     }
 
     return (
@@ -45,6 +61,12 @@ export const Settings = () => {
                         Settings
                     </BrandBoldText>
                 </View>
+
+                {apiErrors.logout && (
+                    <BrandText className="text-red-500 text-center">
+                        {apiErrors.logout}
+                    </BrandText>
+                )}
 
                 <SettingsButton icon={EditProfileIcon} text="Edit Profile" onPress={() => navigation.navigate("EditProfile")}/>
 
@@ -91,14 +113,18 @@ export const Settings = () => {
 
             <View className="mb-[50px]">
                 <Pressable
-                    onPress={handleLogout}
-                    className="p-[10px] rounded-full items-center justify-center bg-lightButton w-full h-[56px] mb-4"
+                    onPress={!isButtonLoading ? handleLogout : null}
+                    disabled={isButtonLoading}
+                    className={
+                        `p-[10px] rounded-full items-center justify-center bg-lightButton w-full h-[56px] mb-4
+                        ${isButtonLoading ? 'opacity-50' : ''}
+                    `}
                 >
                     <View className="flex-1 flex-row items-center">
                         <LogoutIcon />
 
                         <BrandBoldText className="text-white text-[20px] ms-4">
-                            Logout
+                            {!isButtonLoading ? "Logout" : "Loading..."}
                         </BrandBoldText>
                     </View>
                 </Pressable>

@@ -26,6 +26,7 @@ export const AddFamilyMember = ({route}) => {
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
     const [formErrors, setFormErrors] = useState({})
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
     const { isParent } = route.params
@@ -63,10 +64,15 @@ export const AddFamilyMember = ({route}) => {
     }
 
     const handleSubmit = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         if (!isReadyToSubmit()){
             Toast.show({type: 'error', text1: "Please make corrections to the form."})
+            setIsButtonLoading(false)
             return
         }
+
         const { name } = formData
         const username = formData.username.toLowerCase()
         checkUsername(username)
@@ -96,6 +102,7 @@ export const AddFamilyMember = ({route}) => {
                 setApiErrors(prev => ({...prev, checkUsername: "Unable to validate username."}))
                 Toast.show({type: 'error', text1: "Unable to validate username."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     return (
@@ -156,7 +163,7 @@ export const AddFamilyMember = ({route}) => {
                         />
                     </View>
 
-                    <PrimaryButton onPress={handleSubmit} label="Submit"/>
+                    <PrimaryButton onPress={handleSubmit} label="Submit" disabled={isButtonLoading}/>
                 </View>
 
                 <View className="items-end">

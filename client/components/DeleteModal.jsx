@@ -5,34 +5,31 @@ import { CloseIcon } from "./icons/CloseIcon"
 import { updateChore } from "../services/chore.service"
 import { useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
+import { useState } from "react"
 
 export const DeleteModal = ({visible, setVisible, setApiErrors, id, setRefreshTrigger}) => {
+
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
 
     const handleDelete = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         updateChore({_id: id, isActive: false})
             .then( () => { 
-                Toast.show({
-                    type: 'success',
-                    text1: "Chore successfully deleted!"
-                })
+                Toast.show({type: 'success', text1: "Chore successfully deleted!"})
                 setVisible(prev => ({...prev, delete: false}))
-                if (setRefreshTrigger) {
-                    setRefreshTrigger(prev => prev + 1)
-                }
-                else {
-                    navigation.goBack()
-                }
+                if (setRefreshTrigger) setRefreshTrigger(prev => prev + 1)
+                else navigation.goBack()
             })
             .catch( error => {
                 console.log("deleteChore error:", error)
                 setApiErrors(prev => ({...prev, deleteChore: "Unable to delete chore."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to delete chore."
-                })
+                Toast.show({type: 'error', text1: "Unable to delete chore."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     return (
@@ -65,11 +62,15 @@ export const DeleteModal = ({visible, setVisible, setApiErrors, id, setRefreshTr
                     </BrandText>
 
                     <Pressable
-                        className="p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full"
-                        onPress={handleDelete}
+                        className={`
+                            p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full
+                            ${isButtonLoading ? 'opacity-50' : ''}
+                        `}
+                        onPress={!isButtonLoading ? handleDelete : null}
+                        disabled={isButtonLoading}
                     >
                         <BrandBoldText className="text-darkPrimaryText text-[16px]">
-                            Delete
+                            {!isButtonLoading ? "Delete" : "Loading..."}
                         </BrandBoldText>
                     </Pressable>
                 </View>

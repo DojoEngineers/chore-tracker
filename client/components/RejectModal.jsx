@@ -17,6 +17,7 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
     const [parentComments, setParentComments] = useState("")
     const [stage, setStage] = useState("rejectedUnassigned")
     const [commentsError, setCommentsError] = useState("")
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
     const colorScheme = useColorScheme()
@@ -32,30 +33,26 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
     }
 
     const handleReject = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         if (commentsError) {
-            Toast.show({
-                type: 'error',
-                text1: "Please make corrections to the form."
-            })
+            Toast.show({type: 'error', text1: "Please make corrections to the form."})
+            setIsButtonLoading(false)
             return
         }
 
         updateChore({_id: id, stage, stageDate: dayjs().toISOString(), parentComments})
             .then(() => {
-                Toast.show({
-                    type: 'success',
-                    text1: "Chore rejected!"
-                })
+                Toast.show({type: 'success', text1: "Chore rejected!"})
                 navigation.goBack()
             })
             .catch((error) => {
                 console.log("rejectChore error:", error)
                 setApiErrors(prev => ({...prev, rejectChore: "Unable to reject chore."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to reject chore."
-                })
+                Toast.show({type: 'error', text1: "Unable to reject chore."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     const handleCheckbox = () => {
@@ -121,11 +118,15 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id}) => {
                         />
                         
                         <Pressable
-                            className="p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full"
-                            onPress={handleReject}
+                            className={`
+                                p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full
+                                ${isButtonLoading ? 'opacity-50' : ''}
+                            `}
+                            onPress={!isButtonLoading ? handleReject : null}
+                            disabled={isButtonLoading}
                         >
                             <BrandBoldText className="text-darkPrimaryText text-[16px]">
-                                Reject
+                                {!isButtonLoading ? "Reject" : "Loading..."}
                             </BrandBoldText>
                         </Pressable>
                     </View>

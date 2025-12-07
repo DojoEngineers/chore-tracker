@@ -15,12 +15,16 @@ export const DeleteFamilyMember = ({route}) => {
     const [modalVisible, setModalVisible] = useState(false)
     const [selectedUser, setSelectedUser] = useState({})
     const [ apiErrors, setApiErrors ] = useState({})
+    const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const {users, isParent} = route.params
     const navigation = useNavigation()
     const {setLoggedInData} = useLogin()
 
     const handleDelete = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
         updateUser({id: selectedUser._id, isActive: false})
             .then( (res) => { 
                 Toast.show({type: 'success', text1: `${selectedUser.name} successfully deleted!`})
@@ -36,6 +40,7 @@ export const DeleteFamilyMember = ({route}) => {
                 setApiErrors(prev => ({...prev, updateUser: "Unable to delete account."}))
                 Toast.show({type: 'error', text1: "Unable to delete account."})
             })
+            .finally(() => setIsButtonLoading(false))
     }
 
     return(
@@ -147,11 +152,15 @@ export const DeleteFamilyMember = ({route}) => {
                         </BrandText>
 
                         <Pressable
-                            className="p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full"
-                            onPress={handleDelete}
+                            className={`
+                                p-[10px] items-center justify-center bg-[#F40000] rounded-full w-full
+                                ${isButtonLoading ? 'opacity-50' : ''}
+                            `}
+                            onPress={!isButtonLoading ? handleDelete : null}
+                            disabled={isButtonLoading}
                         >
                             <BrandBoldText className="text-darkPrimaryText text-[16px]">
-                                Delete
+                                {!isButtonLoading ? "Delete" : "Loading..."}
                             </BrandBoldText>
                         </Pressable>
                     </View>
