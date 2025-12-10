@@ -18,6 +18,7 @@ export const ThemeDropDown = () => {
 
     return (
         <DropDownPicker
+            listMode="SCROLLVIEW"
             open={open}
             value={theme}
             placeholder=''
@@ -28,7 +29,7 @@ export const ThemeDropDown = () => {
                 setAppTheme(newValue)
             }}
             setItems={setItems}
-            containerStyle={{ width: 90 }}
+            containerStyle={{ width: 100 }}
             style={{
                 backgroundColor: colorScheme === 'dark' ? '#22252B' : '#F5F8F6',
                 borderColor: colorScheme === 'dark' ? '#fff' : '#000',

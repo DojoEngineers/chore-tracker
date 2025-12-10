@@ -81,9 +81,7 @@ export const Settings = () => {
                     
                     <SettingsButton icon={ChangePasswordIcon} text="Change Password" onPress={() => navigation.navigate("VerifyPassword", {deleteAccount: false})}/>
 
-                    <View
-                        className="flex-row items-center justify-between w-full py-5"
-                    >
+                    <View className="flex-row items-center justify-between w-full py-5">
                         <View className="flex-row items-center">
                             <NotificationsIcon />
 
@@ -95,9 +93,7 @@ export const Settings = () => {
                         <NotificationsSwitch />
                     </View>
 
-                    <View
-                        className="flex-row items-center justify-between w-full"
-                    >
+                    <View className="flex-row items-center justify-between w-full">
                         <View className="flex-row items-center">
                             <DarkModeIcon />
 

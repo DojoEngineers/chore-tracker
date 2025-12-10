@@ -41,10 +41,7 @@ export default {
         backgroundColor: "#ffffff"
       },
       edgeToEdgeEnabled: false, // Changed this for dark mode fix
-      androidStatusBar: {
-        barStyle: "dark-content",
-        backgroundColor: "#F5F8F6"
-      }
+      softwareKeyboardLayoutMode: "pan"
     },
     
     web: {
