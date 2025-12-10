@@ -173,10 +173,16 @@ export const ViewChore = ({route}) => {
                 >
                     <BackArrow />
                 </Pressable>
-
-                <BrandBoldText className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText">
-                    {chore?.title}
-                </BrandBoldText>
+                
+                <View className="flex-1">
+                    <BrandBoldText
+                        className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >
+                        {chore?.title}
+                    </BrandBoldText>
+                </View>
             </View>
 
             {API_ERROR_KEYS.map(key => 

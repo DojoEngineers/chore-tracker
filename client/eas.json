@@ -16,6 +16,12 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+      "appleId": "katiechickering@yahoo.com",
+      "ascAppId": "6756340747",
+      "appleTeamId": "8S7N94BGY6"
+    }
+    }
   }
 }

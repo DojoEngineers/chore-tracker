@@ -97,12 +97,16 @@ export const Today = () => {
                                     <View className="flex-1">
                                         <View className="flex-row">
                                             <SquareIcon />
-
-                                            <BrandBoldText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mb-2 ms-3"
-                                            >
-                                                {chore.title}
-                                            </BrandBoldText>
+                                            
+                                            <View className="flex-1">
+                                                <BrandBoldText
+                                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] mb-2 ms-3"
+                                                    numberOfLines={1}
+                                                    ellipsizeMode="tail"
+                                                >
+                                                    {chore.title}
+                                                </BrandBoldText>
+                                            </View>
                                         </View>
 
                                         <View className="flex-row items-center mb-2">

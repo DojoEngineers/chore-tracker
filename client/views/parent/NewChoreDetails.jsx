@@ -265,9 +265,15 @@ export const NewChoreDetails = ({ route }) => {
                             <BackArrow />
                         </Pressable>
 
-                        <BrandBoldText className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText">
-                            {formData.title}
-                        </BrandBoldText>
+                        <View className="flex-1">
+                            <BrandBoldText
+                                className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText"
+                                numberOfLines={1}
+                                ellipsizeMode="tail" 
+                            >
+                                {formData.title}
+                            </BrandBoldText>
+                        </View>
                     </View>
 
                     {apiErrors.chore &&

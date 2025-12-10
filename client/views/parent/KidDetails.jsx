@@ -133,11 +133,15 @@ export const KidDetails = ({route}) => {
                                         className="flex-1 w-full rounded-2xl bg-[#DFE8E4] dark:bg-darkBg p-3 mt-4"
                                     >
                                         <View className="flex-row items-center justify-between">
-                                            <BrandText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                                            >
-                                                {chore.title}
-                                            </BrandText>
+                                            <View className="flex-1 mr-2">
+                                                <BrandText
+                                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
+                                                    numberOfLines={1}
+                                                    ellipsizeMode="tail"
+                                                >
+                                                    {chore.title}
+                                                </BrandText>
+                                            </View>
 
                                             {dayjs(chore.dueDate).isBefore(dayjs())
                                                 ?
@@ -242,11 +246,15 @@ export const KidDetails = ({route}) => {
                                         key={chore._id}
                                     >
                                         <View className="flex-row items-center justify-between">
-                                            <BrandText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                                            >
-                                                {chore.title}
-                                            </BrandText>
+                                            <View className="flex-1 mr-2">
+                                                <BrandText
+                                                    className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
+                                                    numberOfLines={1}
+                                                    ellipsizeMode="tail" 
+                                                >
+                                                    {chore.title}
+                                                </BrandText>
+                                            </View>
 
                                             {chore.repeat === "weekly"
                                                 ?
@@ -342,11 +350,15 @@ export const KidDetails = ({route}) => {
                                     key={chore._id}
                                 >
                                     <View className="flex-row items-center justify-between">
-                                        <BrandText
-                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
-                                        >
-                                            {chore.title}
-                                        </BrandText>
+                                        <View className="flex-1 mr-2">
+                                            <BrandText
+                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[14px]"
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                            >
+                                                {chore.title}
+                                            </BrandText>
+                                        </View>
 
                                         <BrandText
                                             className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"

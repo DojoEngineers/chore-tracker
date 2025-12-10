@@ -105,11 +105,15 @@ export const Approve = () => {
                                         key={chore._id}
                                     >
                                         <View className="flex-row justify-between items-center">
-                                            <BrandBoldText
-                                                className="dark:text-[#ECEDEE] text-lightPrimaryText text-[14px]"
-                                            >
-                                                {chore.title}
-                                            </BrandBoldText>
+                                            <View className="flex-1 mr-2">
+                                                <BrandBoldText
+                                                    className="dark:text-[#ECEDEE] text-lightPrimaryText text-[14px]"
+                                                    numberOfLines={1}
+                                                    ellipsizeMode="tail"
+                                                >
+                                                    {chore.title}
+                                                </BrandBoldText>
+                                            </View>
 
                                             <BrandText
                                                 className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px]"
