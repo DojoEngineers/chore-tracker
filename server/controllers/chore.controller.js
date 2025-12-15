@@ -1,6 +1,13 @@
 import Chore from "../models/chore.model.js"
 import ChoreTemplate from "../models/choreTemplate.js"
+import dayjs from "dayjs";
+import weekday from "dayjs/plugin/weekday.js"
+import utc from "dayjs/plugin/utc.js"
+import timezone from "dayjs/plugin/timezone.js"
 
+dayjs.extend(weekday)
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export const seedDB = async (req,res) => {
     try {
@@ -160,40 +167,65 @@ export const addChore = async (req, res) => {
         }
 
         else if (req.body.repeat == "weekly") {
-            console.log("days", req.body.weeklyRepeatDays)
-            const today = new Date();
-            const todayDay = today.getDay();
-            const dueDate = new Date(req.body.dueDate);
-            const hours = dueDate.getHours();
-            const minutes = dueDate.getMinutes();
+            const base = dayjs(req.body.dueDate)
 
             const weeklyDays = req.body.weeklyRepeatDays || []
             const createdChores = []
 
-            const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
+            for (const targetDay of weeklyDays) {
+                let due = base.weekday(targetDay)
 
-            for (const target of weeklyDays) {
-                let diff = target - todayDay
-                // If targetDay is earlier in the week, wrap to next week
-                if (diff < 0) {
-                    diff += 7;
+                // If this weekday already passed, jump to next week
+                if (due.isBefore(base, "minute")) {
+                    due = due.add(1, "week")
                 }
-                let hourDue = dueDate.getHours()
-                let currentHour = today.getHours()
-                console.log("current", currentHour, "hourDue", hourDue, "diff", diff)
-                //makes dueDay next week instead of today
-                if (diff === 0 && currentHour > hourDue) {
-                    console.log("wrapping")
-                    diff = 7;}
 
-                const newDueDate = new Date(today);
-                newDueDate.setDate(today.getDate() + diff);
-                newDueDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-                console.log("dueDate", newDueDate.toLocaleDateString())
+                const CHORE = await Chore.create({
+                    ...req.body,
+                    dueDate: due.toDate(),
+                    stage: "incomplete",
+                    isActive: true,
+                    templateId: Template._id
+                });
 
-                const CHORE = await Chore.create({ ...req.body, dueDate: newDueDate, stage: "incomplete", isActive: true, templateId: Template._id})
                 createdChores.push(CHORE)
             }
+
+
+            // console.log("days", req.body.weeklyRepeatDays)
+            // const today = new Date();
+            // const todayDay = today.getDay();
+            // const dueDate = new Date(req.body.dueDate);
+            // const hours = dueDate.getHours();
+            // const minutes = dueDate.getMinutes();
+
+            // const weeklyDays = req.body.weeklyRepeatDays || []
+            // const createdChores = []
+
+            // const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
+
+            // for (const target of weeklyDays) {
+            //     let diff = target - todayDay
+            //     // If targetDay is earlier in the week, wrap to next week
+            //     if (diff < 0) {
+            //         diff += 7;
+            //     }
+            //     let hourDue = dueDate.getHours()
+            //     let currentHour = today.getHours()
+            //     console.log("current", currentHour, "hourDue", hourDue, "diff", diff)
+            //     //makes dueDay next week instead of today
+            //     if (diff === 0 && currentHour > hourDue) {
+            //         console.log("wrapping")
+            //         diff = 7;}
+
+            //     const newDueDate = new Date(today);
+            //     newDueDate.setDate(today.getDate() + diff);
+            //     newDueDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+            //     console.log("dueDate", newDueDate.toLocaleDateString())
+
+            //     const CHORE = await Chore.create({ ...req.body, dueDate: newDueDate, stage: "incomplete", isActive: true, templateId: Template._id})
+            //     createdChores.push(CHORE)
+            // }
             console.log("running cron job. Weekly.")
             res.status(201).json(createdChores)
         }
