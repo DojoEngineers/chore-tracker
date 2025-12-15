@@ -9,20 +9,20 @@ dayjs.extend(weekday)
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-export const seedDB = async (req,res) => {
+export const seedDB = async (req, res) => {
     try {
         const seed = await Chore.create({
-    "creator": "689039957f119be3786358cc",
-    "worker": "68903c317f119be3786358da",
-    "title":"help work",
-    "details":"1hr",
-    "repeat": "never",
-    "dueDate": "2025-08-04T04:50:57.579Z",
-    "needsPics": false,
-    "isActive": true,
-    "stage": "incomplete"
-})
-    res.status(200).json(seed)
+            "creator": "689039957f119be3786358cc",
+            "worker": "68903c317f119be3786358da",
+            "title":"help work",
+            "details":"1hr",
+            "repeat": "never",
+            "dueDate": "2025-08-04T04:50:57.579Z",
+            "needsPics": false,
+            "isActive": true,
+            "stage": "incomplete"
+        })
+        res.status(200).json(seed)
     }
     catch (error) {
         console.log("error", error)
@@ -110,72 +110,64 @@ export async function getChoresByWorker(req, res) {
 // query needs to be array of family ids to work
 // The frontend sends: params: { parents } 
 export async function getChoresByParents(req, res) {
-    // console.log("controller get creator chores")
-    // console.log("req.query", req.query["parents[]"])
     try {
         const some = await Chore.find({ creator: {$in: req.query["parents[]"]}, isActive: true }).populate('worker', "name _id")
-        // console.log("some", some)
-        res.status(200).json(some);
+        res.status(200).json(some)
     } catch (error) {
-        console.log("can't get creator chores");
-        res.status(400).json(error);
+        console.log("can't get creator chores")
+        res.status(400).json(error)
     }
 }
 
 export const addChore = async (req, res) => {
     console.log("addChore controller. req.body:", req.body)
     try {
+        const templateData = {
+            title: req.body.title,
+            details: req.body.details,
+            creator: req.body.creator,
+            dueDate: req.body.dueDate,
+            needsPics: req.body.needsPics,
+            repeat: req.body.repeat,
+            weeklyRepeatDays: req.body.weeklyRepeatDays,
+            worker: req.body.worker,
+            isActive: true
+        }
+
         if (req.body.repeat == "never") {
-            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, })
+            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true })
             res.status(201).json(CHORE)
         }
         else if (req.body.repeat == "daily") {
-            console.log("dueDate", req.body.dueDate)
-            const dueDate = new Date(req.body.dueDate);
-            const hours = dueDate.getHours();
-            const minutes = dueDate.getMinutes();
-            const today = new Date()
-            today.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-            const tomorrow = today
-            tomorrow.setDate(tomorrow.getDate() + 1)
-            tomorrow.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-            console.log("tomorrow", tomorrow)
-            const in2days = new Date(tomorrow)
-            in2days.setDate(in2days.getDate() + 1);
-            const in3days = new Date(in2days)
-            in3days.setDate(in3days.getDate() + 1);
-            const in4days = new Date(in3days)
-            in4days.setDate(in4days.getDate() + 1);
-            const in5days = new Date(in4days)
-            in5days.setDate(in5days.getDate() + 1);
-            const in6days = new Date(in5days)
-            in6days.setDate(in6days.getDate() + 1);
-            const in7days = new Date(in6days)
-            in7days.setDate(in7days.getDate() + 1);
-
-            const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
-
-            const CHORE1 = await Chore.create({ ...req.body, dueDate: today, stage: "incomplete", isActive: true, templateId: Template._id})
-            const CHORE2 = await Chore.create({ ...req.body, dueDate: tomorrow, stage: "incomplete", isActive: true, templateId: Template._id})
-            const CHORE3 = await Chore.create({ ...req.body, dueDate: in2days, stage: "incomplete", isActive: true, templateId: Template._id})
-            const CHORE4 = await Chore.create({ ...req.body, dueDate: in3days, stage: "incomplete", isActive: true, templateId: Template._id})
-            const CHORE5 = await Chore.create({ ...req.body, dueDate: in4days, stage: "incomplete", isActive: true, templateId: Template._id})
-            const CHORE6 = await Chore.create({ ...req.body, dueDate: in5days, stage: "incomplete", isActive: true, templateId: Template._id})
-            const CHORE7 = await Chore.create({ ...req.body, dueDate: in6days, stage: "incomplete", isActive: true, templateId: Template._id})
-            console.log(`running cron job. ${req.body.repeat}.`)
-            res.status(201).json(CHORE1)
-        }
-
-        else if (req.body.repeat == "weekly") {
+            const Template = await ChoreTemplate.create(templateData)
+    
             const base = dayjs(req.body.dueDate)
+            const chores = []
+            
+            for (let i = 0; i < 7; i++) {
+                const dueDate = base.add(i, 'day')
+                const CHORE = await Chore.create({
+                    ...req.body,
+                    dueDate: dueDate.toDate(),
+                    stage: "incomplete",
+                    isActive: true,
+                    templateId: Template._id
+                })
+                chores.push(CHORE)
+            }
+            
+            res.status(201).json(chores[0])
+        }
+        else if (req.body.repeat == "weekly") {
+            const Template = await ChoreTemplate.create(templateData)
 
+            const base = dayjs(req.body.dueDate)
             const weeklyDays = req.body.weeklyRepeatDays || []
             const createdChores = []
 
             for (const targetDay of weeklyDays) {
                 let due = base.weekday(targetDay)
 
-                // If this weekday already passed, jump to next week
                 if (due.isBefore(base, "minute")) {
                     due = due.add(1, "week")
                 }
@@ -186,56 +178,24 @@ export const addChore = async (req, res) => {
                     stage: "incomplete",
                     isActive: true,
                     templateId: Template._id
-                });
+                })
 
                 createdChores.push(CHORE)
             }
-
-
-            // console.log("days", req.body.weeklyRepeatDays)
-            // const today = new Date();
-            // const todayDay = today.getDay();
-            // const dueDate = new Date(req.body.dueDate);
-            // const hours = dueDate.getHours();
-            // const minutes = dueDate.getMinutes();
-
-            // const weeklyDays = req.body.weeklyRepeatDays || []
-            // const createdChores = []
-
-            // const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
-
-            // for (const target of weeklyDays) {
-            //     let diff = target - todayDay
-            //     // If targetDay is earlier in the week, wrap to next week
-            //     if (diff < 0) {
-            //         diff += 7;
-            //     }
-            //     let hourDue = dueDate.getHours()
-            //     let currentHour = today.getHours()
-            //     console.log("current", currentHour, "hourDue", hourDue, "diff", diff)
-            //     //makes dueDay next week instead of today
-            //     if (diff === 0 && currentHour > hourDue) {
-            //         console.log("wrapping")
-            //         diff = 7;}
-
-            //     const newDueDate = new Date(today);
-            //     newDueDate.setDate(today.getDate() + diff);
-            //     newDueDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-            //     console.log("dueDate", newDueDate.toLocaleDateString())
-
-            //     const CHORE = await Chore.create({ ...req.body, dueDate: newDueDate, stage: "incomplete", isActive: true, templateId: Template._id})
-            //     createdChores.push(CHORE)
-            // }
-            console.log("running cron job. Weekly.")
+            
             res.status(201).json(createdChores)
         }
         else if (req.body.repeat == "monthly") {
-            const Template = await ChoreTemplate.create({ ...req.body, isActive: true, })
-            const CHORE = await Chore.create({ ...req.body, stage: "incomplete", isActive: true, templateId: Template._id})
-            console.log("running cron job. Monthly.")
+            const Template = await ChoreTemplate.create(templateData)
+            const CHORE = await Chore.create({ 
+                ...req.body, 
+                stage: "incomplete", 
+                isActive: true, 
+                templateId: Template._id
+            })
+            
             res.status(201).json(CHORE)
         }
-
     } catch (error) {
         console.log("addChore controller error", error)
         res.status(400).json(error)
@@ -249,10 +209,9 @@ export const updateChore = async (req, res) => {
     try {
         // can't change id or creator
         const allowedUpdates = ['title', "details", 'stage', "worker", "dueDate", "stageDate", "beforePic", "afterPic",
-            "isActive", "needsPics", "parentComments", "kidComments", "dateEdited", "weeklyRepeatDays", "templateId"]; // Define what can be updated
-        const updateData = {};
+            "isActive", "needsPics", "parentComments", "kidComments", "dateEdited", "weeklyRepeatDays", "templateId", "repeat"] // Define what can be updated
+        const updateData = {}
         // Only include allowed fields that exist in req.body
-        // Not sure if line 74 works
         allowedUpdates.forEach(field => {
             if (req.body[field] !== undefined) {
                 updateData[field] = req.body[field]
@@ -261,11 +220,27 @@ export const updateChore = async (req, res) => {
         const CHORE = await Chore.findByIdAndUpdate(req.body._id, { $set: updateData }, { new: true }).select('-password')
 
         if (req.body.editScope === 'repeating') {
+            const templateFields = ['title', 'details', 'needsPics', 'repeat', 'weeklyRepeatDays', 'dueDate', 'worker']
+            const templateData = {}
+            
+            templateFields.forEach(field => {
+                if (req.body[field] !== undefined) {
+                    templateData[field] = req.body[field]
+                }
+            })
+
             if (req.body.templateId) {
-                await ChoreTemplate.findByIdAndUpdate(req.body.templateId, { $set: updateData }, { new: true })
-            }
-            else {
-                const template = await ChoreTemplate.create({ ...req.body, isActive: true, })
+                await ChoreTemplate.findByIdAndUpdate(
+                    req.body.templateId, 
+                    { $set: templateData }, 
+                    { new: true }
+                )
+            } else {
+                const template = await ChoreTemplate.create({
+                    ...templateData,
+                    creator: req.body.creator,
+                    isActive: true
+                })
                 CHORE.templateId = template._id
                 await CHORE.save()
             }
