@@ -247,13 +247,13 @@ export const NewChoreDetails = ({ route }) => {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <KeyboardAwareScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                keyboardShouldPersistTaps="handled"
-                enableOnAndroid={true}
-                extraScrollHeight={100}
-            >
+        <KeyboardAwareScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            enableOnAndroid={true}
+            extraScrollHeight={100}
+        >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <View className="flex-1 px-[16px] bg-lightBg dark:bg-grayBg">
 
                     <View className="flex-row w-full mt-[13%] items-center mb-4">
@@ -514,7 +514,7 @@ export const NewChoreDetails = ({ route }) => {
                         display={dateTimeMode === 'date' ? 'inline' : 'spinner'}
                     />
                 </View>
-            </KeyboardAwareScrollView >
-        </TouchableWithoutFeedback >
+            </TouchableWithoutFeedback >
+        </KeyboardAwareScrollView >
     )
 }

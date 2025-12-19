@@ -31,27 +31,25 @@ export const getAllUsers = async (req, res) => {
 
 // when logging in, creates token and saves it (along with id) in async storage. 
 export const loginUser = async (req, res) => {
-    console.log("in login server controller")
     const { username, password } = req.body
     const user = await User.findOne({ username })
     if (!user) {
-        console.log("no user")
+        return res.status(401).json("User not found")
     }
-    if (user && (await user.matchPassword(password))) {
-        console.log("loggin in")
-        const data = {
-            _id: user._id.toString(),
-            username: user.username,
-        }
-        const token = generateToken(user._id);
-        console.log("user data", data)
-        console.log("token", token)
+    if (await user.matchPassword(password)) {
+        const token = generateToken(user._id)
         res.status(200).json({
-            token: token,
-            _id: data._id,
-            name: data.name,
-            username: data.username
-        });
+            token,
+            user: {
+                _id: user._id.toString(),
+                username: user.username,
+                name: user.name,
+                passwordReset: user.passwordReset,
+                firstLogin: user.firstLogin,
+                isVerified: user.isVerified,
+                isActive: user.isActive
+            }
+        })
     }
     else { res.status(401).json("User password or email is not valid.") }
 }

@@ -15,7 +15,6 @@ export default {
       }
     },
 
-    // From your app.json
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
@@ -30,6 +29,7 @@ export default {
     },
     
     ios: {
+      icon: "./assets/ios_icon.svg",
       bundleIdentifier: "com.dojoengineers.trackmychores",
       supportsTablet: true,
       userInterfaceStyle: "automatic"

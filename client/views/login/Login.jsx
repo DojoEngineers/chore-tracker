@@ -58,7 +58,7 @@ export const Login = () => {
                 else if (res && res.isVerified) {
                     login({username, password})
                         .then(res => {
-                            if (res.passwordReset) {
+                            if (res.user.passwordReset) {
                                 navigation.navigate("SetPassword", {username})
                             }
                             else {
