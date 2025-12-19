@@ -129,7 +129,7 @@ export const Dashboard = () => {
                 <BrandBoldText className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
                     Your push token: {expoPushToken}
                 </BrandBoldText>
-                <Pressable onPress={()=>{sendTestPush(token, "Hey!", "This is a test")}} className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]"><BrandText>Get push!</BrandText></Pressable>
+                <Pressable onPress={()=>{getTestPush(expoPushToken, "Hey!", "This is a test")}} className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]"><BrandText>Get push!</BrandText></Pressable>
             </View>
 
             <ScrollView

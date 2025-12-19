@@ -8,7 +8,7 @@ export default {
     // owner: "dojoengineers",
     owner: "ariella.rollins",
     extra: {
-      BACKEND_API_URL: process.env.BACKEND_API_URL,
+      BACKEND_API_URL: "http://192.168.1.217:8000",
       eas: {
         // projectId: "f9970bf3-a09a-463b-b37d-40622414d40e"
         projectId: "83482397-4c35-430c-916b-2ac4f6d4263e"
@@ -36,7 +36,8 @@ export default {
     },
     
     android: {
-      package: "com.dojoengineers.trackmychores",
+      package: "com.ariella.trackmychores",
+      googleServicesFile: "./google-services.json",
       userInterfaceStyle: "automatic",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",

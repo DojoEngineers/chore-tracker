@@ -28,10 +28,8 @@ export const useNotifications = () => {
 
 export const UserContextProvider = ({ children }) => {
 
-    const BACKEND_API_URL = "http://192.168.1.217:8000"
-    // Constants.expoConfig.extra.BACKEND_API_URL
-    const projectId = "83482397-4c35-430c-916b-2ac4f6d4263e"
-    // Constants.expoConfig.extra.eas.projectId
+    const BACKEND_API_URL = Constants.expoConfig.extra.BACKEND_API_URL
+    const projectId = Constants.expoConfig.extra.eas.projectId
 
     const [user, setUser] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false)

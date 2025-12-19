@@ -1,9 +1,11 @@
 
 import { Router } from "express"
 import { protect } from "../middleware/authMiddleware.js"
+import { getTestPush } from "../controllers/push.controller.js"
 
 const NotificationRouter = Router()
 
-NotificationRouter.route('https://exp.host/--/api/v2/push/send')
-    .get(getAllChores)
-    .delete(deleteAllChores)
+NotificationRouter.route('/test')
+    .post(getTestPush)
+
+export default NotificationRouter
