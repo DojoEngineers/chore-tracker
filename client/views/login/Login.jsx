@@ -13,8 +13,12 @@ import { EmailIcon } from "../../components/icons/EmailIcon"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { BottomLink } from "../../components/BottomLink"
 import { PasswordInput } from "../../components/PasswordInput"
+import Constants from 'expo-constants';
 
 export const Login = () => {
+
+    const BACKEND_API_URL = Constants.expoConfig.extra.BACKEND_API_URL
+    const projectId = Constants.expoConfig.extra.eas.projectId
 
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState({username: '', password: ''})
@@ -96,7 +100,7 @@ export const Login = () => {
                         </Pressable>
 
                         <BrandBoldText className="text-[32px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[37px]">
-                            Hi, welcome.
+                            Hi, welcome. backend:{BACKEND_API_URL} id: {projectId}
                         </BrandBoldText>
                         
                         <View className="items-center mb-10">

@@ -28,6 +28,11 @@ export const useNotifications = () => {
 
 export const UserContextProvider = ({ children }) => {
 
+    const BACKEND_API_URL = "http://192.168.1.217:8000"
+    // Constants.expoConfig.extra.BACKEND_API_URL
+    const projectId = "83482397-4c35-430c-916b-2ac4f6d4263e"
+    // Constants.expoConfig.extra.eas.projectId
+
     const [user, setUser] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -72,6 +77,7 @@ export const UserContextProvider = ({ children }) => {
     //     };
     // }, []);
 
+
     const registerForPushNotifications = async () => {
         try {
             // Android notification channel setup
@@ -104,7 +110,8 @@ export const UserContextProvider = ({ children }) => {
             }
 
             // Get project ID
-            const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+            // const projectId = "f9970bf3-a09a-463b-b37d-40622414d40e"
+            // Constants?.expoConfig?.eas?.projectId ?? Constants?.easConfig?.projectId;
 
             if (!projectId) {
                 Alert.alert('Error', 'Project ID not found in config');
@@ -114,6 +121,7 @@ export const UserContextProvider = ({ children }) => {
             // Get push token
             const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
             console.log('📱 Expo Push Token:', token);
+            Alert.alert('token', token);
 
             // TODO: Send token to your backend
             // await sendTokenToBackend(token);
@@ -121,7 +129,7 @@ export const UserContextProvider = ({ children }) => {
             return token;
         } catch (error) {
             console.error('Error registering for push notifications:', error);
-            Alert.alert('Error', 'Failed to register for push notifications');
+            Alert.alert('Error', `Failed to register for push: ${error}`);
             return null;
         }
     };
@@ -168,24 +176,49 @@ export const UserContextProvider = ({ children }) => {
         }
     };
 
-
-    // Send test notification to self
-    const sendTestNotification = async () => {
-        if (!expoPushToken) {
+    // pings backend to send push.
+    const sendTestPush = async (token, title, body, data={}) => {
+        if (!token) {
             Alert.alert('Error', 'No push token available');
             return;
         }
-
-        return await sendPushNotification(
-            expoPushToken,
-            'Test Notification! 🎉',
-            'This is a test from your app!',
-            {
-                screen: 'ChoreList',
-                testData: true
+        try {
+            const response = await fetch(`${BACKEND_API_URL}/send-push/test`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token, title, body
+                }),
+            });
+            if (response.ok) {
+                Alert.alert("Sent!")
+                return { success: true }
             }
-        );
-    };
+
+        }
+        catch (error) {
+            Alert.alert('Catch Error', error.message || 'Unknown error');
+            return { success: false };
+        }
+    }
+
+
+    // const sendTestNotification = async () => {
+    //     if (!expoPushToken) {
+    //         Alert.alert('Error', 'No push token available');
+    //         return;
+    //     }
+
+    //     return await sendPushNotification(
+    //         expoPushToken,
+    //         'Test Notification! 🎉',
+    //         'This is a test from your app!',
+    //         {
+    //             screen: 'ChoreList',
+    //             testData: true
+    //         }
+    //     );
+    // };
 
     useEffect(() => {
         // Initialize notifications on mount
@@ -224,15 +257,6 @@ export const UserContextProvider = ({ children }) => {
             }
         };
     }, []);
-
-    const value = {
-        expoPushToken,
-        notification,
-        isLoading,
-        sendPushNotification,
-        sendTestNotification,
-        registerForPushNotifications,
-    };
 
     useEffect(() => {
         const loadData = async () => {
@@ -320,7 +344,7 @@ export const UserContextProvider = ({ children }) => {
         <UserContext.Provider
             value={{
                 user, setUser, isLoggedIn, loggedInData, familyData, setFamilyData, setLoggedInData,
-                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications, theme, setAppTheme
+                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications, theme, setAppTheme, sendTestPush
             }}
         >
             {children}
