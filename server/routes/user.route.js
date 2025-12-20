@@ -6,8 +6,8 @@ import { getCurrentUser, loginUser, registerUser, updateUser, checkUsername, get
 const userRouter = Router()
 
 // for testing:
-// userRouter.route('/all')
-//     .get(getAllUsers)
+userRouter.route('/all')
+    .get(getAllUsers)
 
 userRouter.route('/')
     .post(registerUser)

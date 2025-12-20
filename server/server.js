@@ -79,12 +79,12 @@ dbConnect()
 //   try {
 //     const chunks = expo.chunkPushNotifications(messages);
 //     const tickets = [];
-    
+
 //     for (const chunk of chunks) {
 //       const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
 //       tickets.push(...ticketChunk);
 //     }
-    
+
 //     res.json({ success: true, tickets });
 //   } catch (error) {
 //     console.error('Error sending notifications:', error);

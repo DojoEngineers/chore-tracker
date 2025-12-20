@@ -27,7 +27,20 @@ export default {
       resizeMode: "contain",
       backgroundColor: "#ffffff"
     },
-    
+    // added from other app and installed expo-build-properties
+    plugins: [
+            "expo-notifications",
+            ["expo-build-properties",
+                {
+                    android: {
+                        usesCleartextTraffic: true,
+                        compileSdkVersion: 35,
+                        targetSdkVersion: 34
+                    }
+                }
+            ]
+          ],
+  
     ios: {
       icon: "./assets/ios_icon.svg",
       bundleIdentifier: "com.dojoengineers.trackmychores",
@@ -37,7 +50,13 @@ export default {
     
     android: {
       package: "com.ariella.trackmychores",
+      // this lets you register for push!
       googleServicesFile: "./google-services.json",
+      // this stops newer phones from automatically blocking http requests
+      // config: {
+      //           usesCleartextTraffic: true
+      //       },
+      // usesCleartextTraffic: true,
       userInterfaceStyle: "automatic",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",

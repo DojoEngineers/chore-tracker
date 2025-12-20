@@ -79,7 +79,7 @@ export const Login = () => {
             .catch(error => {
                 console.log("getUserByUsername error:", error)
                 setApiErrors(prev => ({...prev, getUserByUsername: "Unable to check username."}))
-                Toast.show({type: 'error', text1: "Unable to check username."})
+                Toast.show({type: 'error', text1: `Unable to check username. ${error.message}`})
             })
             .finally(() => setIsButtonLoading(false))
     }
