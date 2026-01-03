@@ -22,7 +22,9 @@ The application has been tested on both Android and iOS emulators to ensure a sm
 ## ✍️ Authors
 
 Front End Engineer - Katie Chickering - https://github.com/katiechickering
+
 Back End Engineer - Ariella Rollins - https://github.com/Ariella-Rollins
+
 UI / UX Designer - Helena Contreras - https://www.linkedin.com/in/helena-g-4b5aa0133/
 
 
