@@ -27,7 +27,7 @@ export default {
     },
     
     ios: {
-      icon: "./assets/ios_icon.svg",
+      icon: "./assets/ios_icon.png",
       bundleIdentifier: "com.dojoengineers.trackmychores",
       supportsTablet: true,
       userInterfaceStyle: "automatic"
