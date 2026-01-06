@@ -133,46 +133,46 @@ export const UserContextProvider = ({ children }) => {
     };
 
     // Send notification via Expo's push service
-    const sendPushNotification = async (token, title, body, data = {}) => {
-        if (!token) {
-            Alert.alert('Error', 'No push token available');
-            return;
-        }
+    // const sendPushNotification = async (token, title, body, data = {}) => {
+    //     if (!token) {
+    //         Alert.alert('Error', 'No push token available');
+    //         return;
+    //     }
 
-        const message = {
-            to: token,
-            sound: 'default',
-            title,
-            body,
-            data,
-        };
+    //     const message = {
+    //         to: token,
+    //         sound: 'default',
+    //         title,
+    //         body,
+    //         data,
+    //     };
 
-        try {
-            const response = await fetch('https://exp.host/--/api/v2/push/send', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Accept-encoding': 'gzip, deflate',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(message),
-            });
+    //     try {
+    //         const response = await fetch('https://exp.host/--/api/v2/push/send', {
+    //             method: 'POST',
+    //             headers: {
+    //                 Accept: 'application/json',
+    //                 'Accept-encoding': 'gzip, deflate',
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(message),
+    //         });
 
-            const result = await response.json();
+    //         const result = await response.json();
 
-            if (response.ok) {
-                console.log('✅ Notification sent successfully:', result);
-                return { success: true, result };
-            } else {
-                console.error('❌ Failed to send notification:', result);
-                return { success: false, error: result };
-            }
-        } catch (error) {
-            console.error('❌ Error sending notification:', error);
-            Alert.alert('Error', 'Failed to send notification');
-            return { success: false, error };
-        }
-    };
+    //         if (response.ok) {
+    //             console.log('✅ Notification sent successfully:', result);
+    //             return { success: true, result };
+    //         } else {
+    //             console.error('❌ Failed to send notification:', result);
+    //             return { success: false, error: result };
+    //         }
+    //     } catch (error) {
+    //         console.error('❌ Error sending notification:', error);
+    //         Alert.alert('Error', 'Failed to send notification');
+    //         return { success: false, error };
+    //     }
+    // };
 
     // pings backend to send push.
     const sendTestPush = async (token, title, body, data={}) => {

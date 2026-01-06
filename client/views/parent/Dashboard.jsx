@@ -35,7 +35,7 @@ export const Dashboard = () => {
     const [recentActivityChores, setRecentActivityChores] = useState([])
     const [allChoresByParents, setAllChoresByParents] = useState([])
 
-    const {loggedInData, expoPushToken, getTestPush} = useLogin()
+    const {loggedInData, expoPushToken, sendTestPush} = useLogin()
     const navigation = useNavigation()
 
     const handleDateChange = (selectedDate) => {
@@ -129,7 +129,7 @@ export const Dashboard = () => {
                 <BrandBoldText className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
                     Your push token: {expoPushToken}
                 </BrandBoldText>
-                <Pressable onPress={()=>{getTestPush(expoPushToken, "Hey!", "This is a test")}} className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]"><BrandText>Get push!</BrandText></Pressable>
+                <Pressable onPress={()=>{sendTestPush(expoPushToken, "Hey!", "This is a test")}} className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]"><BrandText>Get push!</BrandText></Pressable>
             </View>
 
             <ScrollView
