@@ -342,7 +342,7 @@ export const UserContextProvider = ({ children }) => {
         <UserContext.Provider
             value={{
                 user, setUser, isLoggedIn, loggedInData, familyData, setFamilyData, setLoggedInData,
-                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications, theme, setAppTheme, sendTestPush
+                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications, theme, setAppTheme, expoPushToken, sendTestPush
             }}
         >
             {children}
