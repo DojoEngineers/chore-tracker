@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "497518798586",
+    "project_id": "chore-tracker-1522d",
+    "storage_bucket": "chore-tracker-1522d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497518798586:android:804bf8ad7144394c4d4b43",
+        "android_client_info": {
+          "package_name": "com.ariella.trackmychores"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEIkqJKI4VVDUTUWRMWTbWw1KvWT6BirM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497518798586:android:7a53b98c37e2ed274d4b43",
+        "android_client_info": {
+          "package_name": "com.dojoengineers.trackmychores"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEIkqJKI4VVDUTUWRMWTbWw1KvWT6BirM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
