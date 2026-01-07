@@ -52,6 +52,8 @@ export default {
       package: "com.ariella.trackmychores",
       // this lets you register for push!
       googleServicesFile: "./google-services.json",
+      // enables FCM V1
+      useNextNotificationsApi: true,
       // this stops newer phones from automatically blocking http requests
       // config: {
       //           usesCleartextTraffic: true

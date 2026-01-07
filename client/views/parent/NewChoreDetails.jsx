@@ -51,59 +51,6 @@ const DEFAULT_FORM_VALUES = {
 }
 
 export const NewChoreDetails = ({ route }) => {
-
-    // const {
-    //     expoPushToken,
-    //     sendTestNotification,
-    //     sendPushNotification,
-    //     isLoading
-    // } = useNotifications()
-    
-    // //  send test 
-    // const handleSendTest = async () => {
-    //     const result = await sendTestNotification();
-    //     if (result?.success) {
-    //     Alert.alert('Success', 'Test notification sent!')
-    //     }
-    // }
-
-    // // Send chore reminder
-    // const handleSendChoreReminder = async () => {
-    //     if (!expoPushToken) {
-    //         Alert.alert('Error', 'Push token not available');
-    //         return;
-    //     }
-
-    //     const result = await NotificationService.sendChoreReminder(
-    //         expoPushToken,
-    //         'Take out trash',
-    //         'today at 6 PM'
-    //     );
-
-    //     if (result?.success) {
-    //         Alert.alert('Success', 'Chore reminder sent!');
-    //     }
-    // };
-
-    // // Send chore completed notification
-    // const handleSendChoreCompleted = async () => {
-    //     if (!expoPushToken) {
-    //         Alert.alert('Error', 'Push token not available');
-    //         return;
-    //     }
-
-    //     const result = await NotificationService.sendChoreCompleted(
-    //         expoPushToken,
-    //         'Kitchen cleaning',
-    //         'John'
-    //     );
-
-    //     if (result?.success) {
-    //         Alert.alert('Success', 'Chore completed notification sent!');
-    //     }
-    // };
-
-    // Notification code ends here
     
     const [apiErrors, setApiErrors] = useState({})
     const [isOpen, setIsOpen] = useState({kids: false, repeat: false, dueDate: false})
@@ -115,7 +62,7 @@ export const NewChoreDetails = ({ route }) => {
     
     const { title, chore } = route.params || {}
     const navigation = useNavigation()
-    const { loggedInData } = useLogin()
+    const { loggedInData} = useLogin()
     const colorScheme = useColorScheme()
     const isDark = colorScheme === "dark"
 
@@ -187,64 +134,151 @@ export const NewChoreDetails = ({ route }) => {
         })
     }
 
+    // const handleSubmit = async () => {
+    //     if (isButtonLoading) return
+    //     setIsButtonLoading(true)
+
+    //     if (formErrors.details || formErrors.dueDate || formData.kids.length === 0) {
+    //         Toast.show({type: 'error', text1: "Please make corrections to the form."})
+    //         setIsButtonLoading(false)
+    //         return
+    //     }
+
+    //     const {details, kids, dueDate, needsPics, repeat, weeklyRepeatDays} = formData
+    //     const baseData = {
+    //         title: formData.title, details, creator: loggedInData._id,
+    //         dueDate: dueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
+    //     }
+    //     const promises = []
+    //     let finalData = {}
+
+    //         if (chore) {
+    //             if (kids.includes(chore.worker._id)) {
+    //                 finalData = {...baseData, _id: chore._id, dateEdited: dayjs().toISOString(), editScope, templateId: chore.templateId}
+    //             } else {
+    //                 finalData = {_id: chore._id, isActive: false, editScope, templateId: chore.templateId}
+    //             }
+    //             promises.push(updateChore(finalData))
+
+    //             const newKids = kids.filter(kid => kid !== chore.worker._id)
+    //             newKids.forEach(kid => {
+    //                 finalData = {...baseData, worker: kid, stageDate: dayjs().toISOString() }
+    //                 promises.push(addChore(finalData))
+    //             })
+    //         }
+            
+    //         else {
+    //             kids.forEach(kid => {
+    //                 finalData = {...baseData, stageDate: dayjs().toISOString(), worker: kid}
+    //                 promises.push(addChore(finalData))
+    //             })
+    //         }
+
+    //     Promise.all(promises)
+    //         .then(() => {
+    //             if (chore) {
+    //                 Toast.show({type: 'success', text1: "Chore updated!"})
+    //                 navigation.goBack()
+    //             }
+    //             else {
+    //                 Toast.show({type: 'success', text1: "Chore created!"})
+    //                 navigation.pop(2)
+    //             }
+    //         })
+    //         .catch(error => {
+    //             console.log("Updating / adding chores error:", error)
+    //             setApiErrors(prev => ({...prev, chore: "Unable to save chore."}))
+    //             Toast.show({type: 'error', text1: "Unable to save chore."})
+    //         })
+    //         .finally(() => setIsButtonLoading(false))
+    // }
+
     const handleSubmit = async () => {
-        if (isButtonLoading) return
-        setIsButtonLoading(true)
+    if (isButtonLoading) return
+    setIsButtonLoading(true)
 
-        if (formErrors.details || formErrors.dueDate || formData.kids.length === 0) {
-            Toast.show({type: 'error', text1: "Please make corrections to the form."})
-            setIsButtonLoading(false)
-            return
-        }
+    if (formErrors.details || formErrors.dueDate || formData.kids.length === 0) {
+        Toast.show({type: 'error', text1: "Please make corrections to the form."})
+        setIsButtonLoading(false)
+        return
+    }
 
-        const {details, kids, dueDate, needsPics, repeat, weeklyRepeatDays} = formData
-        const baseData = {
-            title: formData.title, details, creator: loggedInData._id,
-            dueDate: dueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
+    const {details, kids, dueDate, needsPics, repeat, weeklyRepeatDays} = formData
+    const baseData = {
+        title: formData.title, details, creator: loggedInData._id,
+        dueDate: dueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
+    }
+    const promises = []
+    let finalData = {}
+
+    if (chore) {
+        if (kids.includes(chore.worker._id)) {
+            finalData = {...baseData, _id: chore._id, dateEdited: dayjs().toISOString(), editScope, templateId: chore.templateId}
+        } else {
+            finalData = {_id: chore._id, isActive: false, editScope, templateId: chore.templateId}
         }
-        const promises = []
-        let finalData = {}
+        promises.push(updateChore(finalData))
+
+        const newKids = kids.filter(kid => kid !== chore.worker._id)
+        newKids.forEach(kid => {
+            finalData = {...baseData, worker: kid, stageDate: dayjs().toISOString() }
+            promises.push(addChore(finalData))
+        })
+    }
+    
+    else {
+        kids.forEach(kid => {
+            finalData = {...baseData, stageDate: dayjs().toISOString(), worker: kid}
+            promises.push(addChore(finalData))
+        })
+    }
+
+    Promise.all(promises)
+        .then(() => {
+            // Send push notifications to each kid
+            const notificationPromises = kids.map(kidId => {
+                // Find the kid's data to get their push token
+                const kid = allKids.find(k => k._id === kidId); // You'll need access to kid data
+                
+                if (kid?.pushTokens && kid.pushTokens.length > 0) {
+                    // Send to each push token the kid has
+                    return kid.pushTokens.map(token => 
+                        sendPush(
+                            token,
+                            "New Chore Assigned! 🧹",
+                            `You have a new chore: ${formData.title}`,
+
+                        )
+                    );
+                }
+                return Promise.resolve();
+            }).flat(); // Flatten in case kids have multiple tokens
+
+            // Send all notifications (don't wait for them to succeed)
+            Promise.allSettled(notificationPromises)
+                .then(results => {
+                    const failed = results.filter(r => r.status === 'rejected');
+                    if (failed.length > 0) {
+                        console.log('Some notifications failed:', failed);
+                    }
+                });
 
             if (chore) {
-                if (kids.includes(chore.worker._id)) {
-                    finalData = {...baseData, _id: chore._id, dateEdited: dayjs().toISOString(), editScope, templateId: chore.templateId}
-                } else {
-                    finalData = {_id: chore._id, isActive: false, editScope, templateId: chore.templateId}
-                }
-                promises.push(updateChore(finalData))
-
-                const newKids = kids.filter(kid => kid !== chore.worker._id)
-                newKids.forEach(kid => {
-                    finalData = {...baseData, worker: kid, stageDate: dayjs().toISOString() }
-                    promises.push(addChore(finalData))
-                })
+                Toast.show({type: 'success', text1: "Chore updated!"})
+                navigation.goBack()
             }
-            
             else {
-                kids.forEach(kid => {
-                    finalData = {...baseData, stageDate: dayjs().toISOString(), worker: kid}
-                    promises.push(addChore(finalData))
-                })
+                Toast.show({type: 'success', text1: "Chore created!"})
+                navigation.pop(2)
             }
-
-        Promise.all(promises)
-            .then(() => {
-                if (chore) {
-                    Toast.show({type: 'success', text1: "Chore updated!"})
-                    navigation.goBack()
-                }
-                else {
-                    Toast.show({type: 'success', text1: "Chore created!"})
-                    navigation.pop(2)
-                }
-            })
-            .catch(error => {
-                console.log("Updating / adding chores error:", error)
-                setApiErrors(prev => ({...prev, chore: "Unable to save chore."}))
-                Toast.show({type: 'error', text1: "Unable to save chore."})
-            })
-            .finally(() => setIsButtonLoading(false))
-    }
+        })
+        .catch(error => {
+            console.log("Updating / adding chores error:", error)
+            setApiErrors(prev => ({...prev, chore: "Unable to save chore."}))
+            Toast.show({type: 'error', text1: "Unable to save chore."})
+        })
+        .finally(() => setIsButtonLoading(false))
+}
 
     return (
         <KeyboardAwareScrollView

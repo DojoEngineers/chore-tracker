@@ -3,7 +3,7 @@ import { Header } from "../../components/Header"
 import { ParentNavBar } from "../../components/ParentNavBar"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { getChoresByParents } from "../../services/chore.service"
 import Toast from "react-native-toast-message"
 import dayjs from "dayjs"
@@ -26,6 +26,8 @@ dayjs.extend(isSameOrBefore)
 
 export const Dashboard = () => {
 
+    
+
     const [viewCalendarChores, setViewCalendarChores] = useState(false)
     const [viewCalendar, setViewCalendar] = useState(false)
     const [date, setDate] = useState(new Date())
@@ -35,8 +37,13 @@ export const Dashboard = () => {
     const [recentActivityChores, setRecentActivityChores] = useState([])
     const [allChoresByParents, setAllChoresByParents] = useState([])
 
-    const {loggedInData, expoPushToken, sendTestPush} = useLogin()
+    const {registerForPushNotifications, loggedInData, expoPushToken, sendTestPush} = useLogin()
     const navigation = useNavigation()
+
+    // registers for push and saves push token to user doc.
+    useEffect(()=>{
+        registerForPushNotifications()
+    }, [])
 
     const handleDateChange = (selectedDate) => {
         setDate(selectedDate)

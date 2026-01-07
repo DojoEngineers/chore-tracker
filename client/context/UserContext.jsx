@@ -5,6 +5,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Alert, Platform } from "react-native";
+import { updateUser } from "../services/user.service";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -47,35 +48,7 @@ export const UserContextProvider = ({ children }) => {
     const notificationListener = useRef();
     const responseListener = useRef();
 
-    // useEffect(() => {
-    //     // Register for push notifications on app start
-    //     registerForPushNotifications().then(token => {
-    //         setExpoPushToken(token || '');
-    //     });
-
-    //     // Listen for incoming notifications
-    //     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-    //         console.log('📨 Notification received:', notification);
-    //         setNotification(notification);
-    //     });
-
-    //     // Listen for notification interactions (taps)
-    //     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-    //         console.log('👆 Notification tapped:', response);
-    //         // Handle notification tap - navigate to specific screen, etc.
-    //     });
-
-    //     return () => {
-    //         if (notificationListener.current) {
-    //             Notifications.removeNotificationSubscription(notificationListener.current);
-    //         }
-    //         if (responseListener.current) {
-    //             Notifications.removeNotificationSubscription(responseListener.current);
-    //         }
-    //     };
-    // }, []);
-
-
+    // called after logging in and entering dashboard. registers for push, gets token and saves it to user doc.
     const registerForPushNotifications = async () => {
         try {
             // Android notification channel setup
@@ -108,8 +81,6 @@ export const UserContextProvider = ({ children }) => {
             }
 
             // Get project ID
-            // const projectId = "f9970bf3-a09a-463b-b37d-40622414d40e"
-            // Constants?.expoConfig?.eas?.projectId ?? Constants?.easConfig?.projectId;
 
             if (!projectId) {
                 Alert.alert('Error', 'Project ID not found in config');
@@ -120,11 +91,14 @@ export const UserContextProvider = ({ children }) => {
             const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
             console.log('📱 Expo Push Token:', token);
             Alert.alert('token', token);
-
-            // TODO: Send token to your backend
-            // await sendTokenToBackend(token);
-
-            return token;
+            // save token to backend
+            if (token && loggedInData._id) {
+                await updateUser({ pushTokens: token })
+                return token;
+            }
+            else {
+                Alert.alert("Error", "no token/id. token not saved...")
+            }
         } catch (error) {
             console.error('Error registering for push notifications:', error);
             Alert.alert('Error', `Failed to register for push: ${error}`);
@@ -132,50 +106,8 @@ export const UserContextProvider = ({ children }) => {
         }
     };
 
-    // Send notification via Expo's push service
-    // const sendPushNotification = async (token, title, body, data = {}) => {
-    //     if (!token) {
-    //         Alert.alert('Error', 'No push token available');
-    //         return;
-    //     }
-
-    //     const message = {
-    //         to: token,
-    //         sound: 'default',
-    //         title,
-    //         body,
-    //         data,
-    //     };
-
-    //     try {
-    //         const response = await fetch('https://exp.host/--/api/v2/push/send', {
-    //             method: 'POST',
-    //             headers: {
-    //                 Accept: 'application/json',
-    //                 'Accept-encoding': 'gzip, deflate',
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(message),
-    //         });
-
-    //         const result = await response.json();
-
-    //         if (response.ok) {
-    //             console.log('✅ Notification sent successfully:', result);
-    //             return { success: true, result };
-    //         } else {
-    //             console.error('❌ Failed to send notification:', result);
-    //             return { success: false, error: result };
-    //         }
-    //     } catch (error) {
-    //         console.error('❌ Error sending notification:', error);
-    //         Alert.alert('Error', 'Failed to send notification');
-    //         return { success: false, error };
-    //     }
-    // };
-
     // pings backend to send push.
-    const sendTestPush = async (token, title, body, data={}) => {
+    const sendTestPush = async (token, title, body, data = {}) => {
         if (!token) {
             Alert.alert('Error', 'No push token available');
             return;
@@ -201,60 +133,41 @@ export const UserContextProvider = ({ children }) => {
     }
 
 
-    // const sendTestNotification = async () => {
-    //     if (!expoPushToken) {
-    //         Alert.alert('Error', 'No push token available');
-    //         return;
-    //     }
+    // call this after logging in. If device does not yet have permissions.
+    const initializeNotifications = async () => {
+        setIsLoading(true);
+        const token = await registerForPushNotifications();
+        setExpoPushToken(token || '');
+        setIsLoading(false);
+    };
 
-    //     return await sendPushNotification(
-    //         expoPushToken,
-    //         'Test Notification! 🎉',
-    //         'This is a test from your app!',
-    //         {
-    //             screen: 'ChoreList',
-    //             testData: true
-    //         }
-    //     );
-    // };
+    initializeNotifications();
 
-    useEffect(() => {
-        // Initialize notifications on mount
-        const initializeNotifications = async () => {
-            setIsLoading(true);
-            const token = await registerForPushNotifications();
-            setExpoPushToken(token || '');
-            setIsLoading(false);
-        };
+    // Set up notification listeners
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+        console.log('📨 Notification received:', notification);
+        setNotification(notification);
+    });
 
-        initializeNotifications();
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+        console.log('👆 Notification tapped:', response);
 
-        // Set up notification listeners
-        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            console.log('📨 Notification received:', notification);
-            setNotification(notification);
-        });
-
-        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log('👆 Notification tapped:', response);
-
-            // Handle notification tap - navigate to specific screen
-            const data = response.notification.request.content.data;
-            if (data?.screen) {
-                // TODO: Navigate to specific screen
-                console.log('Navigate to:', data.screen);
-            }
-        });
-        // Cleanup
-        return () => {
-            if (notificationListener.current) {
-                notificationListener.current.remove();
-            }
-            if (responseListener.current) {
-                responseListener.current.remove();
-            }
-        };
-    }, []);
+        // Handle notification tap - navigate to specific screen
+        const data = response.notification.request.content.data;
+        if (data?.screen) {
+            // TODO: Navigate to specific screen
+            console.log('Navigate to:', data.screen);
+        }
+    });
+    // Cleanup
+    return () => {
+        if (notificationListener.current) {
+            notificationListener.current.remove();
+        }
+        if (responseListener.current) {
+            responseListener.current.remove();
+        }
+    };
 
     useEffect(() => {
         const loadData = async () => {
@@ -342,7 +255,7 @@ export const UserContextProvider = ({ children }) => {
         <UserContext.Provider
             value={{
                 user, setUser, isLoggedIn, loggedInData, familyData, setFamilyData, setLoggedInData,
-                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications, theme, setAppTheme, expoPushToken, sendTestPush
+                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications, theme, setAppTheme, expoPushToken, sendTestPush, registerForPushNotifications
             }}
         >
             {children}
