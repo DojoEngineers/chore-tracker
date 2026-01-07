@@ -92,6 +92,7 @@ export const UserContextProvider = ({ children }) => {
             console.log('📱 Expo Push Token:', token);
             Alert.alert('token', token);
             // save token to backend
+            setExpoPushToken(token)
             if (token && loggedInData._id) {
                 await updateUser({ pushTokens: token })
                 return token;
@@ -132,16 +133,18 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
+    useEffect(()=> {
+    // const initializeNotifications = async () => {
+    //     setIsLoading(true);
+    //     const token = await registerForPushNotifications();
+    //     setExpoPushToken(token || '');
+    //     setIsLoading(false);
+    // };
 
-    // call this after logging in. If device does not yet have permissions.
-    const initializeNotifications = async () => {
-        setIsLoading(true);
-        const token = await registerForPushNotifications();
-        setExpoPushToken(token || '');
-        setIsLoading(false);
-    };
+    // initializeNotifications();
 
-    initializeNotifications();
+
+// Prepares phone on mount to receive push:
 
     // Set up notification listeners
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -151,13 +154,6 @@ export const UserContextProvider = ({ children }) => {
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
         console.log('👆 Notification tapped:', response);
-
-        // Handle notification tap - navigate to specific screen
-        const data = response.notification.request.content.data;
-        if (data?.screen) {
-            // TODO: Navigate to specific screen
-            console.log('Navigate to:', data.screen);
-        }
     });
     // Cleanup
     return () => {
@@ -168,6 +164,14 @@ export const UserContextProvider = ({ children }) => {
             responseListener.current.remove();
         }
     };
+
+
+
+
+
+        
+    },[])
+   
 
     useEffect(() => {
         const loadData = async () => {
