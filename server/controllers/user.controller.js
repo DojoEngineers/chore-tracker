@@ -93,27 +93,6 @@ export const getUserByUsername = async (req, res) => {
     }
 }
 
-// OLD FUNCTION 
-// sends code. can be called from register or resend
-// export const sendTestEmail = async (name, username, code, expiration) => {
-//     try {
-//         await emailjs.send(
-//             process.env.EMAILJS_SERVICE_ID,
-//             process.env.EMAILJS_TEMPLATE_ID,
-//             {
-//                 userEmail: username,
-//                 subject: "Your code to login",
-//                 message: `Hello ${name}. Your code is ${code}. It expires ${expiration}.`
-//             }
-//         );
-//     }
-//     catch (error) {
-//         console.log("failed to send email:", error)
-//     }
-
-// };
-
-
 // new function that uses code template in email.js
 export const sendCodeEmail = async (name, username, passcode, expiration) => {
     try {
@@ -173,7 +152,7 @@ export const registerUser = async (req, res) => {
     try {
         const user = await User.create({
             ...req.body,
-            isVerified: false, isActive: true, verificationCode: code, codeExpirationDate: expiration
+            isVerified: false, isActive: true, verificationCode: code, codeExpirationDate: expiration, pushTokens:[]
         })
         if (user) {
             delete user.password //removes password from the object
@@ -381,8 +360,8 @@ export const getCurrentUser = async (req, res) => {
         const USER = await User.findById(req.user._id).select(`-password`).populate({
             path: 'family',
             populate: [
-                { path: 'children', model: "User", select: "name username _id isActive" },
-                { path: 'parents', model: "User", select: "name username _id isActive" }
+                { path: 'children', model: "User", select: "name username _id isActive pushTokens" },
+                { path: 'parents', model: "User", select: "name username _id isActive pushTokens" }
             ]
         }).lean();
         if (!USER) {
@@ -414,6 +393,12 @@ export const updateUser = async (req, res) => {
     console.log("user REQ.body", req.body)
     try {
         const id = req.body.id || req.user.id
+
+        // If pushTokens is being updated, use $addToSet to prevent duplicates
+        let updateData = { ...req.body };
+        if (req.body.pushTokens) {
+            updateData = { $addToSet: { pushTokens: req.body.pushTokens } };
+        }
 
         const editedUser = await User.findByIdAndUpdate(
             id,

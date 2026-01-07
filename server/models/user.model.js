@@ -28,13 +28,13 @@ const userSchema = new mongoose.Schema({
     },
     family: {
         type: String,
-        required:[false],
+        required: [false],
         // this ref tells db that this string represents a Family document ID and can be used for .populate()
         // this way we can use deep populate to get the logged in user's info and and the ids of everyone and their info all in 1 API call.
         ref: "Family"
     },
-    firstLogin:{
-        type:Boolean,
+    firstLogin: {
+        type: Boolean,
         default: true
     },
     choresCompleted:
@@ -61,6 +61,10 @@ const userSchema = new mongoose.Schema({
     codeExpirationDate: {
         type: Date,
         required: [true, "No code expiration date."]
+    },
+    pushTokens: {
+        type: Array,
+        required: [true, "must add push token array, even if empty."]
     }
 }, { timestamps: true });
 
@@ -125,12 +129,12 @@ userSchema.pre('save', async function (next) {
 // For update operations (query context) 
 userSchema.pre(['findOneAndUpdate', 'findByIdAndUpdate'], async function (next) {
     const update = this.getUpdate();
-    
+
     // Only hash if password is being updated
     if (!update.password) {
         return next();
     }
-    
+
     try {
         const salt = await bcrypt.genSalt(10);
         update.password = await bcrypt.hash(update.password, salt);

@@ -131,7 +131,7 @@ export const addChore = async (req, res) => {
             repeat: req.body.repeat,
             weeklyRepeatDays: req.body.weeklyRepeatDays,
             worker: req.body.worker,
-            isActive: true
+            isActive: true,
         }
 
         if (req.body.repeat == "never") {
