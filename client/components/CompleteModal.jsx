@@ -10,14 +10,16 @@ import { CloseIcon } from "./icons/CloseIcon"
 import { BrandText } from "./text/BrandText"
 import * as ImagePicker from 'expo-image-picker';
 import { storePhotos } from "../services/r2.service"
+import { useLogin } from "../context/UserContext"
 
 dayjs.extend(utc)
 
-export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics, setChore}) => {
+export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics, setChore }) => {
 
     const [kidComments, setKidComments] = useState("")
     const [commentsError, setCommentsError] = useState("")
     const [isButtonLoading, setIsButtonLoading] = useState(false)
+    const { loggedInData, sendTestPush } = useLogin()
 
     const navigation = useNavigation()
     const colorScheme = useColorScheme()
@@ -37,20 +39,46 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
         setIsButtonLoading(true)
 
         if (commentsError) {
-            Toast.show({type: 'error', text1: "Please make corrections to the form."})
+            Toast.show({ type: 'error', text1: "Please make corrections to the form." })
             setIsButtonLoading(false)
             return
         }
 
-        updateChore({_id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments})
+        updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
             .then(() => {
-                Toast.show({type: 'success', text1: "Chore completed!"})
+
+                // Send push notifications to all parents
+                const notificationPromises = loggedInData.parents
+                    .flatMap(parent => parent.pushTokens || [])
+                    .map(token =>
+                        sendTestPush(
+                            token,
+                            "Chore Awaiting Approval!",
+                            `${loggedInData.name} completed a chore and needs your review`
+                        )
+                    );
+
+                // Fire and forget notifications (don't block the user)
+                if (notificationPromises.length > 0) {
+                    Promise.allSettled(notificationPromises)
+                        .then(results => {
+                            const failed = results.filter(r => r.status === 'rejected');
+                            if (failed.length > 0) {
+                                console.log('Some parent notifications failed:', failed);
+                            }
+                        })
+                        .catch(err => {
+                            console.log('Notification error (non-blocking):', err);
+                        });
+                }
+
+                Toast.show({ type: 'success', text1: "Chore completed!" })
                 navigation.goBack()
             })
             .catch((error) => {
                 console.log("completeChore error:", error)
-                setApiErrors(prev => ({...prev, completeChore: "Unable to complete chore."}))
-                Toast.show({type: 'error', text1: "Unable to complete chore."})
+                setApiErrors(prev => ({ ...prev, completeChore: "Unable to complete chore." }))
+                Toast.show({ type: 'error', text1: "Unable to complete chore." })
             })
             .finally(() => setIsButtonLoading(false))
     }
@@ -62,8 +90,8 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
                 "Camera permission required",
                 "Please enable camera access in your phone's settings.",
                 [
-                    {text: "Cancel", style: "cancel"},
-                    {text: "Open Settings", onPress: () => Linking.openSettings()}
+                    { text: "Cancel", style: "cancel" },
+                    { text: "Open Settings", onPress: () => Linking.openSettings() }
                 ]
             )
             return
@@ -79,18 +107,18 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
             const uri = result.assets[0].uri
             storePhotos(uri)
                 .then((res) => {
-                    setChore(prev => ({...prev, afterPic: res}))
-                    updateChore({_id: id, afterPic: res})
+                    setChore(prev => ({ ...prev, afterPic: res }))
+                    updateChore({ _id: id, afterPic: res })
                         .catch((error) => {
                             console.log("addAfterImageToChore error:", error)
-                            setApiErrors(prev => ({...prev, addAfterImageToChore: "Unable to add after image to chore."}))
-                            Toast.show({type: 'error', text1: "Unable to add after image to chore."})
+                            setApiErrors(prev => ({ ...prev, addAfterImageToChore: "Unable to add after image to chore." }))
+                            Toast.show({ type: 'error', text1: "Unable to add after image to chore." })
                         })
                 })
                 .catch((error) => {
                     console.log("addAfterImage error:", error)
-                    setApiErrors(prev => ({...prev, addAfterImage: "Unable to save after image."}))
-                    Toast.show({type: 'error', text1: "Unable to save after image."})
+                    setApiErrors(prev => ({ ...prev, addAfterImage: "Unable to save after image." }))
+                    Toast.show({ type: 'error', text1: "Unable to save after image." })
                 })
 
             handleComplete()
@@ -102,13 +130,13 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
             animationType="fade"
             transparent={true}
             visible={visible}
-            onRequestClose={() => setVisible(prev => ({...prev, complete: false}))}
+            onRequestClose={() => setVisible(prev => ({ ...prev, complete: false }))}
         >
             <View className="flex-1 justify-center items-center bg-transparent">
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View
                         className="absolute inset-0"
-                        style={{backgroundColor: 'rgba(68, 73, 85, 0.5)'}}
+                        style={{ backgroundColor: 'rgba(68, 73, 85, 0.5)' }}
                     />
                 </TouchableWithoutFeedback>
 
@@ -116,7 +144,7 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
                     <View className="flex-row items-center mb-6">
                         <Pressable
                             hitSlop={20}
-                            onPress={() => setVisible(prev => ({...prev, complete: false}))}
+                            onPress={() => setVisible(prev => ({ ...prev, complete: false }))}
                         >
                             <CloseIcon />
                         </Pressable>
@@ -130,7 +158,7 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
                         <BrandText
                             className="text-red-500 text-[14px] text-center"
                         >
-                                {commentsError}
+                            {commentsError}
                         </BrandText>
                     }
 
@@ -144,7 +172,7 @@ export const CompleteModal = ({visible, setVisible, setApiErrors, id, needsPics,
                         multiline={true}
                         textAlignVertical="top"
                     />
-                
+
                     <Pressable
                         className={`
                             p-[10px] items-center justify-center bg-[#84A99D] rounded-full w-full

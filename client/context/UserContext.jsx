@@ -166,12 +166,8 @@ export const UserContextProvider = ({ children }) => {
     };
 
 
-
-
-
-        
     },[])
-   
+
 
     useEffect(() => {
         const loadData = async () => {

@@ -1,5 +1,5 @@
 
-export const getPush = async (token, title, body, data = {}) => {
+export const getTestPush = async (token, title, body, data = {}) => {
     console.log("push controller...")
     if (!token) {
         console.log("no token provided")

@@ -37,7 +37,9 @@ export const loginUser = async (req, res) => {
         return res.status(401).json("User not found")
     }
     if (await user.matchPassword(password)) {
+        console.log("pw match. generating login token")
         const token = generateToken(user._id)
+        console.log("token made...")
         res.status(200).json({
             token,
             user: {
@@ -51,7 +53,9 @@ export const loginUser = async (req, res) => {
             }
         })
     }
-    else { res.status(401).json("User password or email is not valid.") }
+    else {
+        console.log("wrong username/password") 
+        res.status(401).json("User password or email is not valid.") }
 }
 
 // checks if username exists in db

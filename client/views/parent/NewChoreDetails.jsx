@@ -51,24 +51,24 @@ const DEFAULT_FORM_VALUES = {
 }
 
 export const NewChoreDetails = ({ route }) => {
-    
+
     const [apiErrors, setApiErrors] = useState({})
-    const [isOpen, setIsOpen] = useState({kids: false, repeat: false, dueDate: false})
-    const [formData, setFormData] = useState(() => ({...DEFAULT_FORM_VALUES, dueDate: dayjs().add(1, 'day').hour(18).minute(0)}))
+    const [isOpen, setIsOpen] = useState({ kids: false, repeat: false, dueDate: false })
+    const [formData, setFormData] = useState(() => ({ ...DEFAULT_FORM_VALUES, dueDate: dayjs().add(1, 'day').hour(18).minute(0) }))
     const [dateTimeMode, setDateTimeMode] = useState("")
-    const [formErrors, setFormErrors] = useState({dueDate: false, details: false})
+    const [formErrors, setFormErrors] = useState({ dueDate: false, details: false })
     const [editScope, setEditScope] = useState('instance')
     const [isButtonLoading, setIsButtonLoading] = useState(false)
-    
+
     const { title, chore } = route.params || {}
     const navigation = useNavigation()
-    const { loggedInData} = useLogin()
+    const { loggedInData, sendTestPush } = useLogin()
     const colorScheme = useColorScheme()
     const isDark = colorScheme === "dark"
 
     const kidOptions = loggedInData.family.children
         .filter(kid => kid.isActive)
-        .map(kid => ({label: kid.name, value: kid._id}))
+        .map(kid => ({ label: kid.name, value: kid._id }))
 
     useEffect(() => {
         if (chore) {
@@ -97,12 +97,12 @@ export const NewChoreDetails = ({ route }) => {
                 .hour(dayjs(value).hour())
                 .minute(dayjs(value).minute())
         }
-        setIsOpen(prev => ({...prev, [name]: false}))
+        setIsOpen(prev => ({ ...prev, [name]: false }))
         handleChange(name, newDueDate)
     }
 
     const handleChange = (name, value) => {
-        setFormData(prev => ({...prev, [name]: value}))
+        setFormData(prev => ({ ...prev, [name]: value }))
         validateData(name, value)
     }
 
@@ -110,14 +110,14 @@ export const NewChoreDetails = ({ route }) => {
         const validations = {
             dueDate: value => (
                 dayjs(value).isBefore(dayjs()) ? "Due date must not be in the past."
-                : false
+                    : false
             ),
             details: value => (
                 value.length >= 100 ? "Details cannot exceed 100 characters."
-                : false
+                    : false
             )
         }
-        setFormErrors(prev => ({...prev, [name]: validations[name](value)}))
+        setFormErrors(prev => ({ ...prev, [name]: validations[name](value) }))
     }
 
     const handleWeeklyRepeat = (day) => {
@@ -130,7 +130,7 @@ export const NewChoreDetails = ({ route }) => {
             }
             else updatedDays = [...currentDays, day.id]
 
-            return {...prev, weeklyRepeatDays: updatedDays}
+            return { ...prev, weeklyRepeatDays: updatedDays }
         })
     }
 
@@ -166,7 +166,7 @@ export const NewChoreDetails = ({ route }) => {
     //                 promises.push(addChore(finalData))
     //             })
     //         }
-            
+
     //         else {
     //             kids.forEach(kid => {
     //                 finalData = {...baseData, stageDate: dayjs().toISOString(), worker: kid}
@@ -193,7 +193,94 @@ export const NewChoreDetails = ({ route }) => {
     //         .finally(() => setIsButtonLoading(false))
     // }
 
-    const handleSubmit = async () => {
+    //     const handleSubmit = async () => {
+    //     if (isButtonLoading) return
+    //     setIsButtonLoading(true)
+
+    //     if (formErrors.details || formErrors.dueDate || formData.kids.length === 0) {
+    //         Toast.show({type: 'error', text1: "Please make corrections to the form."})
+    //         setIsButtonLoading(false)
+    //         return
+    //     }
+
+    //     const {details, kids, dueDate, needsPics, repeat, weeklyRepeatDays} = formData
+    //     const baseData = {
+    //         title: formData.title, details, creator: loggedInData._id,
+    //         dueDate: dueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
+    //     }
+    //     const promises = []
+    //     let finalData = {}
+
+    //     if (chore) {
+    //         if (kids.includes(chore.worker._id)) {
+    //             finalData = {...baseData, _id: chore._id, dateEdited: dayjs().toISOString(), editScope, templateId: chore.templateId}
+    //         } else {
+    //             finalData = {_id: chore._id, isActive: false, editScope, templateId: chore.templateId}
+    //         }
+    //         promises.push(updateChore(finalData))
+
+    //         const newKids = kids.filter(kid => kid !== chore.worker._id)
+    //         newKids.forEach(kid => {
+    //             finalData = {...baseData, worker: kid, stageDate: dayjs().toISOString() }
+    //             promises.push(addChore(finalData))
+    //         })
+    //     }
+
+    //     else {
+    //         kids.forEach(kid => {
+    //             finalData = {...baseData, stageDate: dayjs().toISOString(), worker: kid}
+    //             promises.push(addChore(finalData))
+    //         })
+    //     }
+
+    //     Promise.all(promises)
+    //         .then(() => {
+    //             // Send push notifications to each kid
+    //             const notificationPromises = kids.map(kidId => {
+    //                 // Find the kid's data to get their push token
+    //                 const kid = allKids.find(k => k._id === kidId); // You'll need access to kid data
+
+    //                 if (kid?.pushTokens && kid.pushTokens.length > 0) {
+    //                     // Send to each push token the kid has
+    //                     return kid.pushTokens.map(token => 
+    //                         sendPush(
+    //                             token,
+    //                             "New Chore Assigned! 🧹",
+    //                             `You have a new chore: ${formData.title}`,
+
+    //                         )
+    //                     );
+    //                 }
+    //                 return Promise.resolve();
+    //             }).flat(); // Flatten in case kids have multiple tokens
+
+    //             // Send all notifications (don't wait for them to succeed)
+    //             Promise.allSettled(notificationPromises)
+    //                 .then(results => {
+    //                     const failed = results.filter(r => r.status === 'rejected');
+    //                     if (failed.length > 0) {
+    //                         console.log('Some notifications failed:', failed);
+    //                     }
+    //                 });
+
+    //             if (chore) {
+    //                 Toast.show({type: 'success', text1: "Chore updated!"})
+    //                 navigation.goBack()
+    //             }
+    //             else {
+    //                 Toast.show({type: 'success', text1: "Chore created!"})
+    //                 navigation.pop(2)
+    //             }
+    //         })
+    //         .catch(error => {
+    //             console.log("Updating / adding chores error:", error)
+    //             setApiErrors(prev => ({...prev, chore: "Unable to save chore."}))
+    //             Toast.show({type: 'error', text1: "Unable to save chore."})
+    //         })
+    //         .finally(() => setIsButtonLoading(false))
+    // }
+
+const handleSubmit = async () => {
     if (isButtonLoading) return
     setIsButtonLoading(true)
 
@@ -209,75 +296,92 @@ export const NewChoreDetails = ({ route }) => {
         dueDate: dueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
     }
     const promises = []
-    let finalData = {}
+    const isEditMode = !!chore;
 
     if (chore) {
         if (kids.includes(chore.worker._id)) {
-            finalData = {...baseData, _id: chore._id, dateEdited: dayjs().toISOString(), editScope, templateId: chore.templateId}
+            const finalData = {...baseData, _id: chore._id, dateEdited: dayjs().toISOString(), editScope, templateId: chore.templateId}
+            promises.push(updateChore(finalData))
         } else {
-            finalData = {_id: chore._id, isActive: false, editScope, templateId: chore.templateId}
+            // Kid removed from chore - deactivate it
+            const finalData = {_id: chore._id, isActive: false, editScope, templateId: chore.templateId}
+            promises.push(updateChore(finalData))
         }
-        promises.push(updateChore(finalData))
 
+        // Add chores for newly assigned kids
         const newKids = kids.filter(kid => kid !== chore.worker._id)
         newKids.forEach(kid => {
-            finalData = {...baseData, worker: kid, stageDate: dayjs().toISOString() }
-            promises.push(addChore(finalData))
+            const choreData = {...baseData, worker: kid, stageDate: dayjs().toISOString() }
+            promises.push(addChore(choreData))
         })
     }
-    
     else {
+        // Creating new chores
         kids.forEach(kid => {
-            finalData = {...baseData, stageDate: dayjs().toISOString(), worker: kid}
-            promises.push(addChore(finalData))
+            const choreData = {...baseData, stageDate: dayjs().toISOString(), worker: kid}
+            promises.push(addChore(choreData))
         })
     }
 
-    Promise.all(promises)
-        .then(() => {
-            // Send push notifications to each kid
-            const notificationPromises = kids.map(kidId => {
-                // Find the kid's data to get their push token
-                const kid = allKids.find(k => k._id === kidId); // You'll need access to kid data
+    try {
+        // Wait for chores to be created/updated
+        await Promise.all(promises);
+        
+        // Determine which kids should get notifications
+        const kidsToNotify = isEditMode 
+            ? kids.filter(kidId => kidId !== chore.worker._id) // Only NEW kids in edit mode
+            : kids; // All kids when creating new chores
+
+        // Send notifications to the appropriate kids
+        const notificationPromises = kidsToNotify
+            .map(kidId => {
+                // Find the kid in the family
+                const kid = loggedInData.family.kids.find(k => k._id === kidId);
                 
                 if (kid?.pushTokens && kid.pushTokens.length > 0) {
-                    // Send to each push token the kid has
+                    // Send to every token for this kid
                     return kid.pushTokens.map(token => 
-                        sendPush(
+                        sendTestPush(
                             token,
                             "New Chore Assigned! 🧹",
-                            `You have a new chore: ${formData.title}`,
-
+                            `You have a new chore: ${formData.title}`
                         )
                     );
                 }
-                return Promise.resolve();
-            }).flat(); // Flatten in case kids have multiple tokens
+                return [];
+            })
+            .flat()
+            .filter(Boolean); // Remove any undefined/null values
 
-            // Send all notifications (don't wait for them to succeed)
+        // Fire and forget notifications
+        if (notificationPromises.length > 0) {
             Promise.allSettled(notificationPromises)
                 .then(results => {
                     const failed = results.filter(r => r.status === 'rejected');
                     if (failed.length > 0) {
-                        console.log('Some notifications failed:', failed);
+                        console.log('Some notifications failed (non-blocking):', failed);
                     }
+                })
+                .catch(err => {
+                    console.log('Notification error (non-blocking):', err);
                 });
+        }
 
-            if (chore) {
-                Toast.show({type: 'success', text1: "Chore updated!"})
-                navigation.goBack()
-            }
-            else {
-                Toast.show({type: 'success', text1: "Chore created!"})
-                navigation.pop(2)
-            }
-        })
-        .catch(error => {
-            console.log("Updating / adding chores error:", error)
-            setApiErrors(prev => ({...prev, chore: "Unable to save chore."}))
-            Toast.show({type: 'error', text1: "Unable to save chore."})
-        })
-        .finally(() => setIsButtonLoading(false))
+        // Navigate based on edit mode
+        if (isEditMode) {
+            Toast.show({type: 'success', text1: "Chore updated!"})
+            navigation.goBack()
+        } else {
+            Toast.show({type: 'success', text1: "Chore created!"})
+            navigation.pop(2)
+        }
+    } catch (error) {
+        console.log("Updating / adding chores error:", error)
+        setApiErrors(prev => ({...prev, chore: "Unable to save chore."}))
+        Toast.show({type: 'error', text1: "Unable to save chore."})
+    } finally {
+        setIsButtonLoading(false)
+    }
 }
 
     return (
@@ -303,7 +407,7 @@ export const NewChoreDetails = ({ route }) => {
                             <BrandBoldText
                                 className="text-[20px] text-lightPrimaryText dark:text-darkPrimaryText"
                                 numberOfLines={1}
-                                ellipsizeMode="tail" 
+                                ellipsizeMode="tail"
                             >
                                 {formData.title}
                             </BrandBoldText>
@@ -366,9 +470,9 @@ export const NewChoreDetails = ({ route }) => {
                         </View>
 
                         <NewChoreDropDown
-                            open={isOpen.kids} setOpen={(open) => setIsOpen(prev => ({...prev, kids: open}))} zIndex={100}
+                            open={isOpen.kids} setOpen={(open) => setIsOpen(prev => ({ ...prev, kids: open }))} zIndex={100}
                             value={formData.kids} singleValue={false} items={kidOptions} isDark={isDark} placeholder="Pick kids"
-                            setValue={(callback) => {setFormData(prev => ({...prev, kids:  callback(prev.kids)}))}}
+                            setValue={(callback) => { setFormData(prev => ({ ...prev, kids: callback(prev.kids) })) }}
                         />
                     </View>
 
@@ -394,9 +498,9 @@ export const NewChoreDetails = ({ route }) => {
                                 </View>
 
                                 <NewChoreDropDown
-                                    open={isOpen.repeat} setOpen={(open) => setIsOpen(prev => ({...prev, repeat: open}))}
+                                    open={isOpen.repeat} setOpen={(open) => setIsOpen(prev => ({ ...prev, repeat: open }))}
                                     value={formData.repeat} singleValue={true} items={REPEAT_OPTIONS} isDark={isDark} zIndex={10}
-                                    setValue={(callback) => {setFormData(prev => ({...prev, repeat: callback(prev.repeat)}))}}
+                                    setValue={(callback) => { setFormData(prev => ({ ...prev, repeat: callback(prev.repeat) })) }}
                                 />
                             </View>
 
@@ -404,12 +508,12 @@ export const NewChoreDetails = ({ route }) => {
 
                             {(formData.repeat === "never" || formData.repeat === "monthly")
                                 ?
-                                    <DueDatePicker
-                                        formErrors={formErrors}
-                                        formData={formData}
-                                        setIsOpen={setIsOpen}
-                                        setDateTimeMode={setDateTimeMode}
-                                    />
+                                <DueDatePicker
+                                    formErrors={formErrors}
+                                    formData={formData}
+                                    setIsOpen={setIsOpen}
+                                    setDateTimeMode={setDateTimeMode}
+                                />
 
                                 : formData.repeat === "weekly" ?
                                     <View className="flex-1">
@@ -440,7 +544,7 @@ export const NewChoreDetails = ({ route }) => {
                                         <View className="h-[1px] my-6 bg-[#737780]"></View>
                                     </View>
 
-                                : null
+                                    : null
                             }
                         </View>
                     }
@@ -465,7 +569,7 @@ export const NewChoreDetails = ({ route }) => {
 
                         <Pressable
                             onPress={() => {
-                                setIsOpen(prev => ({...prev, dueDate: true}))
+                                setIsOpen(prev => ({ ...prev, dueDate: true }))
                                 setDateTimeMode("time")
                             }}
                             className="items-center bg-[#9FB6AE] dark:bg-[#22252B] border border-1
@@ -487,10 +591,10 @@ export const NewChoreDetails = ({ route }) => {
                                 Require photos?
                             </BrandText>
                         </View>
-                        
+
                         <Switch
                             value={formData.needsPics}
-                            onValueChange={(needsPics)=> setFormData(prev => ({...prev, needsPics}))}
+                            onValueChange={(needsPics) => setFormData(prev => ({ ...prev, needsPics }))}
                             trackColor={{
                                 false: isDark ? "#6a6a6aff" : '#a5a5a5ff',
                                 true: isDark ? "#a75c1aff" : "#618479ff"
@@ -534,7 +638,7 @@ export const NewChoreDetails = ({ route }) => {
                     </View>
 
                     <View className="flex-1 justify-end my-12">
-                        <PrimaryButton onPress={handleSubmit} label={chore? "Submit edits" : "Add"} disabled={isButtonLoading}/>
+                        <PrimaryButton onPress={handleSubmit} label={chore ? "Submit edits" : "Add"} disabled={isButtonLoading} />
                     </View>
 
                     <DateTimePickerModal
@@ -542,7 +646,7 @@ export const NewChoreDetails = ({ route }) => {
                         mode={dateTimeMode}
                         date={formData.dueDate.toDate()}
                         onConfirm={(dueDate) => handleDueDateChange("dueDate", dueDate)}
-                        onCancel={() => setIsOpen(prev => ({...prev, dueDate: false}))}
+                        onCancel={() => setIsOpen(prev => ({ ...prev, dueDate: false }))}
                         minimumDate={dayjs().toDate()}
                         maximumDate={dayjs().add(1, 'month').toDate()}
                         display={dateTimeMode === 'date' ? 'inline' : 'spinner'}

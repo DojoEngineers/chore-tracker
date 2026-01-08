@@ -91,47 +91,8 @@ export const ViewChore = ({ route }) => {
                             })
                     } else {
                         setChore(updatedChore)
-
-                        // sends push to all parents devices "chore awaiting approval"
-                        Promise.all(promises)
-                            .then(() => {
-                                const notificationPromises = loggedInData.parents
-                                    .flatMap(parent => parent.pushTokens || []) // Get all tokens from all parents
-                                    .map(token =>
-                                        sendPush(
-                                            token,
-                                            "Chore Awaiting Approval",
-                                            `Approve or Reject chore: ${chore.title}`,
-                                        )
-                                    );
-
-                                // Send all notifications (don't block on success/failure)
-                                Promise.allSettled(notificationPromises)
-                                    .then(results => {
-                                        const failed = results.filter(r => r.status === 'rejected');
-                                        if (failed.length > 0) {
-                                            console.log('Some notifications failed:', failed);
-                                        }
-                                    });
-
-                                if (chore) {
-                                    Toast.show({ type: 'success', text1: "Chore updated!" })
-                                    navigation.goBack()
-                                }
-                                else {
-                                    Toast.show({ type: 'success', text1: "Chore created!" })
-                                    navigation.pop(2)
-                                }
-                            })
-                            .catch(error => {
-                                console.log("Updating / adding chores error:", error)
-                                setApiErrors(prev => ({ ...prev, chore: "Unable to save chore." }))
-                                Toast.show({ type: 'error', text1: "Unable to save chore." })
-                            })
-                            .finally(() => setIsButtonLoading(false))
-                            //push ends here
                     }
-                })
+        })
                 .catch((error) => {
                     console.log("getChoreById error:", error)
                     setApiErrors(prev => ({ ...prev, getChoreById: "Unable to get chore information." }))
