@@ -48,7 +48,7 @@ export const ViewChore = ({ route }) => {
 
     const navigation = useNavigation()
     const { id } = route.params
-    const { loggedInData } = useLogin()
+    const { loggedInData, sendTestPush } = useLogin()
 
     useFocusEffect(
         useCallback(() => {
@@ -103,20 +103,42 @@ export const ViewChore = ({ route }) => {
     )
 
     const handleApprove = () => {
-        if (isButtonLoading) return
-        setIsButtonLoading(true)
+    if (isButtonLoading) return
+    setIsButtonLoading(true)
 
-        updateChore({ _id: id, stage: "approved", stageDate: dayjs().toISOString() })
-            .then(() => {
-                Toast.show({ type: 'success', text1: "Chore approved!" })
-                navigation.goBack()
-            })
-            .catch((error) => {
-                console.log("approveChore error:", error)
-                setApiErrors(prev => ({ ...prev, approveChore: "Unable to approve chore." }))
-                Toast.show({ type: 'error', text1: "Unable to approve chore." })
-            })
-            .finally(() => setIsButtonLoading(false))
+    updateChore({ _id: id, stage: "approved", stageDate: dayjs().toISOString() })
+        .then(() => {
+            try {
+                // Send push notification to the kid who completed the chore
+                const kid = loggedInData.family.children.find(k => k._id === chore.worker._id);
+                
+                if (kid?.pushTokens && kid.pushTokens.length > 0) {
+                    const notificationPromises = kid.pushTokens.map(token =>
+                        sendTestPush(
+                            token,
+                            "Chore Approved!🙂",
+                            `Your chore "${chore.title}" has been approved!`
+                        )
+                    );
+
+                    Promise.allSettled(notificationPromises).catch(err => {
+                        console.log('Notification error (non-blocking):', err);
+                    });
+                }
+            } catch (notifError) {
+                console.error('Notification setup error (non-blocking):', notifError);
+            }
+
+            Toast.show({ type: 'success', text1: "Chore approved!" })
+            navigation.goBack()
+        })
+        .catch((error) => {
+            console.log("approveChore error:", error)
+            setApiErrors(prev => ({ ...prev, approveChore: "Unable to approve chore." }))
+            Toast.show({ type: 'error', text1: "Unable to approve chore." })
+        })
+        .finally(() => setIsButtonLoading(false))
+
     }
 
     const takeBeforePhoto = async () => {
@@ -514,6 +536,7 @@ export const ViewChore = ({ route }) => {
                         setVisible={setModalVisible}
                         setApiErrors={setApiErrors}
                         id={id}
+                        chore={chore}
                     />
 
                     <CompleteModal
@@ -523,6 +546,7 @@ export const ViewChore = ({ route }) => {
                         id={id}
                         needsPics={chore.needsPics}
                         setChore={setChore}
+                        chore={chore}
                     />
 
                     <ImageModal

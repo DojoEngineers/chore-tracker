@@ -5,7 +5,7 @@ import { getTestPush } from "../controllers/push.controller.js"
 
 const NotificationRouter = Router()
 
-NotificationRouter.route('/')
+NotificationRouter.route('/test')
     // You can't .post(getTestPush) directly. You need this wrapper for the push notifications to work.
     .post(async (req, res) => {
         const { token, title, body } = req.body;

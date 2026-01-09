@@ -14,7 +14,7 @@ import { useLogin } from "../context/UserContext"
 
 dayjs.extend(utc)
 
-export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics, setChore }) => {
+export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics, setChore, chore }) => {
 
     const [kidComments, setKidComments] = useState("")
     const [commentsError, setCommentsError] = useState("")
@@ -34,27 +34,29 @@ export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics
         }
     }
 
-    const handleComplete = () => {
-        if (isButtonLoading) return
-        setIsButtonLoading(true)
 
-        if (commentsError) {
-            Toast.show({ type: 'error', text1: "Please make corrections to the form." })
-            setIsButtonLoading(false)
-            return
-        }
+const handleComplete = () => {
+    if (isButtonLoading) return
+    setIsButtonLoading(true)
 
-        updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
-            .then(() => {
+    if (commentsError) {
+        Toast.show({ type: 'error', text1: "Please make corrections to the form." })
+        setIsButtonLoading(false)
+        return
+    }
 
+    updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
+        .then(() => {
+            // Wrap notifications in try-catch so they don't block success
+            try {
                 // Send push notifications to all parents
-                const notificationPromises = loggedInData.parents
+                const notificationPromises = loggedInData.family.parents 
                     .flatMap(parent => parent.pushTokens || [])
                     .map(token =>
                         sendTestPush(
                             token,
-                            "Chore Awaiting Approval!",
-                            `${loggedInData.name} completed a chore and needs your review`
+                            "Chore Awaiting Approval!🧐",
+                            `${loggedInData.name} completed chore "${chore.title}" and needs your review.`
                         )
                     );
 
@@ -71,17 +73,20 @@ export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics
                             console.log('Notification error (non-blocking):', err);
                         });
                 }
+            } catch (notifError) {
+                console.error('Notification setup error (non-blocking):', notifError);
+            }
 
-                Toast.show({ type: 'success', text1: "Chore completed!" })
-                navigation.goBack()
-            })
-            .catch((error) => {
-                console.log("completeChore error:", error)
-                setApiErrors(prev => ({ ...prev, completeChore: "Unable to complete chore." }))
-                Toast.show({ type: 'error', text1: "Unable to complete chore." })
-            })
-            .finally(() => setIsButtonLoading(false))
-    }
+            Toast.show({ type: 'success', text1: "Chore completed!" })
+            navigation.goBack()
+        })
+        .catch((error) => {
+            console.log("completeChore error:", error)
+            setApiErrors(prev => ({ ...prev, completeChore: "Unable to complete chore." }))
+            Toast.show({ type: 'error', text1: "Unable to complete chore." })
+        })
+        .finally(() => setIsButtonLoading(false))
+}
 
     const takeAfterPhoto = async () => {
         const { status } = await ImagePicker.requestCameraPermissionsAsync()

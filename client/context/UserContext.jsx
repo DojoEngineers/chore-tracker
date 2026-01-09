@@ -6,6 +6,7 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Alert, Platform } from "react-native";
 import { updateUser } from "../services/user.service";
+import Toast from "react-native-toast-message";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -110,7 +111,7 @@ export const UserContextProvider = ({ children }) => {
     // pings backend to send push.
     const sendTestPush = async (token, title, body, data = {}) => {
         if (!token) {
-            Alert.alert('Error', 'No push token available');
+            Toast.show({type: 'success', text1: "no push token!"})
             return;
         }
         try {
@@ -122,9 +123,13 @@ export const UserContextProvider = ({ children }) => {
                 }),
             });
             if (response.ok) {
-                Alert.alert("Sent!")
+                Toast.show({type: 'success', text1: "push sent!"})
                 return { success: true }
             }
+            else {
+            Toast.show({type: 'success', text1: "push not sent. not ok response."})
+            return { success: false, error: 'Response not ok' };
+        }
 
         }
         catch (error) {
@@ -134,18 +139,7 @@ export const UserContextProvider = ({ children }) => {
     }
 
     useEffect(()=> {
-    // const initializeNotifications = async () => {
-    //     setIsLoading(true);
-    //     const token = await registerForPushNotifications();
-    //     setExpoPushToken(token || '');
-    //     setIsLoading(false);
-    // };
-
-    // initializeNotifications();
-
-
 // Prepares phone on mount to receive push:
-
     // Set up notification listeners
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
         console.log('📨 Notification received:', notification);
