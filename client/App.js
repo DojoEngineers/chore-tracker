@@ -3,7 +3,6 @@ import Toast from 'react-native-toast-message'
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserContextProvider } from './context/UserContext';
-// import { NotificationProvider } from './contexts/UserContext';
 import { useFonts, Nunito_400Regular, Nunito_700Bold } from '@expo-google-fonts/nunito';
 import { GlobalStyling } from "./components/GlobalStyling";
 import { SplashScreen } from "./views/login/SplashScreen";
@@ -57,7 +56,6 @@ export default function App() {
   if (!fontsLoaded) return null
 
   return (
-    // <NotificationProvider>
       <UserContextProvider>
         <GestureHandlerRootView className="flex-1">
           <SafeAreaProvider>
@@ -102,7 +100,6 @@ export default function App() {
         </GestureHandlerRootView>
         <Toast />
       </UserContextProvider>
-    // </NotificationProvider>
   )
 
 }

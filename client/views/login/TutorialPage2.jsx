@@ -77,7 +77,7 @@ export const TutorialPage2 = () => {
                 </View>
 
                 <View className="w-full">
-                    <View className="px-[16px] w-full my-[10%] items-center">
+                    <View className="px-[16px] w-full my-[5%] items-center">
                         <PrimaryButton onPress={() => navigation.navigate('TutorialPage3')} label="Continue" />
                         
                         <Pressable

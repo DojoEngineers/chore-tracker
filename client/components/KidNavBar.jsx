@@ -15,7 +15,7 @@ export const KidNavBar = () => {
     const route = useRoute()
 
     return (
-        <View className="bg-white dark:bg-[#333740] w-full h-[12%] border-t-2
+        <View className="bg-white dark:bg-[#333740] w-full py-[3%] border-t-2
             dark:border-[#737780] border-[#ECEDEE] flex-row">
             
             <View className="flex-1 items-center justify-center">

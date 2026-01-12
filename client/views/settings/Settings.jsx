@@ -113,7 +113,7 @@ export const Settings = () => {
                 </ScrollView>
             </View>
 
-            <View className="mb-[10%] w-full">
+            <View className="mb-[5%] w-full">
                 <Pressable
                     onPress={!isButtonLoading ? handleLogout : null}
                     disabled={isButtonLoading}

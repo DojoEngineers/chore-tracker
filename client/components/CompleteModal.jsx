@@ -19,7 +19,7 @@ export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics
     const [kidComments, setKidComments] = useState("")
     const [commentsError, setCommentsError] = useState("")
     const [isButtonLoading, setIsButtonLoading] = useState(false)
-    const { loggedInData, sendTestPush } = useLogin()
+    const { loggedInData, sendPush } = useLogin()
 
     const navigation = useNavigation()
     const colorScheme = useColorScheme()
@@ -35,58 +35,58 @@ export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics
     }
 
 
-const handleComplete = () => {
-    if (isButtonLoading) return
-    setIsButtonLoading(true)
+    const handleComplete = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
 
-    if (commentsError) {
-        Toast.show({ type: 'error', text1: "Please make corrections to the form." })
-        setIsButtonLoading(false)
-        return
-    }
+        if (commentsError) {
+            Toast.show({ type: 'error', text1: "Please make corrections to the form." })
+            setIsButtonLoading(false)
+            return
+        }
 
-    updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
-        .then(() => {
-            // Wrap notifications in try-catch so they don't block success
-            try {
-                // Send push notifications to all parents
-                const notificationPromises = loggedInData.family.parents 
-                    .flatMap(parent => parent.pushTokens || [])
-                    .map(token =>
-                        sendTestPush(
-                            token,
-                            "Chore Awaiting Approval!🧐",
-                            `${loggedInData.name} completed chore "${chore.title}" and needs your review.`
-                        )
-                    );
+        updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
+            .then(() => {
+                // Wrap notifications in try-catch so they don't block success
+                try {
+                    // Send push notifications to all parents
+                    const notificationPromises = loggedInData.family.parents 
+                        .flatMap(parent => parent.pushTokens || [])
+                        .map(token =>
+                            sendPush(
+                                token,
+                                "Chore Awaiting Approval!🧐",
+                                `${loggedInData.name} completed chore "${chore.title}" and needs your review.`
+                            )
+                        );
 
-                // Fire and forget notifications (don't block the user)
-                if (notificationPromises.length > 0) {
-                    Promise.allSettled(notificationPromises)
-                        .then(results => {
-                            const failed = results.filter(r => r.status === 'rejected');
-                            if (failed.length > 0) {
-                                console.log('Some parent notifications failed:', failed);
-                            }
-                        })
-                        .catch(err => {
-                            console.log('Notification error (non-blocking):', err);
-                        });
+                    // Fire and forget notifications (don't block the user)
+                    if (notificationPromises.length > 0) {
+                        Promise.allSettled(notificationPromises)
+                            .then(results => {
+                                const failed = results.filter(r => r.status === 'rejected');
+                                if (failed.length > 0) {
+                                    console.log('Some parent notifications failed:', failed);
+                                }
+                            })
+                            .catch(err => {
+                                console.log('Notification error (non-blocking):', err);
+                            });
+                    }
+                } catch (notifError) {
+                    console.error('Notification setup error (non-blocking):', notifError);
                 }
-            } catch (notifError) {
-                console.error('Notification setup error (non-blocking):', notifError);
-            }
 
-            Toast.show({ type: 'success', text1: "Chore completed!" })
-            navigation.goBack()
-        })
-        .catch((error) => {
-            console.log("completeChore error:", error)
-            setApiErrors(prev => ({ ...prev, completeChore: "Unable to complete chore." }))
-            Toast.show({ type: 'error', text1: "Unable to complete chore." })
-        })
-        .finally(() => setIsButtonLoading(false))
-}
+                Toast.show({ type: 'success', text1: "Chore completed!" })
+                navigation.goBack()
+            })
+            .catch((error) => {
+                console.log("completeChore error:", error)
+                setApiErrors(prev => ({ ...prev, completeChore: "Unable to complete chore." }))
+                Toast.show({ type: 'error', text1: "Unable to complete chore." })
+            })
+            .finally(() => setIsButtonLoading(false))
+    }
 
     const takeAfterPhoto = async () => {
         const { status } = await ImagePicker.requestCameraPermissionsAsync()

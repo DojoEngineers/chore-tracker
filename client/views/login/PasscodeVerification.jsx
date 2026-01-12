@@ -127,7 +127,7 @@ export const PasscodeVerification = ({route}) => {
                         <BottomSquiggle/>
                     </View>
 
-                    <View className="flex-row mb-[50px] justify-center">
+                    <View className="flex-row mb-[5%] justify-center">
                         <BottomLink onPress={() => resend(username)} text="Didn't receive a code? " link="Resend" />
                     </View>
                 </View>

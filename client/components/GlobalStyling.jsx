@@ -1,12 +1,15 @@
-import { View } from 'react-native';
 import { useColorScheme } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const GlobalStyling = ({ children }) => {
     const colorScheme = useColorScheme()
 
     return (
-        <View className={`${colorScheme === 'dark' ? 'dark' : ''} flex-1`}>
+        <SafeAreaView
+            className={`${colorScheme === 'dark' ? 'dark' : ''} flex-1`}
+            edges={['bottom']}
+        >
             {children}
-        </View>
+        </SafeAreaView>
     )
 }

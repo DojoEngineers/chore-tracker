@@ -23,20 +23,19 @@ export const StartingPage = () => {
             if (data.firstLogin) navigation.replace('TutorialPage1')
             else navigation.replace('Dashboard')
         } catch (error) {
-            console.log('Failed to fetch user data', error)
+            if (error.response?.status !== 401) {
+                console.log('Failed to fetch user data', error)
+            }
         }
     }
 
     useEffect(() => {
-        if (!user || !user._id) {
+        if (!user || !user.user || !user.user._id) {
             console.log("No valid user, staying on login page")
             return
         }
-        const timer = setTimeout(() => {
-            checkUserToken()
-        }, 200)
-        return () => clearTimeout(timer)
-    }, [])
+        checkUserToken()
+    }, [user])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">

@@ -157,7 +157,7 @@ export const NewChore = () => {
                                             />
                                         </View>
                                         
-                                        <View className="mb-[50px]">
+                                        <View className="mb-[5%]">
                                             <PrimaryButton onPress={handleSubmit} label="Next"/>
                                         </View>
                                     </View>
@@ -166,7 +166,6 @@ export const NewChore = () => {
                                     <ScrollView
                                         contentContainerClassName="items-center"
                                         showsVerticalScrollIndicator={false}
-                                        className="mb-12"
                                     >
                                         <PresetChoreButton chore="Feed the pet(s)"/>
                                         <PresetChoreButton chore="Wash the dishes"/>

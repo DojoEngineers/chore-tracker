@@ -48,7 +48,7 @@ export const ViewChore = ({ route }) => {
 
     const navigation = useNavigation()
     const { id } = route.params
-    const { loggedInData, sendTestPush } = useLogin()
+    const { loggedInData, sendPush } = useLogin()
 
     useFocusEffect(
         useCallback(() => {
@@ -103,42 +103,41 @@ export const ViewChore = ({ route }) => {
     )
 
     const handleApprove = () => {
-    if (isButtonLoading) return
-    setIsButtonLoading(true)
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
 
-    updateChore({ _id: id, stage: "approved", stageDate: dayjs().toISOString() })
-        .then(() => {
-            try {
-                // Send push notification to the kid who completed the chore
-                const kid = loggedInData.family.children.find(k => k._id === chore.worker._id);
-                
-                if (kid?.pushTokens && kid.pushTokens.length > 0) {
-                    const notificationPromises = kid.pushTokens.map(token =>
-                        sendTestPush(
-                            token,
-                            "Chore Approved!🙂",
-                            `Your chore "${chore.title}" has been approved!`
-                        )
-                    );
+        updateChore({ _id: id, stage: "approved", stageDate: dayjs().toISOString() })
+            .then(() => {
+                try {
+                    // Send push notification to the kid who completed the chore
+                    const kid = loggedInData.family.children.find(k => k._id === chore.worker._id);
+                    
+                    if (kid?.pushTokens && kid.pushTokens.length > 0) {
+                        const notificationPromises = kid.pushTokens.map(token =>
+                            sendPush(
+                                token,
+                                "Chore Approved!🙂",
+                                `Your chore "${chore.title}" has been approved!`
+                            )
+                        );
 
-                    Promise.allSettled(notificationPromises).catch(err => {
-                        console.log('Notification error (non-blocking):', err);
-                    });
+                        Promise.allSettled(notificationPromises).catch(err => {
+                            console.log('Notification error (non-blocking):', err);
+                        });
+                    }
+                } catch (notifError) {
+                    console.error('Notification setup error (non-blocking):', notifError);
                 }
-            } catch (notifError) {
-                console.error('Notification setup error (non-blocking):', notifError);
-            }
 
-            Toast.show({ type: 'success', text1: "Chore approved!" })
-            navigation.goBack()
-        })
-        .catch((error) => {
-            console.log("approveChore error:", error)
-            setApiErrors(prev => ({ ...prev, approveChore: "Unable to approve chore." }))
-            Toast.show({ type: 'error', text1: "Unable to approve chore." })
-        })
-        .finally(() => setIsButtonLoading(false))
-
+                Toast.show({ type: 'success', text1: "Chore approved!" })
+                navigation.goBack()
+            })
+            .catch((error) => {
+                console.log("approveChore error:", error)
+                setApiErrors(prev => ({ ...prev, approveChore: "Unable to approve chore." }))
+                Toast.show({ type: 'error', text1: "Unable to approve chore." })
+            })
+            .finally(() => setIsButtonLoading(false))
     }
 
     const takeBeforePhoto = async () => {
@@ -442,7 +441,7 @@ export const ViewChore = ({ route }) => {
                                     )}
                                 </ScrollView>
 
-                                <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full" />
+                                <View className="h-[1px] bg-lightPrimaryText dark:bg-[#737780] w-full mb-[4%]" />
                             </View>
                         }
 
@@ -452,7 +451,7 @@ export const ViewChore = ({ route }) => {
                         ?
                         loggedInData.isParent
                             ?
-                            <View className="mb-[10%]">
+                            <View className="mb-[5%]">
                                 <Pressable
                                     onPress={() => navigation.navigate("NewChoreDetails", { chore })}
                                     className="p-[10px] rounded-full items-center justify-center bg-[#9FB6AE] dark:bg-darkButton w-full h-[56px] mt-4"
@@ -473,7 +472,7 @@ export const ViewChore = ({ route }) => {
                             </View>
 
                             : chore.worker._id === loggedInData._id ?
-                                <View className="mb-[10%]">
+                                <View className="mb-[5%]">
                                     <Pressable
                                         onPress={takeBeforePhoto}
                                         className="p-[10px] rounded-full items-center justify-center bg-[#84A99D] w-full h-[56px] mt-4"
@@ -498,7 +497,7 @@ export const ViewChore = ({ route }) => {
                     }
 
                     {(chore.stage === "complete" && loggedInData.isParent) &&
-                        <View className="mb-[10%]">
+                        <View className="mb-[5%]">
 
                             <Pressable
                                 onPress={!isButtonLoading ? handleApprove : null}

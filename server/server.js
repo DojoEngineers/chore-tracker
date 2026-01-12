@@ -7,7 +7,6 @@ import choreRouter from "./routes/chore.route.js"
 import R2Router from "./routes/r2.route.js"
 import NotificationRouter from "./routes/notifications.route.js"
 import emailjs from "@emailjs/nodejs"
-import { Expo } from 'expo-server-sdk'
 
 const app = express()
 
@@ -20,7 +19,8 @@ app.use("/r2", R2Router)
 app.use("/send-push", NotificationRouter)
 app.get("/ping", (req, res) => {
   console.log("pinging server...")
-  res.sendStatus(200)})
+  res.sendStatus(200)
+})
 
 config()
 const PORT = process.env.PORT

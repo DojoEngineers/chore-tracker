@@ -100,7 +100,7 @@ export const Login = () => {
                         </Pressable>
 
                         <BrandBoldText className="text-[32px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[37px]">
-                            Hi, welcome. backend:{BACKEND_API_URL} id: {projectId}
+                            Hi, welcome.
                         </BrandBoldText>
                         
                         <View className="items-center mb-10">
@@ -150,7 +150,7 @@ export const Login = () => {
                     </View>
                 </View>
 
-                <View className="mb-[50px] items-center">
+                <View className="mb-[5%] items-center">
                     <BottomLink onPress={() => navigation.navigate('ParentRegistration')} text="Starting a family? " link="Set up Your Account Here" />
                 </View>
             </View>

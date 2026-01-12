@@ -160,7 +160,7 @@ export const ParentRegistration = () => {
                     </View>
                 </View>
 
-                <View className="mb-[50px] items-center">
+                <View className="mb-[5%] items-center">
                     <View className="mb-2">
                         <BottomLink
                             onPress={() => navigation.navigate('UsernameVerification')}

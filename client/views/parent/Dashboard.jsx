@@ -19,14 +19,13 @@ import { LargeSquareIcon } from "../../components/icons/LargeSquareIcon"
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { KidNavBar } from "../../components/KidNavBar"
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
 dayjs.extend(isSameOrBefore)
 
 export const Dashboard = () => {
-
-    
 
     const [viewCalendarChores, setViewCalendarChores] = useState(false)
     const [viewCalendar, setViewCalendar] = useState(false)
@@ -37,10 +36,10 @@ export const Dashboard = () => {
     const [recentActivityChores, setRecentActivityChores] = useState([])
     const [allChoresByParents, setAllChoresByParents] = useState([])
 
-    const {registerForPushNotifications, loggedInData, expoPushToken, sendTestPush} = useLogin()
+    const {registerForPushNotifications, loggedInData} = useLogin()
     const navigation = useNavigation()
 
-    // registers for push and saves push token to user doc.
+    // Registers for push and saves push token to user doc.
     useEffect(()=>{
         registerForPushNotifications()
     }, [])
@@ -131,14 +130,6 @@ export const Dashboard = () => {
                 Dashboard
             </BrandBoldText>
 
-             {/* PUSH TEST */}
-            <View className="items-center px-[16px]">
-                <BrandBoldText className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]">
-                    Your push token: {expoPushToken}
-                </BrandBoldText>
-                <Pressable onPress={()=>{sendTestPush(expoPushToken, "Hey!", "This is a test")}} className="text-[40px] text-center text-lightPrimaryText dark:text-darkPrimaryText leading-[45px]"><BrandText>Get push!</BrandText></Pressable>
-            </View>
-
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 className="px-[16px] flex-1"
@@ -168,7 +159,6 @@ export const Dashboard = () => {
                         <Pressable
                             hitSlop={20}
                             onPress={() => setViewCalendarChores(false)}
-                            className=""
                         >
                             <BrandText className="dark:text-[#ECEDEE] text-lightPrimaryText text-[12px] me-2">
                                 Hide Chores

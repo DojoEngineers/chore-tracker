@@ -93,7 +93,7 @@ export const UsernameVerification = () => {
                         <BottomSquiggle/>
                     </View>
 
-                    <View className="flex-row mb-[50px] justify-center">
+                    <View className="flex-row mb-[5%] justify-center">
                         <BottomLink onPress={() => navigation.navigate('Login')} text="Already have an account? " link="Login Now" />
                     </View>
                 </View>

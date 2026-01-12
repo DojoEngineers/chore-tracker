@@ -188,7 +188,7 @@ export const EditProfile = () => {
                         </View>
                     </View>
 
-                    <View className="px-[16px] w-full mb-[90px] z-10">
+                    <View className="px-[16px] w-full mb-[5%] z-10">
                         <PrimaryButton onPress={handleSubmit} label="Confirm" disabled={isButtonLoading}/>
                     </View>
                 </View>

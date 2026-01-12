@@ -75,7 +75,7 @@ export const TutorialPage3 = () => {
                 </View>
 
                 <View className="w-full">
-                    <View className="px-[16px] w-full my-[10%] items-center">
+                    <View className="px-[16px] w-full my-[5%] items-center">
                         <PrimaryButton onPress={handleContinue} label="Continue" />
                     </View>
                 </View>

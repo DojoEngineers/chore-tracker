@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native"
-import { useLogin, useNotifications } from "../../context/UserContext"
+import { useLogin } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
@@ -62,7 +62,7 @@ export const NewChoreDetails = ({ route }) => {
 
     const { title, chore } = route.params || {}
     const navigation = useNavigation()
-    const { loggedInData, sendTestPush } = useLogin()
+    const { loggedInData, sendPush } = useLogin()
     const colorScheme = useColorScheme()
     const isDark = colorScheme === "dark"
 
@@ -150,7 +150,7 @@ export const NewChoreDetails = ({ route }) => {
             dueDate: dueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
         }
         const promises = []
-        const isEditMode = !!chore;
+        const isEditMode = !!chore
 
         if (chore) {
             if (kids.includes(chore.worker._id)) {
@@ -202,7 +202,7 @@ export const NewChoreDetails = ({ route }) => {
 
                         // Send to every token for this kid
                         return kid.pushTokens.map(token =>
-                            sendTestPush(token, title, body)
+                            sendPush(token, title, body)
                         );
                     }
                     return [];
@@ -494,7 +494,7 @@ export const NewChoreDetails = ({ route }) => {
                         </View>
                     </View>
 
-                    <View className="flex-1 justify-end my-12">
+                    <View className="flex-1 justify-end my-[5%]">
                         <PrimaryButton onPress={handleSubmit} label={chore ? "Submit edits" : "Add"} disabled={isButtonLoading} />
                     </View>
 

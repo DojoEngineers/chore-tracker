@@ -6,7 +6,6 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Alert, Platform } from "react-native";
 import { updateUser } from "../services/user.service";
-import Toast from "react-native-toast-message";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -45,7 +44,6 @@ export const UserContextProvider = ({ children }) => {
 
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
     const notificationListener = useRef();
     const responseListener = useRef();
 
@@ -63,7 +61,7 @@ export const UserContextProvider = ({ children }) => {
             }
 
             if (!Device.isDevice) {
-                Alert.alert('Error', 'Must use physical device for Push Notifications');
+                Alert.alert('Error', 'Must use physical device for push notifications');
                 return null;
             }
 
@@ -77,41 +75,40 @@ export const UserContextProvider = ({ children }) => {
             }
 
             if (finalStatus !== 'granted') {
-                Alert.alert('Permission denied', 'Failed to get push token for notifications!');
+                Alert.alert('Permission denied', 'Failed to set up notifications.');
                 return null;
             }
 
             // Get project ID
 
             if (!projectId) {
-                Alert.alert('Error', 'Project ID not found in config');
+                console.error('Project ID not found in config')
                 return null;
             }
 
             // Get push token
             const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
             console.log('📱 Expo Push Token:', token);
-            Alert.alert('token', token);
+
             // save token to backend
             setExpoPushToken(token)
             if (token && loggedInData._id) {
-                await updateUser({ pushTokens: token })
-                return token;
+                await updateUser({ pushToken: token })
+                return token
             }
             else {
-                Alert.alert("Error", "no token/id. token not saved...")
+                console.warn('No token or user ID; push token not saved')
             }
         } catch (error) {
             console.error('Error registering for push notifications:', error);
-            Alert.alert('Error', `Failed to register for push: ${error}`);
             return null;
         }
     };
 
     // pings backend to send push.
-    const sendTestPush = async (token, title, body, data = {}) => {
+    const sendPush = async (token, title, body, data = {}) => {
         if (!token) {
-            Toast.show({type: 'success', text1: "no push token!"})
+            console.warn("No push token provided!")
             return;
         }
         try {
@@ -123,43 +120,41 @@ export const UserContextProvider = ({ children }) => {
                 }),
             });
             if (response.ok) {
-                Toast.show({type: 'success', text1: "push sent!"})
+                console.log("Push sent successfully:", { token, title, body })
                 return { success: true }
             }
             else {
-            Toast.show({type: 'success', text1: "push not sent. not ok response."})
-            return { success: false, error: 'Response not ok' };
-        }
+                console.warn("Push not sent, response not OK:", response.status)
+                return { success: false, error: 'Response not ok' };
+            }
 
         }
         catch (error) {
-            Alert.alert('Catch Error', error.message || 'Unknown error');
+            console.error("Error sending push:", error);
             return { success: false };
         }
     }
 
     useEffect(()=> {
-// Prepares phone on mount to receive push:
-    // Set up notification listeners
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-        console.log('📨 Notification received:', notification);
-        setNotification(notification);
-    });
+        // Prepares phone on mount to receive push:
+        // Set up notification listeners
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            console.log('📨 Notification received:', notification);
+            setNotification(notification);
+        });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-        console.log('👆 Notification tapped:', response);
-    });
-    // Cleanup
-    return () => {
-        if (notificationListener.current) {
-            notificationListener.current.remove();
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log('👆 Notification tapped:', response);
+        });
+        // Cleanup
+        return () => {
+            if (notificationListener.current) {
+                notificationListener.current.remove();
+            }
+            if (responseListener.current) {
+                responseListener.current.remove();
+            }
         }
-        if (responseListener.current) {
-            responseListener.current.remove();
-        }
-    };
-
-
     },[])
 
 
@@ -167,7 +162,7 @@ export const UserContextProvider = ({ children }) => {
         const loadData = async () => {
             try {
                 // User
-                const storedUser = await AsyncStorage.getItem('user');
+                const storedUser = await AsyncStorage.getItem('user')
                 if (storedUser) {
                     const parsedUser = JSON.parse(storedUser);
                     setUser(parsedUser);
@@ -175,13 +170,13 @@ export const UserContextProvider = ({ children }) => {
                 }
 
                 // Notifications
-                const storedNotifications = await AsyncStorage.getItem('notifications');
-                if (storedNotifications !== null) {
-                    setNotifications(JSON.parse(storedNotifications));
+                const areNotificationsOn = await AsyncStorage.getItem('notifications')
+                if (areNotificationsOn !== null) {
+                    setNotifications(JSON.parse(areNotificationsOn))
                 }
 
                 // Theme
-                const storedTheme = await AsyncStorage.getItem('theme');
+                const storedTheme = await AsyncStorage.getItem('theme')
                 if (storedTheme) {
                     setAppTheme(storedTheme)
                 } else {
@@ -196,14 +191,25 @@ export const UserContextProvider = ({ children }) => {
         loadData()
     }, [])
 
-    const toggleNotifications = async (value) => {
-        setNotifications(value)
+    const toggleNotifications = async (isOn) => {
+        setNotifications(isOn)
         try {
-            await AsyncStorage.setItem('notifications', JSON.stringify(value))
+            await AsyncStorage.setItem('notifications', JSON.stringify(isOn))
+            if (isOn) {
+                if (!expoPushToken) {
+                    await registerForPushNotifications()
+                }
+            } else {
+                if (expoPushToken && loggedInData?._id) {
+                    await updateUser({ removePushToken: expoPushToken })
+                }
+                setExpoPushToken(null)
+            }
         } catch (error) {
-            console.log('Failed to save notifications', error);
+            console.log('Failed to save notifications', error)
         }
-    };
+    }
+
 
     const setAppTheme = async (value) => {
         setTheme(value)
@@ -249,7 +255,8 @@ export const UserContextProvider = ({ children }) => {
         <UserContext.Provider
             value={{
                 user, setUser, isLoggedIn, loggedInData, familyData, setFamilyData, setLoggedInData,
-                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications, theme, setAppTheme, expoPushToken, sendTestPush, registerForPushNotifications
+                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications,
+                theme, setAppTheme, expoPushToken, sendPush, registerForPushNotifications,
             }}
         >
             {children}

@@ -399,20 +399,26 @@ export const updateUser = async (req, res) => {
         const id = req.body.id || req.user.id
 
         // If pushTokens is being updated, use $addToSet to prevent duplicates
-        let updateData = { ...req.body };
-        if (req.body.pushTokens) {
-            updateData = { $addToSet: { pushTokens: req.body.pushTokens } };
+        let updatedData
+        if (req.body.pushToken) {
+            updatedData = { $addToSet: { pushTokens: req.body.pushToken } }
+        }
+        else if (req.body.removePushToken) {
+            updatedData = { $pull: {pushTokens: req.body.removePushToken}}
+        } else {
+            updatedData = req.body
         }
 
         const editedUser = await User.findByIdAndUpdate(
             id,
-            req.body,
+            updatedData,
             { new: true, runValidators: true }
-        );
-        res.status(200).json(editedUser);
+        )
+        console.log("edited user:", editedUser)
+        res.status(200).json(editedUser)
     }
     catch (error) {
-        res.status(400).json(error);
+        res.status(400).json(error)
         throw error
     }
 }
