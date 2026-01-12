@@ -414,7 +414,6 @@ export const updateUser = async (req, res) => {
             updatedData,
             { new: true, runValidators: true }
         )
-        console.log("edited user:", editedUser)
         res.status(200).json(editedUser)
     }
     catch (error) {

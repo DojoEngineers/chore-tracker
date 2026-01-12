@@ -19,7 +19,6 @@ import { LargeSquareIcon } from "../../components/icons/LargeSquareIcon"
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { KidNavBar } from "../../components/KidNavBar"
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
-import AsyncStorage from "@react-native-async-storage/async-storage"
 
 dayjs.extend(utc)
 dayjs.extend(relativeTime)
@@ -36,13 +35,8 @@ export const Dashboard = () => {
     const [recentActivityChores, setRecentActivityChores] = useState([])
     const [allChoresByParents, setAllChoresByParents] = useState([])
 
-    const {registerForPushNotifications, loggedInData} = useLogin()
+    const {loggedInData} = useLogin()
     const navigation = useNavigation()
-
-    // Registers for push and saves push token to user doc.
-    useEffect(()=>{
-        registerForPushNotifications()
-    }, [])
 
     const handleDateChange = (selectedDate) => {
         setDate(selectedDate)
