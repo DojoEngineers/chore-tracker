@@ -157,11 +157,11 @@ export const UserContextProvider = ({ children }) => {
         }
     },[])
 
-    useEffect(()=>{
-        if (notifications) {
-            registerForPushNotifications()
-        }
-    }, [notifications])
+    // useEffect(()=>{
+    //     if (notifications) {
+    //         registerForPushNotifications()
+    //     }
+    // }, [notifications])
 
     useEffect(() => {
         const loadData = async () => {

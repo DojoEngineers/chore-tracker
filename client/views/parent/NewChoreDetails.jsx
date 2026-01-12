@@ -190,7 +190,7 @@ export const NewChoreDetails = ({ route }) => {
                     // Find the kid in the family
                     const kid = loggedInData.family.children.find(k => k._id === kidId);
 
-                    if (kid?.pushTokens && kid.pushTokens.length > 0) {
+                    if (kid?.pushTokens && kid.pushTokens.length > 0 && kid.notifications) {
                         // Different messages for create vs edit
                         const title = isEditMode
                             ? "Chore Updated! 🔄"

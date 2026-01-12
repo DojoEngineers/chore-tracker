@@ -5,6 +5,32 @@ import emailjs from "@emailjs/nodejs"
 import crypto from "crypto"
 
 
+// update entire db (USE CAREFULLY!)
+
+// export const updateDB = async (req, res) => {
+//     console.log("Adding notifications field to all users")
+//     try {
+//         const result = await User.updateMany(
+//             { notifications: { $exists: false } }, // Only update users without the field
+//             { $set: { notifications: true } }
+//         );
+        
+//         console.log(`Matched ${result.matchedCount} users`);
+//         console.log(`Modified ${result.modifiedCount} users`);
+        
+//         res.status(200).json({
+//             message: "Successfully updated users",
+//             matchedCount: result.matchedCount,
+//             modifiedCount: result.modifiedCount
+//         });
+//     } catch (error) {
+//         console.log("error", error);
+//         res.status(400).json(error);
+//     }
+
+// }
+
+
 // for deleting, req.params is best practice but can also use req.body
 export const deleteUser = async (req, res) => {
     console.log("id", req.body._id)
@@ -54,8 +80,9 @@ export const loginUser = async (req, res) => {
         })
     }
     else {
-        console.log("wrong username/password") 
-        res.status(401).json("User password or email is not valid.") }
+        console.log("wrong username/password")
+        res.status(401).json("User password or email is not valid.")
+    }
 }
 
 // checks if username exists in db
@@ -129,8 +156,8 @@ export const sendPasswordEmail = async (name, username, password) => {
                 password
             },
             {
-            publicKey: process.env.EMAILJS_PUBLIC_KEY,
-            privateKey: process.env.EMAILJS_PRIVATE_KEY,
+                publicKey: process.env.EMAILJS_PUBLIC_KEY,
+                privateKey: process.env.EMAILJS_PRIVATE_KEY,
             }
         );
     }
@@ -156,7 +183,7 @@ export const registerUser = async (req, res) => {
     try {
         const user = await User.create({
             ...req.body,
-            isVerified: false, isActive: true, verificationCode: code, codeExpirationDate: expiration, pushTokens:[]
+            isVerified: false, isActive: true, verificationCode: code, codeExpirationDate: expiration, pushTokens: []
         })
         if (user) {
             delete user.password //removes password from the object
@@ -404,7 +431,7 @@ export const updateUser = async (req, res) => {
             updatedData = { $addToSet: { pushTokens: req.body.pushToken } }
         }
         else if (req.body.removePushToken) {
-            updatedData = { $pull: {pushTokens: req.body.removePushToken}}
+            updatedData = { $pull: { pushTokens: req.body.removePushToken } }
         } else {
             updatedData = req.body
         }

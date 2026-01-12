@@ -35,7 +35,7 @@ export const Dashboard = () => {
     const [recentActivityChores, setRecentActivityChores] = useState([])
     const [allChoresByParents, setAllChoresByParents] = useState([])
 
-    const {loggedInData} = useLogin()
+    const {loggedInData, registerForPushNotifications, notifications} = useLogin()
     const navigation = useNavigation()
 
     const handleDateChange = (selectedDate) => {
@@ -49,6 +49,12 @@ export const Dashboard = () => {
 
         setCalendarChores(filteredChores)
     }
+
+    // registers for push and saves push token to user doc.
+    useEffect(()=>{
+        if (notifications){
+        registerForPushNotifications()}
+    }, [])
 
     useFocusEffect(
         useCallback(() => {

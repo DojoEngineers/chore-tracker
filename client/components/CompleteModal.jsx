@@ -50,7 +50,8 @@ export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics
                 // Wrap notifications in try-catch so they don't block success
                 try {
                     // Send push notifications to all parents
-                    const notificationPromises = loggedInData.family.parents 
+                    const notificationPromises = loggedInData.family.parents
+                        .filter(parent => parent.notifications === true)
                         .flatMap(parent => parent.pushTokens || [])
                         .map(token =>
                             sendPush(

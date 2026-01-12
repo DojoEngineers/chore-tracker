@@ -1,9 +1,14 @@
 import { Router } from "express"
 import { protect } from "../middleware/authMiddleware.js"
 import { getCurrentUser, loginUser, registerUser, updateUser, checkUsername, getUserByUsername, verifyUser, verifyPassword,
-    changePassword, resendCode, sendPassword, deleteUser, getAllUsers } from "../controllers/user.controller.js"
+    changePassword, resendCode, sendPassword, deleteUser, getAllUsers, 
+    updateDB} from "../controllers/user.controller.js"
 
 const userRouter = Router()
+
+//for seeding
+// userRouter.route('/update-db')
+//     .get(updateDB)
 
 // for testing:
 userRouter.route('/all')

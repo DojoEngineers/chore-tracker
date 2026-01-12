@@ -65,6 +65,10 @@ const userSchema = new mongoose.Schema({
     pushTokens: {
         type: Array,
         required: [true, "must add push token array, even if empty."]
+    },
+    notifications :{
+        type: Boolean,
+        default: true
     }
 }, { timestamps: true });
 

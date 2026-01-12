@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
-import { TouchableWithoutFeedback, Animated, Platform} from 'react-native'
+import { TouchableWithoutFeedback, Animated, Platform } from 'react-native'
 import { useLogin } from '../context/UserContext'
+import { updateUser } from '../services/user.service';
 
 export const NotificationsSwitch = () => {
     const { notifications, toggleNotifications } = useLogin()
@@ -15,9 +16,19 @@ export const NotificationsSwitch = () => {
         }).start()
     }, [notifications])
 
-    const handleToggle = () => {
-        toggleNotifications(!notifications)
+const handleToggle = async () => {
+    const newValue = !notifications;
+    // Update frontend
+    toggleNotifications(newValue);
+    
+    try {
+        // Update backend
+        await updateUser({notifications: newValue});
+    } catch (error) {
+        toggleNotifications(!newValue);
+        alert('Failed to update notification settings');
     }
+}
 
     // Native switch dimensions
     const TRACK_WIDTH = 51;
@@ -41,26 +52,26 @@ export const NotificationsSwitch = () => {
         <TouchableWithoutFeedback onPress={handleToggle}>
             <Animated.View
                 style={{
-                width: TRACK_WIDTH,
-                height: TRACK_HEIGHT,
-                borderRadius: TRACK_HEIGHT / 2,
-                backgroundColor: trackColor,
-                justifyContent: 'center',
+                    width: TRACK_WIDTH,
+                    height: TRACK_HEIGHT,
+                    borderRadius: TRACK_HEIGHT / 2,
+                    backgroundColor: trackColor,
+                    justifyContent: 'center',
                 }}
             >
                 <Animated.View
-                style={{
-                    width: THUMB_SIZE,
-                    height: THUMB_SIZE,
-                    borderRadius: THUMB_SIZE / 2,
-                    backgroundColor: thumbColor,
-                    transform: [{ translateX: thumbTranslate }],
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 1.5,
-                    elevation: 2, // for Android shadow
-                }}
+                    style={{
+                        width: THUMB_SIZE,
+                        height: THUMB_SIZE,
+                        borderRadius: THUMB_SIZE / 2,
+                        backgroundColor: thumbColor,
+                        transform: [{ translateX: thumbTranslate }],
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 1 },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 1.5,
+                        elevation: 2, // for Android shadow
+                    }}
                 />
             </Animated.View>
         </TouchableWithoutFeedback>
