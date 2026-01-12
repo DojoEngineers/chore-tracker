@@ -7,28 +7,28 @@ import crypto from "crypto"
 
 // update entire db (USE CAREFULLY!)
 
-// export const updateDB = async (req, res) => {
-//     console.log("Adding notifications field to all users")
-//     try {
-//         const result = await User.updateMany(
-//             { notifications: { $exists: false } }, // Only update users without the field
-//             { $set: { notifications: true } }
-//         );
+export const updateDB = async (req, res) => {
+    console.log("Adding notifications field to all users")
+    try {
+        const result = await User.updateMany(
+            { notifications: { $exists: false } }, // Only update users without the field
+            { $set: { notifications: true } }
+        );
         
-//         console.log(`Matched ${result.matchedCount} users`);
-//         console.log(`Modified ${result.modifiedCount} users`);
+        console.log(`Matched ${result.matchedCount} users`);
+        console.log(`Modified ${result.modifiedCount} users`);
         
-//         res.status(200).json({
-//             message: "Successfully updated users",
-//             matchedCount: result.matchedCount,
-//             modifiedCount: result.modifiedCount
-//         });
-//     } catch (error) {
-//         console.log("error", error);
-//         res.status(400).json(error);
-//     }
+        res.status(200).json({
+            message: "Successfully updated users",
+            matchedCount: result.matchedCount,
+            modifiedCount: result.modifiedCount
+        });
+    } catch (error) {
+        console.log("error", error);
+        res.status(400).json(error);
+    }
 
-// }
+}
 
 
 // for deleting, req.params is best practice but can also use req.body
