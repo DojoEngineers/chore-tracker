@@ -39,6 +39,8 @@ export const UserContextProvider = ({ children }) => {
     const [familyData, setFamilyData] = useState([])
     const [notifications, setNotifications] = useState(true)
     const [theme, setTheme] = useState(true)
+    const [firstMount, setFirstMount] = useState(true)
+    // dashboard only saves push token when the user first logs in (on first mount of the dashboard page).
 
     const { setColorScheme } = useColorScheme()
 
@@ -200,16 +202,16 @@ export const UserContextProvider = ({ children }) => {
         setNotifications(isOn)
         try {
             await AsyncStorage.setItem('notifications', JSON.stringify(isOn))
-            if (isOn) {
-                if (!expoPushToken) {
-                    await registerForPushNotifications()
-                }
-            } else {
-                if (expoPushToken && loggedInData?._id) {
-                    await updateUser({ removePushToken: expoPushToken })
-                }
-                setExpoPushToken(null)
-            }
+            // if (isOn) {
+            //     if (!expoPushToken) {
+            //         await registerForPushNotifications()
+            //     }
+            // } else {
+            //     if (expoPushToken && loggedInData?._id) {
+            //         await updateUser({ removePushToken: expoPushToken })
+            //     }
+            //     setExpoPushToken(null)
+            // }
         } catch (error) {
             console.log('Failed to save notifications', error)
         }
@@ -261,7 +263,7 @@ export const UserContextProvider = ({ children }) => {
             value={{
                 user, setUser, isLoggedIn, loggedInData, familyData, setFamilyData, setLoggedInData,
                 login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications,
-                theme, setAppTheme, expoPushToken, sendPush, registerForPushNotifications,
+                theme, setAppTheme, expoPushToken, sendPush, registerForPushNotifications, firstMount, setFirstMount
             }}
         >
             {children}

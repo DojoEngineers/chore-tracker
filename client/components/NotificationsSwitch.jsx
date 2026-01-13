@@ -20,7 +20,6 @@ const handleToggle = async () => {
     const newValue = !notifications;
     // Update frontend
     toggleNotifications(newValue);
-    
     try {
         // Update backend
         await updateUser({notifications: newValue});
