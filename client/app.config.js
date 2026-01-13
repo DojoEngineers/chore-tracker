@@ -18,10 +18,10 @@ export default {
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
-  
+
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
-    
+
     splash: {
       image: "./assets/icon.png",
       resizeMode: "contain",
@@ -31,16 +31,24 @@ export default {
     plugins: [
       "expo-notifications",
       ["expo-build-properties",
-          {
-            android: {
-              usesCleartextTraffic: true,
-              compileSdkVersion: 35,
-              targetSdkVersion: 34
-            }
+        {
+          android: {
+            usesCleartextTraffic: true,
+            compileSdkVersion: 35,
+            targetSdkVersion: 34,
+            //this fixes jfrog dependancy error 1/12/26
+            // extraMavenRepos: [
+            //   "https://oss.jfrog.org/artifactory/libs-release"
+            // ],
+            // buildscriptRepositories: [
+            //   "https://oss.jfrog.org/artifactory/libs-release"
+            // ]
           }
+
+        }
       ]
     ],
-  
+
     ios: {
       icon: "./assets/ios_icon.png",
       bundleIdentifier: "com.dojoengineers.trackmychores",
@@ -48,7 +56,7 @@ export default {
       userInterfaceStyle: "automatic",
       usesNotifications: true
     },
-    
+
     android: {
       package: "com.dojoengineers.trackmychores",
       // this lets you register for push!
@@ -68,7 +76,7 @@ export default {
       edgeToEdgeEnabled: false, // Changed this for dark mode fix
       softwareKeyboardLayoutMode: "pan"
     },
-    
+
     web: {
       bundler: "metro",
       favicon: "./assets/favicon.png"

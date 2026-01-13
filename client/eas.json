@@ -11,8 +11,9 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "BACKEND_API_URL": "http://192.168.1.217:8000"
-      }
+        "BACKEND_API_URL": "http://192.168.1.217:8000",
+        "EAS_BUILD_DISABLE_MAVEN_CACHE": "1"
+}
     },
     "production": {
       "autoIncrement": true
