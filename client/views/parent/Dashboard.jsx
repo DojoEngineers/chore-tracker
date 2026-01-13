@@ -52,7 +52,7 @@ export const Dashboard = () => {
 
     // after logging in, app registers for push and saves push token to user doc.
     useEffect(()=>{
-        if (notifications && firstMount){
+        if (firstMount){
         registerForPushNotifications()
         setFirstMount(false)}
     }, [])
@@ -130,6 +130,7 @@ export const Dashboard = () => {
             >
                 Dashboard
             </BrandBoldText>
+            <BrandBoldText>{loggedInData.family.children}</BrandBoldText>
 
             <ScrollView
                 showsVerticalScrollIndicator={false}

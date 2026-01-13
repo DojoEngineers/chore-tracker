@@ -50,7 +50,7 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id, chore}) => {
                     // Send push notification to the kid whose chore was rejected
                     const kid = loggedInData.family.children.find(k => k._id === chore.worker._id);
                     
-                    if (kid?.pushTokens && kid.pushTokens.length > 0) {
+                    if (kid?.pushTokens && kid.pushTokens.length > 0 && kid.notifications) {
                         const notificationPromises = kid.pushTokens.map(token =>
                             sendPush(
                                 token,
@@ -63,6 +63,7 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id, chore}) => {
                             console.log('Notification error (non-blocking):', err);
                         });
                     }
+                    Toast.show({ type: 'error', text1: "no tokens and/or notifications"})
                 } catch (notifError) {
                     console.error('Notification setup error (non-blocking):', notifError);
                 }

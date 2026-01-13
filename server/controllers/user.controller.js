@@ -75,7 +75,9 @@ export const loginUser = async (req, res) => {
                 passwordReset: user.passwordReset,
                 firstLogin: user.firstLogin,
                 isVerified: user.isVerified,
-                isActive: user.isActive
+                isActive: user.isActive,
+                notifications: user.notifications,
+                pushTokens: user.pushTokens
             }
         })
     }
@@ -391,8 +393,8 @@ export const getCurrentUser = async (req, res) => {
         const USER = await User.findById(req.user._id).select(`-password`).populate({
             path: 'family',
             populate: [
-                { path: 'children', model: "User", select: "name username _id isActive pushTokens" },
-                { path: 'parents', model: "User", select: "name username _id isActive pushTokens" }
+                { path: 'children', model: "User", select: "name username _id isActive pushTokens notifications" },
+                { path: 'parents', model: "User", select: "name username _id isActive pushTokens notifications" }
             ]
         }).lean();
         if (!USER) {

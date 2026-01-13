@@ -205,6 +205,7 @@ export const NewChoreDetails = ({ route }) => {
                             sendPush(token, title, body)
                         );
                     }
+                    Toast.show({ type: 'error', text1: "no tokens and/or notifications"})
                     return [];
                 })
                 .flat()
