@@ -14,7 +14,7 @@
 
 This project was built with a Node.js and Express backend and a React Native frontend styled with NativeWind. Following an MVC architecture, the application uses MongoDB as the model, an Express API as the controller, and React Native for the view.
 
-Key features include full CRUD functionality for chores, user authentication with JSON Web Tokens, photo capture and storage, and repeating chores powered by a chore template system and cron jobs. The project was conceptualized in Figma and includes both light and dark modes. It was brought to life with dynamic, responsive styling that adapts well to a wide range of mobile screen sizes.
+Key features include full CRUD functionality for chores, user authentication with JSON Web Tokens, photo capture and storage, notifications, and repeating chores powered by a chore template system and cron jobs. The project was conceptualized in Figma and includes both light and dark modes. It was brought to life with dynamic, responsive styling that adapts well to a wide range of mobile screen sizes.
 
 The application has been tested on both Android and iOS emulators to ensure a smooth cross-platform experience. With over 30 unique screens and 2 distinct user interfaces, this project demonstrates our expertise in full-stack mobile application development.
 
