@@ -112,9 +112,10 @@ export const ViewChore = ({ route }) => {
                     // Send push notification to the kid who completed the chore
                     const kid = loggedInData.family.children.find(k => k._id === chore.worker._id);
 
-                    if (kid?.pushTokens && kid.pushTokens.length > 0 && kid.notifications) {
+                    if (kid?.pushTokens && kid.pushTokens.length > 0) {
                         const notificationPromises = kid.pushTokens.map(token =>
                             sendPush(
+                                kid._id,
                                 token,
                                 "Chore Approved!🙂",
                                 `Your chore "${chore.title}" has been approved!`

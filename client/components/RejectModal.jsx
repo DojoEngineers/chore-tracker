@@ -50,9 +50,10 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id, chore}) => {
                     // Send push notification to the kid whose chore was rejected
                     const kid = loggedInData.family.children.find(k => k._id === chore.worker._id);
                     
-                    if (kid?.pushTokens && kid.pushTokens.length > 0 && kid.notifications) {
+                    if (kid?.pushTokens && kid.pushTokens.length > 0) {
                         const notificationPromises = kid.pushTokens.map(token =>
                             sendPush(
+                                kid._id,
                                 token,
                                 "Chore Rejected ⚠️",
                                 `Your chore "${chore.title}" was rejected. Check parent comments.`

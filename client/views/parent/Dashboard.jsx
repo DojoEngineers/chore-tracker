@@ -131,10 +131,6 @@ export const Dashboard = () => {
             >
                 Dashboard
             </BrandBoldText>
-            <BrandBoldText>
-                {loggedInData.family.children.map(child => child.notifications).join(', ')}
-            </BrandBoldText>
-
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 className="px-[16px] flex-1"

@@ -108,7 +108,7 @@ export const UserContextProvider = ({ children }) => {
     };
 
     // pings backend to send push.
-    const sendPush = async (token, title, body, data = {}) => {
+    const sendPush = async (id, token, title, body, data = {}) => {
         if (!token) {
             console.warn("No push token provided!")
             return;
@@ -118,11 +118,11 @@ export const UserContextProvider = ({ children }) => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    token, title, body
+                    id, token, title, body
                 }),
             });
             if (response.ok) {
-                console.log("Push sent successfully:", { token, title, body })
+                console.log("Push sent successfully:", { id, token, title, body })
                 return { success: true }
             }
             else {

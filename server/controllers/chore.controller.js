@@ -45,7 +45,7 @@ export const getTemplates = async (req, res) => {
 export const deleteAllChores = async (req, res) => {
     console.log("deleting all chores in controller")
     try {
-        const del = await Chore.deleteMany()
+        const del = await Chore.deleteMany({creator: req.body.id})
         res.status(200).json(del)
     } catch (error) {
         console.log("error", error)

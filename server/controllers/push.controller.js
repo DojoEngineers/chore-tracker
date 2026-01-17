@@ -1,17 +1,28 @@
+import User from "../models/user.model.js"
 
-export const getTestPush = async (token, title, body, data = {}) => {
-    console.log("push controller...")
+export const getTestPush = async (id, token, title, pushBody, data) => {
+    console.log("push controller...id:", id)
     if (!token) {
         console.log("no token provided")
         return { success: false }
+    }
+    console.log("token title body", token, title, pushBody)
+    const user = await User.findById(id).select(`-password`)
+    console.log("user push:", user.notifications, user.pushTokens)
+
+    if (user.notifications == false) {
+        console.log("Not sending push. User has push turned off.")
+        return { success: true };
     }
 
     const message = {
         to: token,
         sound: 'default',
         title,
-        body,
+        body: pushBody,
         data,
+        channelId: 'default', // Add this for Android
+        priority: 'high',      // Add this
     };
 
     try {
