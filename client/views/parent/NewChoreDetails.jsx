@@ -1,9 +1,9 @@
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { useLogin } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
 import { addChore, updateChore } from "../../services/chore.service"
@@ -69,6 +69,12 @@ export const NewChoreDetails = ({ route }) => {
     const kidOptions = loggedInData.family.children
         .filter(kid => kid.isActive)
         .map(kid => ({ label: kid.name, value: kid._id }))
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     useEffect(() => {
         if (chore) {
@@ -238,9 +244,8 @@ export const NewChoreDetails = ({ route }) => {
             console.log("Updating / adding chores error:", error)
             setApiErrors(prev => ({ ...prev, chore: "Unable to save chore." }))
             Toast.show({ type: 'error', text1: "Unable to save chore." })
-        } finally {
             setIsButtonLoading(false)
-        }
+        } 
     }
 
     //     try {

@@ -1,9 +1,9 @@
 import { View, Pressable, Keyboard, TouchableWithoutFeedback } from "react-native"
 import { useLogin } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { getCurrentUser, getUserByUsername, login } from "../../services/user.service"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { BrandText } from "../../components/text/BrandText"
 import { TopSquiggle } from "../../components/squiggles/TopSquiggle"
 import { BackArrow } from "../../components/icons/BackArrow"
@@ -42,6 +42,12 @@ export const Login = () => {
         if (!user) return
         checkUserToken()
     }, [user])
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     const handleChange = (name, value) => {
         setFormData(prev => ({ ...prev, [name]: value }))
@@ -82,8 +88,8 @@ export const Login = () => {
                 console.log("getUserByUsername error:", error)
                 setApiErrors(prev => ({...prev, getUserByUsername: "Unable to check username."}))
                 Toast.show({type: 'error', text1: `Unable to check username. ${error.message}`})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     return (

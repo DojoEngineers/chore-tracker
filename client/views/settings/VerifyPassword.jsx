@@ -24,6 +24,12 @@ export const VerifyPassword = ({route}) => {
     const {loggedInData, logout} = useLogin()
     const {deleteAccount = false} = route.params
 
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
+
     const handleSubmit = () => {
         if (isButtonLoading) return
         setIsButtonLoading(true)
@@ -40,8 +46,8 @@ export const VerifyPassword = ({route}) => {
                 console.log("verifyPassword error:", error)
                 setApiErrors(prev => ({...prev, verifyPassword: "Unable to verify password."}))
                 Toast.show({type: 'error', text1: "Unable to verify password."})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     const handleDelete = () => {
@@ -63,12 +69,9 @@ export const VerifyPassword = ({route}) => {
             .catch( error => {
                 console.log("updateUser error:", error)
                 setApiErrors(prev => ({...prev, updateUser: "Unable to delete account."}))
-                Toast.show({
-                    type: 'error',
-                    text1: "Unable to delete account."
-                })
+                Toast.show({type: 'error', text1: "Unable to delete account."})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     return (

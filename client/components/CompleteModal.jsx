@@ -1,7 +1,7 @@
 import { Alert, Keyboard, Linking, Modal, Pressable, TextInput, TouchableWithoutFeedback, useColorScheme, View } from "react-native"
 import { BrandBoldText } from "./text/BrandBoldText"
-import { useState } from "react"
-import { useNavigation } from "@react-navigation/native"
+import { useCallback, useState } from "react"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
 import utc from 'dayjs/plugin/utc'
 import dayjs from "dayjs"
@@ -25,6 +25,12 @@ export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics
     const colorScheme = useColorScheme()
     const placeholderColor = colorScheme === 'dark' ? '#D0D1D4' : '#262626'
 
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
+
     const handleChange = (comments) => {
         setKidComments(comments)
         if (comments.length > 100) {
@@ -33,7 +39,6 @@ export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics
             setCommentsError(false)
         }
     }
-
 
     const handleComplete = () => {
         if (isButtonLoading) return
@@ -46,67 +51,67 @@ export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics
         }
 
         updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
-    .then(() => {
-        try {
-            // Send push notifications to all parents
-            const notificationPromises = loggedInData.family.parents
-                .flatMap(parent => 
-                    // Map each parent's tokens while keeping parent reference
-                    (parent.pushTokens || []).map(token => ({
-                        parentId: parent._id,
-                        token
-                    }))
-                )
-                .map(({ parentId, token }) =>
-                    sendPush(
-                        parentId,
-                        token,
-                        "Chore Awaiting Approval!🧐",
-                        `${loggedInData.name} completed chore "${chore.title}" and needs your review.`
-                    )
-                );
+            .then(() => {
+                try {
+                    // Send push notifications to all parents
+                    const notificationPromises = loggedInData.family.parents
+                        .flatMap(parent => 
+                            // Map each parent's tokens while keeping parent reference
+                            (parent.pushTokens || []).map(token => ({
+                                parentId: parent._id,
+                                token
+                            }))
+                        )
+                        .map(({ parentId, token }) =>
+                            sendPush(
+                                parentId,
+                                token,
+                                "Chore Awaiting Approval!🧐",
+                                `${loggedInData.name} completed chore "${chore.title}" and needs your review.`
+                            )
+                        );
 
-            if (notificationPromises.length > 0) {
-                Promise.allSettled(notificationPromises).catch(err => {
-                    console.log('Parent notification error (non-blocking):', err);
-                });
-            }
-        } catch (notifError) {
-            console.error('Notification setup error (non-blocking):', notifError);
-        }
-        // updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
-        //     .then(() => {
-        //         // Wrap notifications in try-catch so they don't block success
-        //         try {
-        //             // Send push notifications to all parents
-        //             const notificationPromises = loggedInData.family.parents
-        //                 .filter(parent => parent.notifications == true)
-        //                 .flatMap(parent => parent.pushTokens || [])
-        //                 .map(token =>
-        //                     sendPush(
-        //                         parent._id,
-        //                         token,
-        //                         "Chore Awaiting Approval!🧐",
-        //                         `${loggedInData.name} completed chore "${chore.title}" and needs your review.`
-        //                     )
-        //                 );
+                    if (notificationPromises.length > 0) {
+                        Promise.allSettled(notificationPromises).catch(err => {
+                            console.log('Parent notification error (non-blocking):', err);
+                        });
+                    }
+                } catch (notifError) {
+                    console.error('Notification setup error (non-blocking):', notifError);
+                }
+                // updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
+                //     .then(() => {
+                //         // Wrap notifications in try-catch so they don't block success
+                //         try {
+                //             // Send push notifications to all parents
+                //             const notificationPromises = loggedInData.family.parents
+                //                 .filter(parent => parent.notifications == true)
+                //                 .flatMap(parent => parent.pushTokens || [])
+                //                 .map(token =>
+                //                     sendPush(
+                //                         parent._id,
+                //                         token,
+                //                         "Chore Awaiting Approval!🧐",
+                //                         `${loggedInData.name} completed chore "${chore.title}" and needs your review.`
+                //                     )
+                //                 );
 
-        //             // Fire and forget notifications (don't block the user)
-        //             if (notificationPromises.length > 0) {
-        //                 Promise.allSettled(notificationPromises)
-        //                     .then(results => {
-        //                         const failed = results.filter(r => r.status === 'rejected');
-        //                         if (failed.length > 0) {
-        //                             console.log('Some parent notifications failed:', failed);
-        //                         }
-        //                     })
-        //                     .catch(err => {
-        //                         console.log('Notification error (non-blocking):', err);
-        //                     });
-        //             }
-        //         } catch (notifError) {
-        //             console.error('Notification setup error (non-blocking):', notifError);
-        //         }
+                //             // Fire and forget notifications (don't block the user)
+                //             if (notificationPromises.length > 0) {
+                //                 Promise.allSettled(notificationPromises)
+                //                     .then(results => {
+                //                         const failed = results.filter(r => r.status === 'rejected');
+                //                         if (failed.length > 0) {
+                //                             console.log('Some parent notifications failed:', failed);
+                //                         }
+                //                     })
+                //                     .catch(err => {
+                //                         console.log('Notification error (non-blocking):', err);
+                //                     });
+                //             }
+                //         } catch (notifError) {
+                //             console.error('Notification setup error (non-blocking):', notifError);
+                //         }
 
                 Toast.show({ type: 'success', text1: "Chore completed!" })
                 navigation.goBack()
@@ -115,8 +120,8 @@ export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics
                 console.log("completeChore error:", error)
                 setApiErrors(prev => ({ ...prev, completeChore: "Unable to complete chore." }))
                 Toast.show({ type: 'error', text1: "Unable to complete chore." })
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     const takeAfterPhoto = async () => {

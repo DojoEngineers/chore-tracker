@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { View, Pressable, TouchableWithoutFeedback, Keyboard } from "react-native"
 import { sendPassword, getUserByUsername } from "../../services/user.service"
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
 import { EmailIcon } from "../../components/icons/EmailIcon"
 import { UserInput } from "../../components/UserInput"
@@ -20,6 +20,12 @@ export const ForgotPassword = () => {
 
     const navigation = useNavigation()
     const {logout} = useLogin()
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     const resetPassword = () => {
         if (isButtonLoading) return
@@ -52,8 +58,8 @@ export const ForgotPassword = () => {
                 console.log("getUserByUsername error:", error)
                 setApiErrors(prev => ({...prev, getUserByUsername: "Unable to check username."}))
                 Toast.show({type: 'error', text1: "Unable to check username."})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     return (

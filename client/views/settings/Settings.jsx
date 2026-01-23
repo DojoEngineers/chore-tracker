@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { Pressable, ScrollView, View } from "react-native"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
@@ -16,7 +16,7 @@ import { NotificationsIcon } from "../../components/icons/NotificationsIcon"
 import { DarkModeIcon } from "../../components/icons/DarkModeIcon"
 import { NotificationsSwitch } from "../../components/NotificationsSwitch"
 import { ThemeDropDown } from "../../components/ThemeDropDown"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import Toast from "react-native-toast-message"
 
 
@@ -27,6 +27,12 @@ export const Settings = () => {
 
     const navigation = useNavigation()
     const {loggedInData, logout} = useLogin()
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     const handleLogout = () => {
         if (isButtonLoading) return
@@ -43,8 +49,8 @@ export const Settings = () => {
                 console.log("logout error:", error)
                 setApiErrors(prev => ({...prev, logout: "Unable to logout."}))
                 Toast.show({type: 'error', text1: "Unable to logout."})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     return (

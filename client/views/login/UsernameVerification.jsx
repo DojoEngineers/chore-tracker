@@ -1,5 +1,5 @@
-import { useNavigation } from "@react-navigation/native"
-import { useState } from "react"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { useCallback, useState } from "react"
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import Toast from 'react-native-toast-message'
 import { getUserByUsername } from "../../services/user.service"
@@ -20,6 +20,12 @@ export const UsernameVerification = () => {
     const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     const handleSubmit = async () => {
         if (isButtonLoading) return
@@ -43,8 +49,8 @@ export const UsernameVerification = () => {
                 console.log("getUserByUsername error:", error)
                 setApiErrors(prev => ({...prev, getUserByUsername: "Unable to validate username."}))
                 Toast.show({type: 'error', text1: "Unable to validate username."})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     return (

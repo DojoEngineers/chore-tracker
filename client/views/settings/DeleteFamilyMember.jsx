@@ -1,10 +1,10 @@
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { Modal, Pressable, ScrollView, View } from "react-native"
 import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottomRightSquiggle"
 import { BackArrow } from "../../components/icons/BackArrow"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { CloseIcon } from "../../components/icons/CloseIcon"
 import { updateUser } from "../../services/user.service"
 import Toast from "react-native-toast-message"
@@ -20,6 +20,12 @@ export const DeleteFamilyMember = ({route}) => {
     const {users, isParent} = route.params
     const navigation = useNavigation()
     const {setLoggedInData} = useLogin()
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     const handleDelete = () => {
         if (isButtonLoading) return
@@ -39,8 +45,8 @@ export const DeleteFamilyMember = ({route}) => {
                 console.log("updateUser error:", error)
                 setApiErrors(prev => ({...prev, updateUser: "Unable to delete account."}))
                 Toast.show({type: 'error', text1: "Unable to delete account."})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     return(

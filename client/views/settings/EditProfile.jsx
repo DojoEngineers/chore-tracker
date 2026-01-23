@@ -5,8 +5,8 @@ import { BrandText } from "../../components/text/BrandText"
 import { UserInput } from "../../components/UserInput"
 import { FirstNameIcon } from "../../components/icons/FirstNameIcon"
 import { EmailIcon } from "../../components/icons/EmailIcon"
-import { useNavigation } from "@react-navigation/native"
-import { useState } from "react"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { useCallback, useState } from "react"
 import { checkUsername, resendCode, updateUser } from "../../services/user.service"
 import { useLogin } from "../../context/UserContext"
 import Toast from "react-native-toast-message"
@@ -25,6 +25,12 @@ export const EditProfile = () => {
     const [formData, setFormData] = useState({name: loggedInData.name, username: loggedInData.username})
     const [formErrors, setFormErrors] = useState({})
     const [isButtonLoading, setIsButtonLoading] = useState(false)
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
     
     const handleChange = (name, value) => {
         setFormData(prev => ({...prev, [name]: value}))
@@ -74,6 +80,7 @@ export const EditProfile = () => {
                 .then((res) => {
                     if (res) {
                         Toast.show({type: 'error', text1: "Username already exists."})
+                        setIsButtonLoading(false)
                     } else {
                         updateUser({name, username, isVerified: false})
                             .then( () => { 
@@ -89,6 +96,7 @@ export const EditProfile = () => {
                                 console.log("updateUser error:", error)
                                 setApiErrors(prev => ({...prev, updateUser: "Unable to edit profile."}))
                                 Toast.show({type: 'error', text1: "Unable to edit profile."})
+                                setIsButtonLoading(false)
                             })
                     }
                 })
@@ -96,8 +104,8 @@ export const EditProfile = () => {
                     console.log("checkUsername error:", error)
                     setApiErrors(prev => ({...prev, checkUsername: "Unable to validate username."}))
                     Toast.show({type: 'error', text1: "Unable to validate username."})
+                    setIsButtonLoading(false)
                 })
-                .finally(() => setIsButtonLoading(false))
         }
         else if (loggedInData.name != name) {
             updateUser({name})
@@ -110,8 +118,8 @@ export const EditProfile = () => {
                     console.log("updateUser error:", error)
                     setApiErrors(prev => ({...prev, updateUser: "Unable to edit profile."}))
                     Toast.show({type: 'error', text1: "Unable to edit profile."})
+                    setIsButtonLoading(false)
                 })
-                .finally(() => setIsButtonLoading(false))
         } else {
             Toast.show({type: 'error', text1: "No changes have been made."})
             setIsButtonLoading(false)

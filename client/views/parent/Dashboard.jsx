@@ -35,7 +35,7 @@ export const Dashboard = () => {
     const [recentActivityChores, setRecentActivityChores] = useState([])
     const [allChoresByParents, setAllChoresByParents] = useState([])
 
-    const { loggedInData, registerForPushNotifications, notifications, firstMount, setFirstMount } = useLogin()
+    const { loggedInData, registerForPushNotifications, firstMount, setFirstMount } = useLogin()
     const navigation = useNavigation()
 
     const handleDateChange = (selectedDate) => {

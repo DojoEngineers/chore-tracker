@@ -54,6 +54,7 @@ export const ViewChore = ({ route }) => {
         useCallback(() => {
             setLoading("Loading chore...")
             setApiErrors({})
+            setIsButtonLoading(false)
 
             getChoreById(id)
                 .then((res) => {
@@ -140,8 +141,8 @@ export const ViewChore = ({ route }) => {
                 console.log("approveChore error:", error)
                 setApiErrors(prev => ({ ...prev, approveChore: "Unable to approve chore." }))
                 Toast.show({ type: 'error', text1: "Unable to approve chore." })
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     const takeBeforePhoto = async () => {
