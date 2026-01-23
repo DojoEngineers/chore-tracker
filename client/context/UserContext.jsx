@@ -4,7 +4,7 @@ import { useColorScheme } from 'nativewind'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import { Alert, Platform } from "react-native";
+import { Alert, Linking, Platform } from "react-native";
 import { updateUser } from "../services/user.service";
 
 Notifications.setNotificationHandler({
@@ -77,7 +77,14 @@ export const UserContextProvider = ({ children }) => {
             }
 
             if (finalStatus !== 'granted') {
-                Alert.alert('Permission denied', 'Failed to set up notifications.');
+                Alert.alert(
+                    'Permission denied',
+                    'Notifications are disabled. Please enable them in Settings.',
+                    [
+                        { text: 'Cancel', style: 'cancel' },
+                        { text: 'Open Settings', onPress: () => Linking.openSettings() }
+                    ]
+                )
                 // save notification settings to state and async storage
                 try {
                     await AsyncStorage.setItem('notifications', JSON.stringify(false))
@@ -192,10 +199,14 @@ export const UserContextProvider = ({ children }) => {
                 }
 
                 // Notifications
-                const areNotificationsOn = await AsyncStorage.getItem('notifications')
-                if (areNotificationsOn !== null) {
-                    setNotifications(JSON.parse(areNotificationsOn))
+                const { status } = await Notifications.getPermissionsAsync()
+                const areNotificationsOn = status === 'granted'
+                const current = await AsyncStorage.getItem('notifications');
+                const parsed = current ? JSON.parse(current) : null;
+                if (parsed !== areNotificationsOn) {
+                    await AsyncStorage.setItem('notifications', JSON.stringify(areNotificationsOn));
                 }
+                setNotifications(areNotificationsOn)
 
                 // Theme
                 const storedTheme = await AsyncStorage.getItem('theme')
@@ -278,7 +289,7 @@ export const UserContextProvider = ({ children }) => {
         <UserContext.Provider
             value={{
                 user, setUser, isLoggedIn, loggedInData, familyData, setFamilyData, setLoggedInData,
-                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications,
+                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications, setNotifications,
                 theme, setAppTheme, expoPushToken, sendPush, registerForPushNotifications, firstMount, setFirstMount
             }}
         >
