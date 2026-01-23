@@ -77,8 +77,10 @@ export const SetPassword = ({route}) => {
             setLoggedInData(data)
             setFamilyData(data.family)
             Toast.show({type: 'success', text1: "New password set!"})
-            if (data.firstLogin) navigation.replace('TutorialPage1')
-            else navigation.replace('Dashboard')
+            navigation.reset({
+                index: 0,
+                routes: [{ name: data.firstLogin ? 'TutorialPage1' : 'Dashboard' }]
+            })
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }
