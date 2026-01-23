@@ -35,7 +35,7 @@ export const Dashboard = () => {
     const [recentActivityChores, setRecentActivityChores] = useState([])
     const [allChoresByParents, setAllChoresByParents] = useState([])
 
-    const { loggedInData, registerForPushNotifications, notifications, firstMount, setFirstMount } = useLogin()
+    const { loggedInData, registerForPushNotifications, firstMount, setFirstMount } = useLogin()
     const navigation = useNavigation()
 
     const handleDateChange = (selectedDate) => {
@@ -131,10 +131,6 @@ export const Dashboard = () => {
             >
                 Dashboard
             </BrandBoldText>
-            <BrandBoldText>
-                {loggedInData.family.children.map(child => child.notifications).join(', ')}
-            </BrandBoldText>
-
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 className="px-[16px] flex-1"

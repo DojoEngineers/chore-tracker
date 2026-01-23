@@ -5,8 +5,8 @@ import { BrandText } from "../../components/text/BrandText"
 import { UserInput } from "../../components/UserInput"
 import { FirstNameIcon } from "../../components/icons/FirstNameIcon"
 import { EmailIcon } from "../../components/icons/EmailIcon"
-import { useNavigation } from "@react-navigation/native"
-import { useState } from "react"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { useCallback, useState } from "react"
 import { checkUsername, register } from "../../services/user.service"
 import Toast from "react-native-toast-message"
 import { PrimaryButton } from "../../components/PrimaryButton"
@@ -31,6 +31,12 @@ export const AddFamilyMember = ({route}) => {
     const navigation = useNavigation()
     const { isParent } = route.params
     const {loggedInData, setLoggedInData} = useLogin()
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     const handleChange = (name, value) => {
         setFormData(prev => ({...prev, [name]: value}))
@@ -101,8 +107,8 @@ export const AddFamilyMember = ({route}) => {
                 console.log("checkUsername error:", error)
                 setApiErrors(prev => ({...prev, checkUsername: "Unable to validate username."}))
                 Toast.show({type: 'error', text1: "Unable to validate username."})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     return (

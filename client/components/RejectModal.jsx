@@ -1,7 +1,7 @@
 import { Keyboard, Modal, Pressable, TextInput, TouchableWithoutFeedback, useColorScheme, View } from "react-native"
 import { BrandBoldText } from "./text/BrandBoldText"
-import { useState } from "react"
-import { useNavigation } from "@react-navigation/native"
+import { useCallback, useState } from "react"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
 import utc from 'dayjs/plugin/utc'
 import dayjs from "dayjs"
@@ -24,6 +24,12 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id, chore}) => {
     const navigation = useNavigation()
     const colorScheme = useColorScheme()
     const placeholderColor = colorScheme === 'dark' ? '#D0D1D4' : '#262626'
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     const handleChange = (comments) => {
         setParentComments(comments)
@@ -50,9 +56,10 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id, chore}) => {
                     // Send push notification to the kid whose chore was rejected
                     const kid = loggedInData.family.children.find(k => k._id === chore.worker._id);
                     
-                    if (kid?.pushTokens && kid.pushTokens.length > 0 && kid.notifications) {
+                    if (kid?.pushTokens && kid.pushTokens.length > 0) {
                         const notificationPromises = kid.pushTokens.map(token =>
                             sendPush(
+                                kid._id,
                                 token,
                                 "Chore Rejected ⚠️",
                                 `Your chore "${chore.title}" was rejected. Check parent comments.`
@@ -75,8 +82,8 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id, chore}) => {
                 console.log("rejectChore error:", error)
                 setApiErrors(prev => ({...prev, rejectChore: "Unable to reject chore."}))
                 Toast.show({type: 'error', text1: "Unable to reject chore."})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
 }
 
     const handleCheckbox = () => {

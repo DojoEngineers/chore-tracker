@@ -1,9 +1,9 @@
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { useLogin } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { BrandBoldText } from "../../components/text/BrandBoldText"
 import { BrandText } from "../../components/text/BrandText"
 import { addChore, updateChore } from "../../services/chore.service"
@@ -69,6 +69,12 @@ export const NewChoreDetails = ({ route }) => {
     const kidOptions = loggedInData.family.children
         .filter(kid => kid.isActive)
         .map(kid => ({ label: kid.name, value: kid._id }))
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     useEffect(() => {
         if (chore) {
@@ -183,14 +189,12 @@ export const NewChoreDetails = ({ route }) => {
 
             // Determine which kids should get notifications
             const kidsToNotify = kids; // Always notify ALL assigned kids (both create and edit)
-
             // Send notifications to the appropriate kids
             const notificationPromises = kidsToNotify
                 .map(kidId => {
                     // Find the kid in the family
                     const kid = loggedInData.family.children.find(k => k._id === kidId);
-
-                    if (kid?.pushTokens && kid.pushTokens.length > 0 && kid.notifications) {
+                    if (kid?.pushTokens && kid.pushTokens.length > 0) {
                         // Different messages for create vs edit
                         const title = isEditMode
                             ? "Chore Updated! 🔄"
@@ -202,17 +206,18 @@ export const NewChoreDetails = ({ route }) => {
 
                         // Send to every token for this kid
                         return kid.pushTokens.map(token =>
-                            sendPush(token, title, body)
+                            sendPush(kid._id, token, title, body,)
                         );
+                    } else {
+                        debugInfo.failed.push(kid?.name || 'Unknown');
                     }
-                    Toast.show({ type: 'error', text1: "no tokens and/or notifications"})
                     return [];
                 })
                 .flat()
                 .filter(Boolean);
-
             // Fire and forget notifications
             if (notificationPromises.length > 0) {
+                Toast.show({ type: 'success', text1: `Sending ${notificationPromises.length} notification(s)` });
                 Promise.allSettled(notificationPromises)
                     .then(results => {
                         const failed = results.filter(r => r.status === 'rejected');
@@ -223,6 +228,8 @@ export const NewChoreDetails = ({ route }) => {
                     .catch(err => {
                         console.log('Notification error (non-blocking):', err);
                     });
+            } else {
+                Toast.show({ type: 'warning', text1: "No notifications sent - check requirements" });
             }
 
             // Navigate based on edit mode
@@ -237,10 +244,84 @@ export const NewChoreDetails = ({ route }) => {
             console.log("Updating / adding chores error:", error)
             setApiErrors(prev => ({ ...prev, chore: "Unable to save chore." }))
             Toast.show({ type: 'error', text1: "Unable to save chore." })
-        } finally {
             setIsButtonLoading(false)
-        }
+        } 
     }
+
+    //     try {
+    //         // Wait for chores to be created/updated
+    //         await Promise.all(promises);
+
+    //         // Determine which kids should get notifications
+    //         const kidsToNotify = kids; // Always notify ALL assigned kids (both create and edit)
+
+    //         // Send notifications to the appropriate kids
+    //         const notificationPromises = kidsToNotify
+    //             .map(kidId => {
+    //                 // Find the kid in the family
+    //                 const kid = loggedInData.family.children.find(k => k._id === kidId);
+
+    //                 if (kid?.pushTokens) {
+    //                     Toast.show({ type: 'success', text1: "kids has push tokens" })
+    //                 }
+    //                 if (kid?.pushTokens.length > 0) {
+    //                     Toast.show({ type: 'success', text1: "kids has > 0" })
+    //                 }
+    //                 if (kid?.notifications) {
+    //                     Toast.show({ type: 'success', text1: "kids has notifications" })
+    //                 }
+
+    //                 if (kid?.pushTokens && kid.pushTokens.length > 0 && kid.notifications) {
+    //                     // Different messages for create vs edit
+    //                     const title = isEditMode
+    //                         ? "Chore Updated! 🔄"
+    //                         : "New Chore Assigned! 🧹";
+
+    //                     const body = isEditMode
+    //                         ? `Your chore "${formData.title}" has been updated`
+    //                         : `You have a new chore: ${formData.title}`;
+
+    //                     // Send to every token for this kid
+    //                     return kid.pushTokens.map(token =>
+    //                         sendPush(kid._id, token, title, body)
+    //                     );
+    //                 }
+    //                 Toast.show({ type: 'error', text1: "no tokens and/or notifications" })
+    //                 return [];
+    //             })
+    //             .flat()
+    //             .filter(Boolean);
+
+    //         // Fire and forget notifications
+    //         if (notificationPromises.length > 0) {
+    //             Promise.allSettled(notificationPromises)
+    //                 .then(results => {
+    //                     const failed = results.filter(r => r.status === 'rejected');
+    //                     if (failed.length > 0) {
+    //                         console.log('Some notifications failed (non-blocking):', failed);
+    //                     }
+    //                 })
+    //                 .catch(err => {
+    //                     console.log('Notification error (non-blocking):', err);
+    //                 });
+    //         }
+
+    //         // Navigate based on edit mode
+    //         if (isEditMode) {
+    //             Toast.show({ type: 'success', text1: "Chore updated!" })
+    //             navigation.goBack()
+    //         } else {
+    //             Toast.show({ type: 'success', text1: "Chore created!" })
+    //             navigation.pop(2)
+    //         }
+    //     } catch (error) {
+    //         console.log("Updating / adding chores error:", error)
+    //         setApiErrors(prev => ({ ...prev, chore: "Unable to save chore." }))
+    //         Toast.show({ type: 'error', text1: "Unable to save chore." })
+    //     } finally {
+    //         setIsButtonLoading(false)
+    //     }
+    // }
 
     return (
         <KeyboardAwareScrollView

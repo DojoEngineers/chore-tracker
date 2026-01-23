@@ -54,6 +54,7 @@ export const ViewChore = ({ route }) => {
         useCallback(() => {
             setLoading("Loading chore...")
             setApiErrors({})
+            setIsButtonLoading(false)
 
             getChoreById(id)
                 .then((res) => {
@@ -112,9 +113,10 @@ export const ViewChore = ({ route }) => {
                     // Send push notification to the kid who completed the chore
                     const kid = loggedInData.family.children.find(k => k._id === chore.worker._id);
 
-                    if (kid?.pushTokens && kid.pushTokens.length > 0 && kid.notifications) {
+                    if (kid?.pushTokens && kid.pushTokens.length > 0) {
                         const notificationPromises = kid.pushTokens.map(token =>
                             sendPush(
+                                kid._id,
                                 token,
                                 "Chore Approved!🙂",
                                 `Your chore "${chore.title}" has been approved!`
@@ -139,8 +141,8 @@ export const ViewChore = ({ route }) => {
                 console.log("approveChore error:", error)
                 setApiErrors(prev => ({ ...prev, approveChore: "Unable to approve chore." }))
                 Toast.show({ type: 'error', text1: "Unable to approve chore." })
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     const takeBeforePhoto = async () => {

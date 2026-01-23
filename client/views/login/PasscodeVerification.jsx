@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native'
-import { useState } from 'react'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useCallback, useState } from 'react'
 import { Pressable, View, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { CodeField, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field'
 import { resendCode, verify } from '../../services/user.service'
@@ -25,6 +25,12 @@ export const PasscodeVerification = ({route}) => {
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT })
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({value, setValue})
 
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
+
     const handleVerify = value => {
         if (isButtonLoading) return
         setIsButtonLoading(true)
@@ -41,8 +47,8 @@ export const PasscodeVerification = ({route}) => {
                 console.log("verify error:", error)
                 setApiErrors(prev => ({...prev, verify: "Unable to verify account. Wrong or expired code."}))
                 Toast.show({type: 'error', text1: "Unable to verify account.", text2: "Wrong or expired code."})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     const resend = (username) => {

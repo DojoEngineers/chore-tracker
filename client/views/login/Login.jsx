@@ -1,9 +1,9 @@
 import { View, Pressable, Keyboard, TouchableWithoutFeedback } from "react-native"
 import { useLogin } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { getCurrentUser, getUserByUsername, login } from "../../services/user.service"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { BrandText } from "../../components/text/BrandText"
 import { TopSquiggle } from "../../components/squiggles/TopSquiggle"
 import { BackArrow } from "../../components/icons/BackArrow"
@@ -13,12 +13,8 @@ import { EmailIcon } from "../../components/icons/EmailIcon"
 import { PrimaryButton } from "../../components/PrimaryButton"
 import { BottomLink } from "../../components/BottomLink"
 import { PasswordInput } from "../../components/PasswordInput"
-import Constants from 'expo-constants';
 
 export const Login = () => {
-
-    const BACKEND_API_URL = Constants.expoConfig.extra.BACKEND_API_URL
-    const projectId = Constants.expoConfig.extra.eas.projectId
 
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState({username: '', password: ''})
@@ -33,12 +29,25 @@ export const Login = () => {
             const data = await getCurrentUser()
             setLoggedInData(data)
             Toast.show({type: 'success', text1: "Login Successful!"})
-            if (data.firstLogin) navigation.replace('TutorialPage1')
-            else navigation.replace('Dashboard')
+            navigation.reset({
+                index: 0,
+                routes: [{ name: data.firstLogin ? 'TutorialPage1' : 'Dashboard' }]
+            })
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }
     }
+
+    useEffect(() => {
+        if (!user) return
+        checkUserToken()
+    }, [user])
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     const handleChange = (name, value) => {
         setFormData(prev => ({ ...prev, [name]: value }))
@@ -63,7 +72,6 @@ export const Login = () => {
                             }
                             else {
                                 loginUser(res)
-                                    .then(()=> checkUserToken())
                             }
                         })
                         .catch(error => {
@@ -80,8 +88,8 @@ export const Login = () => {
                 console.log("getUserByUsername error:", error)
                 setApiErrors(prev => ({...prev, getUserByUsername: "Unable to check username."}))
                 Toast.show({type: 'error', text1: `Unable to check username. ${error.message}`})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     return (

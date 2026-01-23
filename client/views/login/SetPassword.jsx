@@ -1,5 +1,5 @@
-import { useNavigation } from "@react-navigation/native"
-import { useState } from "react"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { useCallback, useState } from "react"
 import { Keyboard, Pressable, TouchableWithoutFeedback, View } from "react-native"
 import Toast from "react-native-toast-message"
 import { changePassword, getCurrentUser } from "../../services/user.service"
@@ -28,6 +28,12 @@ export const SetPassword = ({route}) => {
     const navigation = useNavigation()
     const { username } = route.params
     const { login, setLoggedInData, setFamilyData } = useLogin()
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     // Dynamically set form data
     const handleChange = (name, value) => {
@@ -77,8 +83,10 @@ export const SetPassword = ({route}) => {
             setLoggedInData(data)
             setFamilyData(data.family)
             Toast.show({type: 'success', text1: "New password set!"})
-            if (data.firstLogin) navigation.replace('TutorialPage1')
-            else navigation.replace('Dashboard')
+            navigation.reset({
+                index: 0,
+                routes: [{ name: data.firstLogin ? 'TutorialPage1' : 'Dashboard' }]
+            })
         } catch (error) {
             console.log('Failed to fetch user data', error)
         }
@@ -106,8 +114,8 @@ export const SetPassword = ({route}) => {
                 console.log("changePassword error:", error)
                 setApiErrors(prev => ({...prev, changePassword: "Unable to change password."}))
                 Toast.show({type: 'error', text1: "Unable to change password."})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     return (

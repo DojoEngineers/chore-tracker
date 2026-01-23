@@ -1,11 +1,26 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { TouchableWithoutFeedback, Animated, Platform } from 'react-native'
 import { useLogin } from '../context/UserContext'
 import { updateUser } from '../services/user.service';
+import Toast from 'react-native-toast-message';
+import * as Notifications from 'expo-notifications'
+import { useFocusEffect } from '@react-navigation/native';
 
 export const NotificationsSwitch = () => {
-    const { notifications, toggleNotifications } = useLogin()
+    const { notifications, toggleNotifications, setNotifications } = useLogin()
     const anim = useRef(new Animated.Value(notifications ? 1 : 0)).current
+
+    // Check permission once on mount
+    useFocusEffect(
+        useCallback(() => {
+            const checkPermissions = async () => {
+                const { status } = await Notifications.getPermissionsAsync()
+                setNotifications(status === 'granted')
+            }
+
+            checkPermissions()
+        }, [])
+    )
 
     // Animate whenever notifications state changes
     useEffect(() => {
@@ -22,10 +37,10 @@ const handleToggle = async () => {
     toggleNotifications(newValue);
     try {
         // Update backend
-        await updateUser({notifications: newValue});
+        await updateUser({notifications: newValue})
     } catch (error) {
-        toggleNotifications(!newValue);
-        alert('Failed to update notification settings');
+        toggleNotifications(!newValue)
+        Toast.show({ type: 'error', text1: "Failed to update notification settings" })
     }
 }
 

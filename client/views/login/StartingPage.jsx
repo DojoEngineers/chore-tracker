@@ -20,8 +20,10 @@ export const StartingPage = () => {
             const data = await getCurrentUser()
             setLoggedInData(data)
             Toast.show({type: 'success', text1: "Login Successful!"})
-            if (data.firstLogin) navigation.replace('TutorialPage1')
-            else navigation.replace('Dashboard')
+            navigation.reset({
+                index: 0,
+                routes: [{ name: data.firstLogin ? 'TutorialPage1' : 'Dashboard' }]
+            })
         } catch (error) {
             if (error.response?.status !== 401) {
                 console.log('Failed to fetch user data', error)

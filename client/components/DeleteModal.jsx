@@ -3,15 +3,21 @@ import { BrandBoldText } from "./text/BrandBoldText"
 import { BrandText } from "./text/BrandText"
 import { CloseIcon } from "./icons/CloseIcon"
 import { updateChore } from "../services/chore.service"
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import Toast from "react-native-toast-message"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 
 export const DeleteModal = ({visible, setVisible, setApiErrors, id, setRefreshTrigger}) => {
 
     const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
+
+    useFocusEffect(
+        useCallback(() => {
+            setIsButtonLoading(false)
+        }, [])
+    )
 
     const handleDelete = () => {
         if (isButtonLoading) return
@@ -28,8 +34,8 @@ export const DeleteModal = ({visible, setVisible, setApiErrors, id, setRefreshTr
                 console.log("deleteChore error:", error)
                 setApiErrors(prev => ({...prev, deleteChore: "Unable to delete chore."}))
                 Toast.show({type: 'error', text1: "Unable to delete chore."})
+                setIsButtonLoading(false)
             })
-            .finally(() => setIsButtonLoading(false))
     }
 
     return (
