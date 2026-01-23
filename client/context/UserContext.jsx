@@ -78,6 +78,13 @@ export const UserContextProvider = ({ children }) => {
 
             if (finalStatus !== 'granted') {
                 Alert.alert('Permission denied', 'Failed to set up notifications.');
+                // save notification settings to state and async storage
+                try {
+                    await AsyncStorage.setItem('notifications', JSON.stringify(false))
+                } catch (error) {
+                    console.log('Failed to save notifications', error)
+                }
+                setNotifications(false)
                 return null;
             }
 
@@ -91,6 +98,14 @@ export const UserContextProvider = ({ children }) => {
             // Get push token
             const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
             console.log('📱 Expo Push Token:', token);
+
+            // save notification settings to state and async storage
+            setNotifications(true)
+            try {
+                await AsyncStorage.setItem('notifications', JSON.stringify(true))
+            } catch (error) {
+                console.log('Failed to save notifications', error)
+            }
 
             // save token to backend
             setExpoPushToken(token)
@@ -202,11 +217,12 @@ export const UserContextProvider = ({ children }) => {
         setNotifications(isOn)
         try {
             await AsyncStorage.setItem('notifications', JSON.stringify(isOn))
-            // if (isOn) {
-            //     if (!expoPushToken) {
-            //         await registerForPushNotifications()
-            //     }
-            // } else {
+            if (isOn) {
+                if (!expoPushToken) {
+                    await registerForPushNotifications()
+                }
+            }
+            // else {
             //     if (expoPushToken && loggedInData?._id) {
             //         await updateUser({ removePushToken: expoPushToken })
             //     }

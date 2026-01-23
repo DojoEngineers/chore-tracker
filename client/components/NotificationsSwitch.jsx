@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { TouchableWithoutFeedback, Animated, Platform } from 'react-native'
 import { useLogin } from '../context/UserContext'
 import { updateUser } from '../services/user.service';
+import Toast from 'react-native-toast-message';
 
 export const NotificationsSwitch = () => {
     const { notifications, toggleNotifications } = useLogin()
@@ -22,10 +23,10 @@ const handleToggle = async () => {
     toggleNotifications(newValue);
     try {
         // Update backend
-        await updateUser({notifications: newValue});
+        await updateUser({notifications: newValue})
     } catch (error) {
         toggleNotifications(!newValue);
-        alert('Failed to update notification settings');
+        Toast.show({ type: 'error', text1: "Failed to update notification settings" })
     }
 }
 
