@@ -106,13 +106,17 @@ export const DeleteFamilyMember = ({route}) => {
                                     </Pressable>
 
                                     <BrandBoldText
-                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center"
-                                        >
+                                        className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center"
+                                        numberOfLines={1}
+                                        ellipsizeMode="tail"
+                                    >
                                             {user.name}
                                     </BrandBoldText>
 
                                     <BrandText
                                         className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] text-center"
+                                        numberOfLines={1}
+                                        ellipsizeMode="tail"
                                     >
                                         {user.username}
                                     </BrandText>

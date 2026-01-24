@@ -44,6 +44,13 @@ export const ManageFamily = () => {
 
                 <Pressable
                     className="p-[10px] mb-6 rounded-full items-center justify-center bg-[#84A99D] w-full h-[56px]"
+                    onPress={() => navigation.navigate('ViewFamily')}
+                >
+                    <BrandBoldText className="text-white text-[20px]">View family</BrandBoldText>
+                </Pressable>
+
+                <Pressable
+                    className="p-[10px] mb-6 rounded-full items-center justify-center bg-[#455C56] w-full h-[56px]"
                     onPress={() => navigation.navigate('AddFamilyMember', {isParent: false})}
                 >
                     <BrandBoldText className="text-white text-[20px]">Add a kid</BrandBoldText>

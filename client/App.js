@@ -38,6 +38,7 @@ import { ThisWeek } from "./views/kid/ThisWeek";
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "react-native";
+import { ViewFamily } from "./views/settings/ViewFamily";
 
 export default function App() {
 
@@ -93,6 +94,7 @@ export default function App() {
                   <Stack.Screen name="DeleteFamilyMember" component={DeleteFamilyMember}></Stack.Screen>
                   <Stack.Screen name="Completed" component={Completed} options={chooseAnimation}></Stack.Screen>
                   <Stack.Screen name="ThisWeek" component={ThisWeek} options={chooseAnimation}></Stack.Screen>
+                  <Stack.Screen name="ViewFamily" component={ViewFamily} options={chooseAnimation}></Stack.Screen>
                 </Stack.Navigator>
               </NavigationContainer>
             </GlobalStyling>

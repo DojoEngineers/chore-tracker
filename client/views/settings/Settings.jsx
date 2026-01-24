@@ -81,8 +81,11 @@ export const Settings = () => {
                 >
                     <SettingsButton icon={EditProfileIcon} text="Edit Profile" onPress={() => navigation.navigate("EditProfile")}/>
 
-                    {loggedInData?.isParent &&
-                        <SettingsButton icon={FamilySettingsIcon} text="Manage Family" onPress={() => navigation.navigate("ManageFamily")}/>
+                    {loggedInData?.isParent
+                        ?
+                            <SettingsButton icon={FamilySettingsIcon} text="Manage Family" onPress={() => navigation.navigate("ManageFamily")}/>
+                        :
+                            <SettingsButton icon={FamilySettingsIcon} text="View Family" onPress={() => navigation.navigate("ViewFamily")}/>
                     }
                     
                     <SettingsButton icon={ChangePasswordIcon} text="Change Password" onPress={() => navigation.navigate("VerifyPassword", {deleteAccount: false})}/>

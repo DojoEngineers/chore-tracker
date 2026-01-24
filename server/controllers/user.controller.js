@@ -393,8 +393,8 @@ export const getCurrentUser = async (req, res) => {
         const USER = await User.findById(req.user._id).select(`-password`).populate({
             path: 'family',
             populate: [
-                { path: 'children', model: "User", select: "name username _id isActive pushTokens notifications" },
-                { path: 'parents', model: "User", select: "name username _id isActive pushTokens notifications" }
+                { path: 'children', model: "User", select: "name username _id isActive pushTokens notifications isParent" },
+                { path: 'parents', model: "User", select: "name username _id isActive pushTokens notifications isParent" }
             ]
         }).lean();
         if (!USER) {

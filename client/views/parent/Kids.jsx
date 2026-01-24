@@ -91,13 +91,17 @@ export const Kids = () => {
                                         </Pressable>
 
                                         <BrandBoldText
-                                                className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center"
-                                            >
+                                            className="text-lightPrimaryText dark:text-darkPrimaryText text-[20px] text-center"
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                        >
                                                 {kid.name}
                                         </BrandBoldText>
 
                                         <BrandText
                                             className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] text-center"
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
                                         >
                                             {kid.username}
                                         </BrandText>
