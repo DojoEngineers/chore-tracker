@@ -113,7 +113,7 @@ export const ViewChore = ({ route }) => {
                     // Send push notification to the kid who completed the chore
                     const kid = loggedInData.family.children.find(k => k._id === chore.worker._id);
 
-                    if (kid?.pushTokens && kid.pushTokens.length > 0) {
+                    if (kid?.pushTokens && kid.pushTokens.length > 0 && kid.notifications) {
                         const notificationPromises = kid.pushTokens.map(token =>
                             sendPush(
                                 kid._id,
@@ -126,9 +126,6 @@ export const ViewChore = ({ route }) => {
                         Promise.allSettled(notificationPromises).catch(err => {
                             console.log('Notification error (non-blocking):', err);
                         });
-                    }
-                    else {
-                        Toast.show({ type: 'error', text1: "no tokens and/or notifications" })
                     }
                 } catch (notifError) {
                     console.error('Notification setup error (non-blocking):', notifError);

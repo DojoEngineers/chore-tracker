@@ -55,13 +55,14 @@ export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics
                 try {
                     // Send push notifications to all parents
                     const notificationPromises = loggedInData.family.parents
-                        .flatMap(parent => 
+                        .flatMap(parent => {
+                            if (parent.notifications === false) return []
                             // Map each parent's tokens while keeping parent reference
                             (parent.pushTokens || []).map(token => ({
                                 parentId: parent._id,
                                 token
                             }))
-                        )
+                        })
                         .map(({ parentId, token }) =>
                             sendPush(
                                 parentId,

@@ -7,7 +7,7 @@ import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggl
 import { useLogin } from "../../context/UserContext"
 import { getCurrentUser } from "../../services/user.service"
 import Toast from "react-native-toast-message"
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 
 export const StartingPage = () => {
 

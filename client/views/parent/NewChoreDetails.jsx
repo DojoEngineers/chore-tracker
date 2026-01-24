@@ -187,34 +187,32 @@ export const NewChoreDetails = ({ route }) => {
             // Wait for chores to be created/updated
             await Promise.all(promises);
 
-            // Determine which kids should get notifications
-            const kidsToNotify = kids; // Always notify ALL assigned kids (both create and edit)
-            // Send notifications to the appropriate kids
-            const notificationPromises = kidsToNotify
+            const notificationPromises = kids
                 .map(kidId => {
                     // Find the kid in the family
                     const kid = loggedInData.family.children.find(k => k._id === kidId);
-                    if (kid?.pushTokens && kid.pushTokens.length > 0) {
-                        // Different messages for create vs edit
-                        const title = isEditMode
-                            ? "Chore Updated! 🔄"
-                            : "New Chore Assigned! 🧹";
 
-                        const body = isEditMode
-                            ? `Your chore "${formData.title}" has been updated`
-                            : `You have a new chore: ${formData.title}`;
+                    if (!kid) return []
+                    if (!kid.notifications) return []
+                    if (!kid.pushTokens?.length) return []
 
-                        // Send to every token for this kid
-                        return kid.pushTokens.map(token =>
-                            sendPush(kid._id, token, title, body,)
-                        );
-                    } else {
-                        debugInfo.failed.push(kid?.name || 'Unknown');
-                    }
-                    return [];
+                    // Different messages for create vs edit
+                    const title = isEditMode
+                        ? "Chore Updated! 🔄"
+                        : "New Chore Assigned! 🧹";
+
+                    const body = isEditMode
+                        ? `Your chore "${formData.title}" has been updated`
+                        : `You have a new chore: ${formData.title}`;
+
+                    // Send to every token for this kid
+                    return kid.pushTokens.map(token =>
+                        sendPush(kid._id, token, title, body,)
+                    );
                 })
                 .flat()
                 .filter(Boolean);
+                
             // Fire and forget notifications
             if (notificationPromises.length > 0) {
                 Toast.show({ type: 'success', text1: `Sending ${notificationPromises.length} notification(s)` });
