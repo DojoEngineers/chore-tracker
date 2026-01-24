@@ -193,7 +193,6 @@ export const NewChoreDetails = ({ route }) => {
                     const kid = loggedInData.family.children.find(k => k._id === kidId);
 
                     if (!kid) return []
-                    if (!kid.notifications) return []
                     if (!kid.pushTokens?.length) return []
 
                     // Different messages for create vs edit
@@ -212,7 +211,7 @@ export const NewChoreDetails = ({ route }) => {
                 })
                 .flat()
                 .filter(Boolean);
-                
+
             // Fire and forget notifications
             if (notificationPromises.length > 0) {
                 Toast.show({ type: 'success', text1: `Sending ${notificationPromises.length} notification(s)` });
