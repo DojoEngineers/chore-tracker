@@ -199,14 +199,10 @@ export const UserContextProvider = ({ children }) => {
                 }
 
                 // Notifications
-                const { status } = await Notifications.getPermissionsAsync()
-                const areNotificationsOn = status === 'granted'
-                const current = await AsyncStorage.getItem('notifications');
-                const parsed = current ? JSON.parse(current) : null;
-                if (parsed !== areNotificationsOn) {
-                    await AsyncStorage.setItem('notifications', JSON.stringify(areNotificationsOn));
+                const areNotificationsOn = await AsyncStorage.getItem('notifications')
+                if (areNotificationsOn !== null) {
+                    setNotifications(JSON.parse(areNotificationsOn))
                 }
-                setNotifications(areNotificationsOn)
 
                 // Theme
                 const storedTheme = await AsyncStorage.getItem('theme')
@@ -289,7 +285,7 @@ export const UserContextProvider = ({ children }) => {
         <UserContext.Provider
             value={{
                 user, setUser, isLoggedIn, loggedInData, familyData, setFamilyData, setLoggedInData,
-                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications, setNotifications,
+                login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications,
                 theme, setAppTheme, expoPushToken, sendPush, registerForPushNotifications, firstMount, setFirstMount
             }}
         >
