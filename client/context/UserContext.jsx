@@ -6,6 +6,7 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Alert, Linking, Platform } from "react-native";
 import { updateUser } from "../services/user.service";
+import Toast from "react-native-toast-message";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -275,12 +276,23 @@ export const UserContextProvider = ({ children }) => {
         setFamilyData([])
     }
 
+    // deletes current pushtoken from db. Runs when the user clicks logout
+    const logoutPush = async () => {
+        try{
+            updateUser({id: loggedInData._id, removePushToken: expoPushToken})
+        }
+        catch (error) {
+            Toast.show({ type: 'error', text1: `Unable to delete push token.` });
+        }
+
+    }
+
     return (
         <UserContext.Provider
             value={{
                 user, setUser, isLoggedIn, loggedInData, familyData, setFamilyData, setLoggedInData,
                 login, logout, isLoggingOut, setIsLoggingOut, notifications, toggleNotifications,
-                theme, setAppTheme, expoPushToken, sendPush, registerForPushNotifications, firstMount, setFirstMount
+                theme, setAppTheme, expoPushToken, sendPush, registerForPushNotifications, firstMount, setFirstMount, logoutPush
             }}
         >
             {children}

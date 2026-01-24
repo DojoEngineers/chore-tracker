@@ -23,10 +23,10 @@ import Toast from "react-native-toast-message"
 export const Settings = () => {
 
     const [isButtonLoading, setIsButtonLoading] = useState(false)
-    const [ apiErrors, setApiErrors ] = useState({})
+    const [apiErrors, setApiErrors] = useState({})
 
     const navigation = useNavigation()
-    const {loggedInData, logout} = useLogin()
+    const { loggedInData, logout, logoutPush, } = useLogin()
 
     useFocusEffect(
         useCallback(() => {
@@ -34,125 +34,133 @@ export const Settings = () => {
         }, [])
     )
 
-    const handleLogout = () => {
-        if (isButtonLoading) return
-        setIsButtonLoading(true)
 
-        logout()
-            .then(() => {
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Login', params: { animationType: 'slide_from_left' }}]
-                })
-            })
-            .catch(error => {
-                console.log("logout error:", error)
-                setApiErrors(prev => ({...prev, logout: "Unable to logout."}))
-                Toast.show({type: 'error', text1: "Unable to logout."})
-                setIsButtonLoading(false)
-            })
+
+
+    // logs out and deletes pushtoken from db, then navigates away.
+    const handleLogout = async () => {
+    if (isButtonLoading) return
+    setIsButtonLoading(true)
+    
+    try {
+        
+        await Promise.all([
+            logout(),
+            logoutPush()
+        ]);
+        
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login', params: { animationType: 'slide_from_left' } }]
+        });
+    } catch (error) {
+        console.log("logout error:", error);
+        setApiErrors(prev => ({ ...prev, logout: "Unable to logout." }));
+        Toast.show({ type: 'error', text1: "Unable to logout." });
+        setIsButtonLoading(false);
     }
+};
 
-    return (
-        <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px] justify-between">
-            <View className="flex-1">
-                <View className="flex-row mt-[13%] items-center ps-2 mb-4">
-                    <Pressable
-                        hitSlop={20}
-                        onPress={() => navigation.replace("Dashboard", {animationType: "fade_from_bottom"})}
-                    >
-                        <BackArrow/>
-                    </Pressable>
-                
-                    <BrandBoldText className="text-[36px] text-lightPrimaryText dark:text-darkPrimaryText leading-[41px] ml-8">
-                        Settings
-                    </BrandBoldText>
+return (
+    <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px] justify-between">
+        <View className="flex-1">
+            <View className="flex-row mt-[13%] items-center ps-2 mb-4">
+                <Pressable
+                    hitSlop={20}
+                    onPress={() => navigation.replace("Dashboard", { animationType: "fade_from_bottom" })}
+                >
+                    <BackArrow />
+                </Pressable>
+
+                <BrandBoldText className="text-[36px] text-lightPrimaryText dark:text-darkPrimaryText leading-[41px] ml-8">
+                    Settings
+                </BrandBoldText>
+            </View>
+
+            {apiErrors.logout && (
+                <BrandText className="text-red-500 text-center">
+                    {apiErrors.logout}
+                </BrandText>
+            )}
+
+            <ScrollView
+                className="flex-1 mb-4"
+                showsVerticalScrollIndicator={false}
+            >
+                <SettingsButton icon={EditProfileIcon} text="Edit Profile" onPress={() => navigation.navigate("EditProfile")} />
+
+                {loggedInData?.isParent
+                    ?
+                    <SettingsButton icon={FamilySettingsIcon} text="Manage Family" onPress={() => navigation.navigate("ManageFamily")} />
+                    :
+                    <SettingsButton icon={FamilySettingsIcon} text="View Family" onPress={() => navigation.navigate("ViewFamily")} />
+                }
+
+                <SettingsButton icon={ChangePasswordIcon} text="Change Password" onPress={() => navigation.navigate("VerifyPassword", { deleteAccount: false })} />
+
+                <View className="flex-row items-center justify-between w-full py-5">
+                    <View className="flex-row items-center">
+                        <NotificationsIcon />
+
+                        <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-8">
+                            Notifications
+                        </BrandBoldText>
+                    </View>
+
+                    <NotificationsSwitch />
                 </View>
 
-                {apiErrors.logout && (
-                    <BrandText className="text-red-500 text-center">
-                        {apiErrors.logout}
-                    </BrandText>
-                )}
+                <View className="flex-row items-center justify-between w-full">
+                    <View className="flex-row items-center">
+                        <DarkModeIcon />
 
-                <ScrollView
-                    className="flex-1 mb-4"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <SettingsButton icon={EditProfileIcon} text="Edit Profile" onPress={() => navigation.navigate("EditProfile")}/>
-
-                    {loggedInData?.isParent
-                        ?
-                            <SettingsButton icon={FamilySettingsIcon} text="Manage Family" onPress={() => navigation.navigate("ManageFamily")}/>
-                        :
-                            <SettingsButton icon={FamilySettingsIcon} text="View Family" onPress={() => navigation.navigate("ViewFamily")}/>
-                    }
-                    
-                    <SettingsButton icon={ChangePasswordIcon} text="Change Password" onPress={() => navigation.navigate("VerifyPassword", {deleteAccount: false})}/>
-
-                    <View className="flex-row items-center justify-between w-full py-5">
-                        <View className="flex-row items-center">
-                            <NotificationsIcon />
-
-                            <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-8">
-                                Notifications
-                            </BrandBoldText>
-                        </View>
-
-                        <NotificationsSwitch />
+                        <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-8">
+                            Theme
+                        </BrandBoldText>
                     </View>
 
-                    <View className="flex-row items-center justify-between w-full">
-                        <View className="flex-row items-center">
-                            <DarkModeIcon />
+                    <ThemeDropDown />
+                </View>
 
-                            <BrandBoldText className="text-lightPrimaryText dark:text-darkPrimaryText text-[16px] ps-8">
-                                Theme
-                            </BrandBoldText>
-                        </View>
+                <SettingsButton icon={PrivacyIcon} text="Privacy" onPress={() => navigation.navigate("Privacy")} />
 
-                        <ThemeDropDown/>
-                    </View>
-                    
-                    <SettingsButton icon={PrivacyIcon} text="Privacy" onPress={() => navigation.navigate("Privacy")}/>
-                    
-                    <SettingsButton icon={HelpIcon} text="Help & Support" onPress={() => navigation.navigate("Help")}/>
-                    
-                    <SettingsButton icon={TermsIcon} text="Terms & Policies" onPress={() => navigation.navigate("Terms")}/>
-                </ScrollView>
-            </View>
+                <SettingsButton icon={HelpIcon} text="Help & Support" onPress={() => navigation.navigate("Help")} />
 
-            <View className="mb-[5%] w-full">
-                <Pressable
-                    onPress={!isButtonLoading ? handleLogout : null}
-                    disabled={isButtonLoading}
-                    className={
-                        `p-[10px] rounded-full items-center justify-center bg-lightButton w-full h-[56px] mb-4
+                <SettingsButton icon={TermsIcon} text="Terms & Policies" onPress={() => navigation.navigate("Terms")} />
+            </ScrollView>
+        </View>
+
+        <View className="mb-[5%] w-full">
+            <Pressable
+                onPress={!isButtonLoading ? handleLogout : null}
+                disabled={isButtonLoading}
+                className={
+                    `p-[10px] rounded-full items-center justify-center bg-lightButton w-full h-[56px] mb-4
                         ${isButtonLoading ? 'opacity-50' : ''}
                     `}
-                >
-                    <View className="flex-1 flex-row items-center">
-                        <LogoutIcon />
+            >
+                <View className="flex-1 flex-row items-center">
+                    <LogoutIcon />
 
-                        <BrandBoldText className="text-white text-[20px] ms-4">
-                            {!isButtonLoading ? "Logout" : "Loading..."}
-                        </BrandBoldText>
-                    </View>
-                </Pressable>
-                
-                <Pressable
-                    onPress={() => navigation.navigate("VerifyPassword", {deleteAccount: true})}
-                    className="p-[10px] rounded-full items-center justify-center bg-[#D0D1D4] dark:bg-[#444955] w-full h-[56px]"
-                >
-                    <View className="flex-1 flex-row items-center">
-                        <DeleteIcon />
-                        
-                        <BrandBoldText className="text-[#A1A4AA] dark:text-[#737780] text-[20px] ms-4">
-                            Delete Account
-                        </BrandBoldText>
-                    </View>
-                </Pressable>
-            </View>
+                    <BrandBoldText className="text-white text-[20px] ms-4">
+                        {!isButtonLoading ? "Logout" : "Loading..."}
+                    </BrandBoldText>
+                </View>
+            </Pressable>
+
+            <Pressable
+                onPress={() => navigation.navigate("VerifyPassword", { deleteAccount: true })}
+                className="p-[10px] rounded-full items-center justify-center bg-[#D0D1D4] dark:bg-[#444955] w-full h-[56px]"
+            >
+                <View className="flex-1 flex-row items-center">
+                    <DeleteIcon />
+
+                    <BrandBoldText className="text-[#A1A4AA] dark:text-[#737780] text-[20px] ms-4">
+                        Delete Account
+                    </BrandBoldText>
+                </View>
+            </Pressable>
         </View>
-    )
+    </View>
+)
 }
