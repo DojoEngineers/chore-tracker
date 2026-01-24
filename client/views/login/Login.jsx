@@ -3,7 +3,7 @@ import { useLogin } from "../../context/UserContext"
 import Toast from 'react-native-toast-message'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { getCurrentUser, getUserByUsername, login } from "../../services/user.service"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { BrandText } from "../../components/text/BrandText"
 import { TopSquiggle } from "../../components/squiggles/TopSquiggle"
 import { BackArrow } from "../../components/icons/BackArrow"
@@ -21,10 +21,10 @@ export const Login = () => {
     const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()
-    const { login: loginUser, user, setLoggedInData } = useLogin()
+    const { login: loginUser, setLoggedInData } = useLogin()
 
-    const checkUserToken = async () => {
-        console.log("user already logged in:", user)
+    const checkUserToken = async (userData) => {
+        console.log("user logging in:", userData)
         try {
             const data = await getCurrentUser()
             setLoggedInData(data)
@@ -37,11 +37,6 @@ export const Login = () => {
             console.log('Failed to fetch user data', error)
         }
     }
-
-    useEffect(() => {
-        if (!user) return
-        checkUserToken()
-    }, [user])
 
     useFocusEffect(
         useCallback(() => {
@@ -71,7 +66,7 @@ export const Login = () => {
                                 navigation.navigate("SetPassword", {username})
                             }
                             else {
-                                loginUser(res)
+                                loginUser(res).then((userData) => checkUserToken(userData.user))
                             }
                         })
                         .catch(error => {

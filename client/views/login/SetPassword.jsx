@@ -77,7 +77,8 @@ export const SetPassword = ({route}) => {
     }
 
     // Set logged in data with token
-    const checkUserToken = async () => {
+    const checkUserToken = async (userData) => {
+        console.log("user logging in:", userData)
         try {
             const data = await getCurrentUser()
             setLoggedInData(data)
@@ -107,8 +108,7 @@ export const SetPassword = ({route}) => {
         const data = {username, password, confirmPassword}
         changePassword(data)
             .then(res => {
-                login(res)
-                    .then(()=> checkUserToken())
+                login(res).then((userData)=> checkUserToken(userData.user))
             })
             .catch(error => {
                 console.log("changePassword error:", error)

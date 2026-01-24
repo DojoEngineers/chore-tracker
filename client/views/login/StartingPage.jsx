@@ -7,7 +7,7 @@ import { LogoBottomSquiggle } from "../../components/squiggles/LogoBottomSquiggl
 import { useLogin } from "../../context/UserContext"
 import { getCurrentUser } from "../../services/user.service"
 import Toast from "react-native-toast-message"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 
 export const StartingPage = () => {
 
@@ -32,12 +32,16 @@ export const StartingPage = () => {
     }
 
     useEffect(() => {
-        if (!user || !user.user || !user.user._id) {
-            console.log("No valid user, staying on login page")
-            return
-        }
-        checkUserToken()
-    }, [user])
+        const timer = setTimeout(() => {
+            if (!user || !user.user || !user.user._id) {
+                console.log("No valid user, staying on login page")
+                return
+            }
+            checkUserToken()
+        }, 300)
+
+        return () => clearTimeout(timer)
+    }, [])
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg justify-between">
