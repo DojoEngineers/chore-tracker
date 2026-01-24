@@ -209,7 +209,7 @@ export const NewChoreDetails = ({ route }) => {
                             sendPush(kid._id, token, title, body,)
                         );
                     } else {
-                        debugInfo.failed.push(kid?.name || 'Unknown');
+                        Toast.show({ type: 'error', text1: "error sending push" })
                     }
                     return [];
                 })
