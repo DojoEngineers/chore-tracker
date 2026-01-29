@@ -6,19 +6,41 @@ const USER_INSTANCE = axios.create({
     baseURL: `${Constants.expoConfig.extra.BACKEND_API_URL}/user`
 })
 
+// USER_INSTANCE.interceptors.request.use(
+//     async (config) => {
+//         const user = await AsyncStorage.getItem('user')
+//         const data = JSON.parse(user)
+//         if (data) {
+//             const token = data.token
+//             if (token) {
+//                 config.headers.Authorization = `Bearer ${token}`
+//             }
+//         }
+//         return config
+//     },
+//     (error) => {
+//         return Promise.reject(error)
+//     }
+// )
+
 USER_INSTANCE.interceptors.request.use(
     async (config) => {
-        const user = await AsyncStorage.getItem('user')
-        const data = JSON.parse(user)
-        if (data) {
-            const token = data.token
-            if (token) {
-                config.headers.Authorization = `Bearer ${token}`
+        try {
+            const user = await AsyncStorage.getItem('user')
+            if (user) {
+                const data = JSON.parse(user)
+                if (data?.token) {
+                    config.headers.Authorization = `Bearer ${data.token}`
+                }
             }
+        } catch (error) {
+            console.error('Error reading token from AsyncStorage:', error)
+            // Don't block the request - let it continue without token
         }
         return config
     },
     (error) => {
+        console.error('Request interceptor error:', error)
         return Promise.reject(error)
     }
 )
@@ -48,7 +70,9 @@ export const getCurrentUser = async () => {
     try {
         const RES = await USER_INSTANCE.get( '/currentUser' )
         return RES.data
-    } catch( error ){ throw error }
+    } catch( error ){ 
+        console.error(`berry error: ${error}`)
+        throw error }
 }
 
 export const updateUser = async (data) => {
