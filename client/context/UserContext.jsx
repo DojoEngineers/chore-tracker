@@ -119,10 +119,12 @@ export const UserContextProvider = ({ children }) => {
             setExpoPushToken(token)
             if (token && loggedInData._id) {
                 await updateUser({ pushToken: token })
+                Toast.show({ type: 'success', text1: `saved: ${token}` })
                 return token
             }
             else {
                 console.warn('No token or user ID; push token not saved')
+                return token
             }
         } catch (error) {
             console.error('Error registering for push notifications:', error);

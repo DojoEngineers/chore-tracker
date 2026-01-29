@@ -6,23 +6,6 @@ const USER_INSTANCE = axios.create({
     baseURL: `${Constants.expoConfig.extra.BACKEND_API_URL}/user`
 })
 
-// USER_INSTANCE.interceptors.request.use(
-//     async (config) => {
-//         const user = await AsyncStorage.getItem('user')
-//         const data = JSON.parse(user)
-//         if (data) {
-//             const token = data.token
-//             if (token) {
-//                 config.headers.Authorization = `Bearer ${token}`
-//             }
-//         }
-//         return config
-//     },
-//     (error) => {
-//         return Promise.reject(error)
-//     }
-// )
-
 USER_INSTANCE.interceptors.request.use(
     async (config) => {
         try {

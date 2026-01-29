@@ -426,7 +426,7 @@ export const getCurrentUser = async (req, res) => {
 
 // Use for "deleting users". Frontend changes user attribute active => inactive
 export const updateUser = async (req, res) => {
-    console.log("In user controller")
+    console.log("In user controller. update user")
     console.log("user REQ.body", req.body)
     try {
         const id = req.body.id || req.user.id

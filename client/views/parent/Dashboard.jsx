@@ -52,11 +52,11 @@ export const Dashboard = () => {
 
     // after logging in, app registers for push and saves push token to user doc.
     useEffect(() => {
-        if (firstMount) {
+        if (firstMount && loggedInData?._id) {
             registerForPushNotifications()
             setFirstMount(false)
         }
-    }, [])
+    }, [loggedInData?._id])
 
     useFocusEffect(
         useCallback(() => {
