@@ -26,7 +26,7 @@ export const Settings = () => {
     const [apiErrors, setApiErrors] = useState({})
 
     const navigation = useNavigation()
-    const { loggedInData, logout, logoutPush, } = useLogin()
+    const { loggedInData, logout, logoutPush, expoPushToken } = useLogin()
 
     useFocusEffect(
         useCallback(() => {
@@ -34,55 +34,63 @@ export const Settings = () => {
         }, [])
     )
 
+    const handleLogout = async () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
+
+        try {
+            // FIRST: Remove push token from db while we still have the auth token
+            if (expoPushToken) {
+                console.log("🔵 Removing push token from backend...")
+                await logoutPush()
+            }
+
+            // SECOND: Clear local storage/state (this removes the token)
+            console.log("🔵 Calling logout()...")
+            await logout()
+            console.log("✅ Logout successful")
+
+        } catch (error) {
+            console.error('❌ Logout error:', error)
+            Toast.show({ type: 'error', text1: "Unable to logout." })
+            setIsButtonLoading(false)
+            return
+        }
+
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login', params: { animationType: 'slide_from_left' } }]
+        });
+    };
+
+
     // const handleLogout = async () => {
     //     if (isButtonLoading) return
     //     setIsButtonLoading(true)
+
     //     try {
+    //         // Remove push token from backend
     //         if (expoPushToken && loggedInData?._id) {
     //             await updateUser({
-    //                 id: loggedInData._id,
     //                 removePushToken: expoPushToken
-    //             })
-    //             console.log('✅ Push token removed from backend')
+    //             }).catch(err => console.error('❌ Error removing push token:', err))
     //         }
+
+    //         // Clear local storage/state
+    //         await logout()
+
     //     } catch (error) {
-    //         console.error('❌ Error removing push token:', error)
+    //         console.error('❌ Logout error:', error)
+    //         Toast.show({ type: 'error', text1: "Unable to logout." })
+    //         setIsButtonLoading(false) // Only set false if logout fails and we DON'T navigate
+    //         return // Don't navigate if logout failed
     //     }
+
     //     navigation.reset({
     //         index: 0,
     //         routes: [{ name: 'Login', params: { animationType: 'slide_from_left' } }]
     //     });
     // };
-
-    
-    const handleLogout = async () => {
-    if (isButtonLoading) return
-    setIsButtonLoading(true)
-    
-    try {
-        // Remove push token from backend
-        if (expoPushToken && loggedInData?._id) {
-            await updateUser({
-                id: loggedInData._id,
-                removePushToken: expoPushToken
-            }).catch(err => console.error('❌ Error removing push token:', err))
-        }
-        
-        // Clear local storage/state
-        await logout()
-        
-    } catch (error) {
-        console.error('❌ Logout error:', error)
-        Toast.show({ type: 'error', text1: "Unable to logout." })
-        setIsButtonLoading(false) // Only set false if logout fails and we DON'T navigate
-        return // Don't navigate if logout failed
-    }
-    
-    navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login', params: { animationType: 'slide_from_left' } }]
-    });
-};
 
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px] justify-between">

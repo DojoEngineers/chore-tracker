@@ -265,9 +265,11 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
+
     const logout = async () => {
         try {
             await AsyncStorage.removeItem('user');
+            setFirstMount(true)
         }
         catch (error) {
             console.log("failed to remove from storage")
@@ -281,7 +283,7 @@ export const UserContextProvider = ({ children }) => {
     // deletes current pushtoken from db. Runs when the user clicks logout
     const logoutPush = async () => {
         try{
-            updateUser({id: loggedInData._id, removePushToken: expoPushToken})
+            updateUser({removePushToken: expoPushToken})
         }
         catch (error) {
             Toast.show({ type: 'error', text1: `Unable to delete push token.` });
