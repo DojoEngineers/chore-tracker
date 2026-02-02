@@ -53,9 +53,7 @@ export const getCurrentUser = async () => {
     try {
         const RES = await USER_INSTANCE.get( '/currentUser' )
         return RES.data
-    } catch( error ){ 
-        console.error(`berry error: ${error}`)
-        throw error }
+    } catch( error ){ throw error }
 }
 
 export const updateUser = async (data) => {

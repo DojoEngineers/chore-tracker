@@ -90,6 +90,7 @@ export const SetPassword = ({route}) => {
             })
         } catch (error) {
             console.log('Failed to fetch user data', error)
+            setIsButtonLoading(false)
         }
     }
 

@@ -18,7 +18,7 @@
     "cache": "^3.0.0",
     "dayjs": "^1.11.13",
     "dotenv": "^17.2.0",
-    "expo": "~54.0.32",
+    "expo": "~54.0.33",
     "expo-build-properties": "~1.0.10",
     "expo-constants": "~18.0.13",
     "expo-device": "~8.0.10",

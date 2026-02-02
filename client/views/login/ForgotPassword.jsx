@@ -33,9 +33,9 @@ export const ForgotPassword = () => {
 
         getUserByUsername(username.toLowerCase())
             .then(res => {
-                if (res && !res.isActive) Toast.show({type: 'error', text1: "Account Deleted."})
-                else if (res && !res.isVerified){
+                if (res && !res.isVerified){
                     Toast.show({type: 'error', text1: "Account is not verified.", text2: "Verify your account in the home screen."})
+                    setIsButtonLoading(false)
                 }
                 else if (res) {
                     sendPassword(username.toLowerCase())
@@ -51,8 +51,12 @@ export const ForgotPassword = () => {
                             console.log("sendPassword error: ", error)
                             setApiErrors(prev => ({...prev, sendPassword: "Unable to reset password."}))
                             Toast.show({type: 'error', text1: "Unable to reset password."})
+                            setIsButtonLoading(false)
                         })
-                } else Toast.show({type: 'error', text1: "Username not found."})
+                } else {
+                    Toast.show({type: 'error', text1: "Username not found."})
+                    setIsButtonLoading(false)
+                }
             })
             .catch(error => {
                 console.log("getUserByUsername error:", error)

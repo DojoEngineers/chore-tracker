@@ -214,7 +214,7 @@ export const NewChoreDetails = ({ route }) => {
 
             // Fire and forget notifications
             if (notificationPromises.length > 0) {
-                Toast.show({ type: 'success', text1: `Sending ${notificationPromises.length} notification(s)` });
+                console.log(`Sending ${notificationPromises.length} notification(s)`)
                 Promise.allSettled(notificationPromises)
                     .then(results => {
                         const failed = results.filter(r => r.status === 'rejected');
@@ -226,7 +226,7 @@ export const NewChoreDetails = ({ route }) => {
                         console.log('Notification error (non-blocking):', err);
                     });
             } else {
-                Toast.show({ type: 'warning', text1: "No notifications sent - check requirements" });
+                console.log("No notifications sent - check requirements")
             }
 
             // Navigate based on edit mode

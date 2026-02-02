@@ -33,16 +33,14 @@ export const UsernameVerification = () => {
 
         getUserByUsername(username.toLowerCase())
             .then ( res => {
-                if (res && !res.isActive) {
-                    Toast.show({type: 'error', text1: "Account Deleted."})
-                }
-                else if (res && res.isVerified) {
+                if (res && res.isVerified) {
                     Toast.show({type: 'success', text1: "Account already verified.", text2: "Please login."})
                     navigation.replace("Login")
                 } else if (res) {
                     navigation.navigate('PasscodeVerification', {username: username.toLowerCase()})
                 } else {
                     Toast.show({type: 'error', text1: "Username not found.", text2: "Please register before verifying your account."})
+                    setIsButtonLoading(false)
                 }
             })
             .catch ( error => {

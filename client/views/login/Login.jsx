@@ -35,6 +35,7 @@ export const Login = () => {
             })
         } catch (error) {
             console.log('Failed to fetch user data', error)
+            setIsButtonLoading(false)
         }
     }
 
@@ -70,11 +71,16 @@ export const Login = () => {
                             console.log("login error:", error)
                             setApiErrors(prev => ({...prev, login: "Unable to login."}))
                             Toast.show({type: 'error', text1: "Unable to login."})
+                            setIsButtonLoading(false)
                         })
                 }
                 else if (res){
                     Toast.show({type: 'error', text1: "Account is not verified.", text2: "Verify your account in the home screen."})
-                } else Toast.show({type: 'error', text1: "Username not found."})
+                    setIsButtonLoading(false)
+                } else {
+                    Toast.show({type: 'error', text1: "Username not found."})
+                    setIsButtonLoading(false)
+                }
             })
             .catch(error => {
                 console.log("getUserByUsername error:", error)

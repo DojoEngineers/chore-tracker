@@ -38,9 +38,15 @@ export const VerifyPassword = ({route}) => {
         verifyPassword({username, password})
             .then(res => {
                 if (res) {
-                    if (deleteAccount) setModalVisible(true)
+                    if (deleteAccount) {
+                        setModalVisible(true)
+                        setIsButtonLoading(false)
+                    }
                     else navigation.navigate("SetPassword", {username})
-                } else Toast.show({type: 'error', text1: "Incorrect password."})
+                } else {
+                    Toast.show({type: 'error', text1: "Incorrect password."})
+                    setIsButtonLoading(false)
+                }
             })
             .catch(error => {
                 console.log("verifyPassword error:", error)
@@ -56,10 +62,7 @@ export const VerifyPassword = ({route}) => {
 
         updateUser({isActive: false})
             .then( () => { 
-                Toast.show({
-                    type: 'success',
-                    text1: "Account successfully deleted!"
-                })
+                Toast.show({type: 'success', text1: "Account successfully deleted!"})
                 logout()
                 navigation.reset({
                     index: 0,

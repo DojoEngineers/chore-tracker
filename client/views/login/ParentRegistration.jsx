@@ -86,7 +86,10 @@ export const ParentRegistration = () => {
         const username = formData.username.toLowerCase()
         checkUsername(username)
             .then((res) => {
-                if (res) Toast.show({type: 'error', text1: "Username already exists."})
+                if (res) {
+                    Toast.show({type: 'error', text1: "Username already exists."})
+                    setIsButtonLoading(false)
+                }
                 else {
                     register({name, username, isParent})
                         .then( () => { 
@@ -97,6 +100,7 @@ export const ParentRegistration = () => {
                             console.log("register error:", error)
                             setApiErrors(prev => ({...prev, register: "Unable to create account."}))
                             Toast.show({type: 'error', text1: "Unable to create account."})
+                            setIsButtonLoading(false)
                         })
                 }
             })

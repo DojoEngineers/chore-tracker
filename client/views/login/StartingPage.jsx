@@ -15,7 +15,6 @@ export const StartingPage = () => {
     const { user, setLoggedInData } = useLogin()
 
     const checkUserToken = async () => {
-        console.log("user already logged in:", user)
         try {
             const data = await getCurrentUser()
             setLoggedInData(data)
@@ -25,7 +24,9 @@ export const StartingPage = () => {
                 routes: [{ name: data.firstLogin ? 'TutorialPage1' : 'Dashboard' }]
             })
         } catch (error) {
-            if (error.response?.status !== 401) {
+            if (error.response?.status === 401) {
+                console.log('Not authenticated — token expired')
+            } else {
                 console.log('Failed to fetch user data', error)
             }
         }

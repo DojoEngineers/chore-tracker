@@ -23,7 +23,6 @@ import Toast from "react-native-toast-message"
 export const Settings = () => {
 
     const [isButtonLoading, setIsButtonLoading] = useState(false)
-    const [apiErrors, setApiErrors] = useState({})
 
     const navigation = useNavigation()
     const { loggedInData, logout, logoutPush, expoPushToken } = useLogin()
@@ -53,8 +52,6 @@ export const Settings = () => {
         } catch (error) {
             console.error('❌ Logout error:', error)
             Toast.show({ type: 'error', text1: "Unable to logout." })
-            setIsButtonLoading(false)
-            setApiErrors(prev => ({...prev, logout: "Unable to logout."}))
             return
         }
 
@@ -108,12 +105,6 @@ export const Settings = () => {
                         Settings
                     </BrandBoldText>
                 </View>
-
-                {apiErrors.logout && (
-                    <BrandText className="text-red-500 text-center">
-                        {apiErrors.logout}
-                    </BrandText>
-                )}
 
                 <ScrollView
                     className="flex-1 mb-4"

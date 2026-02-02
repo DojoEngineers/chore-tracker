@@ -85,6 +85,7 @@ export const AddFamilyMember = ({route}) => {
             .then((res) => {
                 if (res) {
                     Toast.show({type: 'error', text1: "Username already exists."})
+                    setIsButtonLoading(false)
                 } else {
                     register({name, username, isParent, family: loggedInData.family})
                         .then( (res) => { 
@@ -100,6 +101,7 @@ export const AddFamilyMember = ({route}) => {
                             console.log("register error:", error)
                             setApiErrors(prev => ({...prev, register: "Unable to create account."}))
                             Toast.show({type: 'error', text1: "Unable to create account."})
+                            setIsButtonLoading(false)
                         })
                 }
             })
