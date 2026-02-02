@@ -5,15 +5,15 @@ export default {
     // From your app.config.js
     name: "TrackMyChores",
     slug: "track-my-chores",
-    // owner: "dojoengineers",
+    owner: "dojoengineers",
     // owner: "ariella.rollins",
-    owner:"berryrue",
+    // owner:"berryrue",
     extra: {
       BACKEND_API_URL: process.env.BACKEND_API_URL,
       eas: {
-        // projectId: "f9970bf3-a09a-463b-b37d-40622414d40e"
+        projectId: "f9970bf3-a09a-463b-b37d-40622414d40e"
         // projectId: "83482397-4c35-430c-916b-2ac4f6d4263e"
-        projectId: "c8a5129c-1222-44d6-a7be-36cbedca12b9"
+        // projectId: "c8a5129c-1222-44d6-a7be-36cbedca12b9"
       }
     },
 
@@ -63,8 +63,8 @@ export default {
     },
 
     android: {
-      // package: "com.dojoengineers.trackmychores",
-      package: "com.berryrue.trackmychores",
+      package: "com.dojoengineers.trackmychores",
+      // package: "com.berryrue.trackmychores",
       // this lets you register for push!
       googleServicesFile: "./google-services.json",
       // enables FCM V1

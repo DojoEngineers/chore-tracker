@@ -54,6 +54,7 @@ export const Settings = () => {
             console.error('❌ Logout error:', error)
             Toast.show({ type: 'error', text1: "Unable to logout." })
             setIsButtonLoading(false)
+            setApiErrors(prev => ({...prev, logout: "Unable to logout."}))
             return
         }
 

@@ -119,7 +119,7 @@ export const UserContextProvider = ({ children }) => {
             setExpoPushToken(token)
             if (token && loggedInData._id) {
                 await updateUser({ pushToken: token })
-                Toast.show({ type: 'success', text1: `saved: ${token}` })
+                console.log("saved: ", token)
                 return token
             }
             else {

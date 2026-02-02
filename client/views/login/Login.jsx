@@ -56,10 +56,7 @@ export const Login = () => {
         const username = formData.username.toLowerCase()
         getUserByUsername(username)
             .then(res => {
-                if (res && !res.isActive) {
-                    Toast.show({type: 'error', text1: "Account Deleted."})
-                }
-                else if (res && res.isVerified) {
+                if (res && res.isVerified) {
                     login({username, password})
                         .then(res => {
                             if (res.user.passwordReset) {
