@@ -33,11 +33,11 @@ export const Privacy = () => {
 
                 <View className="items-center mb-8">
                     <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                        We respect your privacy and keep your family’s data safe. We collect account info, profile details,
-                        and app activity to help you assign and track chores. Your data is securely stored,
-                        shared only with trusted services, and visible to family members in the app. Parents can manage all child accounts,
-                        and you can update info or inactivate your account anytime. We never sell your data.
-                        For questions, contact us at trackmychoresapp@gmail.com.
+                        We respect your privacy and keep your family’s data secure. We collect parent account info (name, email),
+                        child account info (name, email), chores (name, due date, photos, description, completion stage, other details),
+                        and device identifiers for notifications. This data is used to manage accounts and track chores.
+                        It is shared only with trusted service providers and never sold. Parents manage child accounts, and we comply with COPPA.
+                        You can update your information or inactivate your account at any time. For questions, contact trackmychoresapp@gmail.com.
                     </BrandText>
                 </View>
             </View>
