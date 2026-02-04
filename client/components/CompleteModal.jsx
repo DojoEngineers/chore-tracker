@@ -40,89 +40,94 @@ export const CompleteModal = ({ visible, setVisible, setApiErrors, id, needsPics
         }
     }
 
+    // const handleComplete = () => {
+    //     if (isButtonLoading) return
+    //     setIsButtonLoading(true)
+
+    //     if (commentsError) {
+    //         Toast.show({ type: 'error', text1: "Please make corrections to the form." })
+    //         setIsButtonLoading(false)
+    //         return
+    //     }
+
+    //     updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
+    //         .then(() => {
+    //             try {
+    //                 // Send push notifications to all parents
+    //                 const notificationPromises = loggedInData.family.parents
+    //                     .flatMap(parent =>
+    //                         // Map each parent's tokens while keeping parent reference
+    //                         (parent.pushTokens || []).map(token => ({
+    //                             parentId: parent._id,
+    //                             token
+    //                         }))
+    //                     )
+    //                     .map(({ parentId, token }) =>
+    //                         sendPush(
+    //                             parentId,
+    //                             token,
+    //                             "Chore Awaiting Approval!🧐",
+    //                             `${loggedInData.name} completed chore "${chore.title}" and needs your review.`
+    //                         )
+    //                     );
+
+    //                 if (notificationPromises.length > 0) {
+    //                     Promise.allSettled(notificationPromises).catch(err => {
+    //                         console.log('Parent notification error (non-blocking):', err);
+    //                     });
+    //                 }
+    //             } catch (notifError) {
+    //                 console.error('Notification setup error (non-blocking):', notifError);
+    //             }
+    //             Toast.show({ type: 'success', text1: "Chore completed!" })
+    //             navigation.goBack()
+    //         })
+    //         .catch((error) => {
+    //             console.log("completeChore error:", error)
+    //             setApiErrors(prev => ({ ...prev, completeChore: "Unable to complete chore." }))
+    //             Toast.show({ type: 'error', text1: "Unable to complete chore." })
+    //             setIsButtonLoading(false)
+    //         })
+    // }
+
+
     const handleComplete = () => {
-        if (isButtonLoading) return
-        setIsButtonLoading(true)
+    if (isButtonLoading) return
+    setIsButtonLoading(true)
 
-        if (commentsError) {
-            Toast.show({ type: 'error', text1: "Please make corrections to the form." })
-            setIsButtonLoading(false)
-            return
-        }
-
-        updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
-            .then(() => {
-                try {
-                    // Send push notifications to all parents
-                    const notificationPromises = loggedInData.family.parents
-                        .flatMap(parent =>
-                            // Map each parent's tokens while keeping parent reference
-                            (parent.pushTokens || []).map(token => ({
-                                parentId: parent._id,
-                                token
-                            }))
-                        )
-                        .map(({ parentId, token }) =>
-                            sendPush(
-                                parentId,
-                                token,
-                                "Chore Awaiting Approval!🧐",
-                                `${loggedInData.name} completed chore "${chore.title}" and needs your review.`
-                            )
-                        );
-
-                    if (notificationPromises.length > 0) {
-                        Promise.allSettled(notificationPromises).catch(err => {
-                            console.log('Parent notification error (non-blocking):', err);
-                        });
-                    }
-                } catch (notifError) {
-                    console.error('Notification setup error (non-blocking):', notifError);
-                }
-                // updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
-                //     .then(() => {
-                //         // Wrap notifications in try-catch so they don't block success
-                //         try {
-                //             // Send push notifications to all parents
-                //             const notificationPromises = loggedInData.family.parents
-                //                 .filter(parent => parent.notifications == true)
-                //                 .flatMap(parent => parent.pushTokens || [])
-                //                 .map(token =>
-                //                     sendPush(
-                //                         parent._id,
-                //                         token,
-                //                         "Chore Awaiting Approval!🧐",
-                //                         `${loggedInData.name} completed chore "${chore.title}" and needs your review.`
-                //                     )
-                //                 );
-
-                //             // Fire and forget notifications (don't block the user)
-                //             if (notificationPromises.length > 0) {
-                //                 Promise.allSettled(notificationPromises)
-                //                     .then(results => {
-                //                         const failed = results.filter(r => r.status === 'rejected');
-                //                         if (failed.length > 0) {
-                //                             console.log('Some parent notifications failed:', failed);
-                //                         }
-                //                     })
-                //                     .catch(err => {
-                //                         console.log('Notification error (non-blocking):', err);
-                //                     });
-                //             }
-                //         } catch (notifError) {
-                //             console.error('Notification setup error (non-blocking):', notifError);
-                //         }
-
-                Toast.show({ type: 'success', text1: "Chore completed!" })
-                navigation.goBack()
-            })
-            .catch((error) => {
-                console.log("completeChore error:", error)
-                setApiErrors(prev => ({ ...prev, completeChore: "Unable to complete chore." }))
-                Toast.show({ type: 'error', text1: "Unable to complete chore." })
-                setIsButtonLoading(false)
-            })
+    if (commentsError) {
+        Toast.show({ type: 'error', text1: "Please make corrections to the form." })
+        setIsButtonLoading(false)
+        return
     }
+
+    updateChore({ _id: id, stage: "complete", stageDate: dayjs().toISOString(), kidComments })
+        .then(() => {
+            // Send push notifications to all parents (fire and forget)
+            const notificationPromises = loggedInData.family.parents.map(parent =>
+                sendPush(
+                    parent._id,
+                    "Chore Awaiting Approval! 🧐",
+                    `${loggedInData.name} completed chore "${chore.title}" and needs your review.`
+                )
+            );
+
+            if (notificationPromises.length > 0) {
+                Promise.allSettled(notificationPromises).catch(err => {
+                    console.log('Parent notification error (non-blocking):', err);
+                });
+            }
+
+            Toast.show({ type: 'success', text1: "Chore completed!" })
+            navigation.goBack()
+        })
+        .catch((error) => {
+            console.log("completeChore error:", error)
+            setApiErrors(prev => ({ ...prev, completeChore: "Unable to complete chore." }))
+            Toast.show({ type: 'error', text1: "Unable to complete chore." })
+            setIsButtonLoading(false)
+        })
+}
 
     const takeAfterPhoto = async () => {
         const { status } = await ImagePicker.requestCameraPermissionsAsync()

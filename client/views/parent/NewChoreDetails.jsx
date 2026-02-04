@@ -140,157 +140,81 @@ export const NewChoreDetails = ({ route }) => {
         })
     }
 
-    const handleSubmit = async () => {
-        if (isButtonLoading) return
-        setIsButtonLoading(true)
+    // const handleSubmit = async () => {
+    //     if (isButtonLoading) return
+    //     setIsButtonLoading(true)
 
-        if (formErrors.details || formErrors.dueDate || formData.kids.length === 0) {
-            Toast.show({ type: 'error', text1: "Please make corrections to the form." })
-            setIsButtonLoading(false)
-            return
-        }
+    //     if (formErrors.details || formErrors.dueDate || formData.kids.length === 0) {
+    //         Toast.show({ type: 'error', text1: "Please make corrections to the form." })
+    //         setIsButtonLoading(false)
+    //         return
+    //     }
 
-        const { details, kids, dueDate, needsPics, repeat, weeklyRepeatDays } = formData
-        const baseData = {
-            title: formData.title, details, creator: loggedInData._id,
-            dueDate: dueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
-        }
-        const promises = []
-        const isEditMode = !!chore
+    //     const { details, kids, dueDate, needsPics, repeat, weeklyRepeatDays } = formData
+    //     const baseData = {
+    //         title: formData.title, details, creator: loggedInData._id,
+    //         dueDate: dueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
+    //     }
+    //     const promises = []
+    //     const isEditMode = !!chore
 
-        if (chore) {
-            if (kids.includes(chore.worker._id)) {
-                const finalData = { ...baseData, _id: chore._id, dateEdited: dayjs().toISOString(), editScope, templateId: chore.templateId }
-                promises.push(updateChore(finalData))
-            } else {
-                // Kid removed from chore - deactivate it
-                const finalData = { _id: chore._id, isActive: false, editScope, templateId: chore.templateId }
-                promises.push(updateChore(finalData))
-            }
+    //     if (chore) {
+    //         if (kids.includes(chore.worker._id)) {
+    //             const finalData = { ...baseData, _id: chore._id, dateEdited: dayjs().toISOString(), editScope, templateId: chore.templateId }
+    //             promises.push(updateChore(finalData))
+    //         } else {
+    //             // Kid removed from chore - deactivate it
+    //             const finalData = { _id: chore._id, isActive: false, editScope, templateId: chore.templateId }
+    //             promises.push(updateChore(finalData))
+    //         }
 
-            // Add chores for newly assigned kids
-            const newKids = kids.filter(kid => kid !== chore.worker._id)
-            newKids.forEach(kid => {
-                const choreData = { ...baseData, worker: kid, stageDate: dayjs().toISOString() }
-                promises.push(addChore(choreData))
-            })
-        }
-        else {
-            // Creating new chores
-            kids.forEach(kid => {
-                const choreData = { ...baseData, stageDate: dayjs().toISOString(), worker: kid }
-                promises.push(addChore(choreData))
-            })
-        }
-
-        try {
-            // Wait for chores to be created/updated
-            await Promise.all(promises);
-
-            const notificationPromises = kids
-                .map(kidId => {
-                    // Find the kid in the family
-                    const kid = loggedInData.family.children.find(k => k._id === kidId);
-
-                    if (!kid) return []
-                    if (!kid.pushTokens?.length) return []
-
-                    // Different messages for create vs edit
-                    const title = isEditMode
-                        ? "Chore Updated! 🔄"
-                        : "New Chore Assigned! 🧹";
-
-                    const body = isEditMode
-                        ? `Your chore "${formData.title}" has been updated`
-                        : `You have a new chore: ${formData.title}`;
-
-                    // Send to every token for this kid
-                    return kid.pushTokens.map(token =>
-                        sendPush(kid._id, token, title, body,)
-                    );
-                })
-                .flat()
-                .filter(Boolean);
-
-            // Fire and forget notifications
-            if (notificationPromises.length > 0) {
-                console.log(`Sending ${notificationPromises.length} notification(s)`)
-                Promise.allSettled(notificationPromises)
-                    .then(results => {
-                        const failed = results.filter(r => r.status === 'rejected');
-                        if (failed.length > 0) {
-                            console.log('Some notifications failed (non-blocking):', failed);
-                        }
-                    })
-                    .catch(err => {
-                        console.log('Notification error (non-blocking):', err);
-                    });
-            } else {
-                console.log("No notifications sent - check requirements")
-            }
-
-            // Navigate based on edit mode
-            if (isEditMode) {
-                Toast.show({ type: 'success', text1: "Chore updated!" })
-                navigation.goBack()
-            } else {
-                Toast.show({ type: 'success', text1: "Chore created!" })
-                navigation.pop(2)
-            }
-        } catch (error) {
-            console.log("Updating / adding chores error:", error)
-            setApiErrors(prev => ({ ...prev, chore: "Unable to save chore." }))
-            Toast.show({ type: 'error', text1: "Unable to save chore." })
-            setIsButtonLoading(false)
-        } 
-    }
+    //         // Add chores for newly assigned kids
+    //         const newKids = kids.filter(kid => kid !== chore.worker._id)
+    //         newKids.forEach(kid => {
+    //             const choreData = { ...baseData, worker: kid, stageDate: dayjs().toISOString() }
+    //             promises.push(addChore(choreData))
+    //         })
+    //     }
+    //     else {
+    //         // Creating new chores
+    //         kids.forEach(kid => {
+    //             const choreData = { ...baseData, stageDate: dayjs().toISOString(), worker: kid }
+    //             promises.push(addChore(choreData))
+    //         })
+    //     }
 
     //     try {
     //         // Wait for chores to be created/updated
     //         await Promise.all(promises);
 
-    //         // Determine which kids should get notifications
-    //         const kidsToNotify = kids; // Always notify ALL assigned kids (both create and edit)
-
-    //         // Send notifications to the appropriate kids
-    //         const notificationPromises = kidsToNotify
+    //         const notificationPromises = kids
     //             .map(kidId => {
     //                 // Find the kid in the family
     //                 const kid = loggedInData.family.children.find(k => k._id === kidId);
 
-    //                 if (kid?.pushTokens) {
-    //                     Toast.show({ type: 'success', text1: "kids has push tokens" })
-    //                 }
-    //                 if (kid?.pushTokens.length > 0) {
-    //                     Toast.show({ type: 'success', text1: "kids has > 0" })
-    //                 }
-    //                 if (kid?.notifications) {
-    //                     Toast.show({ type: 'success', text1: "kids has notifications" })
-    //                 }
+    //                 if (!kid) return []
+    //                 if (!kid.pushTokens?.length) return []
 
-    //                 if (kid?.pushTokens && kid.pushTokens.length > 0 && kid.notifications) {
-    //                     // Different messages for create vs edit
-    //                     const title = isEditMode
-    //                         ? "Chore Updated! 🔄"
-    //                         : "New Chore Assigned! 🧹";
+    //                 // Different messages for create vs edit
+    //                 const title = isEditMode
+    //                     ? "Chore Updated! 🔄"
+    //                     : "New Chore Assigned! 🧹";
 
-    //                     const body = isEditMode
-    //                         ? `Your chore "${formData.title}" has been updated`
-    //                         : `You have a new chore: ${formData.title}`;
+    //                 const body = isEditMode
+    //                     ? `Your chore "${formData.title}" has been updated`
+    //                     : `You have a new chore: ${formData.title}`;
 
-    //                     // Send to every token for this kid
-    //                     return kid.pushTokens.map(token =>
-    //                         sendPush(kid._id, token, title, body)
-    //                     );
-    //                 }
-    //                 Toast.show({ type: 'error', text1: "no tokens and/or notifications" })
-    //                 return [];
+    //                 // Send to every token for this kid
+    //                 return kid.pushTokens.map(token =>
+    //                     sendPush(kid._id, token, title, body,)
+    //                 );
     //             })
     //             .flat()
     //             .filter(Boolean);
 
     //         // Fire and forget notifications
     //         if (notificationPromises.length > 0) {
+    //             console.log(`Sending ${notificationPromises.length} notification(s)`)
     //             Promise.allSettled(notificationPromises)
     //                 .then(results => {
     //                     const failed = results.filter(r => r.status === 'rejected');
@@ -301,6 +225,8 @@ export const NewChoreDetails = ({ route }) => {
     //                 .catch(err => {
     //                     console.log('Notification error (non-blocking):', err);
     //                 });
+    //         } else {
+    //             console.log("No notifications sent - check requirements")
     //         }
 
     //         // Navigate based on edit mode
@@ -315,10 +241,103 @@ export const NewChoreDetails = ({ route }) => {
     //         console.log("Updating / adding chores error:", error)
     //         setApiErrors(prev => ({ ...prev, chore: "Unable to save chore." }))
     //         Toast.show({ type: 'error', text1: "Unable to save chore." })
-    //     } finally {
     //         setIsButtonLoading(false)
-    //     }
+    //     } 
     // }
+
+
+
+
+    const handleSubmit = async () => {
+    if (isButtonLoading) return
+    setIsButtonLoading(true)
+
+    if (formErrors.details || formErrors.dueDate || formData.kids.length === 0) {
+        Toast.show({ type: 'error', text1: "Please make corrections to the form." })
+        setIsButtonLoading(false)
+        return
+    }
+
+    const { details, kids, dueDate, needsPics, repeat, weeklyRepeatDays } = formData
+    const baseData = {
+        title: formData.title, details, creator: loggedInData._id,
+        dueDate: dueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
+    }
+    const promises = []
+    const isEditMode = !!chore
+
+    if (chore) {
+        if (kids.includes(chore.worker._id)) {
+            const finalData = { ...baseData, _id: chore._id, dateEdited: dayjs().toISOString(), editScope, templateId: chore.templateId }
+            promises.push(updateChore(finalData))
+        } else {
+            // Kid removed from chore - deactivate it
+            const finalData = { _id: chore._id, isActive: false, editScope, templateId: chore.templateId }
+            promises.push(updateChore(finalData))
+        }
+
+        // Add chores for newly assigned kids
+        const newKids = kids.filter(kid => kid !== chore.worker._id)
+        newKids.forEach(kid => {
+            const choreData = { ...baseData, worker: kid, stageDate: dayjs().toISOString() }
+            promises.push(addChore(choreData))
+        })
+    }
+    else {
+        // Creating new chores
+        kids.forEach(kid => {
+            const choreData = { ...baseData, stageDate: dayjs().toISOString(), worker: kid }
+            promises.push(addChore(choreData))
+        })
+    }
+
+    try {
+        // Wait for chores to be created/updated
+        await Promise.all(promises);
+
+        // Send notifications to assigned kids (using their user IDs only)
+        const title = isEditMode
+            ? "Chore Updated! 🔄"
+            : "New Chore Assigned! 🧹";
+
+        const body = isEditMode
+            ? `Your chore "${formData.title}" has been updated`
+            : `You have a new chore: ${formData.title}`;
+
+        // Fire and forget notifications - send to each kid by ID
+        if (kids.length > 0) {
+            console.log(`Sending notifications to ${kids.length} kid(s)`)
+            Promise.allSettled(
+                kids.map(kidId => sendPush(kidId, title, body))
+            )
+            .then(results => {
+                const failed = results.filter(r => r.status === 'rejected');
+                if (failed.length > 0) {
+                    console.log('Some notifications failed (non-blocking):', failed);
+                }
+            })
+            .catch(err => {
+                console.log('Notification error (non-blocking):', err);
+            });
+        } else {
+            console.log("No notifications sent - no kids assigned")
+        }
+
+        // Navigate based on edit mode
+        if (isEditMode) {
+            Toast.show({ type: 'success', text1: "Chore updated!" })
+            navigation.goBack()
+        } else {
+            Toast.show({ type: 'success', text1: "Chore created!" })
+            navigation.pop(2)
+        }
+    } catch (error) {
+        console.log("Updating / adding chores error:", error)
+        setApiErrors(prev => ({ ...prev, chore: "Unable to save chore." }))
+        Toast.show({ type: 'error', text1: "Unable to save chore." })
+        setIsButtonLoading(false)
+    } 
+}
 
     return (
         <KeyboardAwareScrollView
