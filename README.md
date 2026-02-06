@@ -3,15 +3,15 @@
 
 ## 🛠️ Technologies Used
 
-- Core Stack: Expo Go + EAS Build, React Native, Node.js + Express, MongoDB
-- Languages: Javascript, XML
-- Cloudfare R2: Photo capture and storage
-- cron-job.org: Automated recurring server tasks
-- EmailJS: Registration and password reset emails
-- NativeWind: Front-end styling
-- Figma: Design collaboration with UX/UI designer
-- Render: Backend server deployment
-- Dev Tools: VS Code, GitHub, Android Studio, Xcode
+- **Core Stack:** Expo Go + EAS Build, React Native, Node.js + Express, MongoDB
+- **Languages:** Javascript, XML
+- **Cloudfare R2:** Photo capture and storage
+- **cron-job.org:** Automated recurring server tasks
+- **EmailJS:** Registration and password reset emails
+- **NativeWind:** Front-end styling
+- **Figma:** Design collaboration with UX/UI designer
+- **Render:** Backend server deployment
+- **Dev Tools:** VS Code, GitHub, Android Studio, Xcode
 
 
 ## 🌟 Highlights
