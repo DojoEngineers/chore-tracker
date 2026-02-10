@@ -7,6 +7,7 @@ import choreRouter from "./routes/chore.route.js"
 import R2Router from "./routes/r2.route.js"
 import NotificationRouter from "./routes/notifications.route.js"
 import emailjs from "@emailjs/nodejs"
+import { startJobs } from "./agenda.js";
 
 const app = express()
 
@@ -95,5 +96,5 @@ dbConnect()
 app.listen(PORT, '0.0.0.0', async () => {
     console.log("port:", PORT);
     // Line below generates a new instance of reoccuring chores (if chore's conditionas are met)
-    // await startJobs();
+    await startJobs();
 })
