@@ -33,11 +33,12 @@ export const Terms = () => {
 
                 <View className="items-center mb-8">
                     <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                        We want our app to be safe and helpful for every family. By using the app,
+                        We want our app to be safe and helpful for every family. By using this app,
                         you agree to use it responsibly and only for family chores and related activities.
                         Parents are responsible for managing their children’s accounts and information.
-                        We do not sell your data and we take privacy seriously (see our Privacy section for details).
-                        For any questions or concerns, contact us anytime at trackmychoresapp@gmail.com.
+                        We take privacy seriously and do not sell your data (see our Privacy section for details).
+                        By using this app, you accept these terms. We are not responsible for any errors, omissions, or misuse of app content.
+                        For any questions or concerns, you can contact us at trackmychoresapp@gmail.com
                     </BrandText>
                 </View>
             </View>

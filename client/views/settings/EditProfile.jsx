@@ -16,6 +16,11 @@ import { SmallBottomRightSquiggle } from "../../components/squiggles/SmallBottom
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const NO_EMOJI_REGEX = /^[\p{L}\p{N}\p{P}\p{Zs}]*$/u
 
+const DEFAULT_FORM_ERRORS = {
+    name: false,
+    username: false
+}
+
 export const EditProfile = () => {
 
     const navigation = useNavigation()
@@ -23,7 +28,7 @@ export const EditProfile = () => {
     
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState({name: loggedInData.name, username: loggedInData.username})
-    const [formErrors, setFormErrors] = useState({})
+    const [formErrors, setFormErrors] = useState(DEFAULT_FORM_ERRORS)
     const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     useFocusEffect(

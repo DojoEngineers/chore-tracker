@@ -16,20 +16,21 @@ export const NewChore = () => {
 
     const [selected, setSelected] = useState('custom')
     const [title, setTitle] = useState('')
-    const [formErrors, setFormErrors] = useState({})
+    const [formErrors, setFormErrors] = useState({ title: false })
 
     const navigation = useNavigation()
     const {loggedInData} = useLogin()
 
     const handleChange = (value) => {
         setTitle(value)
+        let error = false
         if (value.length < 3) {
-            setFormErrors(prev => ({...prev, title: "Title must be at least 3 characters."}))
+            error = "Title must be at least 3 characters."
+        } else if (value.length > 30) {
+            error = "Title cannot exceed 30 characters."
         }
-        else if (value.length > 30) {
-            setFormErrors(prev => ({...prev, title: "Title cannot exceed 30 characters."}))
-        }
-        else setFormErrors(prev => ({...prev, title: false}))
+
+        setFormErrors(prev => ({ ...prev, title: error }))
     }
 
     const handleSubmit = () => {

@@ -35,9 +35,9 @@ export const Help = () => {
                     <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
                         Need help or have questions? We’re here for you! Check out our in-app tips
                         to learn how to assign chores, track progress, and review results.
-                        If you’re still stuck or something’s not working, you can reach our support team
-                        anytime at trackmychoresapp@gmail.com. We’ll do our best to get back to you quickly
-                        and keep your family’s chore routine running smoothly.
+                        If you’re still stuck or something isn't working, you can reach our support team
+                        anytime at trackmychoresapp@gmail.com. We’ll do our best to respond quickly
+                        and help keep your family’s chore routine running smoothly.
                     </BrandText>
                 </View>
             </View>

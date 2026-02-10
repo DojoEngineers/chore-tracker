@@ -16,13 +16,18 @@ const DEFAULT_FORM_VALUES = {
     confirmPassword: ""
 }
 
+const DEFAULT_FORM_ERRORS = {
+    password: "",
+    confirmPassword: ""
+}
+
 const NO_EMOJI_REGEX = /^[\p{L}\p{N}\p{P}\p{Zs}]*$/u
 
 export const SetPassword = ({route}) => {
 
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
-    const [formErrors, setFormErrors] = useState({})
+    const [formErrors, setFormErrors] = useState(DEFAULT_FORM_ERRORS)
     const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()

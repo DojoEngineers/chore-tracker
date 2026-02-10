@@ -18,6 +18,11 @@ const DEFAULT_FORM_VALUES = {
     username: ""
 }
 
+const DEFAULT_FORM_ERRORS = {
+    name: false,
+    username: false
+}
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const NO_EMOJI_REGEX = /^[\p{L}\p{N}\p{P}\p{Zs}]*$/u
 
@@ -25,7 +30,7 @@ export const AddFamilyMember = ({route}) => {
 
     const [ apiErrors, setApiErrors ] = useState({})
     const [formData, setFormData] = useState(DEFAULT_FORM_VALUES)
-    const [formErrors, setFormErrors] = useState({})
+    const [formErrors, setFormErrors] = useState(DEFAULT_FORM_ERRORS)
     const [isButtonLoading, setIsButtonLoading] = useState(false)
 
     const navigation = useNavigation()

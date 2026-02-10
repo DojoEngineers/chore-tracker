@@ -18,10 +18,8 @@ export const ParentNavBar = () => {
     const isOnKids = route.name === "Kids" || route.name === "KidDetails"
 
     return (
-        <View className="relative">
-            <View className="bg-white dark:bg-[#333740] w-full py-[3%] border-t-2
-                dark:border-[#737780] border-[#ECEDEE] flex-row justify-between px-[22px]">
-                
+        <View className="relative bg-white dark:bg-[#333740] border-t-2 dark:border-[#737780] border-[#ECEDEE] py-[3%]">
+            <View className="flex-row justify-evenly items-center w-full">
                 <Pressable
                     className="justify-center items-center"
                     onPress={() => navigation.replace("Dashboard", {animationType: "fade_from_bottom"})}
@@ -33,7 +31,7 @@ export const ParentNavBar = () => {
                         Home
                     </BrandText>
                 </Pressable>
-
+            
                 <Pressable
                     className="justify-center items-center"
                     onPress={() => navigation.replace("Today", {animationType: "fade_from_bottom"})}
@@ -45,8 +43,8 @@ export const ParentNavBar = () => {
                         Today
                     </BrandText>
                 </Pressable>
-                
-                <View className="justify-center items-center"></View>
+            
+                <View className="w-[5%]"></View>
 
                 <Pressable
                     className="justify-center items-center"
@@ -59,7 +57,7 @@ export const ParentNavBar = () => {
                         Approve
                     </BrandText>
                 </Pressable>
-
+            
                 <Pressable
                     className="justify-center items-center"
                     onPress={() => navigation.replace("Kids", {animationType: "fade_from_bottom"})}
@@ -71,7 +69,6 @@ export const ParentNavBar = () => {
                         Kids
                     </BrandText>
                 </Pressable>
-
             </View>
 
             <Pressable
