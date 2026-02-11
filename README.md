@@ -6,7 +6,7 @@
 - **Core Stack:** Expo Go + EAS Build, React Native, Node.js + Express, MongoDB
 - **Languages:** Javascript, XML
 - **Cloudfare R2:** Image storage
-- **cron-job.org:** Automated recurring server tasks
+- **Agenda:** Server-side job scheduling
 - **EmailJS:** Registration and password reset emails
 - **NativeWind:** Front-end styling
 - **Figma:** Design collaboration with UX/UI designer
