@@ -1,6 +1,5 @@
 import Agenda from 'agenda';
 import mongoose from 'mongoose';
-import { dbConnect } from './config/mongoose.config.js';
 import ChoreTemplate from './models/choreTemplate.js';
 import Chore from './models/chore.model.js';
 
@@ -116,22 +115,6 @@ let agenda;
       console.log(`[Agenda] Created ${template.title} due ${dueDate}`);
     }
   });
-
-  // await new Promise((resolve, reject) => {
-  //   agenda.on('ready', () => {
-  //     console.log("agenda ready event fired");
-  //     resolve();
-  //   });
-
-  //   agenda.on('error', (err) => {
-  //     console.error("agenda error:", err);
-  //     reject(err);
-  //   });
-
-  //   setTimeout(() => {
-  //     reject(new Error('Agenda ready timeout'));
-  //   }, 10000);
-  // });
 
   console.log("starting...")
   await agenda.start();

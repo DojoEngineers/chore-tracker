@@ -19,7 +19,7 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id, chore}) => {
     const [stage, setStage] = useState("rejectedUnassigned")
     const [commentsError, setCommentsError] = useState("")
     const [isButtonLoading, setIsButtonLoading] = useState(false)
-    const { loggedInData, sendPush } = useLogin()
+    const { sendPush } = useLogin()
 
     const navigation = useNavigation()
     const colorScheme = useColorScheme()
@@ -40,83 +40,37 @@ export const RejectModal = ({visible, setVisible, setApiErrors, id, chore}) => {
         }
     }
 
-//     const handleReject = () => {
-//         if (isButtonLoading) return
-//         setIsButtonLoading(true)
+    const handleReject = () => {
+        if (isButtonLoading) return
+        setIsButtonLoading(true)
 
-//         if (commentsError) {
-//             Toast.show({type: 'error', text1: "Please make corrections to the form."})
-//             setIsButtonLoading(false)
-//             return
-//         }
-
-//         updateChore({_id: id, stage, stageDate: dayjs().toISOString(), parentComments})
-//             .then(() => {
-//                 try {
-//                     // Send push notification to the kid whose chore was rejected
-//                     const kid = loggedInData.family.children.find(k => k._id === chore.worker._id);
-                    
-//                     if (kid?.pushTokens && kid.pushTokens.length > 0) {
-//                         const notificationPromises = kid.pushTokens.map(token =>
-//                             sendPush(
-//                                 kid._id,
-//                                 token,
-//                                 "Chore Rejected ⚠️",
-//                                 `Your chore "${chore.title}" was rejected. Check parent comments.`
-//                             )
-//                         );
-
-//                         Promise.allSettled(notificationPromises).catch(err => {
-//                             console.log('Notification error (non-blocking):', err);
-//                         });
-//                     }
-//                 } catch (notifError) {
-//                     console.error('Notification setup error (non-blocking):', notifError);
-//                 }
-
-//                 Toast.show({type: 'success', text1: "Chore rejected!"})
-//                 navigation.goBack()
-//             })
-//             .catch((error) => {
-//                 console.log("rejectChore error:", error)
-//                 setApiErrors(prev => ({...prev, rejectChore: "Unable to reject chore."}))
-//                 Toast.show({type: 'error', text1: "Unable to reject chore."})
-//                 setIsButtonLoading(false)
-//             })
-// }
-
-
-const handleReject = () => {
-    if (isButtonLoading) return
-    setIsButtonLoading(true)
-
-    if (commentsError) {
-        Toast.show({ type: 'error', text1: "Please make corrections to the form." })
-        setIsButtonLoading(false)
-        return
-    }
-
-    updateChore({ _id: id, stage, stageDate: dayjs().toISOString(), parentComments })
-        .then(() => {
-            // Send push notification to the kid whose chore was rejected (fire and forget)
-            sendPush(
-                chore.worker._id,
-                "Chore Rejected ⚠️",
-                `Your chore "${chore.title}" was rejected. Check parent comments.`
-            ).catch(err => {
-                console.log('Notification error (non-blocking):', err);
-            });
-
-            Toast.show({ type: 'success', text1: "Chore rejected!" })
-            navigation.goBack()
-        })
-        .catch((error) => {
-            console.log("rejectChore error:", error)
-            setApiErrors(prev => ({ ...prev, rejectChore: "Unable to reject chore." }))
-            Toast.show({ type: 'error', text1: "Unable to reject chore." })
+        if (commentsError) {
+            Toast.show({ type: 'error', text1: "Please make corrections to the form." })
             setIsButtonLoading(false)
-        })
-}
+            return
+        }
+
+        updateChore({ _id: id, stage, stageDate: dayjs().toISOString(), parentComments })
+            .then(() => {
+                // Send push notification to the kid whose chore was rejected (fire and forget)
+                sendPush(
+                    chore.worker._id,
+                    "Chore Rejected ⚠️",
+                    `Your chore "${chore.title}" was rejected. Check parent comments.`
+                ).catch(err => {
+                    console.log('Notification error (non-blocking):', err);
+                });
+
+                Toast.show({ type: 'success', text1: "Chore rejected!" })
+                navigation.goBack()
+            })
+            .catch((error) => {
+                console.log("rejectChore error:", error)
+                setApiErrors(prev => ({ ...prev, rejectChore: "Unable to reject chore." }))
+                Toast.show({ type: 'error', text1: "Unable to reject chore." })
+                setIsButtonLoading(false)
+            })
+    }
 
     const handleCheckbox = () => {
         if (stage === "rejectedUnassigned") {

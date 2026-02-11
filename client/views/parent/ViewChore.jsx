@@ -103,45 +103,6 @@ export const ViewChore = ({ route }) => {
         }, [id])
     )
 
-    // const handleApprove = () => {
-    //     if (isButtonLoading) return
-    //     setIsButtonLoading(true)
-
-    //     updateChore({ _id: id, stage: "approved", stageDate: dayjs().toISOString() })
-    //         .then(() => {
-    //             try {
-    //                 // Send push notification to the kid who completed the chore
-    //                 const kid = loggedInData.family.children.find(k => k._id === chore.worker._id);
-
-    //                 if (kid?.pushTokens && kid.pushTokens.length > 0) {
-    //                     const notificationPromises = kid.pushTokens.map(token =>
-    //                         sendPush(
-    //                             kid._id,
-
-    //                             "Chore Approved!🙂",
-    //                             `Your chore "${chore.title}" has been approved!`
-    //                         )
-    //                     );
-
-    //                     Promise.allSettled(notificationPromises).catch(err => {
-    //                         console.log('Notification error (non-blocking):', err);
-    //                     });
-    //                 }
-    //             } catch (notifError) {
-    //                 console.error('Notification setup error (non-blocking):', notifError);
-    //             }
-
-    //             Toast.show({ type: 'success', text1: "Chore approved!" })
-    //             navigation.goBack()
-    //         })
-    //         .catch((error) => {
-    //             console.log("approveChore error:", error)
-    //             setApiErrors(prev => ({ ...prev, approveChore: "Unable to approve chore." }))
-    //             Toast.show({ type: 'error', text1: "Unable to approve chore." })
-    //             setIsButtonLoading(false)
-    //         })
-    // }
-
     const handleApprove = () => {
     if (isButtonLoading) return
     setIsButtonLoading(true)

@@ -217,42 +217,7 @@ export const registerUser = async (req, res) => {
     }
 }
 
-//Not in use
-// export const addUser = async (req, res) => {
-//     async function generateCode() {
-//         return crypto.randomInt(100000, 999999).toString();
-//     }
-//     const code = await generateCode()
-//     const expiration = new Date(Date.now() + 15 * 60 * 1000);
-//     console.log("code", code)
-//     console.log("expiration", expiration)
-//     try {
-//         const user = await User.create({
-//             ...req.body, isActive: true, verificationCode: code, codeExpirationDate: expiration})
-
-//         if (user) {
-//             delete user.password
-//             console.log("api key", process.env.EMAILJS_SERVICE_ID)
-//             const family = await Family.findByIdAndUpdate(req.body.family, user.isParent
-//                 ? { $addToSet: { parents: user._id } }
-//                 : { $addToSet: { children: user._id } },
-//                 { new: true });
-//             console.log("family", family)
-//             sendTestEmail(user.name, user.username, user.verificationCode, user.codeExpirationDate)
-//             res.json({ success: true, message: 'Email sent!' });
-//         }
-//         else {
-//             console.log("user creation failed")
-//         }
-//     }
-//     catch (error) {
-//         console.log("register error", error)
-//         res.status(500).json({ error: error.message });
-//     }
-// }
-
 // If requested, resets code in db and resends code to user email.
-
 export const resendCode = async (req, res) => {
     async function generateCode() {
         // Generate secure random 6-digit code
@@ -410,19 +375,6 @@ export const getCurrentUser = async (req, res) => {
         res.status(400).json({ message: error.message || 'An error occurred while fetching the profile.' })
     }
 }
-
-
-//Not in use
-// export const getFamily = async (req, res) => {
-//     try {
-//         const ids = req.body; 
-//         const objectIds = ids.map(id => new mongoose.Types.ObjectId(id));
-//         const USERS = await User.find({ _id: { $in: objectIds } }).select(`-password`)
-//         res.json(USERS);
-//         res.status(200).json(USERS)
-//     } catch (error) { res.status(400).json(error) }
-// }
-
 
 // Use for "deleting users". Frontend changes user attribute active => inactive
 export const updateUser = async (req, res) => {

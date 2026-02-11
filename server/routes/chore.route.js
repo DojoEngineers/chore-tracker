@@ -8,7 +8,7 @@ const choreRouter = Router()
 // for testing:
 choreRouter.route('/all')
 //     .get(getAllChores)
-    .delete(deleteAllChores)
+    // .delete(deleteAllChores)
 
 choreRouter.route('/')
     .post(protect, addChore)

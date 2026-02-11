@@ -221,17 +221,10 @@ export const UserContextProvider = ({ children }) => {
                     await registerForPushNotifications()
                 }
             }
-            // else {
-            //     if (expoPushToken && loggedInData?._id) {
-            //         await updateUser({ removePushToken: expoPushToken })
-            //     }
-            //     setExpoPushToken(null)
-            // }
         } catch (error) {
             console.log('Failed to save notifications', error)
         }
     }
-
 
     const setAppTheme = async (value) => {
         setTheme(value)
@@ -259,7 +252,6 @@ export const UserContextProvider = ({ children }) => {
             console.log('Failed to save user', e);
         }
     }
-
 
     const logout = async () => {
         try {

@@ -61,35 +61,6 @@ export const Settings = () => {
         });
     };
 
-
-    // const handleLogout = async () => {
-    //     if (isButtonLoading) return
-    //     setIsButtonLoading(true)
-
-    //     try {
-    //         // Remove push token from backend
-    //         if (expoPushToken && loggedInData?._id) {
-    //             await updateUser({
-    //                 removePushToken: expoPushToken
-    //             }).catch(err => console.error('❌ Error removing push token:', err))
-    //         }
-
-    //         // Clear local storage/state
-    //         await logout()
-
-    //     } catch (error) {
-    //         console.error('❌ Logout error:', error)
-    //         Toast.show({ type: 'error', text1: "Unable to logout." })
-    //         setIsButtonLoading(false) // Only set false if logout fails and we DON'T navigate
-    //         return // Don't navigate if logout failed
-    //     }
-
-    //     navigation.reset({
-    //         index: 0,
-    //         routes: [{ name: 'Login', params: { animationType: 'slide_from_left' } }]
-    //     });
-    // };
-
     return (
         <View className="flex-1 bg-lightBg dark:bg-darkBg px-[16px] justify-between">
             <View className="flex-1">
