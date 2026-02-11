@@ -11,7 +11,7 @@
 - **NativeWind:** Front-end styling
 - **Figma:** Design collaboration with UX/UI designer
 - **Render:** Backend server deployment
-- **Dev Tools:** VS Code, GitHub, Android Studio, Xcode
+- **Dev Tools:** GitHub, Android Studio, Xcode
 
 
 ## 🌟 Highlights
