@@ -27,7 +27,10 @@ export const DeleteModal = ({visible, setVisible, setApiErrors, id, setRefreshTr
             .then( () => { 
                 Toast.show({type: 'success', text1: "Chore successfully deleted!"})
                 setVisible(prev => ({...prev, delete: false}))
-                if (setRefreshTrigger) setRefreshTrigger(prev => prev + 1)
+                if (setRefreshTrigger) {
+                    setRefreshTrigger(prev => prev + 1)
+                    setIsButtonLoading(false)
+                }
                 else navigation.goBack()
             })
             .catch( error => {

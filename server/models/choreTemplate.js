@@ -25,11 +25,18 @@ const choreTemplateSchema = new mongoose.Schema({
   },
   isActive: {
     type: Boolean,
+    required: true,
+    default: true
+  },
+  nextRunDate: {
+    type: Date,
     required: true
   },
-  dueDate: { type: Date, required: false }
+  dueHour: { type: Number, required: true },
+  dueMinute: { type: Number, required: true }
 }, { timestamps: true });
 
+choreTemplateSchema.index({ isActive: 1, nextRunDate: 1 })
 
 // Create the Chore model from the schema
 const ChoreTemplate = mongoose.model('ChoreTemplate', choreTemplateSchema);
