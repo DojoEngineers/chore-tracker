@@ -32,6 +32,11 @@ Key features include full CRUD functionality for chores, user authentication wit
 The application has been tested on both Android and iOS emulators to ensure a smooth cross-platform experience. With over 30 unique screens and 2 distinct user interfaces, this project demonstrates our expertise in full-stack mobile application development.
 
 
+## 🚀 Deployment
+
+We are currently in the user testing phase of our application and hope to deploy it on both the Apple App Store and Google Play Store soon!
+
+
 ## ✍️ Authors
 
 Front End Engineer - Katie Chickering - https://github.com/katiechickering
