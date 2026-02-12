@@ -9,7 +9,7 @@
 - **Agenda:** Server-side job scheduling
 - **EmailJS:** Registration and password reset emails
 - **NativeWind:** Front-end styling
-- **Figma:** Design collaboration with UX/UI designer
+- **Figma:** Design collaboration with UI/UX designer
 - **Render:** Backend server deployment
 - **Dev Tools:** GitHub, Android Studio, Xcode
 
