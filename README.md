@@ -4,7 +4,7 @@
 ## 🛠️ Technologies Used
 
 - **Core Stack:** Expo Go + EAS Build, React Native, Node.js + Express, MongoDB
-- **Languages:** Javascript, JSX
+- **Languages:** Javascript
 - **Cloudfare R2:** Image storage
 - **Agenda:** Server-side job scheduling
 - **EmailJS:** Registration and password reset emails
