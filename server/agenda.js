@@ -18,9 +18,9 @@ export const initAgenda = async () => {
 
     agenda = new Agenda({
         db: {
-          address: process.env.MONGODB_URI,
-          collection: 'agendaJobs',
-          options: { useNewUrlParser: true, useUnifiedTopology: true }
+            address: process.env.MONGODB_URI,
+            collection: 'agendaJobs',
+            options: { useNewUrlParser: true, useUnifiedTopology: true }
         }
     })
 
@@ -54,7 +54,7 @@ export const initAgenda = async () => {
             let iterations = 0
 
             while ((nextDue.isBefore(now) || nextDue.isSame(now, 'minute')) && iterations < maxIterations) {
-                // console.log(`[Agenda] Generating chore for template "${template.title}" due ${nextDue.toISOString()}`)
+                console.log(`[Agenda] Generating chore for template "${template.title}" due ${nextDue.toISOString()}`)
 
                 try {
                     await Chore.create({
@@ -65,6 +65,7 @@ export const initAgenda = async () => {
                         worker: template.worker,
                         needsPics: template.needsPics,
                         stage: "incomplete",
+                        stageDate: new Date(),
                         repeat: template.repeat,
                         weeklyRepeatDays: template.weeklyRepeatDays || [],
                         dueDate: nextDue.toDate(),
@@ -76,30 +77,36 @@ export const initAgenda = async () => {
                     else if (template.repeat === 'weekly') {
                         if (!weeklyDays.length) break
                         const sorted = [...weeklyDays].sort((a,b)=>a-b)
-                        const todayDay = nextDue.day()
-                        let nextDay = sorted.find(d => d > todayDay) ?? sorted[0]
-                        let daysToAdd = (nextDay - todayDay + 7) % 7
-                        if (daysToAdd === 0) daysToAdd = 7
-                        nextDue = nextDue.add(daysToAdd, 'day')
+                        const currentDay = nextDue.day()
+                        let nextDay = sorted.find(d => d > currentDay)
+                        if (nextDay !== undefined) {
+                            let daysToAdd = nextDay - currentDay
+                            nextDue = nextDue.add(daysToAdd, 'day')
+                        } else {
+                            let daysToAdd = (sorted[0] + 7) - currentDay
+                            nextDue = nextDue.add(daysToAdd, 'day')
+                        }
                     }
                     else if (template.repeat === 'monthly') nextDue = nextDue.add(1, 'month')
                     else break
-
-                    template.nextRunDate = nextDue.toDate()
-                    await template.save()
-                    // console.log(`[Agenda] Finished processing template "${template.title}". Next run: ${template.nextRunDate}`)
+                    
+                    iterations++
                 } catch (err) {
                     console.error(`[Agenda] Error generating chore for template "${template.title}":`, err)
                     break
                 }
-
-                iterations++
             }
+
+            template.nextRunDate = nextDue.toDate()
+            await template.save()
+            console.log(`[Agenda] Finished processing template "${template.title}". Next run: ${template.nextRunDate}`)
 
             if (iterations >= maxIterations) {
-                console.warn(`[Agenda] Stopped loop for "${template.title}" after 100 iterations`);
+                console.warn(`[Agenda] Stopped loop for "${template.title}" after 100 iterations`)
             }
         }
+
+        console.log("Repeating chores cron job complete")
     })
 
     // Start Agenda
@@ -114,7 +121,7 @@ export const startJobs = async () => {
         return
     }
     await agenda.now('generate chores')
-    console.log("Repeating chores cron job complete")
+    console.log("Repeating chores cron job running")
 }
 
 export default agenda
