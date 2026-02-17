@@ -151,9 +151,48 @@ export const NewChoreDetails = ({ route }) => {
         }
 
         const { details, kids, dueDate, needsPics, repeat, weeklyRepeatDays } = formData
+
+        // Calculate the correct starting dueDate based on repeat type
+        let adjustedDueDate = dueDate
+        
+        if (repeat === 'daily') {
+            // For daily: start today if the time hasn't passed yet, otherwise tomorrow
+            const todayAtTime = dayjs().hour(dueDate.hour()).minute(dueDate.minute()).second(0)
+            if (todayAtTime.isAfter(dayjs())) {
+                adjustedDueDate = todayAtTime
+            } else {
+                adjustedDueDate = todayAtTime.add(1, 'day')
+            }
+        } else if (repeat === 'weekly') {
+            // For weekly: find the next occurrence based on selected days
+            const selectedTime = dueDate.hour() * 60 + dueDate.minute() // time in minutes
+            const currentTime = dayjs().hour() * 60 + dayjs().minute()
+            const currentDay = dayjs().day()
+            
+            const sortedDays = [...weeklyRepeatDays].sort((a, b) => a - b)
+            
+            // Check if today is one of the selected days and time hasn't passed
+            if (sortedDays.includes(currentDay) && currentTime < selectedTime) {
+                // Start today at the specified time
+                adjustedDueDate = dayjs().hour(dueDate.hour()).minute(dueDate.minute()).second(0)
+            } else {
+                // Find next valid day
+                let nextDay = sortedDays.find(d => d > currentDay)
+                if (nextDay === undefined) {
+                    // Wrap to first day of next week
+                    nextDay = sortedDays[0]
+                    const daysToAdd = (nextDay + 7) - currentDay
+                    adjustedDueDate = dayjs().add(daysToAdd, 'day').hour(dueDate.hour()).minute(dueDate.minute()).second(0)
+                } else {
+                    const daysToAdd = nextDay - currentDay
+                    adjustedDueDate = dayjs().add(daysToAdd, 'day').hour(dueDate.hour()).minute(dueDate.minute()).second(0)
+                }
+            }
+        }
+    
         const baseData = {
             title: formData.title, details, creator: loggedInData._id,
-            dueDate: dueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
+            dueDate: adjustedDueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
         }
         const promises = []
         const isEditMode = !!chore
