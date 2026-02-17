@@ -54,7 +54,7 @@ export const initAgenda = async () => {
             let iterations = 0
 
             while ((nextDue.isBefore(now) || nextDue.isSame(now, 'minute')) && iterations < maxIterations) {
-                console.log(`[Agenda] Generating chore for template "${template.title}" due ${nextDue.toISOString()}`)
+                // console.log(`[Agenda] Generating chore for template "${template.title}" due ${nextDue.toISOString()}`)
 
                 try {
                     await Chore.create({
@@ -90,6 +90,7 @@ export const initAgenda = async () => {
                     else if (template.repeat === 'monthly') nextDue = nextDue.add(1, 'month')
                     else break
                     
+                    nextDue = nextDue.hour(dueHour).minute(dueMinute).second(0)
                     iterations++
                 } catch (err) {
                     console.error(`[Agenda] Error generating chore for template "${template.title}":`, err)
@@ -99,7 +100,7 @@ export const initAgenda = async () => {
 
             template.nextRunDate = nextDue.toDate()
             await template.save()
-            console.log(`[Agenda] Finished processing template "${template.title}". Next run: ${template.nextRunDate}`)
+            // console.log(`[Agenda] Finished processing template "${template.title}". Next run: ${template.nextRunDate}`)
 
             if (iterations >= maxIterations) {
                 console.warn(`[Agenda] Stopped loop for "${template.title}" after 100 iterations`)
