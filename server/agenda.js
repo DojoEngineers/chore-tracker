@@ -44,10 +44,10 @@ export const initAgenda = async () => {
 
             let maxIterations
             switch(template.repeat) {
-                case 'daily': maxIterations = 30; break;
-                case 'weekly': maxIterations = 5; break;
-                case 'monthly': maxIterations = 1; break;
-                default: maxIterations = 10; break;
+                case 'daily': maxIterations = 30; break
+                case 'weekly': maxIterations = 5; break
+                case 'monthly': maxIterations = 1; break
+                default: maxIterations = 10; break
             }
 
             let iterations = 0
@@ -69,7 +69,7 @@ export const initAgenda = async () => {
                         weeklyRepeatDays: template.weeklyRepeatDays || [],
                         dueDate: nextDue.toDate(),
                         isActive: true
-                    });
+                    })
 
                     // Compute next occurrence
                     if (template.repeat === 'daily') nextDue = nextDue.add(1, 'day')
