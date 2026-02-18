@@ -39,7 +39,6 @@ export const initAgenda = async () => {
             let nextDue = dayjs(template.nextRunDate)
             const dueHour = template.dueHour ?? 0
             const dueMinute = template.dueMinute ?? 0
-            nextDue = nextDue.hour(dueHour).minute(dueMinute).second(0)
 
             const weeklyDays = template.weeklyRepeatDays ?? []
 
