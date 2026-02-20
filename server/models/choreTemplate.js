@@ -5,7 +5,8 @@ const choreTemplateSchema = new mongoose.Schema({
   details: { type: String, required: false },
   repeat: {
     type: String,
-    enum: ["daily", "weekly", "monthly"]
+    enum: ["never", "daily", "weekly", "monthly"],
+    required: true
   },
   weeklyRepeatDays: {
     type: [Number],
@@ -32,8 +33,14 @@ const choreTemplateSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  dueHour: { type: Number, required: true },
-  dueMinute: { type: Number, required: true }
+  dueHour: {
+    type: Number,
+    required: true
+  },
+  dueMinute: {
+    type: Number,
+    required: true
+  }
 }, { timestamps: true });
 
 choreTemplateSchema.index({ isActive: 1, nextRunDate: 1 })

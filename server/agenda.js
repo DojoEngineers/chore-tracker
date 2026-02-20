@@ -32,6 +32,7 @@ export const initAgenda = async () => {
         // Only templates that are active and due
         const templates = await ChoreTemplate.find({
             isActive: true,
+            repeat: { $in: ['daily', 'weekly', 'monthly'] },
             nextRunDate: { $lte: now.toDate() }
         })
 
@@ -70,7 +71,7 @@ export const initAgenda = async () => {
                         dueDate: nextDue.toDate(),
                         isActive: true
                     })
-
+                        
                     // Compute next occurrence
                     if (template.repeat === 'daily') nextDue = nextDue.add(1, 'day')
                     else if (template.repeat === 'weekly') {

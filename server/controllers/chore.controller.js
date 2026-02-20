@@ -163,12 +163,24 @@ export const addChore = async (req, res) => {
         }
 
         else if (repeat === "weekly") {
-            nextRunDate = base.add(1, "week")
+            const sortedDays = [...(weeklyRepeatDays || [])].sort((a, b) => a - b)
+            const currentDay = base.day()
+            let nextDay = sortedDays.find(d => d > currentDay)
+            if (nextDay === undefined) {
+                nextDay = sortedDays[0]
+                const daysToAdd = (nextDay + 7) - currentDay
+                nextRunDate = base.add(daysToAdd, 'day')
+            } else {
+                const daysToAdd = nextDay - currentDay
+                nextRunDate = base.add(daysToAdd, 'day')
+            }
         }
 
         else if (repeat === "monthly") {
             nextRunDate = base.add(1, "month")
         }
+
+        nextRunDate = nextRunDate.hour(dueHour).minute(dueMinute).second(0)
 
         // Create template with nextRunDate
         const template = await ChoreTemplate.create({
@@ -267,29 +279,44 @@ export const updateChore = async (req, res) => {
                 )
             } else {
                 // Create new template for this chore
-                // Initialize nextRunDate based on this chore's dueDate + repeat
                 const base = dayjs(req.body.dueDate)
+                const dueHour = base.hour()
+                const dueMinute = base.minute()
                 let nextRunDate
 
-                switch (req.body.repeat) {
-                case "daily":
+                if (req.body.repeat === "daily") {
                     nextRunDate = base.add(1, "day")
-                    break
-                case "weekly":
-                    nextRunDate = base.add(1, "week")
-                    break
-                case "monthly":
-                    nextRunDate = base.add(1, "month")
-                    break
-                default:
-                    nextRunDate = base; // fallback
                 }
+                else if (req.body.repeat === "weekly") {
+                    const sortedDays = [...(req.body.weeklyRepeatDays || [])].sort((a, b) => a - b)
+                    const currentDay = base.day()
+                    let nextDay = sortedDays.find(d => d > currentDay)
+                    if (nextDay === undefined) {
+                        nextDay = sortedDays[0]
+                        const daysToAdd = (nextDay + 7) - currentDay
+                        nextRunDate = base.add(daysToAdd, 'day')
+                    } else {
+                        const daysToAdd = nextDay - currentDay
+                        nextRunDate = base.add(daysToAdd, 'day')
+                    }
+                }
+                else if (req.body.repeat === "monthly") {
+                    nextRunDate = base.add(1, "month")
+                }
+                else {
+                    nextRunDate = base
+                }
+
+                // Apply the time
+                nextRunDate = nextRunDate.hour(dueHour).minute(dueMinute).second(0)
 
                 const template = await ChoreTemplate.create({
                     ...templateData,
                     creator: req.body.creator,
                     isActive: true,
-                    nextRunDate: nextRunDate.toDate()
+                    nextRunDate: nextRunDate.toDate(),
+                    dueHour,
+                    dueMinute
                 })
 
                 CHORE.templateId = template._id
