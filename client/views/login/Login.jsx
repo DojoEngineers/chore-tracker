@@ -100,7 +100,7 @@ export const Login = () => {
                         <Pressable
                             className="ps-2"
                             hitSlop={20}
-                            onPress={() => navigation.replace("StartingPage", {animationType: "slide_from_left"})}
+                            onPress={() => navigation.navigate("StartingPage", {animationType: "slide_from_left"})}
                         >
                             <BackArrow/>
                         </Pressable>

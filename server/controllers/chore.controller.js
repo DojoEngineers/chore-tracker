@@ -180,7 +180,7 @@ export const addChore = async (req, res) => {
             nextRunDate = base.add(1, "month")
         }
 
-        nextRunDate = nextRunDate.hour(dueHour).minute(dueMinute).second(0)
+        nextRunDate = nextRunDate.startOf('day')
 
         // Create template with nextRunDate
         const template = await ChoreTemplate.create({
@@ -307,8 +307,7 @@ export const updateChore = async (req, res) => {
                     nextRunDate = base
                 }
 
-                // Apply the time
-                nextRunDate = nextRunDate.hour(dueHour).minute(dueMinute).second(0)
+                nextRunDate = nextRunDate.startOf('day')
 
                 const template = await ChoreTemplate.create({
                     ...templateData,
