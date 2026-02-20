@@ -1,4 +1,4 @@
-# 🧹 Track My Chore Mobile Application
+# 🧹 Track My Chores Mobile Application
 
 
 ## 🛠️ Technologies Used
