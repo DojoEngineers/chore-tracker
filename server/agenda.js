@@ -49,7 +49,7 @@ export const initAgenda = async () => {
         // }
 
         for (const template of templates) {
-            let nextDue = dayjs(template.nextRunDate)
+            let nextDue = dayjs(template.nextRunDate).local()
             const dueHour = template.dueHour ?? 0
             const dueMinute = template.dueMinute ?? 0
 
