@@ -22,6 +22,11 @@ import { NewChoreDropDown } from "../../components/NewChoreDropDown"
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { RadioButton } from 'react-native-paper'
 import { DueDatePicker } from "../../components/DueDatePicker"
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const WEEKDAYS = [
     { id: 0, short: 'S', full: 'Sunday' },
@@ -65,6 +70,7 @@ export const NewChoreDetails = ({ route }) => {
     const { loggedInData, sendPush } = useLogin()
     const colorScheme = useColorScheme()
     const isDark = colorScheme === "dark"
+    const userTimezone = dayjs.tz.guess()
 
     const kidOptions = loggedInData.family.children
         .filter(kid => kid.isActive)
@@ -191,8 +197,8 @@ export const NewChoreDetails = ({ route }) => {
         }
     
         const baseData = {
-            title: formData.title, details, creator: loggedInData._id,
-            dueDate: adjustedDueDate.toISOString(), needsPics, repeat, weeklyRepeatDays
+            title: formData.title, details, creator: loggedInData._id, timezone: userTimezone,
+            dueDate: adjustedDueDate.toISOString(), needsPics, repeat, weeklyRepeatDays,
         }
         const promises = []
         const isEditMode = !!chore

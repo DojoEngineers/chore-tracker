@@ -129,10 +129,11 @@ export const addChore = async (req, res) => {
             needsPics,
             repeat,
             weeklyRepeatDays,
-            worker
+            worker,
+            timezone
         } = req.body
 
-        const base = dayjs(dueDate)
+        const base = dayjs(dueDate).tz(timezone || 'UTC')
         const dueHour = base.hour()
         const dueMinute = base.minute()
 
@@ -193,6 +194,7 @@ export const addChore = async (req, res) => {
             weeklyRepeatDays,
             isActive: true,
             nextRunDate: nextRunDate.toDate(),
+            timezone: timezone || 'UTC',
             dueHour,
             dueMinute
         })
@@ -265,9 +267,10 @@ export const updateChore = async (req, res) => {
 
              // Parse dueDate into hour/minute
             if (req.body.dueDate) {
-                const base = dayjs(req.body.dueDate)
+                const base = dayjs(req.body.dueDate).tz(req.body.timezone || 'UTC')
                 templateData.dueHour = base.hour()
                 templateData.dueMinute = base.minute()
+                templateData.timezone = req.body.timezone
             }
 
             if (req.body.templateId) {

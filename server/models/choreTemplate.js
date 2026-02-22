@@ -40,6 +40,10 @@ const choreTemplateSchema = new mongoose.Schema({
   dueMinute: {
     type: Number,
     required: true
+  },
+  timezone: {
+    type: String,
+    default: 'UTC'
   }
 }, { timestamps: true });
 

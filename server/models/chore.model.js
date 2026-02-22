@@ -89,6 +89,10 @@ const choreSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         required: [true, "Please state if active"]
+    },
+    timezone: {
+        type: String,
+        default: 'UTC'
     }
 }, { timestamps: true });
 

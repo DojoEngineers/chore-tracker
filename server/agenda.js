@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import dayjs from 'dayjs';
 import ChoreTemplate from './models/choreTemplate.js';
 import Chore from './models/chore.model.js';
+import utc from 'dayjs/plugin/utc.js';
+import timezone from 'dayjs/plugin/timezone.js';
 
 let agenda
 
@@ -37,7 +39,7 @@ export const initAgenda = async () => {
         })
 
         for (const template of templates) {
-            let nextDue = dayjs(template.nextRunDate).local()
+            let nextDue = dayjs(template.nextRunDate).tz(template.timezone || 'UTC')
             const dueHour = template.dueHour ?? 0
             const dueMinute = template.dueMinute ?? 0
 
@@ -75,7 +77,7 @@ export const initAgenda = async () => {
                     })
                         
                     // Compute next occurrence
-                    if (template.repeat === 'daily') nextDue = nextDue.add(1, 'day')
+                    if (template.repeat === 'daily') nextDue = nextDue.add(1, 'day').startOf('day')
                     else if (template.repeat === 'weekly') {
                         if (!weeklyDays.length) break
                         const sorted = [...weeklyDays].sort((a,b)=>a-b)
@@ -83,16 +85,15 @@ export const initAgenda = async () => {
                         let nextDay = sorted.find(d => d > currentDay)
                         if (nextDay !== undefined) {
                             let daysToAdd = nextDay - currentDay
-                            nextDue = nextDue.add(daysToAdd, 'day')
+                            nextDue = nextDue.add(daysToAdd, 'day').startOf('day')
                         } else {
                             let daysToAdd = (sorted[0] + 7) - currentDay
-                            nextDue = nextDue.add(daysToAdd, 'day')
+                            nextDue = nextDue.add(daysToAdd, 'day').startOf('day')
                         }
                     }
-                    else if (template.repeat === 'monthly') nextDue = nextDue.add(1, 'month')
+                    else if (template.repeat === 'monthly') nextDue = nextDue.add(1, 'month').startOf('day')
                     else break
                     
-                    nextDue = nextDue.startOf('day')
                     iterations++
                 } catch (err) {
                     console.error(`[Agenda] Error generating chore for template "${template.title}":`, err)
