@@ -28,7 +28,6 @@ export const initAgenda = async () => {
     agenda.define('generate chores', async () => {
 
         const now = dayjs()
-        // console.log(`[Agenda] 🔍 Job running at: ${now.format()}`)
 
         // Only templates that are active and due
         const templates = await ChoreTemplate.find({
@@ -36,17 +35,6 @@ export const initAgenda = async () => {
             repeat: { $in: ['daily', 'weekly', 'monthly'] },
             nextRunDate: { $lte: now.toDate() }
         })
-
-        // console.log(`[Agenda] 📋 Found ${templates.length} templates to process`)
-
-        // if (templates.length === 0) {
-        //     const allActive = await ChoreTemplate.find({ isActive: true }).lean()
-        //     console.log(`[Agenda] 📊 Total active templates: ${allActive.length}`)
-            
-        //     allActive.forEach((t, i) => {
-        //         console.log(`[${i}] "${t.title}" - repeat: ${t.repeat}, nextRun: ${t.nextRunDate}`)
-        //     })
-        // }
 
         for (const template of templates) {
             let nextDue = dayjs(template.nextRunDate).local()
@@ -66,7 +54,7 @@ export const initAgenda = async () => {
             let iterations = 0
 
             while ((nextDue.isBefore(now) || nextDue.isSame(now, 'minute')) && iterations < maxIterations) {
-                console.log(`[Agenda] Generating chore for template "${template.title}" due ${nextDue.toISOString()}`)
+                // console.log(`[Agenda] Generating chore for template "${template.title}" due ${nextDue.toISOString()}`)
 
                 try {
                     const choreDueDate = nextDue.hour(dueHour).minute(dueMinute).second(0)
@@ -114,10 +102,10 @@ export const initAgenda = async () => {
 
             template.nextRunDate = nextDue.toDate()
             await template.save()
-            console.log(`[Agenda] Finished processing template "${template.title}". Next run: ${template.nextRunDate}`)
+            // console.log(`[Agenda] Finished processing template "${template.title}". Next run: ${template.nextRunDate}`)
 
             if (iterations >= maxIterations) {
-                console.warn(`[Agenda] Stopped loop for "${template.title}" after 100 iterations`)
+                console.warn(`[Agenda] Stopped loop for "${template.title}" after max iterations`)
             }
         }
 
