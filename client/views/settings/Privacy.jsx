@@ -33,11 +33,14 @@ export const Privacy = () => {
 
                 <View className="items-center mb-8">
                     <BrandText className="text-lightSecondaryText dark:text-darkSecondaryText text-[16px]">
-                        We respect your privacy and keep your family’s data secure. We collect parent account info (name, email),
-                        child account info (name, email), chores (name, due date, photos, description, completion stage, other details),
-                        and device identifiers for notifications. This data is used to manage accounts and track chores.
-                        It is shared only with trusted service providers and never sold. Parents manage child accounts, and we comply with COPPA.
-                        You can update your information or inactivate your account at any time. For questions, contact trackmychoresapp@gmail.com.
+                        We respect your privacy and keep your family’s data secure. We collect parent account
+                        info (name, email), child account info (name, email), chores (name, due date, photos,
+                        description, completion stage, other details), and device identifiers for notifications. 
+                        Each account has a unique user ID stored to manage accounts, and device push tokens are
+                        used to send notifications to the correct device. This data is used to manage accounts
+                        and track chores, shared only with trusted service providers, and never sold. Parents
+                        manage child accounts, and we comply with COPPA. You can update your information or
+                        inactivate your account at any time. For questions, contact trackmychoresapp@gmail.com.
                     </BrandText>
                 </View>
             </View>
