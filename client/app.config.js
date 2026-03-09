@@ -60,7 +60,9 @@ export default {
         backgroundColor: "#ffffff"
       },
       edgeToEdgeEnabled: false, // Changed this for dark mode fix
-      softwareKeyboardLayoutMode: "pan"
+      softwareKeyboardLayoutMode: "pan",
+      compileSdkVersion: 35,
+      targetSdkVersion: 35
     },
 
     web: {
