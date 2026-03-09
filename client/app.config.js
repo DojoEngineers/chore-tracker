@@ -31,7 +31,7 @@ export default {
           android: {
             usesCleartextTraffic: true,
             compileSdkVersion: 35,
-            targetSdkVersion: 34,
+            targetSdkVersion: 35,
           }
         }
       ]
@@ -61,8 +61,6 @@ export default {
       },
       edgeToEdgeEnabled: false, // Changed this for dark mode fix
       softwareKeyboardLayoutMode: "pan",
-      compileSdkVersion: 35,
-      targetSdkVersion: 35
     },
 
     web: {
