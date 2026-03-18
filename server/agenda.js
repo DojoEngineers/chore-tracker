@@ -125,6 +125,7 @@ export const startJobs = async () => {
         return
     }
     await agenda.now('generate chores')
+    await agenda.every('0 0 * * *', 'generate chores', {}, { timezone: 'America/Los_Angeles' })
     console.log("Repeating chores cron job running")
 }
 
