@@ -1,5 +1,6 @@
 # 🧹 Track My Chores Mobile Application
 
+Download the app in the Apple App Store [here](https://apps.apple.com/us/app/track-my-chores/id6756340747)!
 
 ## 🛠️ Technologies Used
 
@@ -34,7 +35,7 @@ The application has been tested on both Android and iOS emulators to ensure a sm
 
 ## 🚀 Deployment
 
-We are currently in the user testing phase of our application and hope to deploy it on both the Apple App Store and Google Play Store soon!
+Our app is currently available on the Apple App Store! We are in the testing phase for Google Play and plan to release it there soon.
 
 
 ## ✍️ Authors
