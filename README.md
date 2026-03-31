@@ -44,7 +44,7 @@ Front End Engineer - Katie Chickering - [LinkedIn](https://www.linkedin.com/in/k
 
 Back End Engineer - Ariella Rollins - [LinkedIn](https://www.linkedin.com/in/ariella-rollins-080354178/) - [GitHub](https://github.com/Ariella-Rollins)
 
-UI / UX Designer - Helena Contreras - [LinkedIn]https://www.linkedin.com/in/helena-g-4b5aa0133/
+UI / UX Designer - Helena Contreras - [LinkedIn](https://www.linkedin.com/in/helena-g-4b5aa0133/)
 
 
 ## 💭 Feedback and Contributing
